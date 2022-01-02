@@ -1,0 +1,19 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "standard"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module"
+    },
+    "rules": {
+        "semi": [2, "always"],
+        "indent": [2, "tab", { "SwitchCase": 1 }],
+        "no-tabs": 0,
+        "space-before-function-paren": 0
+    }
+}
