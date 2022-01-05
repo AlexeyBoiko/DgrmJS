@@ -17,6 +17,7 @@ export class DiagramBuilder extends EventTarget {
 	 */
 	constructor(svg) {
 		super();
+
 		/** @type {SVGSVGElement} */
 		this._svg = svg;
 
@@ -191,7 +192,7 @@ export class DiagramBuilder extends EventTarget {
 	/**
 	 *
 	 * @param {SVGGraphicsElement} svgEl
-	 * @param {ConnectorDirection} dir
+	 * @param {PresenterPathEntDirection} dir
 	 */
 	_rotate(svgEl, dir) {
 		// svgEl.transform.baseVal.getItem(0) - always setTranslate
@@ -463,20 +464,20 @@ export class DiagramBuilder extends EventTarget {
 	/** @private */
 	_pointedClean() {
 		/** @type {HTMLOrSVGElement}
-				 *  @private */
+		 *  @private */
 		this._pointElem = null;
 
 		if (this._pointShape) {
 			this._pointShape.classList.remove('hover');
 			/** @type {SVGGElement}
-						 *  @private */
+			 *  @private */
 			this._pointShape = null;
 		}
 
 		if (this._pointConnectorIn) {
 			this._pointConnectorIn.classList.remove('hover');
 			/** @type {SVGElement}
-						 *  @private */
+			 *  @private */
 			this._pointConnectorIn = null;
 		}
 	}
@@ -558,7 +559,7 @@ export class DiagramBuilder extends EventTarget {
 			shapePosition: { shape: shapePoint.shape, position: DiagramBuilder._positionGet(shapePoint.shape) },
 			innerPosition: DiagramBuilder._dataPointAttrParse(shapePoint.connectorElem),
 			connectorElem: shapePoint.connectorElem,
-			dir: /** @type {ConnectorDirection} */(shapePoint.connectorElem.getAttribute('data-connect-dir'))
+			dir: /** @type {PresenterPathEntDirection} */(shapePoint.connectorElem.getAttribute('data-connect-dir'))
 		};
 	}
 

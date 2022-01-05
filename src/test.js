@@ -1,4 +1,4 @@
-import { DiagramBuilder } from './diagram/svg-diagram-builder';
+import { DiagramBuilder } from './diagram/diagram-builder';
 
 new DiagramBuilder(null)
 	.on('select', /** @param {CustomEvent<SVGGElement>} evt */ evt => {

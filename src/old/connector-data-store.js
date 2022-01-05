@@ -2,7 +2,7 @@
 
 export class ConnectorDataStore {
 	/**
-	 * @param {any} elData
+	 * @param {WeakMap<any, ConnectorData | Set<any>>} elData
 	 */
 	constructor(elData) {
 		/** @private */
@@ -10,7 +10,7 @@ export class ConnectorDataStore {
 	}
 
 	/**
-	 * @param {SVGPathElement} path
+	 * @param {any} path
 	 * @param {ConnectorData} connectorData
 	 */
 	dataSet(path, connectorData) {
@@ -22,15 +22,15 @@ export class ConnectorDataStore {
 	}
 
 	/**
-	 * @param {SVGPathElement} path
+	 * @param {any} path
 	 * @returns {ConnectorData}
 	 */
 	dataGet(path) {
-		return this._elData.get(path);
+		return /** @type {ConnectorData} */ (this._elData.get(path));
 	}
 
 	/**
-	 * @param {SVGPathElement} path
+	 * @param {any} path
 	 */
 	dataDel(path) {
 		const connectorData = this.dataGet(path);
@@ -40,18 +40,18 @@ export class ConnectorDataStore {
 
 	/**
 	 * get related connectors
-	 * @param {SVGElement} shape
-	 * @returns {Set<SVGPathElement>}
+	 * @param {any} shape
+	 * @returns {Set<any>}
 	 */
 	relatedPathList(shape) {
-		return this._elData.get(shape);
+		return /** @type {Set<any>} */ (this._elData.get(shape));
 	}
 
 	/**
 	 * get related connectors that end with connectorElem
-	 * @param {SVGGElement} shape
-	 * @param {SVGElement} connectorElem
-	 * @returns {SVGPathElement[]}
+	 * @param {any} shape
+	 * @param {any} connectorElem
+	 * @returns {any[]}
 	 */
 	relatedPathListByEndShare(shape, connectorElem) {
 		return [...this.relatedPathList(shape)]
@@ -61,13 +61,12 @@ export class ConnectorDataStore {
 
 	/**
 	 * remember related connector
-	 * @param {SVGElement} shape
-	 * @param {SVGPathElement} path
+	 * @param {any} shape
+	 * @param {any} path
 	 * @private
 	 */
 	_relatedPathAdd(shape, path) {
-		/** {Set<SVGPathElement>} */
-		let shapeConnectors = this._elData.get(shape);
+		let shapeConnectors = /** @type {Set<any>} */(this._elData.get(shape));
 		if (!shapeConnectors) {
 			shapeConnectors = new Set();
 			this._elData.set(shape, shapeConnectors);
