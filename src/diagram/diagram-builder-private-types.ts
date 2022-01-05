@@ -1,0 +1,3 @@
+interface IBuilderConnectorInElement extends IPresenterConnectorInElement { 
+	relatedConnectorInElement: IPresenterConnectorInElement;
+}

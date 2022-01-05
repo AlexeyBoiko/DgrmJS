@@ -10,15 +10,15 @@ export class DiagramBuilder extends EventTarget {
 	 */
 	constructor(pesenter, connectorManager) {
 		super();
+
+		/** @private */
 		this._presenter = pesenter
 			.on('pointermove', this)
 			.on('pointerdown', this)
 			.on('pointerup', this);
 
-		this._connectorManager = connectorManager;
-
 		/** @private */
-		this._elData = new WeakMap();
+		this._connectorManager = connectorManager;
 	}
 
 	/**
@@ -98,8 +98,7 @@ export class DiagramBuilder extends EventTarget {
 						//
 						// disconnect
 
-						/** @type {IPresenterConnectorInElement} */
-						const connectorIn = this._elData.get(evt.targetElem);
+						const connectorIn = /** @type {IBuilderConnectorInElement} */(evt.targetElem).relatedConnectorInElement;
 						const connectorEnd = this._connectorEndCreate(connectorIn);
 						this._connectorManager.replaceEnd(connectorIn, connectorEnd);
 						this._movedSet(connectorEnd, { x: evt.offsetX, y: evt.offsetY });
@@ -114,32 +113,32 @@ export class DiagramBuilder extends EventTarget {
 				}
 				break;
 			case 'pointerup': {
-				if (this._movedShape?.type === 'connectorEnd' &&
-					(evt.targetElem.type === 'connectorIn' || evt.targetElem.type === 'connectorInConnected')) {
+				if (this._movedShape?.type === 'connectorEnd') {
 					//
 					// connect connector
 
-					/** @type {IPresenterConnectorInElement} */
-					const connectorIn = evt.targetElem.type === 'connectorIn'
-						? evt.targetElem
-						: this._elData.get(evt.targetElem);
+					switch (evt.targetElem.type) {
+						case 'connectorIn': {
+							this._connectorManager.replaceEnd(this._movedShape, evt.targetElem);
+							this.shapeDel(this._movedShape);
 
-					this._connectorManager.replaceEnd(this._movedShape, connectorIn);
-
-					// add connectorEnd to shape
-					if (this._connectorManager.count(connectorIn, 'end') === 1) {
-						this._elData.set(
-							evt.targetElem.shape.appendChild(
+							// add connectorEnd to shape
+							/** @type {IBuilderConnectorInElement} */
+							const connectorInConnected = evt.targetElem.shape.appendChild(
 								'connectorInConnected',
 								{
 									templateKey: 'connect-end',
-									position: connectorIn.innerPosition,
-									rotateAngle: DiagramBuilder._rotateAngle(connectorIn.dir)
-								}),
-							connectorIn);
+									position: /** @type {IPresenterConnectorInElement} */(evt.targetElem).innerPosition,
+									rotateAngle: DiagramBuilder._rotateAngle(/** @type {IPresenterConnectorInElement} */(evt.targetElem).dir)
+								});
+							connectorInConnected.relatedConnectorInElement = /** @type {IPresenterConnectorInElement} */(evt.targetElem);
+							break;
+						}
+						case 'connectorInConnected':
+							this._connectorManager.replaceEnd(this._movedShape, /** @type {IBuilderConnectorInElement} */(evt.targetElem).relatedConnectorInElement);
+							this.shapeDel(this._movedShape);
+							break;
 					}
-
-					this.shapeDel(this._movedShape);
 				}
 
 				this._movedClean();

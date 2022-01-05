@@ -15,7 +15,7 @@ interface IConnectorManager {
 	/**
 	 * update connectors of the shape
 	 */
-	updatePosition(shape: IPresenterFigure): void;
+	updatePosition(shape: IConnectorElement): void;
 
 	/**
 	 * count of connectors of connectorInElem 
