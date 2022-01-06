@@ -113,7 +113,7 @@ export class DiagramBuilder extends EventTarget {
 				}
 				break;
 			case 'pointerup': {
-				if (this._movedShape?.type === 'connectorEnd') {
+				if (this._movedShape && this._movedShape.type === 'connectorEnd') {
 					//
 					// connect connector
 
@@ -206,6 +206,7 @@ export class DiagramBuilder extends EventTarget {
 	/**
 	 * @param {IPresenterConnectorInElement} connectorIn
 	 * @returns {IPresenterFigure}
+	 * @private
 	 */
 	_connectorEndCreate(connectorIn) {
 		const shapePosition = connectorIn.shape.postionGet();
