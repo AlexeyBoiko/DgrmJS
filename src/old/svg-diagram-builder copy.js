@@ -242,7 +242,7 @@ export class DiagramBuilder extends EventTarget {
 
 					this._positionSet(this._movedShape, shapePosition);
 
-					if (this._movedConnectors?.size) {
+					if (this._movedConnectors && this._movedConnectors.size) {
 						for (const svgPath of this._movedConnectors) {
 							svgPath.setAttribute('d',
 								this._connectorData.dataGet(svgPath)
@@ -411,7 +411,9 @@ export class DiagramBuilder extends EventTarget {
 
 	/** @private */
 	_movedClean() {
-		this._movedShape?.setAttribute('pointer-events', 'auto');
+		if (this._movedShape) {
+			this._movedShape.setAttribute('pointer-events', 'auto');
+		}
 		/** @private */
 		this._movedDelta = null;
 		/** @private */
@@ -438,7 +440,7 @@ export class DiagramBuilder extends EventTarget {
 		}
 		this._pointElem = pointElem;
 
-		const pointShape = pointElem?.closest('[data-templ]');
+		const pointShape = pointElem ? pointElem.closest('[data-templ]') : null;
 		if (this._pointShape !== pointShape) {
 			if (this._pointShape) { this._pointShape.classList.remove('hover'); }
 
@@ -448,7 +450,7 @@ export class DiagramBuilder extends EventTarget {
 			}
 		}
 
-		const pointConnectorIn = (pointElem?.getAttribute('data-connect') === 'in')
+		const pointConnectorIn = (pointElem && pointElem.getAttribute('data-connect') === 'in')
 			? pointElem
 			: null;
 		if (this._pointConnectorIn !== pointConnectorIn) {
