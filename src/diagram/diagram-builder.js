@@ -63,14 +63,14 @@ export class DiagramBuilder extends EventTarget {
 			: this._presenter.querySelector(param.selector)).delete();
 	}
 
-	/** @param {PresenterEvent} evt */
+	/** @param { CustomEvent<IPresenterEventDetail> } evt */
 	handleEvent(evt) {
 		switch (evt.type) {
 			case 'pointermove': {
 				if (this._movedShape) {
 					const shapePosition = {
-						x: this._movedDelta.x + evt.offsetX,
-						y: this._movedDelta.y + evt.offsetY
+						x: this._movedDelta.x + evt.detail.offsetX,
+						y: this._movedDelta.y + evt.detail.offsetY
 					};
 
 					this._movedShape.update({ position: shapePosition });
@@ -79,34 +79,34 @@ export class DiagramBuilder extends EventTarget {
 				break;
 			}
 			case 'pointerdown':
-				switch (evt.targetElem.type) {
+				switch (evt.detail.target.type) {
 					case 'canvas':
 					case 'shape':
 					case 'connectorEnd':
-						this._movedSet(evt.targetElem, { x: evt.offsetX, y: evt.offsetY });
+						this._movedSet(evt.detail.target, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 						break;
-					case 'connectorIn': {
+					case 'connectorOut': {
 						//
 						// connectorEnd create
 
-						const connectorEnd = this._connectorEndCreate(/** @type {IPresenterConnectorInElement} */(evt.targetElem));
-						this._connectorManager.add(evt.targetElem, connectorEnd);
-						this._movedSet(connectorEnd, { x: evt.offsetX, y: evt.offsetY });
+						const connectorEnd = this._connectorEndCreate(/** @type {IPresenterConnectorElement} */(evt.detail.target));
+						this._connectorManager.add(evt.detail.target, connectorEnd);
+						this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 						break;
 					}
 					case 'connectorInConnected': {
 						//
 						// disconnect
 
-						const connectorIn = /** @type {IBuilderConnectorInElement} */(evt.targetElem).relatedConnectorInElement;
+						const connectorIn = /** @type {IBuilderConnectorElement} */(evt.detail.target).relatedConnectorInElement;
 						const connectorEnd = this._connectorEndCreate(connectorIn);
 						this._connectorManager.replaceEnd(connectorIn, connectorEnd);
-						this._movedSet(connectorEnd, { x: evt.offsetX, y: evt.offsetY });
+						this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 
 						if (this._connectorManager.count(connectorIn, 'end') === 1) {
 							// can't delete here becouse of mobile
-							evt.targetElem.hide();
-							this._toDel = evt.targetElem;
+							evt.detail.target.hide();
+							this._toDel = evt.detail.target;
 						}
 						break;
 					}
@@ -117,25 +117,25 @@ export class DiagramBuilder extends EventTarget {
 					//
 					// connect connector
 
-					switch (evt.targetElem.type) {
+					switch (evt.detail.target.type) {
 						case 'connectorIn': {
-							this._connectorManager.replaceEnd(this._movedShape, evt.targetElem);
+							this._connectorManager.replaceEnd(this._movedShape, evt.detail.target);
 							this.shapeDel(this._movedShape);
 
 							// add connectorEnd to shape
-							/** @type {IBuilderConnectorInElement} */
-							const connectorInConnected = evt.targetElem.shape.appendChild(
+							/** @type {IBuilderConnectorElement} */
+							const connectorInConnected = evt.detail.target.shape.appendChild(
 								'connectorInConnected',
 								{
 									templateKey: 'connect-end',
-									position: /** @type {IPresenterConnectorInElement} */(evt.targetElem).innerPosition,
-									rotateAngle: DiagramBuilder._rotateAngle(/** @type {IPresenterConnectorInElement} */(evt.targetElem).dir)
+									position: /** @type {IPresenterConnectorElement} */(evt.detail.target).innerPosition,
+									rotateAngle: DiagramBuilder._rotateAngle(/** @type {IPresenterConnectorElement} */(evt.detail.target).dir)
 								});
-							connectorInConnected.relatedConnectorInElement = /** @type {IPresenterConnectorInElement} */(evt.targetElem);
+							connectorInConnected.relatedConnectorInElement = /** @type {IPresenterConnectorElement} */(evt.detail.target);
 							break;
 						}
 						case 'connectorInConnected':
-							this._connectorManager.replaceEnd(this._movedShape, /** @type {IBuilderConnectorInElement} */(evt.targetElem).relatedConnectorInElement);
+							this._connectorManager.replaceEnd(this._movedShape, /** @type {IBuilderConnectorElement} */(evt.detail.target).relatedConnectorInElement);
 							this.shapeDel(this._movedShape);
 							break;
 					}
@@ -204,7 +204,7 @@ export class DiagramBuilder extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterConnectorInElement} connectorIn
+	 * @param {IPresenterConnectorElement} connectorIn
 	 * @returns {IPresenterFigure}
 	 * @private
 	 */
@@ -225,7 +225,7 @@ export class DiagramBuilder extends EventTarget {
 	}
 
 	/**
-	 * @param {PresenterPathEntDirection} dir
+	 * @param {PresenterPathEndDirection} dir
 	 * @returns {number}
 	 * @private
 	 */

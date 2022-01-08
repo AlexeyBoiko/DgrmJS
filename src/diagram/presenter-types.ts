@@ -8,18 +8,20 @@ interface IPresenter extends IPresenterChildAdd {
 // events
 
 type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointerenter' | 'pointerleave';
-interface PresenterEvent extends Event {
-	type: PresenterEventType,
-	targetElem: IPresenterFigure,
-	offsetX: number;
-	offsetY: number;
+interface IPresenterEventDetail {
+	/**	null for pointermove */
+	target?: IPresenterFigure;
+	/**	null for pointerenter | pointerleave */
+	offsetX?: number;
+	/**	null for pointerenter | pointerleave */
+	offsetY?: number;
 }
 
 
 //
 // ui elements
 
-type PresenterElementType = 'canvas' | 'shape' | 'connectorIn' | 'connectorInConnected' | 'connectorEnd' | 'path';
+type PresenterElementType = 'canvas' | 'shape' | 'connectorIn' | 'connectorOut' | 'connectorInConnected' | 'connectorEnd' | 'path';
 
 interface IPresenterElement {
 	type: PresenterElementType
@@ -38,7 +40,7 @@ interface IPresenterFigure extends IPresenterElement, IPresenterChildAdd {
 }
 
 type PresenterPathEndType = 'start' | 'end';
-type PresenterPathEntDirection = 'left' | 'right' | 'top' | 'bottom';
+type PresenterPathEndDirection = 'left' | 'right' | 'top' | 'bottom';
 interface IPresenterPath extends IPresenterElement {
 	/**
 	 * update path
@@ -46,12 +48,12 @@ interface IPresenterPath extends IPresenterElement {
 	 * @param position new position
 	 * @param dir new direction
 	 */
-	update(endType: PresenterPathEndType, position: Point, dir: PresenterPathEntDirection): void;
+	update(endType: PresenterPathEndType, position: Point, dir: PresenterPathEndDirection): void;
 }
 
-interface IPresenterConnectorInElement extends IPresenterFigure {
+interface IPresenterConnectorElement extends IPresenterFigure {
 	innerPosition: Point;
-	dir: PresenterPathEntDirection;
+	dir: PresenterPathEndDirection;
 }
 
 

@@ -1,44 +1,46 @@
 /**
- * get last item
- * @template Tkey
- * @template TVal
- * @param {Map<Tkey, TVal>} map
- * @param {{(key: Tkey, elem:TVal) :boolean}=} filter
- * @returns {{key: Tkey, val:TVal}}
+ * @template T
+ * @param {Iterable<T>} iterable
+ * @param {{(el:T) :boolean}} filter
+ * @returns {T}
  */
-export function lastIn(map, filter) {
-	if (!map) { return null; }
+export function last(iterable, filter) {
+	if (!iterable) { return null; }
 
-	const last = {
-		key: null,
-		val: null
-	};
-	for (const key of map.keys()) {
-		const val = map.get(key);
-		if (!filter || filter(key, val)) {
-			last.key = key;
-			last.val = val;
+	let last;
+	for (const el of iterable) {
+		if (!filter || filter(el)) {
+			last = el;
 		}
 	}
 	return last;
 }
 
 /**
- * get last item
- * @template Tkey
- * @template TVal
- * @param {Map<Tkey, TVal>} map
- * @param {{(key: Tkey, elem:TVal) :boolean}=} filter
+ * @template T
+ * @param {Iterable<T>} iterable
+ * @param {{(el:T) :boolean}} filter
+ * @returns {T | null}
+ */
+export function first(iterable, filter) {
+	for (const el of iterable) {
+		if (!filter || filter(el)) { return el; }
+	}
+	return null;
+}
+
+/**
+ * @template T
+ * @param {Iterable<T>} iterable
+ * @param {{(el:T) :boolean}} filter
  * @returns {number}
  */
-export function countIn(map, filter) {
-	if (!map) { return 0; }
-
-	if (!filter) { return map.size; }
+export function count(iterable, filter) {
+	if (!iterable) { return 0; }
 
 	let count = 0;
-	for (const key of map.keys()) {
-		if (!filter || filter(key, map.get(key))) {
+	for (const el of iterable) {
+		if (!filter || filter(el)) {
 			count++;
 		}
 	}
