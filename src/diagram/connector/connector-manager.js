@@ -1,4 +1,4 @@
-import { countIn, lastIn } from '../infrastructure/iterable-utils.js';
+import { count, last } from '../infrastructure/iterable-utils.js';
 
 /** @implements {IConnectorManager} */
 export class ConnectorManager {
@@ -36,7 +36,7 @@ export class ConnectorManager {
 	 */
 	replaceEnd(connectorInElemOld, connectorInElemNew) {
 		/** @type {IPresenterPath} */
-		const path = lastIn(connectorInElemOld.connectedPaths, (_, endType) => endType === 'end').key;
+		const path = last(connectorInElemOld.connectedPaths, el => el[1] === 'end')[0];
 		path.update('end', connectorInElemNew.postionGet(), connectorInElemNew.dir);
 
 		ConnectorManager._pathDel(connectorInElemOld, path);
@@ -57,7 +57,7 @@ export class ConnectorManager {
 	 * @returns {number}
 	 */
 	count(connectorInElem, endType) {
-		return countIn(connectorInElem.connectedPaths, (_, _endType) => _endType === endType);
+		return count(connectorInElem.connectedPaths, el => el[1] === endType);
 	}
 
 	/**

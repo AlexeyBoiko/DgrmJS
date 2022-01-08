@@ -5,7 +5,7 @@
  * @property {ShapePosition} shapePosition
  * @property {Point} innerPosition position into share
  * @property {SVGElement} connectorElem svg element into shape where connector starts or ends
- * @property {PresenterPathEntDirection=} dir
+ * @property {PresenterPathEndDirection=} dir
  */
 
 export class ConnectorData {
@@ -52,7 +52,7 @@ export class ConnectorData {
 	}
 
 	/**
-	 * @param {PresenterPathEntDirection} dir
+	 * @param {PresenterPathEndDirection} dir
 	 * @param {number} x
 	 * @param {number} coef
 	 * @return {number}
@@ -65,7 +65,7 @@ export class ConnectorData {
 	}
 
 	/**
-	 * @param {PresenterPathEntDirection} dir
+	 * @param {PresenterPathEndDirection} dir
 	 * @param {number} y
 	 * @param {number} coef
 	 * @return {number}

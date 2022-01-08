@@ -192,7 +192,7 @@ export class DiagramBuilder extends EventTarget {
 	/**
 	 *
 	 * @param {SVGGraphicsElement} svgEl
-	 * @param {PresenterPathEntDirection} dir
+	 * @param {PresenterPathEndDirection} dir
 	 */
 	_rotate(svgEl, dir) {
 		// svgEl.transform.baseVal.getItem(0) - always setTranslate
@@ -561,7 +561,7 @@ export class DiagramBuilder extends EventTarget {
 			shapePosition: { shape: shapePoint.shape, position: DiagramBuilder._positionGet(shapePoint.shape) },
 			innerPosition: DiagramBuilder._dataPointAttrParse(shapePoint.connectorElem),
 			connectorElem: shapePoint.connectorElem,
-			dir: /** @type {PresenterPathEntDirection} */(shapePoint.connectorElem.getAttribute('data-connect-dir'))
+			dir: /** @type {PresenterPathEndDirection} */(shapePoint.connectorElem.getAttribute('data-connect-dir'))
 		};
 	}
 
