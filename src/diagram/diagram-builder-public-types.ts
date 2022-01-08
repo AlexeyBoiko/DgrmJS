@@ -1,11 +1,11 @@
 type DiagramEventType = 'select' | 'move';
 
-interface DiagramShapeUpdateParam extends PresenterFigureUpdateParam {
-	shape?: IPresenterFigure;
+interface DiagramShapeUpdateParam extends PresenterShapeUpdateParam {
+	shape?: IPresenterShape;
 	selector?: string;
 }
 
 interface DiagramShapeDelParam {
-	shape?: IPresenterFigure;
+	shape?: IPresenterShape;
 	selector?: string;
 }

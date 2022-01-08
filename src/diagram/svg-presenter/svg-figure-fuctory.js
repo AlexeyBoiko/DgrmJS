@@ -5,9 +5,9 @@ export class SvgFigureFuctory {
 	 * @param {object} arg
 	 * @param {SVGSVGElement} arg.svg
 	 * @param {PresenterElementType} arg.type
-	 * @param {PresenterFigureAppendParam} arg.param
+	 * @param {PresenterShapeAppendParam} arg.param
 	 * @param {EventListenerOrEventListenerObject} arg.listener
-	 * @returns {IPresenterFigure}
+	 * @returns {IPresenterShape}
 	 */
 	figureCreate({ svg, type, param, listener }) {
 		const figureSvg = /** @type {SVGGElement} */ (svg.getElementsByTagName('defs')[0]
@@ -34,7 +34,7 @@ export class SvgFigureFuctory {
 
 	/**
 	 * @param {SVGGraphicsElement} svgEl
-	 * @returns {IPresenterConnectorElement}
+	 * @returns {IPresenterConnector}
 	 */
 	_createConnectorInElement(svgEl, parentShape) {
 		const point = svgEl.getAttribute('data-connect-point').split(',');
@@ -51,7 +51,7 @@ export class SvgFigureFuctory {
 
 /**
  * @param {SvgFigureFuctoryParam} arg
- * @returns {IPresenterConnectorElement}
+ * @returns {IPresenterConnector}
  */
 export function connectorInElementCreate(arg) {
 
@@ -59,7 +59,7 @@ export function connectorInElementCreate(arg) {
 
 /**
  * @param {SvgFigureFuctoryParam} arg
- * @returns {IPresenterConnectorElement}
+ * @returns {IPresenterConnector}
  */
  export function connectorOutElementCreate(arg) {
 
@@ -67,7 +67,7 @@ export function connectorInElementCreate(arg) {
 
 /**
  * @param {SvgFigureFuctoryParam} arg
- * @returns {IPresenterFigure}
+ * @returns {IPresenterShape}
  */
 export function shapeCreate(arg) {
 	const figureSvg = /** @type {SVGGElement} */ (arg.svg.getElementsByTagName('defs')[0]

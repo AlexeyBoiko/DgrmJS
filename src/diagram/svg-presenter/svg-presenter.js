@@ -24,7 +24,7 @@ export class SvgPresenter extends EventTarget {
 	/**
 	 * @template {IPresenterElement} TElem
 	 * @param {PresenterElementType} type
-	 * @param {PresenterFigureAppendParam | PresenterPathAppendParams} param
+	 * @param {PresenterShapeAppendParam | PresenterPathAppendParams} param
 	 * @returns {TElem}
 	 */
 	appendChild(type, param) {
@@ -33,7 +33,7 @@ export class SvgPresenter extends EventTarget {
 
 	/**
 	 * @param {string} query
-	 * @returns {IPresenterFigure | null}
+	 * @returns {IPresenterShape | null}
 	 */
 	querySelector(query) {
 		/** @type {SVGGraphicsElement} */
@@ -95,11 +95,11 @@ export class SvgPresenter extends EventTarget {
 
 	/**
 	 * @param {SVGGraphicsElement} svgEl
-	 * @returns {IPresenterFigure}
+	 * @returns {IPresenterShape}
 	 * @private
 	 */
 	_elementEnsure(svgEl) {
-		/** @type {IPresenterFigure} */
+		/** @type {IPresenterShape} */
 		let shape;
 		/** @type {PresenterElementType} */
 		let type;
@@ -139,7 +139,7 @@ export class SvgPresenter extends EventTarget {
 
 	/**
 	 * @param {PresenterEventType} type
-	 * @param {IPresenterFigure=} target
+	 * @param {IPresenterShape=} target
 	 * @param {number=} offsetX
 	 * @param {number=} offsetY
 	 * @private

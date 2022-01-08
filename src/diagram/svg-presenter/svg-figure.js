@@ -1,10 +1,10 @@
-/** @implements {IPresenterFigure} */
+/** @implements {IPresenterShape} */
 export class SvgFigure {
 	/**
 	 * @param {object} param
 	 * @param {SVGGraphicsElement} param.svgEl
 	 * @param {PresenterElementType} param.type
-	 * @param {IPresenterFigure=} param.shape
+	 * @param {IPresenterShape=} param.shape
 	 */
 	constructor({ svgEl, type, shape = null }) {
 		this.type = type;
@@ -16,7 +16,7 @@ export class SvgFigure {
 		throw new Error('Method not implemented.');
 	}
 
-	/** @param {PresenterFigureUpdateParam} param */
+	/** @param {PresenterShapeUpdateParam} param */
 	update(param) {
 		throw new Error('Method not implemented.');
 	}
@@ -39,7 +39,7 @@ export class SvgFigure {
 
 	/**
 	 * @param {PresenterElementType} type
-	 * @param {PresenterFigureAppendParam | PresenterPathAppendParams} param
+	 * @param {PresenterShapeAppendParam | PresenterPathAppendParams} param
 	 * @template {IPresenterElement} T
 	 * @return {T} */
 	appendChild(type, param) {

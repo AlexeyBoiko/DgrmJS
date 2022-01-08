@@ -33,16 +33,33 @@ export function first(iterable, filter) {
  * @template T
  * @param {Iterable<T>} iterable
  * @param {{(el:T) :boolean}} filter
- * @returns {number}
+ * @returns {boolean}
  */
-export function count(iterable, filter) {
-	if (!iterable) { return 0; }
+export function any(iterable, filter) {
+	if (!iterable) { return false; }
 
-	let count = 0;
 	for (const el of iterable) {
 		if (!filter || filter(el)) {
-			count++;
+			return true;
 		}
 	}
-	return count;
+	return false;
 }
+
+// /**
+//  * @template T
+//  * @param {Iterable<T>} iterable
+//  * @param {{(el:T) :boolean}} filter
+//  * @returns {number}
+//  */
+// export function count(iterable, filter) {
+// 	if (!iterable) { return 0; }
+
+// 	let count = 0;
+// 	for (const el of iterable) {
+// 		if (!filter || filter(el)) {
+// 			count++;
+// 		}
+// 	}
+// 	return count;
+// }

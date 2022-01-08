@@ -32,9 +32,9 @@ export class DiagramBuilder extends EventTarget {
 	}
 
 	/**
-	 * @param {PresenterElementType} type
-	 * @param {PresenterFigureAppendParam} param
-	 * @returns {IPresenterFigure}
+	 * @param {PresenterChildAddType} type
+	 * @param {PresenterShapeAppendParam | PresenterPathAppendParams} param
+	 * @returns {IPresenterShape}
 	 */
 	shapeAdd(type, param) {
 		return this._presenter.appendChild(type, param);
@@ -42,7 +42,7 @@ export class DiagramBuilder extends EventTarget {
 
 	/**
 	 * @param {DiagramShapeUpdateParam} param
-	 * @returns {IPresenterFigure}
+	 * @returns {IPresenterShape}
 	 */
 	shapeUpdate(param) {
 		const shape = param.shape
@@ -82,69 +82,50 @@ export class DiagramBuilder extends EventTarget {
 				switch (evt.detail.target.type) {
 					case 'canvas':
 					case 'shape':
-					case 'connectorEnd':
-						this._movedSet(evt.detail.target, { x: evt.detail.offsetX, y: evt.detail.offsetY });
+						this._movedSet(/** @type {IPresenterShape} */(evt.detail.target), { x: evt.detail.offsetX, y: evt.detail.offsetY });
 						break;
-					case 'connectorOut': {
-						//
-						// connectorEnd create
-
-						const connectorEnd = this._connectorEndCreate(/** @type {IPresenterConnectorElement} */(evt.detail.target));
-						this._connectorManager.add(evt.detail.target, connectorEnd);
-						this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
-						break;
-					}
-					case 'connectorInConnected': {
-						//
-						// disconnect
-
-						const connectorIn = /** @type {IBuilderConnectorElement} */(evt.detail.target).relatedConnectorInElement;
-						const connectorEnd = this._connectorEndCreate(connectorIn);
-						this._connectorManager.replaceEnd(connectorIn, connectorEnd);
-						this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
-
-						if (this._connectorManager.count(connectorIn, 'end') === 1) {
-							// can't delete here becouse of mobile
-							evt.detail.target.hide();
-							this._toDel = evt.detail.target;
-						}
-						break;
+					case 'connector': {
+						this._onConnectorDown(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
 					}
 				}
 				break;
 			case 'pointerup': {
-				if (this._movedShape && this._movedShape.type === 'connectorEnd') {
-					//
-					// connect connector
-
-					switch (evt.detail.target.type) {
-						case 'connectorIn': {
-							this._connectorManager.replaceEnd(this._movedShape, evt.detail.target);
-							this.shapeDel(this._movedShape);
-
-							// add connectorEnd to shape
-							/** @type {IBuilderConnectorElement} */
-							const connectorInConnected = evt.detail.target.shape.appendChild(
-								'connectorInConnected',
-								{
-									templateKey: 'connect-end',
-									position: /** @type {IPresenterConnectorElement} */(evt.detail.target).innerPosition,
-									rotateAngle: DiagramBuilder._rotateAngle(/** @type {IPresenterConnectorElement} */(evt.detail.target).dir)
-								});
-							connectorInConnected.relatedConnectorInElement = /** @type {IPresenterConnectorElement} */(evt.detail.target);
-							break;
-						}
-						case 'connectorInConnected':
-							this._connectorManager.replaceEnd(this._movedShape, /** @type {IBuilderConnectorElement} */(evt.detail.target).relatedConnectorInElement);
-							this.shapeDel(this._movedShape);
-							break;
-					}
+				if (evt.detail.target.type === 'connector') {
+					this._onConnectorUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
 				}
-
 				this._movedClean();
-				if (this._toDel) {
-					this._toDel.delete();
-					this._toDel = null;
+				break;
+			}
+		}
+	}
+
+	/**
+	 * @param { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} evt
+	 * @private
+	 */
+	_onConnectorDown(evt) {
+		switch (evt.detail.target.connectorType) {
+			case 'out': {
+				//
+				// connectorEnd create
+
+				const connectorEnd = this._connectorEndCreate(evt.detail.target);
+				this._connectorManager.add(evt.detail.target, connectorEnd.defaultInConnector);
+				this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
+				break;
+			}
+			case 'in': {
+				if (evt.detail.target.connectedGet()) {
+					//
+					// disconnect
+
+					const connectorEnd = this._connectorEndCreate(evt.detail.target);
+					this._connectorManager.replaceEnd(evt.detail.target, connectorEnd.defaultInConnector);
+					this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
+
+					if (this._connectorManager.any(evt.detail.target, 'end')) {
+						evt.detail.target.connectedSet(false);
+					}
 				}
 				break;
 			}
@@ -152,7 +133,24 @@ export class DiagramBuilder extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterFigure} shape
+	 * @param { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} evt
+	 * @private
+	 */
+	_onConnectorUp (evt) {
+		if (!this._movedShape || !this._movedShape.connectable || evt.detail.target.connectorType !== 'in') {
+			return;
+		}
+
+		//
+		// connect connector
+
+		this._connectorManager.replaceEnd(this._movedShape.defaultInConnector, evt.detail.target);
+		this.shapeDel({ shape: this._movedShape });
+		evt.detail.target.connectedSet(true);
+	}
+
+	/**
+	 * @param {IPresenterShape} shape
 	 * @private
 	 */
 	_selectedSet(shape) {
@@ -171,7 +169,7 @@ export class DiagramBuilder extends EventTarget {
 			}
 
 			/**
-			 * @type {IPresenterFigure}
+			 * @type {IPresenterShape}
 			 * @privte
 			 */
 			this._selectedShape = shape;
@@ -179,7 +177,7 @@ export class DiagramBuilder extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterFigure} shape
+	 * @param {IPresenterShape} shape
 	 * @param {Point} offsetPoint
 	 * @private
 	 */
@@ -204,38 +202,22 @@ export class DiagramBuilder extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterConnectorElement} connectorIn
-	 * @returns {IPresenterFigure}
+	 * @param {IPresenterConnector} connectorIn
+	 * @returns {IPresenterShape}
 	 * @private
 	 */
 	_connectorEndCreate(connectorIn) {
 		const shapePosition = connectorIn.shape.postionGet();
 		const innerPosition = connectorIn.innerPosition;
 		return this.shapeAdd(
-			'connectorEnd',
+			'shape',
 			{
 				templateKey: 'connect-end',
 				position: {
 					x: shapePosition.x + innerPosition.x,
 					y: shapePosition.y + innerPosition.y
 				},
-				rotateAngle: DiagramBuilder._rotateAngle(connectorIn.dir),
-				props: { root: { dir: connectorIn.dir } }
+				connectable: true
 			});
-	}
-
-	/**
-	 * @param {PresenterPathEndDirection} dir
-	 * @returns {number}
-	 * @private
-	 */
-	static _rotateAngle(dir) {
-		return dir === 'left'
-			? 0
-			: dir === 'right'
-				? 180
-				: dir === 'top'
-					? 90
-					: 270;
 	}
 }

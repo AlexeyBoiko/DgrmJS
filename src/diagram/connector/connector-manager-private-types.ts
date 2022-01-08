@@ -1,7 +1,7 @@
-interface IConnectorElement extends IPresenterFigure {
+interface IConnectorElement extends IPresenterShape {
 	connectedPaths?: Map<IPresenterPath, PresenterPathEndType>
 }
 
-interface IConnectorInElement extends IPresenterConnectorElement, IConnectorElement { 
+interface IConnectorInElement extends IPresenterConnector, IConnectorElement { 
 	shape: IConnectorElement
 }

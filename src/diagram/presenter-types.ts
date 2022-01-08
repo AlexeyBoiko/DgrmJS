@@ -1,72 +1,17 @@
-interface IPresenter extends IPresenterChildAdd {
+interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
-	querySelector(query: string): IPresenterFigure;
-}
-
-
-//
-// events
-
-type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointerenter' | 'pointerleave';
-interface IPresenterEventDetail {
-	/**	null for pointermove */
-	target?: IPresenterFigure;
-	/**	null for pointerenter | pointerleave */
-	offsetX?: number;
-	/**	null for pointerenter | pointerleave */
-	offsetY?: number;
-}
-
-
-//
-// ui elements
-
-type PresenterElementType = 'canvas' | 'shape' | 'connectorIn' | 'connectorOut' | 'connectorInConnected' | 'connectorEnd' | 'path';
-
-interface IPresenterElement {
-	type: PresenterElementType
-}
-
-interface IPresenterFigure extends IPresenterElement, IPresenterChildAdd {
-	shape?: IPresenterFigure;
-
-	postionGet():Point;
-
-	update(param: PresenterFigureUpdateParam): void;
-	select(): void;
-	unSelect(): void;
-	hide(): void;
-	delete(): void;
-}
-
-type PresenterPathEndType = 'start' | 'end';
-type PresenterPathEndDirection = 'left' | 'right' | 'top' | 'bottom';
-interface IPresenterPath extends IPresenterElement {
-	/**
-	 * update path
-	 * @param endType end or start of path that change position 
-	 * @param position new position
-	 * @param dir new direction
-	 */
-	update(endType: PresenterPathEndType, position: Point, dir: PresenterPathEndDirection): void;
-}
-
-interface IPresenterConnectorElement extends IPresenterFigure {
-	innerPosition: Point;
-	dir: PresenterPathEndDirection;
+	querySelector(query: string): IPresenterShape;
+	appendChild<T extends IPresenterElement>(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParams): T;
 }
 
 
 //
 // create/update ui elements params
 
-interface IPresenterChildAdd {
-	appendChild<T extends IPresenterElement>(type: PresenterElementType, param: PresenterFigureAppendParam | PresenterPathAppendParams): T;
-}
+type PresenterChildAddType = 'shape' | 'path';
 
-interface PresenterFigureUpdateParam {
+interface PresenterShapeUpdateParam {
 	position?: Point;
-	rotateAngle?: number;
 	/**
 	 * 'root' - key for outer element.
 	 * Other keys for inner elements: key = value of the 'data-name' attribute.
@@ -77,13 +22,81 @@ interface PresenterFigureProps {
 	[key: string]: { [key: string]: string | number | boolean }
 }
 
-interface PresenterFigureAppendParam extends PresenterFigureUpdateParam {
+interface PresenterShapeAppendParam extends PresenterShapeUpdateParam {
 	templateKey: string;
+	/** can be used as connector end  */
+	connectable?: boolean;
 }
 
 interface PresenterPathAppendParams {
-	start: Point;
-	end: Point;
+	start: PresenterPathEnd;
+	end: PresenterPathEnd;
+}
+
+
+//
+// events
+
+type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointerenter' | 'pointerleave';
+interface IPresenterEventDetail {
+	/**	null for pointermove */
+	target?: IPresenterShape | IPresenterConnector;
+	/**	null for pointerenter | pointerleave */
+	offsetX?: number;
+	/**	null for pointerenter | pointerleave */
+	offsetY?: number;
+}
+
+
+//
+// ui elements
+
+type PresenterElementType = 'canvas' | 'shape' | 'connector' | 'path';
+
+interface IPresenterElement {
+	type: PresenterElementType
+}
+
+interface IPresenterShape extends IPresenterElement {
+
+	/** can be used as connector end  */
+	connectable?: boolean;
+	defaultInConnector?: IPresenterConnector;
+
+	postionGet():Point;
+	update(param: PresenterShapeUpdateParam): void;
+
+	select(): void;
+	unSelect(): void;
+	hide(): void;
+	delete(): void;
+}
+
+type PresenterConnectorType = 'in' | 'out';
+interface IPresenterConnector extends IPresenterElement {
+	connectorType: PresenterConnectorType;
+	shape: IPresenterShape;
+	/** position into parent shape */
+	innerPosition: Point;
+	dir?: PresenterPathEndDirection;
+
+	connectedSet(flag: boolean): void;
+	connectedGet(): boolean;
+}
+
+type PresenterPathEndType = 'start' | 'end';
+type PresenterPathEndDirection = 'left' | 'right' | 'top' | 'bottom';
+interface PresenterPathEnd {
+	position: Point, 
+	dir: PresenterPathEndDirection
+}
+interface IPresenterPath extends IPresenterElement {
+	/**
+	 * update path
+	 * @param endType end or start of path that change position
+	 * @param {PresenterPathEnd} param new position and direction
+	 */
+	update(endType: PresenterPathEndType, param: PresenterPathEnd): void;
 }
 
 

@@ -1,5 +1,5 @@
 interface SvgFigureFuctoryParam {
 	svg: SVGSVGElement;
-	param: PresenterFigureUpdateParam;
+	param: PresenterShapeUpdateParam;
 	listener: EventListenerOrEventListenerObject;
 }

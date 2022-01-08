@@ -1,4 +1,4 @@
-import { count, last } from '../infrastructure/iterable-utils.js';
+import { any, last } from '../infrastructure/iterable-utils.js';
 
 /** @implements {IConnectorManager} */
 export class ConnectorManager {
@@ -19,8 +19,14 @@ export class ConnectorManager {
 		const path = this._presenter.appendChild(
 			'path',
 			{
-				start: connectorInElemStart.postionGet(),
-				end: connectorInElemEnd.postionGet()
+				start: {
+					position: connectorInElemStart.postionGet(),
+					dir: connectorInElemStart.dir
+				},
+				end: {
+					position: connectorInElemEnd.postionGet(),
+					dir: connectorInElemEnd.dir ? connectorInElemEnd.dir : ConnectorManager._dirRevers(connectorInElemStart.dir)
+				}
 			});
 
 		ConnectorManager._pathAdd(connectorInElemStart, path, 'start');
@@ -37,7 +43,10 @@ export class ConnectorManager {
 	replaceEnd(connectorInElemOld, connectorInElemNew) {
 		/** @type {IPresenterPath} */
 		const path = last(connectorInElemOld.connectedPaths, el => el[1] === 'end')[0];
-		path.update('end', connectorInElemNew.postionGet(), connectorInElemNew.dir);
+		path.update('end', {
+			position: connectorInElemNew.postionGet(),
+			dir: connectorInElemNew.dir ? connectorInElemNew.dir : connectorInElemOld.dir
+		});
 
 		ConnectorManager._pathDel(connectorInElemOld, path);
 		ConnectorManager._pathAdd(connectorInElemNew, path, 'end');
@@ -54,10 +63,10 @@ export class ConnectorManager {
 	/**
 	 * @param {IConnectorInElement} connectorInElem
 	 * @param {PresenterPathEndType} endType
-	 * @returns {number}
+	 * @returns {boolean}
 	 */
-	count(connectorInElem, endType) {
-		return count(connectorInElem.connectedPaths, el => el[1] === endType);
+	any(connectorInElem, endType) {
+		return any(connectorInElem.connectedPaths, el => el[1] === endType);
 	}
 
 	/**
@@ -72,10 +81,15 @@ export class ConnectorManager {
 			connectorInElem.connectedPaths = new Map();
 		}
 		connectorInElem.connectedPaths.set(path, endType);
+
+		if (!connectorInElem.shape.connectedPaths) {
+			connectorInElem.shape.connectedPaths = new Map();
+		}
 		connectorInElem.shape.connectedPaths.set(path, endType);
 	}
 
 	/**
+	 * @private
 	 * @param {IConnectorInElement} connectorInElem
 	 * @param {IPresenterPath} path
 	 * @returns {void}
@@ -83,5 +97,19 @@ export class ConnectorManager {
 	static _pathDel(connectorInElem, path) {
 		connectorInElem.connectedPaths.delete(path);
 		connectorInElem.shape.connectedPaths.delete(path);
+	}
+
+	/**
+	 * @private
+	 * @param {PresenterPathEndDirection} dir
+	 * @returns {PresenterPathEndDirection}
+	 */
+	static _dirRevers(dir) {
+		switch (dir) {
+			case 'bottom': return 'top';
+			case 'top' : return 'bottom';
+			case 'left' : return 'right';
+			case 'right' : return 'left';
+		}
 	}
 }
