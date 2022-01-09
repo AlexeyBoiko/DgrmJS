@@ -10,58 +10,72 @@ export class ConnectorManager {
 	}
 
 	/**
-	 * @param {IConnectorInElement} connectorInElemStart type must be connectorInElem
-	 * @param {IConnectorInElement} connectorInElemEnd type must be connectorInElem
+	 * @param {IConnectorConnector} connectorStart type must be connectorInElem
+	 * @param {IConnectorConnector} connectorEnd type must be connectorInElem
 	 * @returns {void}
 	 */
-	add(connectorInElemStart, connectorInElemEnd) {
+	add(connectorStart, connectorEnd) {
 		const path = /** @type {IPresenterPath} */(this._presenter.appendChild(
 			'path',
 			{
 				templateKey: 'path',
 				start: {
-					position: connectorInElemStart.postionGet(),
-					dir: connectorInElemStart.dir
+					position: ConnectorManager._pathPoint(connectorStart),
+					dir: connectorStart.dir
 				},
 				end: {
-					position: connectorInElemEnd.postionGet(),
-					dir: connectorInElemEnd.dir ? connectorInElemEnd.dir : ConnectorManager._dirRevers(connectorInElemStart.dir)
+					position: ConnectorManager._pathPoint(connectorEnd),
+					dir: connectorEnd.dir ? connectorEnd.dir : ConnectorManager._dirRevers(connectorStart.dir)
 				}
 			}));
 
-		ConnectorManager._pathAdd(connectorInElemStart, path, 'start');
-		ConnectorManager._pathAdd(connectorInElemEnd, path, 'end');
+		ConnectorManager._pathAdd(connectorStart, path, 'start');
+		ConnectorManager._pathAdd(connectorEnd, path, 'end');
 	}
 
 	/**
 	 * reconect to new connectorInElem
 	 * if connectorInElemOld has many connectors - take last
-	 * @param {IConnectorInElement} connectorInElemOld type must be connectorInElem
-	 * @param {IConnectorInElement} connectorInElemNew type must be connectorInElem
+	 * @param {IConnectorConnector} connectorOld type must be connectorInElem
+	 * @param {IConnectorConnector} connectorNew type must be connectorInElem
 	 * @returns {void}
 	 */
-	replaceEnd(connectorInElemOld, connectorInElemNew) {
+	replaceEnd(connectorOld, connectorNew) {
 		/** @type {IPresenterPath} */
-		const path = last(connectorInElemOld.connectedPaths, el => el[1] === 'end')[0];
+		const path = last(connectorOld.connectedPaths, el => el[1] === 'end')[0];
 		path.update('end', {
-			position: connectorInElemNew.postionGet(),
-			dir: connectorInElemNew.dir ? connectorInElemNew.dir : connectorInElemOld.dir
+			position: ConnectorManager._pathPoint(connectorNew),
+			dir: connectorNew.dir ? connectorNew.dir : connectorOld.dir
 		});
 
-		ConnectorManager._pathDel(connectorInElemOld, path);
-		ConnectorManager._pathAdd(connectorInElemNew, path, 'end');
+		ConnectorManager._pathDel(connectorOld, path);
+		ConnectorManager._pathAdd(connectorNew, path, 'end');
 	}
 
 	/**
-	 * @param {IConnectorElement} shape
+	 * @param {IConnetorShape} shape
 	 * @returns {void}
 	 */
 	updatePosition(shape) {
-		throw new Error('Method not implemented.');
+		if (!any(shape.connectedPaths)) {
+			return;
+		}
+
+		const shapePosition = shape.postionGet();
+		shape.connectedPaths.forEach((innerPoint, path) => {
+			path.update(
+				innerPoint.pathEndType,
+				{
+					position: {
+						x: shapePosition.x + innerPoint.innerPosition.x,
+						y: shapePosition.y + innerPoint.innerPosition.y
+					}
+				});
+		});
 	}
 
 	/**
-	 * @param {IConnectorInElement} connectorInElem
+	 * @param {IConnectorConnector} connectorInElem
 	 * @param {PresenterPathEndType} endType
 	 * @returns {boolean}
 	 */
@@ -71,26 +85,28 @@ export class ConnectorManager {
 
 	/**
 	 * @private
-	 * @param {IConnectorInElement} connectorInElem
+	 * @param {IConnectorConnector} connector
 	 * @param {IPresenterPath} path
 	 * @param {PresenterPathEndType} endType
 	 * @returns {void}
 	 */
-	static _pathAdd(connectorInElem, path, endType) {
-		if (!connectorInElem.connectedPaths) {
-			connectorInElem.connectedPaths = new Map();
+	static _pathAdd(connector, path, endType) {
+		if (!connector.connectedPaths) {
+			connector.connectedPaths = new Map();
 		}
-		connectorInElem.connectedPaths.set(path, endType);
+		connector.connectedPaths.set(path, endType);
 
-		if (!connectorInElem.shape.connectedPaths) {
-			connectorInElem.shape.connectedPaths = new Map();
+		if (!connector.shape.connectedPaths) {
+			connector.shape.connectedPaths = new Map();
 		}
-		connectorInElem.shape.connectedPaths.set(path, endType);
+		connector.shape.connectedPaths.set(
+			path,
+			{ innerPosition: connector.innerPosition, pathEndType: endType });
 	}
 
 	/**
 	 * @private
-	 * @param {IConnectorInElement} connectorInElem
+	 * @param {IConnectorConnector} connectorInElem
 	 * @param {IPresenterPath} path
 	 * @returns {void}
 	 */
@@ -100,9 +116,22 @@ export class ConnectorManager {
 	}
 
 	/**
+	 * @param {IConnectorConnector} connector
+	 * @returns {Point}
 	 * @private
+	 */
+	static _pathPoint(connector) {
+		const shapePosition = connector.shape.postionGet();
+		return {
+			x: shapePosition.x + connector.innerPosition.x,
+			y: shapePosition.y + connector.innerPosition.y
+		};
+	}
+
+	/**
 	 * @param {PresenterPathEndDirection} dir
 	 * @returns {PresenterPathEndDirection}
+	 * @private
 	 */
 	static _dirRevers(dir) {
 		switch (dir) {

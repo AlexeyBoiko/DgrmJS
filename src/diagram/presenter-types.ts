@@ -87,7 +87,7 @@ type PresenterPathEndType = 'start' | 'end';
 type PresenterPathEndDirection = 'left' | 'right' | 'top' | 'bottom';
 interface PresenterPathEnd {
 	position: Point, 
-	dir: PresenterPathEndDirection
+	dir?: PresenterPathEndDirection
 }
 interface IPresenterPath extends IPresenterElement {
 	/**

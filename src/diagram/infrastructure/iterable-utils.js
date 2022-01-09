@@ -1,7 +1,7 @@
 /**
  * @template T
  * @param {Iterable<T>} iterable
- * @param {{(el:T) :boolean}} filter
+ * @param {{(el:T) :boolean}=} filter
  * @returns {T}
  */
 export function last(iterable, filter) {
@@ -19,7 +19,7 @@ export function last(iterable, filter) {
 /**
  * @template T
  * @param {Iterable<T>} iterable
- * @param {{(el:T) :boolean}} filter
+ * @param {{(el:T) :boolean}=} filter
  * @returns {T | null}
  */
 export function first(iterable, filter) {
@@ -32,7 +32,7 @@ export function first(iterable, filter) {
 /**
  * @template T
  * @param {Iterable<T>} iterable
- * @param {{(el:T) :boolean}} filter
+ * @param {{(el:T) :boolean}=} filter
  * @returns {boolean}
  */
 export function any(iterable, filter) {
