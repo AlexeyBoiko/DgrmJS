@@ -1,14 +1,19 @@
 /** @implements {IPresenterShape} */
-export class SvgFigure {
+export class SvgShape {
 	/**
 	 * @param {object} param
 	 * @param {SVGGraphicsElement} param.svgEl
-	 * @param {PresenterElementType} param.type
-	 * @param {IPresenterShape=} param.shape
+	 * @param {boolean=} param.connectable
+	 * @param {IPresenterConnector=} param.defaultInConnector
 	 */
-	constructor({ svgEl, type, shape = null }) {
-		this.type = type;
-		this.shape = shape;
+	constructor({ svgEl, connectable = null, defaultInConnector = null }) {
+		/** @private */
+		this._svgEl = svgEl;
+
+		/** @type {PresenterElementType} */
+		this.type = 'shape';
+		this.connectable = connectable;
+		this.defaultInConnector = defaultInConnector;
 	}
 
 	/** @returns {Point} */
@@ -34,15 +39,6 @@ export class SvgFigure {
 	}
 
 	delete() {
-		throw new Error('Method not implemented.');
-	}
-
-	/**
-	 * @param {PresenterElementType} type
-	 * @param {PresenterShapeAppendParam | PresenterPathAppendParams} param
-	 * @template {IPresenterElement} T
-	 * @return {T} */
-	appendChild(type, param) {
 		throw new Error('Method not implemented.');
 	}
 }

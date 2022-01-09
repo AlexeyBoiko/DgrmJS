@@ -1,7 +1,7 @@
 interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
-	querySelector(query: string): IPresenterShape;
-	appendChild<T extends IPresenterElement>(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParams): T;
+	querySelector<T extends IPresenterElement>(query: string): T;
+	appendChild(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParams): IPresenterElement;
 }
 
 
@@ -24,8 +24,6 @@ interface PresenterFigureProps {
 
 interface PresenterShapeAppendParam extends PresenterShapeUpdateParam {
 	templateKey: string;
-	/** can be used as connector end  */
-	connectable?: boolean;
 }
 
 interface PresenterPathAppendParams {
@@ -40,7 +38,7 @@ interface PresenterPathAppendParams {
 type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointerenter' | 'pointerleave';
 interface IPresenterEventDetail {
 	/**	null for pointermove */
-	target?: IPresenterShape | IPresenterConnector;
+	target?: IPresenterElement;
 	/**	null for pointerenter | pointerleave */
 	offsetX?: number;
 	/**	null for pointerenter | pointerleave */

@@ -1,4 +1,4 @@
-import { SvgFigure } from './svg-figure.js';
+import { shapeCreate } from './svg-shape-fuctory.js';
 import { svgPositionSet } from './svg-utils.js';
 
 /** @implements {IPresenter} */
@@ -7,11 +7,18 @@ export class SvgPresenter extends EventTarget {
 	constructor(svg) {
 		super();
 
-		/** private */
+		/** @private */
 		this._svg = svg;
 		this._svg.addEventListener('pointermove', this);
 		this._svg.addEventListener('pointerdown', this);
 		this._svg.addEventListener('pointerup', this);
+
+		/**
+		 * store presenter objects
+		 * @type {WeakMap<SVGGraphicsElement, IPresenterElement>}
+		 * @private
+		 */
+		this._svgElemToPresenterObj = new WeakMap();
 
 		/**
 		 * @type {SVGGElement}
@@ -22,24 +29,32 @@ export class SvgPresenter extends EventTarget {
 	}
 
 	/**
-	 * @template {IPresenterElement} TElem
-	 * @param {PresenterElementType} type
+	 * @param {PresenterChildAddType} type
 	 * @param {PresenterShapeAppendParam | PresenterPathAppendParams} param
-	 * @returns {TElem}
+	 * @returns {IPresenterElement}
 	 */
 	appendChild(type, param) {
-		throw new Error('Method not implemented.');
+		switch (type) {
+			case 'shape':
+				return shapeCreate({
+					svg: this._svg,
+					svgElemToPresenterObj: this._svgElemToPresenterObj,
+					listener: this,
+					createParams: /** @type {PresenterShapeAppendParam} */(param)
+				});
+		}
 	}
 
 	/**
+	 * @template {IPresenterElement} T
 	 * @param {string} query
-	 * @returns {IPresenterShape | null}
+	 * @returns {T | null}
 	 */
 	querySelector(query) {
 		/** @type {SVGGraphicsElement} */
 		const elem = this._svg.querySelector(query);
 		if (!elem) { return null; }
-		return this._elementEnsure(elem);
+		return /** @type {T} */(this._svgElemToPresenterObj.get(elem));
 	}
 
 	/**
@@ -65,7 +80,7 @@ export class SvgPresenter extends EventTarget {
 			case 'pointerup':
 				this._dispatchEvent(
 					evt.type,
-					this._elementEnsure(evt.currentTarget),
+					evt.currentTarget,
 					evt.offsetX,
 					evt.offsetY);
 				break;
@@ -82,9 +97,9 @@ export class SvgPresenter extends EventTarget {
 		}
 
 		if (this._pointElem) {
-			this._dispatchEvent('pointerleave', this._elementEnsure(this._pointElem));
+			this._dispatchEvent('pointerleave', this._pointElem);
 		}
-		this._dispatchEvent('pointerenter', this._elementEnsure(pointElem));
+		this._dispatchEvent('pointerenter', pointElem);
 
 		/**
 		 * @type {SVGGraphicsElement}
@@ -94,52 +109,8 @@ export class SvgPresenter extends EventTarget {
 	}
 
 	/**
-	 * @param {SVGGraphicsElement} svgEl
-	 * @returns {IPresenterShape}
-	 * @private
-	 */
-	_elementEnsure(svgEl) {
-		/** @type {IPresenterShape} */
-		let shape;
-		/** @type {PresenterElementType} */
-		let type;
-		let additionalData;
-		if (svgEl === this._svg) {
-			type = 'canvas';
-		} else if (svgEl.getAttribute('data-templ') === 'connect-end') {
-			type = 'connectorEnd';
-			shape = this._elementEnsure(svgEl.parentElement.closest('[data-templ]'));
-		} else if (svgEl.getAttribute('data-templ')) {
-			type = 'shape';
-		} else if (svgEl.getAttribute('data-connect')) {
-			type = 'connectorIn';
-			shape = this._elementEnsure(svgEl.closest('[data-templ]'));
-
-			const point = svgEl.getAttribute('data-connect-point').split(',');
-			/** @type {IPresenterConnectorData} */
-			additionalData = {
-				innerPosition: { x: parseFloat(point[0]), y: parseFloat(point[1]) },
-				dir: svgEl.getAttribute('data-connect-dir')
-			};
-		} else if (svgEl.getAttribute('data-connect-connected')) {
-			type = 'connectorInConnected';
-			shape = this._elementEnsure(svgEl.closest('[data-templ]'));
-		}
-
-		return Object.assign(new SvgFigure({
-			svgEl: svgEl,
-			type: type,
-			shape: shape
-		}), additionalData);
-	}
-
-	_ensure2(svgEl) {
-
-	}
-
-	/**
 	 * @param {PresenterEventType} type
-	 * @param {IPresenterShape=} target
+	 * @param {SVGGraphicsElement=} target
 	 * @param {number=} offsetX
 	 * @param {number=} offsetY
 	 * @private
@@ -149,7 +120,7 @@ export class SvgPresenter extends EventTarget {
 			cancelable: true,
 			/** @type {IPresenterEventDetail} */
 			detail: {
-				target: target,
+				target: target ? this._svgElemToPresenterObj.get(target) : null,
 				offsetX: offsetX,
 				offsetY: offsetY
 			}

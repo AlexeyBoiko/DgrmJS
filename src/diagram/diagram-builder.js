@@ -34,7 +34,7 @@ export class DiagramBuilder extends EventTarget {
 	/**
 	 * @param {PresenterChildAddType} type
 	 * @param {PresenterShapeAppendParam | PresenterPathAppendParams} param
-	 * @returns {IPresenterShape}
+	 * @returns {IPresenterElement}
 	 */
 	shapeAdd(type, param) {
 		return this._presenter.appendChild(type, param);
@@ -45,6 +45,7 @@ export class DiagramBuilder extends EventTarget {
 	 * @returns {IPresenterShape}
 	 */
 	shapeUpdate(param) {
+		/** @type {IPresenterShape} */
 		const shape = param.shape
 			? param.shape
 			: this._presenter.querySelector(param.selector);
@@ -58,7 +59,9 @@ export class DiagramBuilder extends EventTarget {
 	 * @returns {void}
 	 */
 	shapeDel(param) {
-		(param.shape
+		// TODO: delete connectors
+
+		/** @type {IPresenterShape} */(param.shape
 			? param.shape
 			: this._presenter.querySelector(param.selector)).delete();
 	}
@@ -97,6 +100,15 @@ export class DiagramBuilder extends EventTarget {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * process events on connector elements
+	 * @param { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} evt
+	 * @private
+	 */
+	_connectorEventsHandler(evt) {
+
 	}
 
 	/**
@@ -209,15 +221,14 @@ export class DiagramBuilder extends EventTarget {
 	_connectorEndCreate(connectorIn) {
 		const shapePosition = connectorIn.shape.postionGet();
 		const innerPosition = connectorIn.innerPosition;
-		return this.shapeAdd(
+		return /** @type {IPresenterShape} */(this.shapeAdd(
 			'shape',
 			{
 				templateKey: 'connect-end',
 				position: {
 					x: shapePosition.x + innerPosition.x,
 					y: shapePosition.y + innerPosition.y
-				},
-				connectable: true
-			});
+				}
+			}));
 	}
 }
