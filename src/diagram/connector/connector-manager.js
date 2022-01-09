@@ -15,10 +15,10 @@ export class ConnectorManager {
 	 * @returns {void}
 	 */
 	add(connectorInElemStart, connectorInElemEnd) {
-		/** @type {IPresenterPath} */
-		const path = this._presenter.appendChild(
+		const path = /** @type {IPresenterPath} */(this._presenter.appendChild(
 			'path',
 			{
+				templateKey: 'path',
 				start: {
 					position: connectorInElemStart.postionGet(),
 					dir: connectorInElemStart.dir
@@ -27,7 +27,7 @@ export class ConnectorManager {
 					position: connectorInElemEnd.postionGet(),
 					dir: connectorInElemEnd.dir ? connectorInElemEnd.dir : ConnectorManager._dirRevers(connectorInElemStart.dir)
 				}
-			});
+			}));
 
 		ConnectorManager._pathAdd(connectorInElemStart, path, 'start');
 		ConnectorManager._pathAdd(connectorInElemEnd, path, 'end');

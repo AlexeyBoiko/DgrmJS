@@ -14,7 +14,7 @@ export function shapeCreate({ svg, listener, svgElemToPresenterObj, createParams
 		.querySelector(`[data-templ='${createParams.templateKey}']`)
 		.cloneNode(true));
 
-	// TODO: for performance shape.update must go before svg.appendChild
+	// TODO: to reduce DOM changes (for performance) 'shape.update' must go before 'svg.appendChild'
 	svg.appendChild(shapeSvgEl);
 	const shape = new SvgShape({ svgEl: shapeSvgEl });
 	shape.update(createParams.props);

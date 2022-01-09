@@ -1,5 +1,6 @@
+import { svgPositionSet } from '../infrastructure/svg-utils.js';
+import { pathCreate } from './svg-path-fuctory.js';
 import { shapeCreate } from './svg-shape-fuctory.js';
-import { svgPositionSet } from './svg-utils.js';
 
 /** @implements {IPresenter} */
 export class SvgPresenter extends EventTarget {
@@ -41,6 +42,11 @@ export class SvgPresenter extends EventTarget {
 					svgElemToPresenterObj: this._svgElemToPresenterObj,
 					listener: this,
 					createParams: /** @type {PresenterShapeAppendParam} */(param)
+				});
+			case 'path':
+				return pathCreate({
+					svg: this._svg,
+					createParams: /** @type {PresenterPathAppendParams} */(param)
 				});
 		}
 	}

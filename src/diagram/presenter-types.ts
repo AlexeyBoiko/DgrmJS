@@ -27,6 +27,7 @@ interface PresenterShapeAppendParam extends PresenterShapeUpdateParam {
 }
 
 interface PresenterPathAppendParams {
+	templateKey: string;
 	start: PresenterPathEnd;
 	end: PresenterPathEnd;
 }
