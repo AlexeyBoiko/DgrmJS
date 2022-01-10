@@ -1,3 +1,5 @@
+import { svgPositionSet, svgPositionGet } from '../infrastructure/svg-utils';
+
 /** @implements {IPresenterShape} */
 export class SvgShape {
 	/**
@@ -18,27 +20,52 @@ export class SvgShape {
 
 	/** @returns {Point} */
 	postionGet() {
-		throw new Error('Method not implemented.');
+		return svgPositionGet(this._svgEl);
 	}
 
 	/** @param {PresenterShapeUpdateParam} param */
 	update(param) {
-		throw new Error('Method not implemented.');
+		if (param.position) {
+			svgPositionSet(this._svgEl, param.position);
+		}
+
+		if (param.props) {
+			SvgShape._attrsSet(this._svgEl, param.props);
+		}
 	}
 
-	select() {
-		throw new Error('Method not implemented.');
+	/**
+	 * @param {boolean} flag
+	 */
+	select(flag) {
+		if (flag) {
+			this._svgEl.classList.add('selected');
+		} else {
+			this._svgEl.classList.remove('selected');
+		}
 	}
 
-	unSelect() {
-		throw new Error('Method not implemented.');
-	}
+	/**
+	 * @param {Element} elem
+	 * @param {PresenterFigureProps} props
+	 * @private
+	 */
+	static _attrsSet(elem, props) {
+		Object.keys(props).forEach(name => {
+			const shape = (name === 'root')
+				? elem
+				: elem.querySelector(`[data-name='${name}'`);
 
-	hide() {
-		throw new Error('Method not implemented.');
-	}
-
-	delete() {
-		throw new Error('Method not implemented.');
+			Object.keys(props[name]).forEach(attr => {
+				switch (attr) {
+					case 'textContent':
+						shape.textContent = props[name][attr].toString();
+						break;
+					default:
+						shape.setAttribute(attr, props[name][attr].toString());
+						break;
+				}
+			});
+		});
 	}
 }
