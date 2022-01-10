@@ -17,12 +17,24 @@ function ensureTransform(svgEl, transform, svg) {
 
 /**
 * @param {SVGGraphicsElement} svgEl
-* @param {Point} position
+* @param { {x: number, y: number} } position
 * @param {SVGSVGElement=} svg pass if svgEl not yet in DOM
 * @returns {void}
 */
 export function svgPositionSet(svgEl, position, svg) {
 	ensureTransform(svgEl, SVGTransform.SVG_TRANSFORM_TRANSLATE, svg).setTranslate(position.x, position.y);
+}
+
+/**
+ * @param {SVGGraphicsElement} svgEl
+ * @returns { {x: number, y: number} }
+ */
+export function svgPositionGet(svgEl) {
+	const mtx = ensureTransform(svgEl, SVGTransform.SVG_TRANSFORM_TRANSLATE).matrix;
+	return {
+		x: mtx.e,
+		y: mtx.f
+	};
 }
 
 // /**

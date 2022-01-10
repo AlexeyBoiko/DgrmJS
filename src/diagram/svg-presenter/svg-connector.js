@@ -25,13 +25,17 @@ export class SvgConnector {
 	 * @returns {void}
 	 */
 	connectedSet(flag) {
-		throw new Error('Method not implemented.');
+		if (flag) {
+			this._svgEl.classList.add('connected');
+		} else {
+			this._svgEl.classList.remove('connected');
+		}
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
 	connectedGet() {
-		throw new Error('Method not implemented.');
+		return this._svgEl.classList.contains('connected');
 	}
 }

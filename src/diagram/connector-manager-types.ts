@@ -2,7 +2,7 @@ interface IConnectorManager {
 	add(connectorStart: IPresenterConnector, connectorEnd: IPresenterConnector): void;
 
 	/** 
-	 * reconect to new connectorInElem 
+	 * reconect to new connector
 	 */
 	replaceEnd(connectorOld: IPresenterConnector, connectorNew: IPresenterConnector): void;
 

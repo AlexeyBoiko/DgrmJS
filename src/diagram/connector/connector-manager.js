@@ -53,6 +53,7 @@ export class ConnectorManager {
 	}
 
 	/**
+	 * update related with shape paths
 	 * @param {IConnetorShape} shape
 	 * @returns {void}
 	 */

@@ -2,6 +2,7 @@ interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
 	querySelector<T extends IPresenterElement>(query: string): T;
 	appendChild(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParams): IPresenterElement;
+	delete(elem:IPresenterElement): void;
 }
 
 
@@ -65,10 +66,7 @@ interface IPresenterShape extends IPresenterElement {
 	postionGet():Point;
 	update(param: PresenterShapeUpdateParam): void;
 
-	select(): void;
-	unSelect(): void;
-	hide(): void;
-	delete(): void;
+	select(flag: boolean): void;
 }
 
 type PresenterConnectorType = 'in' | 'out';

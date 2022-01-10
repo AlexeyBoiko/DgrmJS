@@ -61,9 +61,9 @@ export class DiagramBuilder extends EventTarget {
 	shapeDel(param) {
 		// TODO: delete connectors
 
-		/** @type {IPresenterShape} */(param.shape
+		this._presenter.delete(/** @type {IPresenterShape} */(param.shape
 			? param.shape
-			: this._presenter.querySelector(param.selector)).delete();
+			: this._presenter.querySelector(param.selector)));
 	}
 
 	/** @param { CustomEvent<IPresenterEventDetail> } evt */
@@ -173,11 +173,11 @@ export class DiagramBuilder extends EventTarget {
 			// }));
 
 			if (this._selectedShape) {
-				shape.unSelect();
+				this._selectedShape.select(false);
 			}
 
 			if (shape) {
-				shape.select();
+				shape.select(true);
 			}
 
 			/**

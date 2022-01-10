@@ -1,4 +1,4 @@
-import { svgPositionSet } from '../infrastructure/svg-utils.js';
+// import { svgPositionSet } from '../infrastructure/svg-utils.js';
 import { pathCreate } from './svg-path-fuctory.js';
 import { shapeCreate } from './svg-shape-fuctory.js';
 
@@ -26,7 +26,7 @@ export class SvgPresenter extends EventTarget {
 		 * @private
 		 */
 		this._canvasSvgGElem = svg.querySelector('[data-name="canvas"]');
-		svgPositionSet(this._canvasSvgGElem, { x: 0, y: 0 });
+		// svgPositionSet(this._canvasSvgGElem, { x: 0, y: 0 });
 	}
 
 	/**
@@ -49,6 +49,13 @@ export class SvgPresenter extends EventTarget {
 					createParams: /** @type {PresenterPathAppendParams} */(param)
 				});
 		}
+	}
+
+	/**
+	 * @param {IPresenterElement} elem
+	 */
+	delete(elem) {
+		throw new Error('Method not implemented.');
 	}
 
 	/**
