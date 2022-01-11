@@ -221,22 +221,13 @@ export class DiagramBuilder extends EventTarget {
 					y: shapePosition.y + innerPosition.y
 				},
 				postionIsIntoCanvas: true,
-				rotate: DiagramBuilder._rotateAngle(connectorIn.dir)
+				rotate: connectorIn.dir === 'right'
+					? 0
+					: connectorIn.dir === 'left'
+						? 180
+						: connectorIn.dir === 'bottom'
+							? 90
+							: 270
 			}));
-	}
-
-	/**
-	 * @param {PresenterPathEndDirection} dir
-	 * @returns {number}
-	 * @private
-	 */
-	static _rotateAngle(dir) {
-		return dir === 'right'
-			? 0
-			: dir === 'left'
-				? 180
-				: dir === 'bottom'
-					? 90
-					: 270;
 	}
 }
