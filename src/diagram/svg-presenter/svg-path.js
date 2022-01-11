@@ -14,6 +14,7 @@ export class SvgPath {
 
 		/** @type {PresenterElementType} */
 		this.type = 'path';
+		this._update();
 	}
 
 	/**
@@ -22,11 +23,14 @@ export class SvgPath {
 	 * @returns {void}
 	 */
 	update(endType, param) {
-		if (endType === 'start') {
-			this._start = param;
-		} else {
-			this._end = param;
-		}
+		Object.assign(
+			endType === 'start' ? this._start : this._end,
+			param);
+		this._update();
+	}
+
+	/** @private */
+	_update() {
 		this._svgEl.setAttribute('d', SvgPath._calcDAttr(70, this._start, this._end));
 	}
 

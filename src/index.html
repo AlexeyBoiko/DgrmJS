@@ -249,55 +249,6 @@
 		</defs>
 		<g data-name="canvas"></g>
 	</svg>
-	<script type="module">
-		import { DiagramBuilder } from './diagram/svg-diagram-builder.js?v=20211230-2';
-
-
-
-		const diagram = new DiagramBuilder(document.getElementById("diagram"))
-			.on('select', /** @param {CustomEvent<SVGGElement>} evt */ evt => {
-				//evt.detail
-				//evt.preventDefault();
-			});
-
-		/** @param {PointerEvent} evt */
-		function addShape(evt) {
-			diagram.shapeAdd({
-				templateKey: evt.currentTarget.getAttribute('data-shape'),
-				position: { x: 120, y: 120 }//, 
-				//props: {
-				//	text: { textContent: 'Mars' }
-				//}
-			});
-		}
-		document.getElementById('menu').querySelectorAll('[data-shape]')
-			.forEach(itm => itm.addEventListener('click', addShape));
-
-							//const diagram = new DiagramBuilder(document.getElementById("svg1"));
-
-							//let shape;
-							//document.getElementById("btn").addEventListener('click', e => {
-							//	shape = diagram.shapeAdd({
-							//		templateKey: 'sun',
-							//		position: { x: 120, y: 120 },
-							//		props: {
-							//			//circile: { fill: 'red' },
-							//			text: { textContent: 'Mars' }
-							//		}
-							//	});
-							//});
-
-							//document.getElementById("btn2").addEventListener('click', e => {
-							//	diagram.shapeUpdate({
-							//		elemOrSelector: shape,
-							//		position: { x: 200, y: 200 },
-							//		props: {
-							//			root: { 'data-key': 'key1' },
-							//			circile: { fill: 'blue' },
-							//			//text: { textContent: 'Mars' }
-							//		}
-							//	});
-							//});
-	</script>
+	<script src="./index.js" type="module"></script>
 </body>
 </html>

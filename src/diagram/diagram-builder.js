@@ -93,22 +93,13 @@ export class DiagramBuilder extends EventTarget {
 				}
 				break;
 			case 'pointerup': {
-				if (evt.detail.target.type === 'connector') {
+				if (evt.detail.target && evt.detail.target.type === 'connector') {
 					this._onConnectorUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
 				}
 				this._movedClean();
 				break;
 			}
 		}
-	}
-
-	/**
-	 * process events on connector elements
-	 * @param { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} evt
-	 * @private
-	 */
-	_connectorEventsHandler(evt) {
-
 	}
 
 	/**

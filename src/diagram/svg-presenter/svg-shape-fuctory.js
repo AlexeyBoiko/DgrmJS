@@ -3,21 +3,21 @@ import { SvgShape } from './svg-shape.js';
 
 /**
  * @param {object} param
- * @param {SVGSVGElement} param.svg
+ * @param {SVGGElement} param.svgCanvas
  * @param {EventListenerOrEventListenerObject} param.listener
  * @param {WeakMap<SVGGraphicsElement, IPresenterElement>} param.svgElemToPresenterObj
  * @param {PresenterShapeAppendParam} param.createParams
  * @returns {SvgShape}
  */
-export function shapeCreate({ svg, listener, svgElemToPresenterObj, createParams }) {
-	const shapeSvgEl = /** @type {SVGGElement} */ (svg.getElementsByTagName('defs')[0]
+export function shapeCreate({ svgCanvas, listener, svgElemToPresenterObj, createParams }) {
+	const shapeSvgEl = /** @type {SVGGElement} */ (svgCanvas.ownerSVGElement.getElementsByTagName('defs')[0]
 		.querySelector(`[data-templ='${createParams.templateKey}']`)
 		.cloneNode(true));
 
 	// TODO: to reduce DOM changes (for performance) 'shape.update' must go before 'svg.appendChild'
-	svg.appendChild(shapeSvgEl);
+	svgCanvas.appendChild(shapeSvgEl);
 	const shape = new SvgShape({ svgEl: shapeSvgEl });
-	shape.update(createParams.props);
+	shape.update(createParams);
 
 	shape.connectable = shapeSvgEl.getAttribute('data-connectable') === 'true';
 	const defaultConnectPoint = parseConnectPointAttr(shapeSvgEl);
@@ -52,7 +52,8 @@ function connectorCreate(svgEl, shape) {
 		svgEl: svgEl,
 		connectorType: svgEl.getAttribute('data-connect') === 'in' ? 'in' : 'out',
 		shape: shape,
-		innerPosition: parseConnectPointAttr(svgEl)
+		innerPosition: parseConnectPointAttr(svgEl),
+		dir: /** @type {PresenterPathEndDirection} */(svgEl.getAttribute('data-connect-dir'))
 	});
 }
 

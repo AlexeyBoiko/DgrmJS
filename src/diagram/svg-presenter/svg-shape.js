@@ -1,4 +1,4 @@
-import { svgPositionSet, svgPositionGet } from '../infrastructure/svg-utils';
+import { svgPositionSet, svgPositionGet } from '../infrastructure/svg-utils.js';
 
 /** @implements {IPresenterShape} */
 export class SvgShape {
