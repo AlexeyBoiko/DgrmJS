@@ -37,12 +37,12 @@ export function svgPositionGet(svgEl) {
 	};
 }
 
-// /**
-//  * @param {SVGGraphicsElement} svgEl
-//  * @param {number} angle
-//  * @param {SVGSVGElement=} svg pass if svgEl not yet in DOM
-//  * @returns {void}
-//  */
-// export function svgRotate(svgEl, angle, svg) {
-// 	ensureTransform(svgEl, SVGTransform.SVG_TRANSFORM_ROTATE, svg).setRotate(angle, 0, 0);
-// }
+/**
+ * @param {SVGGraphicsElement} svgEl
+ * @param {number} angle
+ * @param {SVGSVGElement=} svg pass if svgEl not yet in DOM
+ * @returns {void}
+ */
+export function svgRotate(svgEl, angle, svg) {
+	ensureTransform(svgEl, SVGTransform.SVG_TRANSFORM_ROTATE, svg).setRotate(angle, 0, 0);
+}

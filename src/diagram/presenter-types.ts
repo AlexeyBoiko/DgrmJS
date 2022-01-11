@@ -13,6 +13,7 @@ type PresenterChildAddType = 'shape' | 'path';
 
 interface PresenterShapeUpdateParam {
 	position?: Point;
+	rotate?: number;
 	/**
 	 * 'root' - key for outer element.
 	 * Other keys for inner elements: key = value of the 'data-name' attribute.

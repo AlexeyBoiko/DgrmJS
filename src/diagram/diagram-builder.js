@@ -219,7 +219,23 @@ export class DiagramBuilder extends EventTarget {
 				position: {
 					x: shapePosition.x + innerPosition.x,
 					y: shapePosition.y + innerPosition.y
-				}
+				},
+				rotate: DiagramBuilder._rotateAngle(connectorIn.dir)
 			}));
+	}
+
+	/**
+	 * @param {PresenterPathEndDirection} dir
+	 * @returns {number}
+	 * @private
+	 */
+	static _rotateAngle(dir) {
+		return dir === 'right'
+			? 0
+			: dir === 'left'
+				? 180
+				: dir === 'bottom'
+					? 90
+					: 270;
 	}
 }
