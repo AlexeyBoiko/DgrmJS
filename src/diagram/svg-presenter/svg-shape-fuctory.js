@@ -1,3 +1,4 @@
+import { svgPositionGet } from '../infrastructure/svg-utils.js';
 import { SvgConnector } from './svg-connector.js';
 import { SvgShape } from './svg-shape.js';
 
@@ -17,6 +18,13 @@ export function shapeCreate({ svgCanvas, listener, svgElemToPresenterObj, create
 	// TODO: to reduce DOM changes (for performance) 'shape.update' must go before 'svg.appendChild'
 	svgCanvas.appendChild(shapeSvgEl);
 	const shape = new SvgShape({ svgEl: shapeSvgEl });
+
+	if (!createParams.postionIsIntoCanvas) {
+		const canvasPosition = svgPositionGet(svgCanvas);
+		createParams.position.x -= canvasPosition.x;
+		createParams.position.y -= canvasPosition.y;
+	}
+
 	shape.update(createParams);
 
 	shape.connectable = shapeSvgEl.getAttribute('data-connectable') === 'true';

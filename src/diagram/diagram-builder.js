@@ -220,6 +220,7 @@ export class DiagramBuilder extends EventTarget {
 					x: shapePosition.x + innerPosition.x,
 					y: shapePosition.y + innerPosition.y
 				},
+				postionIsIntoCanvas: true,
 				rotate: DiagramBuilder._rotateAngle(connectorIn.dir)
 			}));
 	}

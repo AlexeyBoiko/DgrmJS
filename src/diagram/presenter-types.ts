@@ -13,6 +13,10 @@ type PresenterChildAddType = 'shape' | 'path';
 
 interface PresenterShapeUpdateParam {
 	position?: Point;
+	/** position inside canvas, 
+	 * otherwise, the absolute coordinate disregarding the canvas offset
+	 */
+	postionIsIntoCanvas?: boolean;
 	rotate?: number;
 	/**
 	 * 'root' - key for outer element.
