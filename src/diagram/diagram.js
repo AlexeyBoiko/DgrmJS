@@ -1,11 +1,10 @@
 /**
- * SVG diagram builder
- * @module svgDiagramBuilder
+ * SVG diagram
  */
 
 import { shapeStateAdd, shapeStateDel } from './shape-utils.js';
 
-export class DiagramBuilder extends EventTarget {
+export class Diagram extends EventTarget {
 	/**
 	 * @param {IPresenter} pesenter
 	 * @param {IConnectorManager} connectorManager

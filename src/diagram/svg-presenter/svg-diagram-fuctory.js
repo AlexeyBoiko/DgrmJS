@@ -1,12 +1,12 @@
 import { ConnectorManager } from '../connector/connector-manager.js';
-import { DiagramBuilder } from '../diagram-builder.js';
+import { Diagram } from '../diagram.js';
 import { SvgPresenter } from './svg-presenter.js';
 
 /**
  * @param {SVGSVGElement} svg
- * @returns {DiagramBuilder}
+ * @returns {Diagram}
  */
 export function svgDiagramCreate(svg) {
 	const presenter = new SvgPresenter(svg);
-	return new DiagramBuilder(presenter, new ConnectorManager(presenter));
+	return new Diagram(presenter, new ConnectorManager(presenter));
 }
