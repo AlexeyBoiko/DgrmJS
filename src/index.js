@@ -6,6 +6,7 @@ const diagram = svgDiagramCreate(document.getElementById('diagram'));
 //
 // add shape
 
+/** @param {PointerEvent & { currentTarget: Element }} evt */
 function shapeAdd(evt) {
 	diagram.shapeAdd('shape', {
 		templateKey: evt.currentTarget.getAttribute('data-shape'),
@@ -22,4 +23,8 @@ document.getElementById('menu')
 //
 // edit shape
 
-// function shapeDel
+/** @param { CustomEvent<IDiagramEventDetail> } evt */
+function shapeSelect(evt) {
+	console.log(evt.detail.target);
+}
+diagram.on('select', shapeSelect);

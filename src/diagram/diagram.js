@@ -180,10 +180,7 @@ export class Diagram extends EventTarget {
 	 */
 	_selectedSet(shape) {
 		if (shape !== this._selectedShape) {
-			// this._svg.dispatchEvent(new CustomEvent('select', {
-			// 	cancelable: true,
-			// 	detail: { shape: shape }
-			// }));
+			this._dispatchEvent('select', shape);
 
 			if (this._selectedShape) {
 				shapeStateDel(this._selectedShape, 'selected');
@@ -232,5 +229,20 @@ export class Diagram extends EventTarget {
 
 		this._movedDelta = null;
 		this._movedShape = null;
+	}
+
+	/**
+	 * @param {DiagramEventType} type
+	 * @param {IPresenterShape} target
+	 * @private
+	 */
+	_dispatchEvent(type, target) {
+		return this.dispatchEvent(new CustomEvent(type, {
+			cancelable: true,
+			/** @type {IDiagramEventDetail} */
+			detail: {
+				target: target
+			}
+		}));
 	}
 }

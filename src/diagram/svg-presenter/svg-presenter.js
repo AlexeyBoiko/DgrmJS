@@ -145,7 +145,6 @@ export class SvgPresenter extends EventTarget {
 		}
 
 		this.dispatchEvent(new CustomEvent(type, {
-			cancelable: true,
 			/** @type {IPresenterEventDetail} */
 			detail: {
 				target: targetPresenterObj,
