@@ -202,42 +202,29 @@
 	</div>
 	<svg id="diagram" xmlns="http://www.w3.org/2000/svg" style="touch-action: none;">
 		<style type="text/css">
-			[data-templ].selected [data-connect="out"] {
-				display: unset;
-			}
-
-			[data-templ].hover [data-connect="in"] {
-				display: unset;
-			}
-
-			[data-templ].selected [data-connect-connected], [data-templ].hover [data-connect-connected] {
-				display: none;
-			}
-
-			[data-templ] [data-connect] {
-				display: none;
-			}
-
 			[data-connect="in"], [data-connect="out"] {
 				stroke: #6cbbf7;
 				fill: #6cbbf7;
 			}
 
-				[data-connect="in"].hover {
-					fill: #07c;
-				}
+			[data-connect="in"].hover {
+				fill: #07c;
+			}
 
-				[data-connect="in"] .not-empty {
-					display: none;
-				}
 
-				[data-connect="in"].connected, [data-connect="in"].connected .not-empty {
-					display: unset;
-				}
+			[data-templ] [data-connect] { display: none; }
+			[data-connect="in"].connected { display: unset; }
 
-				[data-connect="in"].connected .empty {
-					display: none;
-				}
+			[data-templ].selected [data-connect="out"] { display: unset; }
+			[data-templ].selected [data-connect="in"] { display: none; }
+
+			[data-templ].hover [data-connect="in"] { display: unset; }
+			[data-templ].hover [data-connect="in"] .empty { display: unset; }
+			[data-templ].hover [data-connect="in"] .not-empty { display: none; }
+
+			[data-connect="in"] .not-empty { display: none; }
+			[data-connect="in"].connected .not-empty { display: unset; }
+			[data-connect="in"].connected .empty { display: none; }
 		</style>
 		<defs>
 			<g id="arrow">
