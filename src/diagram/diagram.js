@@ -198,7 +198,7 @@ export class Diagram extends EventTarget {
 
 			/**
 			 * @type {IPresenterShape}
-			 * @privte
+			 * @private
 			 */
 			this._selectedShape = shape;
 		}
@@ -210,6 +210,7 @@ export class Diagram extends EventTarget {
 	 * @private
 	 */
 	_movedSet(shape, offsetPoint) {
+		/** @private */
 		this._movedShape = shape;
 
 		if (this._movedShape.connectable) {
@@ -217,6 +218,7 @@ export class Diagram extends EventTarget {
 		}
 
 		const shapePosition = this._movedShape.postionGet();
+		/** @private */
 		this._movedDelta = {
 			x: shapePosition.x - offsetPoint.x,
 			y: shapePosition.y - offsetPoint.y
@@ -231,9 +233,7 @@ export class Diagram extends EventTarget {
 			shapeStateDel(this._movedShape, 'disabled');
 		}
 
-		/** @private */
 		this._movedDelta = null;
-		/** @private */
 		this._movedShape = null;
 	}
 
