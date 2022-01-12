@@ -3,6 +3,8 @@
  * @module svgDiagramBuilder
  */
 
+import { shapeStateAdd, shapeStateDel } from './shape-utils.js';
+
 export class DiagramBuilder extends EventTarget {
 	/**
 	 * @param {IPresenter} pesenter
@@ -15,7 +17,9 @@ export class DiagramBuilder extends EventTarget {
 		this._presenter = pesenter
 			.on('pointermove', this)
 			.on('pointerdown', this)
-			.on('pointerup', this);
+			.on('pointerup', this)
+			.on('pointerenter', this)
+			.on('pointerleave', this);
 
 		/** @private */
 		this._connectorManager = connectorManager;
@@ -69,7 +73,7 @@ export class DiagramBuilder extends EventTarget {
 	/** @param { CustomEvent<IPresenterEventDetail> } evt */
 	handleEvent(evt) {
 		switch (evt.type) {
-			case 'pointermove': {
+			case 'pointermove':
 				if (this._movedShape) {
 					const shapePosition = {
 						x: this._movedDelta.x + evt.detail.offsetX,
@@ -80,7 +84,6 @@ export class DiagramBuilder extends EventTarget {
 					this._connectorManager.updatePosition(this._movedShape);
 				}
 				break;
-			}
 			case 'pointerdown':
 				switch (evt.detail.target.type) {
 					case 'canvas':
@@ -92,13 +95,34 @@ export class DiagramBuilder extends EventTarget {
 					}
 				}
 				break;
-			case 'pointerup': {
+			case 'pointerup':
 				if (evt.detail.target && evt.detail.target.type === 'connector') {
 					this._onConnectorUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
 				}
 				this._movedClean();
 				break;
-			}
+			case 'pointerenter':
+				if (this._movedShape && this._movedShape.connectable) {
+					switch (evt.detail.target.type) {
+						case 'shape':
+							shapeStateAdd(/** @type {IPresenterShape} */(evt.detail.target), 'hovered');
+							break;
+						case 'connector':
+							shapeStateAdd(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered');
+							shapeStateAdd(/** @type {IPresenterConnector} */(evt.detail.target), 'hovered');
+							break;
+					}
+				}
+				break;
+			case 'pointerleave':
+				switch (evt.detail.target.type) {
+					case 'shape':
+					case 'connector':
+						// @ts-ignore
+						shapeStateDel(evt.detail.target, 'hovered');
+						break;
+				}
+				break;
 		}
 	}
 
@@ -118,7 +142,7 @@ export class DiagramBuilder extends EventTarget {
 				break;
 			}
 			case 'in': {
-				if (evt.detail.target.connectedGet()) {
+				if (evt.detail.target.stateGet().has('connected')) {
 					//
 					// disconnect
 
@@ -127,7 +151,7 @@ export class DiagramBuilder extends EventTarget {
 					this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 
 					if (this._connectorManager.any(evt.detail.target, 'end')) {
-						evt.detail.target.connectedSet(false);
+						shapeStateAdd(evt.detail.target, 'connected');
 					}
 				}
 				break;
@@ -149,7 +173,7 @@ export class DiagramBuilder extends EventTarget {
 
 		this._connectorManager.replaceEnd(this._movedShape.defaultInConnector, evt.detail.target);
 		this.shapeDel({ shape: this._movedShape });
-		evt.detail.target.connectedSet(true);
+		shapeStateAdd(evt.detail.target, 'connected');
 	}
 
 	/**
@@ -164,11 +188,11 @@ export class DiagramBuilder extends EventTarget {
 			// }));
 
 			if (this._selectedShape) {
-				this._selectedShape.select(false);
+				shapeStateDel(this._selectedShape, 'selected');
 			}
 
 			if (shape) {
-				shape.select(true);
+				shapeStateAdd(shape, 'selected');
 			}
 
 			/**
@@ -187,6 +211,10 @@ export class DiagramBuilder extends EventTarget {
 	_movedSet(shape, offsetPoint) {
 		this._movedShape = shape;
 
+		if (this._movedShape.connectable) {
+			shapeStateAdd(this._movedShape, 'disabled');
+		}
+
 		const shapePosition = this._movedShape.postionGet();
 		this._movedDelta = {
 			x: shapePosition.x - offsetPoint.x,
@@ -198,6 +226,10 @@ export class DiagramBuilder extends EventTarget {
 
 	/** @private */
 	_movedClean() {
+		if (this._movedShape) {
+			shapeStateDel(this._movedShape, 'disabled');
+		}
+
 		/** @private */
 		this._movedDelta = null;
 		/** @private */

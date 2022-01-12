@@ -63,3 +63,14 @@ export function any(iterable, filter) {
 // 	}
 // 	return count;
 // }
+
+/**
+ * @template T
+ * @param {Set<T>} set
+ * @param {T} el
+ * @returns {Set<T>}
+ */
+export function setDel(set, el) {
+	set.delete(el);
+	return set;
+}

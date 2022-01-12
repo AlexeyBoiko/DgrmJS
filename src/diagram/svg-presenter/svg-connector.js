@@ -12,6 +12,12 @@ export class SvgConnector {
 		/** @private */
 		this._svgEl = svgEl;
 
+		/**
+		 * @type {Set<PresenterShapeState>}
+		 * @private
+		 */
+		this._state = new Set();
+
 		/** @type {PresenterElementType} */
 		this.type = 'connector';
 		this.connectorType = connectorType;
@@ -21,21 +27,19 @@ export class SvgConnector {
 	}
 
 	/**
-	 * @param {boolean} flag
-	 * @returns {void}
+	 * NOT immutable, change with update method
+	 * @returns {Set<PresenterShapeState>}
 	 */
-	connectedSet(flag) {
-		if (flag) {
-			this._svgEl.classList.add('connected');
-		} else {
-			this._svgEl.classList.remove('connected');
-		}
+	stateGet() {
+		return this._state;
 	}
 
 	/**
-	 * @returns {boolean}
+	 * @param {{ state: Set<PresenterShapeState>; }} param
 	 */
-	connectedGet() {
-		return this._svgEl.classList.contains('connected');
+	update(param) {
+		this._state = param.state;
+		if (this._state.has('connected')) { this._svgEl.classList.add('connected'); } else { this._svgEl.classList.remove('connected'); }
+		if (this._state.has('hovered')) { this._svgEl.classList.add('hover'); } else { this._svgEl.classList.remove('hover'); }
 	}
 }

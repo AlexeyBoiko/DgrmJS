@@ -95,7 +95,7 @@ export class SvgPresenter extends EventTarget {
 			case 'pointerup':
 				this._dispatchEvent(
 					evt.type,
-					this._svg === evt.currentTarget ? this._canvasSvgEl : evt.currentTarget,
+					evt.currentTarget,
 					evt.offsetX,
 					evt.offsetY);
 				break;
@@ -112,9 +112,9 @@ export class SvgPresenter extends EventTarget {
 		}
 
 		if (this._pointElem) {
-			this._dispatchEvent('pointerleave', this._pointElem);
+			this._dispatchEvent('pointerleave', this._pointElem, evt.offsetX, evt.offsetY);
 		}
-		this._dispatchEvent('pointerenter', pointElem);
+		this._dispatchEvent('pointerenter', pointElem, evt.offsetX, evt.offsetY);
 
 		/**
 		 * @type {SVGGraphicsElement}
@@ -125,17 +125,25 @@ export class SvgPresenter extends EventTarget {
 
 	/**
 	 * @param {PresenterEventType} type
-	 * @param {SVGGraphicsElement=} target
-	 * @param {number=} offsetX
-	 * @param {number=} offsetY
+	 * @param {SVGGraphicsElement} target
+	 * @param {number} offsetX
+	 * @param {number} offsetY
 	 * @private
 	 */
 	_dispatchEvent(type, target, offsetX, offsetY) {
+		let targetPresenterObj = null;
+		if (target) {
+			targetPresenterObj = this._svgElemToPresenterObj.get(target instanceof SVGSVGElement ? this._canvasSvgEl : target);
+			if (!targetPresenterObj) {
+				targetPresenterObj = this._svgElemToPresenterObj.get(target.closest('[data-templ]'));
+			}
+		}
+
 		this.dispatchEvent(new CustomEvent(type, {
 			cancelable: true,
 			/** @type {IPresenterEventDetail} */
 			detail: {
-				target: target ? this._svgElemToPresenterObj.get(target) : null,
+				target: targetPresenterObj,
 				offsetX: offsetX,
 				offsetY: offsetY
 			}

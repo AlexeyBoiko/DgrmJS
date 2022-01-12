@@ -12,10 +12,24 @@ export class SvgShape {
 		/** @private */
 		this._svgEl = svgEl;
 
+		/**
+		 * @type {Set<PresenterShapeState>}
+		 * @private
+		 */
+		this._state = new Set();
+
 		/** @type {PresenterElementType} */
 		this.type = 'shape';
 		this.connectable = connectable;
 		this.defaultInConnector = defaultInConnector;
+	}
+
+	/**
+	 * NOT immutable, change with update method
+	 * @returns {Set<PresenterShapeState>}
+	 */
+	stateGet() {
+		return this._state;
 	}
 
 	/** @returns {Point} */
@@ -36,16 +50,12 @@ export class SvgShape {
 		if (param.props) {
 			SvgShape._attrsSet(this._svgEl, param.props);
 		}
-	}
 
-	/**
-	 * @param {boolean} flag
-	 */
-	select(flag) {
-		if (flag) {
-			this._svgEl.classList.add('selected');
-		} else {
-			this._svgEl.classList.remove('selected');
+		if (param.state) {
+			this._state = param.state;
+			if (this._state.has('selected')) { this._svgEl.classList.add('selected'); } else { this._svgEl.classList.remove('selected'); }
+			if (this._state.has('hovered')) { this._svgEl.classList.add('hover'); } else { this._svgEl.classList.remove('hover'); }
+			if (this._state.has('disabled')) { this._svgEl.style.pointerEvents = 'none'; } else { this._svgEl.style.pointerEvents = 'auto'; }
 		}
 	}
 

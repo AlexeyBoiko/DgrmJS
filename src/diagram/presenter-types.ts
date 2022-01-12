@@ -2,7 +2,7 @@ interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
 	querySelector<T extends IPresenterElement>(query: string): T;
 	appendChild(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParams): IPresenterElement;
-	delete(elem:IPresenterElement): void;
+	delete(elem: IPresenterElement): void;
 }
 
 
@@ -11,6 +11,12 @@ interface IPresenter {
 
 type PresenterChildAddType = 'shape' | 'path';
 
+type PresenterShapeState = 'selected' | 'disabled' | 'hovered' | 'connected';
+interface IPresenterStatable {
+	stateGet(): Set<PresenterShapeState>;
+	update(param: { state: Set<PresenterShapeState> }): void;
+}
+
 interface PresenterShapeUpdateParam {
 	position?: Point;
 	/** position inside canvas, 
@@ -18,6 +24,7 @@ interface PresenterShapeUpdateParam {
 	 */
 	postionIsIntoCanvas?: boolean;
 	rotate?: number;
+	state?: Set<PresenterShapeState>;
 	/**
 	 * 'root' - key for outer element.
 	 * Other keys for inner elements: key = value of the 'data-name' attribute.
@@ -46,10 +53,8 @@ type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointer
 interface IPresenterEventDetail {
 	/**	null for pointermove */
 	target?: IPresenterElement;
-	/**	null for pointerenter | pointerleave */
-	offsetX?: number;
-	/**	null for pointerenter | pointerleave */
-	offsetY?: number;
+	offsetX: number;
+	offsetY: number;
 }
 
 
@@ -62,34 +67,29 @@ interface IPresenterElement {
 	type: PresenterElementType
 }
 
-interface IPresenterShape extends IPresenterElement {
+interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 
 	/** can be used as connector end  */
 	connectable?: boolean;
 	defaultInConnector?: IPresenterConnector;
 
-	postionGet():Point;
+	postionGet(): Point;
 	update(param: PresenterShapeUpdateParam): void;
-
-	select(flag: boolean): void;
 }
 
 type PresenterConnectorType = 'in' | 'out';
-interface IPresenterConnector extends IPresenterElement {
+interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
 	connectorType: PresenterConnectorType;
 	shape: IPresenterShape;
 	/** position into parent shape */
 	innerPosition: Point;
 	dir?: PresenterPathEndDirection;
-
-	connectedSet(flag: boolean): void;
-	connectedGet(): boolean;
 }
 
 type PresenterPathEndType = 'start' | 'end';
 type PresenterPathEndDirection = 'left' | 'right' | 'top' | 'bottom';
 interface PresenterPathEnd {
-	position: Point, 
+	position: Point,
 	dir?: PresenterPathEndDirection
 }
 interface IPresenterPath extends IPresenterElement {
