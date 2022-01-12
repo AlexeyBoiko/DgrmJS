@@ -2,7 +2,7 @@
  * SVG diagram
  */
 
-import { shapeStateAdd, shapeStateDel } from './shape-utils.js';
+import { connectorEndParams, shapeStateAdd, shapeStateDel } from './shape-utils.js';
 
 export class Diagram extends EventTarget {
 	/**
@@ -132,14 +132,14 @@ export class Diagram extends EventTarget {
 	 * @private
 	 */
 	_onConnectorDown(evt) {
+		const connectorEnd = /** @type {IPresenterShape} */(this.shapeAdd('shape', connectorEndParams(evt.detail.target)));
+		this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 		switch (evt.detail.target.connectorType) {
 			case 'out': {
 				//
 				// connectorEnd create
 
-				const connectorEnd = this._connectorEndCreate(evt.detail.target);
 				this._connectorManager.add(evt.detail.target, connectorEnd.defaultInConnector);
-				this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 				break;
 			}
 			case 'in': {
@@ -147,10 +147,7 @@ export class Diagram extends EventTarget {
 					//
 					// disconnect
 
-					const connectorEnd = this._connectorEndCreate(evt.detail.target);
 					this._connectorManager.replaceEnd(evt.detail.target, connectorEnd.defaultInConnector);
-					this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
-
 					if (!this._connectorManager.any(evt.detail.target, 'end')) {
 						shapeStateDel(evt.detail.target, 'connected');
 					}
@@ -235,40 +232,5 @@ export class Diagram extends EventTarget {
 
 		this._movedDelta = null;
 		this._movedShape = null;
-	}
-
-	/**
-	 * @param {IPresenterConnector} connector
-	 * @returns {IPresenterShape}
-	 * @private
-	 */
-	_connectorEndCreate(connector) {
-		const shapePosition = connector.shape.postionGet();
-		const innerPosition = connector.innerPosition;
-		return /** @type {IPresenterShape} */(this.shapeAdd(
-			'shape',
-			{
-				templateKey: 'connect-end',
-				position: {
-					x: shapePosition.x + innerPosition.x,
-					y: shapePosition.y + innerPosition.y
-				},
-				postionIsIntoCanvas: true,
-				rotate: connector.connectorType === 'out'
-					? connector.dir === 'right'
-						? 0
-						: connector.dir === 'left'
-							? 180
-							: connector.dir === 'bottom'
-								? 90
-								: 270
-					: connector.dir === 'right'
-						? 180
-						: connector.dir === 'left'
-							? 0
-							: connector.dir === 'bottom'
-								? 270
-								: 90
-			}));
 	}
 }

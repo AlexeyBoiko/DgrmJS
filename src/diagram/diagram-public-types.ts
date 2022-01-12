@@ -1,4 +1,7 @@
 type DiagramEventType = 'select' | 'move';
+interface IDiagramEventDetail {
+	target: IPresenterElement;
+}
 
 interface DiagramShapeUpdateParam extends PresenterShapeUpdateParam {
 	shape?: IPresenterShape;

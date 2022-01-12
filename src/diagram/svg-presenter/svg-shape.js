@@ -60,7 +60,7 @@ export class SvgShape {
 
 	/**
 	 * @param {Element} elem
-	 * @param {PresenterFigureProps} props
+	 * @param {PresenterShapeProps} props
 	 * @private
 	 */
 	static _attrsSet(elem, props) {

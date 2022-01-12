@@ -29,9 +29,9 @@ interface PresenterShapeUpdateParam {
 	 * 'root' - key for outer element.
 	 * Other keys for inner elements: key = value of the 'data-name' attribute.
 	 */
-	props?: PresenterFigureProps
+	props?: PresenterShapeProps
 }
-interface PresenterFigureProps {
+interface PresenterShapeProps {
 	[key: string]: { [key: string]: string | number | boolean }
 }
 

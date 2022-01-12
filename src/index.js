@@ -3,7 +3,10 @@ import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-fuctory.js
 // @ts-ignore
 const diagram = svgDiagramCreate(document.getElementById('diagram'));
 
-function addShape(evt) {
+//
+// add shape
+
+function shapeAdd(evt) {
 	diagram.shapeAdd('shape', {
 		templateKey: evt.currentTarget.getAttribute('data-shape'),
 		position: { x: 120, y: 120 } //,
@@ -12,6 +15,11 @@ function addShape(evt) {
 		// }
 	});
 };
+document.getElementById('menu')
+	.querySelectorAll('[data-shape]')
+	.forEach(itm => itm.addEventListener('click', shapeAdd));
 
-document.getElementById('menu').querySelectorAll('[data-shape]')
-	.forEach(itm => itm.addEventListener('click', addShape));
+//
+// edit shape
+
+// function shapeDel
