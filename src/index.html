@@ -203,14 +203,16 @@
 	<svg id="diagram" xmlns="http://www.w3.org/2000/svg" style="touch-action: none;">
 		<style type="text/css">
 			[data-connect="in"], [data-connect="out"] {
-				stroke: #6cbbf7;
-				fill: #6cbbf7;
+				stroke: rgb(108 187 247 / 51%);
+				fill: rgb(108 187 247 / 51%);
 			}
 
-			[data-connect="in"].hover {
-				fill: #07c;
+			[data-connect="in"].hover circle {
+				stroke-width: 10px;
 			}
 
+			[data-templ] use { fill: transparent;;}
+			[data-templ].selected use {  fill: rgb(108 187 247 / 51%); }
 
 			[data-templ] [data-connect] { display: none; }
 			[data-connect="in"].connected { display: unset; }
@@ -228,7 +230,7 @@
 		</style>
 		<defs>
 			<g id="arrow">
-				<circle r="10" fill="transparent" stroke-width="0" />
+				<circle r="13" stroke-width="0" />
 				<path d="M-7 7 l 7 -7 l -7 -7" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
 			</g>
 
