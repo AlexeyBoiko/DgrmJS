@@ -117,8 +117,11 @@ export class DiagramBuilder extends EventTarget {
 			case 'pointerleave':
 				switch (evt.detail.target.type) {
 					case 'shape':
+						shapeStateDel(/** @type {IPresenterShape} */(evt.detail.target), 'hovered');
+						break;
 					case 'connector':
-						shapeStateDel(/** @type {IPresenterConnector | IPresenterShape} */(evt.detail.target), 'hovered');
+						shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered');
+						shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target), 'hovered');
 						break;
 				}
 				break;
@@ -149,8 +152,8 @@ export class DiagramBuilder extends EventTarget {
 					this._connectorManager.replaceEnd(evt.detail.target, connectorEnd.defaultInConnector);
 					this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 
-					if (this._connectorManager.any(evt.detail.target, 'end')) {
-						shapeStateAdd(evt.detail.target, 'connected');
+					if (!this._connectorManager.any(evt.detail.target, 'end')) {
+						shapeStateDel(evt.detail.target, 'connected');
 					}
 				}
 				break;
@@ -236,13 +239,13 @@ export class DiagramBuilder extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterConnector} connectorIn
+	 * @param {IPresenterConnector} connector
 	 * @returns {IPresenterShape}
 	 * @private
 	 */
-	_connectorEndCreate(connectorIn) {
-		const shapePosition = connectorIn.shape.postionGet();
-		const innerPosition = connectorIn.innerPosition;
+	_connectorEndCreate(connector) {
+		const shapePosition = connector.shape.postionGet();
+		const innerPosition = connector.innerPosition;
 		return /** @type {IPresenterShape} */(this.shapeAdd(
 			'shape',
 			{
@@ -252,13 +255,21 @@ export class DiagramBuilder extends EventTarget {
 					y: shapePosition.y + innerPosition.y
 				},
 				postionIsIntoCanvas: true,
-				rotate: connectorIn.dir === 'right'
-					? 0
-					: connectorIn.dir === 'left'
+				rotate: connector.connectorType === 'out'
+					? connector.dir === 'right'
+						? 0
+						: connector.dir === 'left'
+							? 180
+							: connector.dir === 'bottom'
+								? 90
+								: 270
+					: connector.dir === 'right'
 						? 180
-						: connectorIn.dir === 'bottom'
-							? 90
-							: 270
+						: connector.dir === 'left'
+							? 0
+							: connector.dir === 'bottom'
+								? 270
+								: 90
 			}));
 	}
 }

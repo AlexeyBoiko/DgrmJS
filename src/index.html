@@ -202,10 +202,6 @@
 	</div>
 	<svg id="diagram" xmlns="http://www.w3.org/2000/svg" style="touch-action: none;">
 		<style type="text/css">
-			[data-templ] [data-connect] {
-				display: none;
-			}
-
 			[data-templ].selected [data-connect="out"] {
 				display: unset;
 			}
@@ -218,6 +214,10 @@
 				display: none;
 			}
 
+			[data-templ] [data-connect] {
+				display: none;
+			}
+
 			[data-connect="in"], [data-connect="out"] {
 				stroke: #6cbbf7;
 				fill: #6cbbf7;
@@ -226,12 +226,28 @@
 				[data-connect="in"].hover {
 					fill: #07c;
 				}
+
+				[data-connect="in"] .not-empty {
+					display: none;
+				}
+
+				[data-connect="in"].connected, [data-connect="in"].connected .not-empty {
+					display: unset;
+				}
+
+				[data-connect="in"].connected .empty {
+					display: none;
+				}
 		</style>
 		<defs>
-			<path data-templ="path" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
-			<g data-templ="connect-end" data-drag="true" data-connect="in" data-connect-point="0,0" data-connectable="true">
+			<g id="arrow">
 				<circle r="10" fill="transparent" stroke-width="0" />
 				<path d="M-7 7 l 7 -7 l -7 -7" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
+			</g>
+
+			<path data-templ="path" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
+			<g data-templ="connect-end" data-drag="true" data-connect="in" data-connect-point="0,0" data-connectable="true">
+				<use xlink:href="#arrow" />
 			</g>
 			<g data-templ="circile">
 				<circle data-name="circile" data-drag="true" r="60" fill="#ff6600" stroke="#fff" stroke-width="1" />
@@ -241,10 +257,22 @@
 				<circle data-connect="out" data-connect-name="out-bottom" data-connect-point="0,60" data-connect-dir="bottom" r="10" cx="0" cy="60"></circle>
 				<circle data-connect="out" data-connect-name="out-top" data-connect-point="0,-60" data-connect-dir="top" r="10" cx="0" cy="-60"></circle>
 
-				<circle data-connect="in" data-connect-name="in-right" data-connect-point="60,0" data-connect-dir="right" r="10" cx="60" cy="0"></circle>
-				<circle data-connect="in" data-connect-name="in-left" data-connect-point="-60,0" data-connect-dir="left" r="10" cx="-60" cy="0"></circle>
-				<circle data-connect="in" data-connect-name="in-bottom" data-connect-point="0,60" data-connect-dir="bottom" r="10" cx="0" cy="60"></circle>
-				<circle data-connect="in" data-connect-name="in-top" data-connect-point="0,-60" data-connect-dir="top" r="10" cx="0" cy="-60"></circle>
+				<g data-connect="in" data-connect-name="in-right" data-connect-point="60,0" data-connect-dir="right">
+					<circle class="empty" r="10" cx="60" cy="0"></circle>
+					<use class="not-empty" xlink:href="#arrow" transform="rotate(180 30 0)" />
+				</g>
+				<g data-connect="in" data-connect-name="in-left" data-connect-point="-60,0" data-connect-dir="left">
+					<circle class="empty" r="10" cx="-60" cy="0"></circle>
+					<use class="not-empty" xlink:href="#arrow" transform="translate(-60)" />
+				</g>
+				<g data-connect="in" data-connect-name="in-bottom" data-connect-point="0,60" data-connect-dir="bottom">
+					<circle class="empty" r="10" cx="0" cy="60"></circle>
+					<use class="not-empty" xlink:href="#arrow" transform="translate(0, 60) rotate(270 0 0)" />
+				</g>
+				<g data-connect="in" data-connect-name="in-top" data-connect-point="0,-60" data-connect-dir="top">
+					<circle class="empty" r="10" cx="0" cy="-60"></circle>
+					<use class="not-empty" xlink:href="#arrow" transform="translate(0, -60) rotate(90 0 0)" />
+				</g>
 			</g>
 		</defs>
 		<g data-name="canvas"></g>

@@ -135,6 +135,10 @@ export class SvgPresenter extends EventTarget {
 		let targetPresenterObj = null;
 		if (target) {
 			targetPresenterObj = this._svgElemToPresenterObj.get(target instanceof SVGSVGElement ? this._canvasSvgEl : target);
+			// TODO: refactor
+			if (!targetPresenterObj) {
+				targetPresenterObj = this._svgElemToPresenterObj.get(target.closest('[data-connect]'));
+			}
 			if (!targetPresenterObj) {
 				targetPresenterObj = this._svgElemToPresenterObj.get(target.closest('[data-templ]'));
 			}
