@@ -34,7 +34,7 @@ export class SvgPresenter extends EventTarget {
 	 * @param {PresenterShapeAppendParam | PresenterPathAppendParams} param
 	 * @returns {IPresenterElement}
 	 */
-	appendChild(type, param) {
+	append(type, param) {
 		switch (type) {
 			case 'shape':
 				return shapeCreate({
@@ -52,10 +52,11 @@ export class SvgPresenter extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterElement} elem
+	 * @param {ISvgPresenterElement} elem
 	 */
 	delete(elem) {
-		throw new Error('Method not implemented.');
+		this._svgElemToPresenterObj.delete(elem.svgEl);
+		elem.svgEl.remove();
 	}
 
 	/**

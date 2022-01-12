@@ -1,6 +1,6 @@
 import { svgPositionSet, svgPositionGet, svgRotate } from '../infrastructure/svg-utils.js';
 
-/** @implements {IPresenterShape} */
+/** @implements {ISvgPresenterElement} */
 export class SvgShape {
 	/**
 	 * @param {object} param
@@ -9,14 +9,13 @@ export class SvgShape {
 	 * @param {IPresenterConnector=} param.defaultInConnector
 	 */
 	constructor({ svgEl, connectable = null, defaultInConnector = null }) {
-		/** @private */
-		this._svgEl = svgEl;
-
 		/**
 		 * @type {Set<PresenterShapeState>}
 		 * @private
 		 */
 		this._state = new Set();
+
+		this.svgEl = svgEl;
 
 		/** @type {PresenterElementType} */
 		this.type = 'shape';
@@ -34,28 +33,28 @@ export class SvgShape {
 
 	/** @returns {Point} */
 	postionGet() {
-		return svgPositionGet(this._svgEl);
+		return svgPositionGet(this.svgEl);
 	}
 
 	/** @param {PresenterShapeUpdateParam} param */
 	update(param) {
 		if (param.position) {
-			svgPositionSet(this._svgEl, param.position);
+			svgPositionSet(this.svgEl, param.position);
 		}
 
 		if (param.rotate) {
-			svgRotate(this._svgEl, param.rotate);
+			svgRotate(this.svgEl, param.rotate);
 		}
 
 		if (param.props) {
-			SvgShape._attrsSet(this._svgEl, param.props);
+			SvgShape._attrsSet(this.svgEl, param.props);
 		}
 
 		if (param.state) {
 			this._state = param.state;
-			if (this._state.has('selected')) { this._svgEl.classList.add('selected'); } else { this._svgEl.classList.remove('selected'); }
-			if (this._state.has('hovered')) { this._svgEl.classList.add('hover'); } else { this._svgEl.classList.remove('hover'); }
-			if (this._state.has('disabled')) { this._svgEl.style.pointerEvents = 'none'; } else { this._svgEl.style.pointerEvents = 'auto'; }
+			if (this._state.has('selected')) { this.svgEl.classList.add('selected'); } else { this.svgEl.classList.remove('selected'); }
+			if (this._state.has('hovered')) { this.svgEl.classList.add('hover'); } else { this.svgEl.classList.remove('hover'); }
+			if (this._state.has('disabled')) { this.svgEl.style.pointerEvents = 'none'; } else { this.svgEl.style.pointerEvents = 'auto'; }
 		}
 	}
 

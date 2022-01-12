@@ -1,7 +1,7 @@
 interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
 	querySelector<T extends IPresenterElement>(query: string): T;
-	appendChild(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParams): IPresenterElement;
+	append(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParams): IPresenterElement;
 	delete(elem: IPresenterElement): void;
 }
 

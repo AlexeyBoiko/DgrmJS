@@ -12,7 +12,7 @@ export function pathCreate({ svgCanvas, createParams }) {
 		.cloneNode(true));
 
 	// TODO: to reduce DOM changes (for performance) 'new SvgPath' must go before 'svg.appendChild'
-	svgCanvas.appendChild(pathSvgEl);
+	svgCanvas.append(pathSvgEl);
 
 	return new SvgPath({
 		svgEl: pathSvgEl,

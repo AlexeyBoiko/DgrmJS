@@ -15,7 +15,7 @@ export class ConnectorManager {
 	 * @returns {void}
 	 */
 	add(connectorStart, connectorEnd) {
-		const path = /** @type {IPresenterPath} */(this._presenter.appendChild(
+		const path = /** @type {IPresenterPath} */(this._presenter.append(
 			'path',
 			{
 				templateKey: 'path',

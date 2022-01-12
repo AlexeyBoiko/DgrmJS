@@ -41,7 +41,7 @@ export class DiagramBuilder extends EventTarget {
 	 * @returns {IPresenterElement}
 	 */
 	shapeAdd(type, param) {
-		return this._presenter.appendChild(type, param);
+		return this._presenter.append(type, param);
 	}
 
 	/**
@@ -118,8 +118,7 @@ export class DiagramBuilder extends EventTarget {
 				switch (evt.detail.target.type) {
 					case 'shape':
 					case 'connector':
-						// @ts-ignore
-						shapeStateDel(evt.detail.target, 'hovered');
+						shapeStateDel(/** @type {IPresenterConnector | IPresenterShape} */(evt.detail.target), 'hovered');
 						break;
 				}
 				break;
