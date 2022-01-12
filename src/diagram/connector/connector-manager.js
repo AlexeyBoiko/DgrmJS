@@ -43,12 +43,14 @@ export class ConnectorManager {
 	replaceEnd(connectorOld, connectorNew) {
 		/** @type {IPresenterPath} */
 		const path = last(connectorOld.connectedPaths, el => el[1] === 'end')[0];
-		path.update('end', {
-			position: ConnectorManager._pathPoint(connectorNew),
-			dir: connectorNew.dir ? connectorNew.dir : connectorOld.dir
+		path.update({
+			end: {
+				position: ConnectorManager._pathPoint(connectorNew),
+				dir: connectorNew.dir ? connectorNew.dir : connectorOld.dir
+			}
 		});
 
-		ConnectorManager._pathDel(connectorOld, path);
+		ConnectorManager._pathDel(connectorOld, path, 'end');
 		ConnectorManager._pathAdd(connectorNew, path, 'end');
 	}
 
@@ -63,15 +65,15 @@ export class ConnectorManager {
 		}
 
 		const shapePosition = shape.postionGet();
-		shape.connectedPaths.forEach((innerPoint, path) => {
-			path.update(
-				innerPoint.pathEndType,
-				{
-					position: {
-						x: shapePosition.x + innerPoint.innerPosition.x,
-						y: shapePosition.y + innerPoint.innerPosition.y
-					}
-				});
+		shape.connectedPaths.forEach((endPoints, path) => {
+			path.update({
+				start: endPoints.startInnerPosition
+					? { position: { x: shapePosition.x + endPoints.startInnerPosition.x, y: shapePosition.y + endPoints.startInnerPosition.y } }
+					: null,
+				end: endPoints.endInnerPosition
+					? { position: { x: shapePosition.x + endPoints.endInnerPosition.x, y: shapePosition.y + endPoints.endInnerPosition.y } }
+					: null
+			});
 		});
 	}
 
@@ -97,23 +99,48 @@ export class ConnectorManager {
 		}
 		connector.connectedPaths.set(path, endType);
 
+		//
+		// bind to shape
+
 		if (!connector.shape.connectedPaths) {
 			connector.shape.connectedPaths = new Map();
 		}
-		connector.shape.connectedPaths.set(
-			path,
-			{ innerPosition: connector.innerPosition, pathEndType: endType });
+		let shapePathPoints = connector.shape.connectedPaths.get(path);
+		if (!shapePathPoints) {
+			shapePathPoints = {};
+			connector.shape.connectedPaths.set(path, shapePathPoints);
+		}
+
+		if (endType === 'start') {
+			shapePathPoints.startInnerPosition = connector.innerPosition;
+		} else if (endType === 'end') {
+			shapePathPoints.endInnerPosition = connector.innerPosition;
+		}
 	}
 
 	/**
 	 * @private
-	 * @param {IConnectorConnector} connectorInElem
+	 * @param {IConnectorConnector} connector
 	 * @param {IPresenterPath} path
+	 * @param {PresenterPathEndType} endType
 	 * @returns {void}
 	 */
-	static _pathDel(connectorInElem, path) {
-		connectorInElem.connectedPaths.delete(path);
-		connectorInElem.shape.connectedPaths.delete(path);
+	static _pathDel(connector, path, endType) {
+		connector.connectedPaths.delete(path);
+
+		//
+		// unbind from shape
+
+		const shapePathPoints = connector.shape.connectedPaths.get(path);
+		if (endType === 'start') {
+			shapePathPoints.startInnerPosition = null;
+		} else if (endType === 'end') {
+			shapePathPoints.endInnerPosition = null;
+		}
+
+		if (!shapePathPoints.startInnerPosition && !shapePathPoints.endInnerPosition) {
+			connector.shape.connectedPaths.delete(path);
+		}
 	}
 
 	/**

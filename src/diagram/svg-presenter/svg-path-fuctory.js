@@ -3,7 +3,7 @@ import { SvgPath } from './svg-path.js';
 /**
  * @param {object} param
  * @param {SVGGElement} param.svgCanvas
- * @param {PresenterPathAppendParams} param.createParams
+ * @param {PresenterPathAppendParam} param.createParams
  * @returns {SvgPath}
  */
 export function pathCreate({ svgCanvas, createParams }) {

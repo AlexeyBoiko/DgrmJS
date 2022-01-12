@@ -31,7 +31,7 @@ export class SvgPresenter extends EventTarget {
 
 	/**
 	 * @param {PresenterChildAddType} type
-	 * @param {PresenterShapeAppendParam | PresenterPathAppendParams} param
+	 * @param {PresenterShapeAppendParam | PresenterPathAppendParam} param
 	 * @returns {IPresenterElement}
 	 */
 	append(type, param) {
@@ -46,7 +46,7 @@ export class SvgPresenter extends EventTarget {
 			case 'path':
 				return pathCreate({
 					svgCanvas: this._canvasSvgEl,
-					createParams: /** @type {PresenterPathAppendParams} */(param)
+					createParams: /** @type {PresenterPathAppendParam} */(param)
 				});
 		}
 	}

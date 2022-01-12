@@ -1,7 +1,7 @@
 interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
 	querySelector<T extends IPresenterElement>(query: string): T;
-	append(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParams): IPresenterElement;
+	append(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParam): IPresenterElement;
 	delete(elem: IPresenterElement): void;
 }
 
@@ -39,10 +39,12 @@ interface PresenterShapeAppendParam extends PresenterShapeUpdateParam {
 	templateKey: string;
 }
 
-interface PresenterPathAppendParams {
+interface PresenterPathUpdateParam {
+	start?: PresenterPathEnd;
+	end?: PresenterPathEnd;
+}
+interface PresenterPathAppendParam extends PresenterPathUpdateParam {
 	templateKey: string;
-	start: PresenterPathEnd;
-	end: PresenterPathEnd;
 }
 
 
@@ -98,7 +100,7 @@ interface IPresenterPath extends IPresenterElement {
 	 * @param endType end or start of path that change position
 	 * @param {PresenterPathEnd} param new position and direction
 	 */
-	update(endType: PresenterPathEndType, param: PresenterPathEnd): void;
+	update(param: PresenterPathUpdateParam): void;
 }
 
 

@@ -37,7 +37,7 @@ export class DiagramBuilder extends EventTarget {
 
 	/**
 	 * @param {PresenterChildAddType} type
-	 * @param {PresenterShapeAppendParam | PresenterPathAppendParams} param
+	 * @param {PresenterShapeAppendParam | PresenterPathAppendParam} param
 	 * @returns {IPresenterElement}
 	 */
 	shapeAdd(type, param) {

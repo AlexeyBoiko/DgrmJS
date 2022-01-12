@@ -1,11 +1,10 @@
-interface IConnectorInnerPoint {
-	/** postion into shape */
-	innerPosition: Point;
-	pathEndType: PresenterPathEndType;
+interface IConnectorShapePathPoints {
+	startInnerPosition?: Point, 
+	endInnerPosition?: Point
 }
 
 interface IConnetorShape extends IPresenterShape {
-	connectedPaths?: Map<IPresenterPath, IConnectorInnerPoint>;
+	connectedPaths?: Map<IPresenterPath, IConnectorShapePathPoints>;
 }
 
 interface IConnectorConnector extends IPresenterConnector { 

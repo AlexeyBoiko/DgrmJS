@@ -18,14 +18,12 @@ export class SvgPath {
 	}
 
 	/**
-	 * @param {PresenterPathEndType} endType
-	 * @param {PresenterPathEnd} param
+	 * @param {PresenterPathUpdateParam} param
 	 * @returns {void}
 	 */
-	update(endType, param) {
-		Object.assign(
-			endType === 'start' ? this._start : this._end,
-			param);
+	update(param) {
+		if (param.start) { Object.assign(this._start, param.start); }
+		if (param.end) { Object.assign(this._end, param.end); }
 		this._update();
 	}
 
