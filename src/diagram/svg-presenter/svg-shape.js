@@ -5,10 +5,11 @@ export class SvgShape {
 	/**
 	 * @param {object} param
 	 * @param {SVGGraphicsElement} param.svgEl
+	 * @param {'shape'|'canvas'=} param.type
 	 * @param {boolean=} param.connectable
 	 * @param {IPresenterConnector=} param.defaultInConnector
 	 */
-	constructor({ svgEl, connectable = null, defaultInConnector = null }) {
+	constructor({ svgEl, type = null, connectable = null, defaultInConnector = null }) {
 		/**
 		 * @type {Set<PresenterShapeState>}
 		 * @private
@@ -18,7 +19,7 @@ export class SvgShape {
 		this.svgEl = svgEl;
 
 		/** @type {PresenterElementType} */
-		this.type = 'shape';
+		this.type = type || 'shape';
 		this.connectable = connectable;
 		this.defaultInConnector = defaultInConnector;
 	}

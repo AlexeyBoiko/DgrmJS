@@ -40,7 +40,6 @@ export function shapeCreate({ svgCanvas, listener, svgElemToPresenterObj, create
 	shapeSvgEl.querySelectorAll('[data-connect]').forEach(
 		/** @param {SVGGraphicsElement} el */el => {
 			const connector = connectorCreate(el, shape);
-			el.addEventListener('pointerup', listener);
 			el.addEventListener('pointerdown', listener);
 			svgElemToPresenterObj.set(el, connector);
 		});

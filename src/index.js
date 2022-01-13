@@ -25,6 +25,6 @@ document.getElementById('menu')
 
 /** @param { CustomEvent<IDiagramEventDetail> } evt */
 function shapeSelect(evt) {
-	console.log(evt.detail.target);
+	// console.log(evt.detail.target);
 }
 diagram.on('select', shapeSelect);

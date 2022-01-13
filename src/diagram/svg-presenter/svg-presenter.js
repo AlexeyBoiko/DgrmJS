@@ -26,7 +26,7 @@ export class SvgPresenter extends EventTarget {
 		 * @private
 		 */
 		this._canvasSvgEl = svg.querySelector('[data-name="canvas"]');
-		this._svgElemToPresenterObj.set(this._canvasSvgEl, new SvgShape({ svgEl: this._canvasSvgEl }));
+		this._svgElemToPresenterObj.set(this._canvasSvgEl, new SvgShape({ svgEl: this._canvasSvgEl, type: 'canvas' }));
 	}
 
 	/**
@@ -93,10 +93,16 @@ export class SvgPresenter extends EventTarget {
 				break;
 			}
 			case 'pointerdown':
-			case 'pointerup':
 				this._dispatchEvent(
 					evt.type,
 					evt.currentTarget,
+					evt.offsetX,
+					evt.offsetY);
+				break;
+			case 'pointerup':
+				this._dispatchEvent(
+					evt.type,
+					/** @type {SVGGraphicsElement} */(document.elementFromPoint(evt.clientX, evt.clientY)),
 					evt.offsetX,
 					evt.offsetY);
 				break;

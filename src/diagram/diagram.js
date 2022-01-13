@@ -95,8 +95,12 @@ export class Diagram extends EventTarget {
 				}
 				break;
 			case 'pointerup':
-				if (evt.detail.target.type === 'connector') {
-					this._onConnectorUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
+				switch (evt.detail.target.type) {
+					case 'connector':
+						this._onConnectorUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
+						shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered');
+						shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target), 'hovered');
+						break;
 				}
 				this._movedClean();
 				break;
@@ -114,14 +118,16 @@ export class Diagram extends EventTarget {
 				}
 				break;
 			case 'pointerleave':
-				switch (evt.detail.target.type) {
-					case 'shape':
-						shapeStateDel(/** @type {IPresenterShape} */(evt.detail.target), 'hovered');
-						break;
-					case 'connector':
-						shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered');
-						shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target), 'hovered');
-						break;
+				if (this._movedShape && this._movedShape.connectable) {
+					switch (evt.detail.target.type) {
+						case 'shape':
+							shapeStateDel(/** @type {IPresenterShape} */(evt.detail.target), 'hovered');
+							break;
+						case 'connector':
+							shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered');
+							shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target), 'hovered');
+							break;
+					}
 				}
 				break;
 		}
@@ -132,13 +138,13 @@ export class Diagram extends EventTarget {
 	 * @private
 	 */
 	_onConnectorDown(evt) {
-		const connectorEnd = /** @type {IPresenterShape} */(this.shapeAdd('shape', connectorEndParams(evt.detail.target)));
-		this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 		switch (evt.detail.target.connectorType) {
 			case 'out': {
 				//
 				// connectorEnd create
 
+				const connectorEnd = /** @type {IPresenterShape} */(this.shapeAdd('shape', connectorEndParams(evt.detail.target)));
+				this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 				this._connectorManager.add(evt.detail.target, connectorEnd.defaultInConnector);
 				break;
 			}
@@ -147,6 +153,8 @@ export class Diagram extends EventTarget {
 					//
 					// disconnect
 
+					const connectorEnd = /** @type {IPresenterShape} */(this.shapeAdd('shape', connectorEndParams(evt.detail.target)));
+					this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 					this._connectorManager.replaceEnd(evt.detail.target, connectorEnd.defaultInConnector);
 					if (!this._connectorManager.any(evt.detail.target, 'end')) {
 						shapeStateDel(evt.detail.target, 'connected');
