@@ -1,13 +1,19 @@
-interface IConnectorShapePathPoints {
-	startInnerPosition?: Point, 
-	endInnerPosition?: Point
-}
+// interface IConnectorShapePathPoints {
+// 	startInnerPosition?: Point, 
+// 	endInnerPosition?: Point
+// }
 
 interface IConnetorShape extends IPresenterShape {
-	connectedPaths?: Map<IPresenterPath, IConnectorShapePathPoints>;
+	connectedPaths?: Set<IConnectorPath>;
 }
 
-interface IConnectorConnector extends IPresenterConnector { 
+interface IConnectorConnector extends IPresenterConnector {
 	shape: IConnetorShape;
-	connectedPaths?: Map<IPresenterPath, PresenterPathEndType>;
+	// 	connectedPaths?: Map<IPresenterPath, PresenterPathEndType>;
 }
+
+interface IConnectorPath extends IPresenterPath {
+	start: IConnectorConnector;
+	end: IConnectorConnector;
+}
+

@@ -62,11 +62,13 @@ export class Diagram extends EventTarget {
 	 * @returns {void}
 	 */
 	shapeDel(param) {
-		// TODO: delete connectors
-
-		this._presenter.delete(/** @type {IPresenterShape} */(param.shape
+		/** @type {IPresenterShape} */
+		const shape = param.shape
 			? param.shape
-			: this._presenter.querySelector(param.selector)));
+			: this._presenter.querySelector(param.selector);
+
+		this._connectorManager.deleteByShape(shape);
+		this._presenter.delete(shape);
 	}
 
 	/** @param { CustomEvent<IPresenterEventDetail> } evt */
@@ -136,7 +138,7 @@ export class Diagram extends EventTarget {
 					const connectorEnd = /** @type {IPresenterShape} */(this.shapeAdd('shape', connectorEndParams(evt.detail.target)));
 					this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 					this._connectorManager.replaceEnd(evt.detail.target, connectorEnd.defaultInConnector);
-					if (!this._connectorManager.any(evt.detail.target, 'end')) {
+					if (!this._connectorManager.any(evt.detail.target)) {
 						shapeStateDel(evt.detail.target, 'connected');
 					}
 				}

@@ -12,7 +12,12 @@ interface IConnectorManager {
 	updatePosition(shape: IPresenterShape): void;
 
 	/**
-	 * count of connectors of connectorInElem 
+	 * delete related to shape connectors
 	 */
-	any(connector: IPresenterConnector, endType: PresenterPathEndType): boolean;
+	deleteByShape(shape: IPresenterShape): void;
+
+	/**
+	 * count of connectors of connectorElem 
+	 */
+	any(connector: IPresenterConnector): boolean;
 }

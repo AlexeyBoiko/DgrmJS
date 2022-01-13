@@ -1,4 +1,4 @@
-/** @implements {IPresenterPath} */
+/** @implements {ISvgPresenterElement} */
 export class SvgPath {
 	/**
 	 * @param {object} param
@@ -7,8 +7,7 @@ export class SvgPath {
 	 * @param {PresenterPathEnd} param.end
 	 */
 	constructor({ svgEl, start, end }) {
-		/** @private */
-		this._svgEl = svgEl;
+		this.svgEl = svgEl;
 		this._start = start;
 		this._end = end;
 
@@ -29,7 +28,7 @@ export class SvgPath {
 
 	/** @private */
 	_update() {
-		this._svgEl.setAttribute('d', SvgPath._calcDAttr(70, this._start, this._end));
+		this.svgEl.setAttribute('d', SvgPath._calcDAttr(70, this._start, this._end));
 	}
 
 	/**

@@ -1,4 +1,5 @@
 import { any, last } from '../infrastructure/iterable-utils.js';
+import { shapeStateDel } from '../shape-utils.js';
 
 /** @implements {IConnectorManager} */
 export class ConnectorManager {
@@ -15,7 +16,7 @@ export class ConnectorManager {
 	 * @returns {void}
 	 */
 	add(connectorStart, connectorEnd) {
-		const path = /** @type {IPresenterPath} */(this._presenter.append(
+		const path = /** @type {IConnectorPath} */(this._presenter.append(
 			'path',
 			{
 				templateKey: 'path',
@@ -29,8 +30,11 @@ export class ConnectorManager {
 				}
 			}));
 
-		ConnectorManager._pathAdd(connectorStart, path, 'start');
-		ConnectorManager._pathAdd(connectorEnd, path, 'end');
+		path.start = connectorStart;
+		path.end = connectorEnd;
+
+		ConnectorManager._pathAdd(connectorStart.shape, path);
+		ConnectorManager._pathAdd(connectorEnd.shape, path);
 	}
 
 	/**
@@ -41,8 +45,7 @@ export class ConnectorManager {
 	 * @returns {void}
 	 */
 	replaceEnd(connectorOld, connectorNew) {
-		/** @type {IPresenterPath} */
-		const path = last(connectorOld.connectedPaths, el => el[1] === 'end')[0];
+		const path = last(connectorOld.shape.connectedPaths, pp => pp.end === connectorOld);
 		path.update({
 			end: {
 				position: ConnectorManager._pathPoint(connectorNew),
@@ -50,8 +53,11 @@ export class ConnectorManager {
 			}
 		});
 
-		ConnectorManager._pathDel(connectorOld, path, 'end');
-		ConnectorManager._pathAdd(connectorNew, path, 'end');
+		path.end = connectorNew;
+		if (connectorOld.shape !== connectorNew.shape) {
+			connectorOld.shape.connectedPaths.delete(path);
+			ConnectorManager._pathAdd(connectorNew.shape, path);
+		}
 	}
 
 	/**
@@ -65,82 +71,56 @@ export class ConnectorManager {
 		}
 
 		const shapePosition = shape.postionGet();
-		shape.connectedPaths.forEach((endPoints, path) => {
+		for (const path of shape.connectedPaths) {
 			path.update({
-				start: endPoints.startInnerPosition
-					? { position: { x: shapePosition.x + endPoints.startInnerPosition.x, y: shapePosition.y + endPoints.startInnerPosition.y } }
+				start: path.start.shape === shape
+					? { position: { x: shapePosition.x + path.start.innerPosition.x, y: shapePosition.y + path.start.innerPosition.y } }
 					: null,
-				end: endPoints.endInnerPosition
-					? { position: { x: shapePosition.x + endPoints.endInnerPosition.x, y: shapePosition.y + endPoints.endInnerPosition.y } }
+				end: path.end.shape === shape
+					? { position: { x: shapePosition.x + path.end.innerPosition.x, y: shapePosition.y + path.end.innerPosition.y } }
 					: null
 			});
-		});
+		}
 	}
 
 	/**
-	 * @param {IConnectorConnector} connectorInElem
-	 * @param {PresenterPathEndType} endType
+	 * delete related to shape connectors
+	 * @param {IConnetorShape} shape
+	 * @returns {void}
+	 */
+	deleteByShape(shape) {
+		if (!any(shape.connectedPaths)) { return; }
+
+		for (const path of shape.connectedPaths) {
+			path.end.shape.connectedPaths.delete(path);
+			shapeStateDel(path.end, 'connected');
+
+			path.start.shape.connectedPaths.delete(path);
+			shapeStateDel(path.start, 'connected');
+
+			if (path.end.shape.connectable) {
+				this._presenter.delete(path.end.shape);
+			}
+			this._presenter.delete(path);
+		}
+	}
+
+	/**
+	 * @param {IConnectorConnector} connector
 	 * @returns {boolean}
 	 */
-	any(connectorInElem, endType) {
-		return any(connectorInElem.connectedPaths, el => el[1] === endType);
+	any(connector) {
+		return any(connector.shape.connectedPaths, path => path.start === connector || path.end === connector);
 	}
 
 	/**
+	 * @param {IConnetorShape} shape
+	 * @param {IConnectorPath} path
 	 * @private
-	 * @param {IConnectorConnector} connector
-	 * @param {IPresenterPath} path
-	 * @param {PresenterPathEndType} endType
-	 * @returns {void}
 	 */
-	static _pathAdd(connector, path, endType) {
-		if (!connector.connectedPaths) {
-			connector.connectedPaths = new Map();
-		}
-		connector.connectedPaths.set(path, endType);
-
-		//
-		// bind to shape
-
-		if (!connector.shape.connectedPaths) {
-			connector.shape.connectedPaths = new Map();
-		}
-		let shapePathPoints = connector.shape.connectedPaths.get(path);
-		if (!shapePathPoints) {
-			shapePathPoints = {};
-			connector.shape.connectedPaths.set(path, shapePathPoints);
-		}
-
-		if (endType === 'start') {
-			shapePathPoints.startInnerPosition = connector.innerPosition;
-		} else if (endType === 'end') {
-			shapePathPoints.endInnerPosition = connector.innerPosition;
-		}
-	}
-
-	/**
-	 * @private
-	 * @param {IConnectorConnector} connector
-	 * @param {IPresenterPath} path
-	 * @param {PresenterPathEndType} endType
-	 * @returns {void}
-	 */
-	static _pathDel(connector, path, endType) {
-		connector.connectedPaths.delete(path);
-
-		//
-		// unbind from shape
-
-		const shapePathPoints = connector.shape.connectedPaths.get(path);
-		if (endType === 'start') {
-			shapePathPoints.startInnerPosition = null;
-		} else if (endType === 'end') {
-			shapePathPoints.endInnerPosition = null;
-		}
-
-		if (!shapePathPoints.startInnerPosition && !shapePathPoints.endInnerPosition) {
-			connector.shape.connectedPaths.delete(path);
-		}
+	static _pathAdd(shape, path) {
+		if (!shape.connectedPaths) { shape.connectedPaths = new Set(); }
+		shape.connectedPaths.add(path);
 	}
 
 	/**
