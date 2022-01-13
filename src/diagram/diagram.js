@@ -95,40 +95,20 @@ export class Diagram extends EventTarget {
 				}
 				break;
 			case 'pointerup':
-				switch (evt.detail.target.type) {
-					case 'connector':
-						this._onConnectorUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
-						shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered');
-						shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target), 'hovered');
-						break;
+				if (evt.detail.target.type === 'connector') {
+					this._onConnectorUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
 				}
 				this._movedClean();
+				this._hoveredClean();
 				break;
 			case 'pointerenter':
-				if (this._movedShape && this._movedShape.connectable) {
-					switch (evt.detail.target.type) {
-						case 'shape':
-							shapeStateAdd(/** @type {IPresenterShape} */(evt.detail.target), 'hovered');
-							break;
-						case 'connector':
-							shapeStateAdd(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered');
-							shapeStateAdd(/** @type {IPresenterConnector} */(evt.detail.target), 'hovered');
-							break;
-					}
+				if (this._movedShape && this._movedShape.connectable &&
+					(evt.detail.target.type === 'connector' || evt.detail.target.type === 'shape')) {
+					this._hoveredSet(/** @type {IPresenterStatable & IPresenterElement} */(evt.detail.target));
 				}
 				break;
 			case 'pointerleave':
-				if (this._movedShape && this._movedShape.connectable) {
-					switch (evt.detail.target.type) {
-						case 'shape':
-							shapeStateDel(/** @type {IPresenterShape} */(evt.detail.target), 'hovered');
-							break;
-						case 'connector':
-							shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered');
-							shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target), 'hovered');
-							break;
-					}
-				}
+				this._hoveredClean();
 				break;
 		}
 	}
@@ -237,6 +217,34 @@ export class Diagram extends EventTarget {
 
 		this._movedDelta = null;
 		this._movedShape = null;
+	}
+
+	/**
+	 * @param {IPresenterStatable & IPresenterElement} shape
+	 * @private
+	 */
+	_hoveredSet(shape) {
+		/** @private */
+		this._hoveredShape = shape;
+
+		shapeStateAdd(shape, 'hovered');
+		if (shape.type === 'connector') {
+			shapeStateAdd(/** @type {IPresenterConnector} */(shape).shape, 'hovered');
+		}
+	}
+
+	/** @private */
+	_hoveredClean() {
+		if (!this._hoveredShape) {
+			return;
+		}
+
+		shapeStateDel(this._hoveredShape, 'hovered');
+		if (this._hoveredShape.type === 'connector') {
+			shapeStateDel(/** @type {IPresenterConnector} */(this._hoveredShape).shape, 'hovered');
+		}
+
+		this._hoveredShape = null;
 	}
 
 	/**
