@@ -47,7 +47,8 @@ function selectShape(shape) {
 diagram.on('select', /** @param { CustomEvent<IDiagramEventDetail> } evt */ evt => selectShape(evt.detail.target));
 
 // delete shape
-document.getElementById('del').addEventListener('click', _ => {
+document.getElementById('del').addEventListener('click', evt => {
+	evt.preventDefault();
 	if (selecterShape) {
 		shapeData.delete(selecterShape);
 		diagram.shapeDel({ shape: selecterShape });
