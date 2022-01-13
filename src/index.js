@@ -23,8 +23,16 @@ document.getElementById('menu')
 //
 // edit shape
 
-/** @param { CustomEvent<IDiagramEventDetail> } evt */
-function shapeSelect(evt) {
-	// console.log(evt.detail.target);
-}
-diagram.on('select', shapeSelect);
+/** @type {IPresenterShape} */
+let selecterShape;
+diagram.on('select', /** @param { CustomEvent<IDiagramEventDetail> } evt */ evt => {
+	if (evt.detail.target.type === 'shape') {
+		selecterShape = evt.detail.target;
+	}
+});
+
+document.getElementById('del').addEventListener('pointerdown', _ => {
+	if (selecterShape) {
+		diagram.shapeDel({ shape: selecterShape });
+	}
+});

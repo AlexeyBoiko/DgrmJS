@@ -121,7 +121,10 @@ export class SvgPresenter extends EventTarget {
 		if (this._pointElem) {
 			this._dispatchEvent('pointerleave', this._pointElem, evt.offsetX, evt.offsetY);
 		}
-		this._dispatchEvent('pointerenter', pointElem, evt.offsetX, evt.offsetY);
+
+		if (pointElem) {
+			this._dispatchEvent('pointerenter', pointElem, evt.offsetX, evt.offsetY);
+		}
 
 		/**
 		 * @type {SVGGraphicsElement}
@@ -140,7 +143,9 @@ export class SvgPresenter extends EventTarget {
 	_dispatchEvent(type, target, offsetX, offsetY) {
 		let targetPresenterObj = null;
 		if (target) {
-			targetPresenterObj = this._svgElemToPresenterObj.get(target instanceof SVGSVGElement ? this._canvasSvgEl : target);
+			targetPresenterObj = this._svgElemToPresenterObj.get((target === this._svg || target.ownerSVGElement !== this._svg)
+				? this._canvasSvgEl
+				: target);
 			// TODO: refactor
 			if (!targetPresenterObj) {
 				targetPresenterObj = this._svgElemToPresenterObj.get(target.closest('[data-connect]'));
