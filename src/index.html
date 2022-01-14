@@ -91,7 +91,6 @@
 					C427.069,372.733,372.764,427.049,306.01,427.049z M306.01,205.136c-55.609,0-100.854,45.245-100.854,100.854
 					c0,55.6,45.244,100.833,100.854,100.833c55.6,0,100.844-45.233,100.844-100.833C406.844,250.38,361.609,205.136,306.01,205.136z" />
 			</svg>
-			<!--<div style="margin: 0 auto; min-width: 0;">-->
 			<svg data-shape="circile">
 				<circle r="20" cx="21" cy="21"></circle>
 			</svg>
@@ -100,7 +99,7 @@
 			</svg>
 			<svg data-shape="rhomb" class="big">
 				<g transform="translate(1,1)">
-					<path d="M0 20 L30 0 L60 20 L30 40 Z"></path>
+					<path d="M0 20 L30 0 L60 20 L30 40 Z" stroke-width="2" stroke-linejoin="round"></path>
 				</g>
 			</svg>
 			<svg data-shape="text">
@@ -257,6 +256,23 @@
 				<g data-connect="in" data-connect-point="60,70" data-connect-dir="bottom">
 					<circle class="empty" r="10" cx="60" cy="70"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(60, 70) rotate(270 0 0)" />
+				</g>
+			</g>
+
+			<g data-templ="rhomb">
+				<path d="M0 35 L60 0 L120 35 L60 70 Z" stroke-width="18" stroke-linejoin="round" stroke="#1D809F"
+					fill="#1D809F"></path>
+				<text x="60" y="35" text-anchor="middle" data-name="text" alignment-baseline="central" fill="#fff"
+					style="user-select:none; pointer-events: none;">Title</text>
+
+				<circle data-connect="out" data-connect-point="128,35" data-connect-dir="right" r="10" cx="128" cy="35">
+				</circle>
+				<circle data-connect="out" data-connect-point="-8,35" data-connect-dir="left" r="10" cx="-8" cy="35">
+				</circle>
+
+				<g data-connect="in" data-connect-point="60,-8" data-connect-dir="top">
+					<circle class="empty" r="10" cx="60" cy="-8"></circle>
+					<use class="not-empty" xlink:href="#arrow" transform="translate(60, -8) rotate(90 0 0)" />
 				</g>
 			</g>
 		</defs>
