@@ -55,7 +55,9 @@ export class ConnectorManager {
 
 		path.end = connectorNew;
 		if (connectorOld.shape !== connectorNew.shape) {
-			connectorOld.shape.connectedPaths.delete(path);
+			if (path.start.shape !== connectorOld.shape) {
+				connectorOld.shape.connectedPaths.delete(path);
+			}
 			ConnectorManager._pathAdd(connectorNew.shape, path);
 		}
 	}
