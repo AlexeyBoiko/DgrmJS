@@ -64,9 +64,8 @@ function shapeSelect(shape) {
 		selecterShape = shape;
 		settingsPanel.classList.add('selected');
 
-		const title = shapeData.get(shape);
-		if (title) {
-			textField.value = title;
+		if (shapeData.has(shape)) {
+			textField.value = shapeData.get(shape);
 			textField.disabled = false;
 		} else {
 			textField.value = null;
