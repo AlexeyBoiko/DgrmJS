@@ -1,32 +1,65 @@
 import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-fuctory.js';
 
-// @ts-ignore
-const diagram = svgDiagramCreate(document.getElementById('diagram'));
+//
+// html bind
+
+const settingsPanel = document.getElementById('panel');
+const textField = /** @type {HTMLInputElement} */(document.getElementById('text'));
+textField.addEventListener('input', _ => shapeUpdate());
+textField.addEventListener('change', _ => shapeUpdate());
+document.getElementById('del').addEventListener('click', evt => { evt.preventDefault(); shapeDel(); });
+document.getElementById('gear').addEventListener('click', evt => { evt.preventDefault(); menuToggle(); });
+document.getElementById('menu').querySelectorAll('[data-shape]')
+	.forEach(itm => itm.addEventListener('click', /** @param {PointerEvent & { currentTarget: Element }} evt */evt => {
+		evt.preventDefault(); shapeAdd(evt.currentTarget.getAttribute('data-shape'));
+	}));
+
+//
+// logic
 
 /** @type {WeakMap<IPresenterElement, string>} */
 const shapeData = new WeakMap();
 
-const settingsPanel = document.getElementById('panel');
-const textField = /** @type {HTMLInputElement} */(document.getElementById('text'));
-
-// add shape
-document.getElementById('menu')
-	.querySelectorAll('[data-shape]')
-	.forEach(itm => itm.addEventListener('click', /** @param {PointerEvent & { currentTarget: Element }} evt */evt => {
-		shapeData.set(diagram.shapeAdd('shape', {
-			templateKey: evt.currentTarget.getAttribute('data-shape'),
-			position: { x: 120, y: 120 },
-			props: {
-				text: { textContent: 'Title' }
-			}
-		}),
-		'Title');
-	}));
-
 /** @type {IPresenterShape} */
 let selecterShape;
+
+/** @ts-ignore */
+const diagram = svgDiagramCreate(document.getElementById('diagram'))
+	.on('select', /** @param { CustomEvent<IDiagramEventDetail> } evt */ evt => shapeSelect(evt.detail.target));
+
+/** @param {string} templateKey */
+function shapeAdd(templateKey) {
+	shapeData.set(diagram.shapeAdd('shape', {
+		templateKey: templateKey,
+		position: { x: 120, y: 120 },
+		props: {
+			text: { textContent: 'Title' }
+		}
+	}),
+	'Title');
+}
+
+function shapeDel() {
+	if (!selecterShape) { return; }
+
+	shapeData.delete(selecterShape);
+	diagram.shapeDel({ shape: selecterShape });
+	shapeSelect(null);
+}
+
+function shapeUpdate() {
+	if (!selecterShape) { return; }
+
+	shapeData.set(selecterShape, textField.value);
+	selecterShape.update({
+		props: {
+			text: { textContent: textField.value }
+		}
+	});
+}
+
 /** @param {IPresenterShape} shape */
-function selectShape(shape) {
+function shapeSelect(shape) {
 	if (shape && shape.type === 'shape') {
 		selecterShape = shape;
 		settingsPanel.classList.add('selected');
@@ -44,23 +77,11 @@ function selectShape(shape) {
 		settingsPanel.classList.remove('selected');
 	}
 }
-diagram.on('select', /** @param { CustomEvent<IDiagramEventDetail> } evt */ evt => selectShape(evt.detail.target));
 
-// delete shape
-document.getElementById('del').addEventListener('click', evt => {
-	evt.preventDefault();
-	if (selecterShape) {
-		shapeData.delete(selecterShape);
-		diagram.shapeDel({ shape: selecterShape });
-		selectShape(null);
-	}
-});
-
-// toggle menu
-document.getElementById('gear').addEventListener('click', _ => {
+function menuToggle() {
 	if (settingsPanel.classList.contains('open')) {
 		settingsPanel.classList.remove('open');
 	} else {
 		settingsPanel.classList.add('open');
 	}
-});
+}
