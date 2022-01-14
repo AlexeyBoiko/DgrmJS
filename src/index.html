@@ -134,7 +134,7 @@
 				fill: transparent;
 			}
 
-			[data-templ].selected use {
+			[data-templ].selected use, [data-templ="text"] circle {
 				fill: rgb(108 187 247 / 51%);
 			}
 
@@ -176,6 +176,14 @@
 
 			[data-connect="in"].connected .empty {
 				display: none;
+			}
+
+			[data-templ="text"] circle {
+				display: none;
+			}
+
+			[data-templ="text"].selected circle {
+				display: unset;
 			}
 		</style>
 		<defs>
@@ -276,7 +284,8 @@
 			</g>
 
 			<g data-templ="text">
-				<text data-name="text" fill="rgb(73, 80, 87)">Title</text>
+				<circle r="13" cx="0" cy="0"></circle>
+				<text data-name="text" fill="rgb(73, 80, 87)" alignment-baseline="central">Title</text>
 			</g>
 		</defs>
 		<g data-name="canvas"></g>
