@@ -1,0 +1,144 @@
+html, body, #diagram {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	background-color: #fff;
+	user-select: none;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Liberation Sans", sans-serif;
+	color: rgb(73, 80, 87);
+}
+
+a {
+	color: #0d6efd;
+	text-decoration: underline;
+}
+
+input {
+	box-sizing: border-box;
+	width: 100%;
+	padding: .5rem .75rem;
+	border: 1px solid #d2d6da;
+	border-radius: .5rem;
+	font-size: 16px;
+	font-weight: 400;
+}
+
+input:focus, input:focus-within, input:focus-visible {
+	outline: 2px solid rgb(225, 151, 211);
+}
+
+button {
+	margin: 0;
+	padding: 0;
+	border: none;
+	background: none;
+}
+
+.panel {
+	position: fixed;
+	bottom: 0;
+	box-shadow: 0px 0px 58px 2px rgba(34, 60, 80, 0.2);
+	border-radius: 0 16px 0 0;
+	background-color: rgba(255,255,255, .7);
+}
+
+.menu {
+	overflow-x: auto;
+	white-space: nowrap;
+	display: flex;
+	padding: 0 5px;
+}
+
+	.menu svg {
+		height: 42px;
+		display: inline-block;
+		padding: 15px 10px;
+		stroke: #344767;
+		stroke-width: 2px;
+		fill: #fff;
+		width: 42px;
+		min-width: 42px;
+	}
+
+	.menu a {
+		display: none;
+		line-height: 42px;
+		padding: 10px;
+		font-size:large;
+	}
+
+	.menu .big {
+		width: 62px;
+		min-width: 62px;
+	}
+
+	.menu svg:nth-of-type(2), .menu a:first-of-type {
+		padding-left: 15px;
+	}
+
+	.menu #gear {
+		padding-right: 15px;
+		border-right: 1px solid rgb(204 207 210);
+		fill: rgba(58, 65, 111, 0.5);
+	}
+
+@media only screen and (max-width: 700px) {
+	.panel {
+		width: 100%;
+		border-radius: 0;
+	}
+
+	.panel.open {
+		border-radius: 16px 16px 0 0;
+	}
+
+	.menu a {
+		display:unset;
+	}
+
+	.menu svg:last-of-type {
+		padding-right: 15px;
+		border-right: 1px solid rgb(204 207 210);
+		fill: rgba(58, 65, 111, 0.5);
+	}
+
+	.links {
+		display: none;
+	}
+}
+
+.links {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	padding: 15px;
+}
+
+
+.settings {
+	height: 112px;
+	display: none;
+	border-bottom: 1px solid rgb(204 207 210);
+}
+.panel.open .settings { display: block; }
+
+form { display: none;} 
+.panel.selected form { display: block;}
+.panel.selected .notset { display: none;}
+
+.notset { 
+	padding: 23px 15px;
+	text-align: center;
+}
+
+form {
+	padding: 15px;
+}
+form footer {
+	text-align: right;
+	padding-top: 15px;
+}
+form header {
+	text-align: right;
+	padding-bottom: 15px;
+}
