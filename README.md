@@ -1,5 +1,4 @@
 # DgrmJS
-[Demo diagram editor](https://alexeyboiko.github.io/DgrmJS/ "Diagram builder demo")
 
 DgrmJS is a JavaScript library for creating SVG diagrams.  
 The main goal of the library is to set up workflows in BPM (Business Process Management) systems.
@@ -7,6 +6,13 @@ The main goal of the library is to set up workflows in BPM (Business Process Man
 - Works on desktop and mobile
 - Has no dependency
 - Small size
+
+<br />
+
+[Demo state machine workflow editor](https://alexeyboiko.github.io/DgrmJS/ "Diagram builder demo")
+
+<img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-sample-workflow.png" alt="workflow" width="600"/>
+
 
 ## Main idea
 - Allow developers to use standard SVG objects and features to declaratively create shapes that will be used in the diagram.  
