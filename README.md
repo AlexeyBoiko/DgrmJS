@@ -149,5 +149,5 @@ In this example:
 Soon
 
 ## License
-Not for commercial use. Contact me [Alexey Boyko](https://github.com/AlexeyBoiko "Alexey Boyko") for details.
+Not for commercial use. Contact me for details: [Alexey Boyko](https://github.com/AlexeyBoiko "Alexey Boyko").
 
