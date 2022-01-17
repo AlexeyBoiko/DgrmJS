@@ -31,8 +31,8 @@ diagram.shapeAdd method add to canvas shape:
 - created by template with name ‘circle’
 - to position at point 120, 120
 - props set
-  - ```g``` tag ```fill``` attribute to ```#344767```
-  - textContent of the inner element with ```data-name="text"``` to "Title"
+  - ```<g>``` tag ```fill``` attribute to ```#344767```
+  - ```textContent``` of the inner element with ```data-name="text"``` to "Title"
 
 This way you can set any attribute of any shape object.
 
@@ -95,7 +95,7 @@ Add ```data-connect="out"``` to mark element as a out connector:
 
 ### Events
 In this example:
-- we subscribe to the ```select``` method
+- we subscribe to the ```select``` event
 - update title of the selected shape
 
 ```html
