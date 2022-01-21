@@ -13,7 +13,7 @@
 			<div class="notset">
 				Select shape
 			</div>
-			<form name="shape">
+			<div class="form">
 				<header>
 					<button id="del">
 						<svg height="26px" viewBox="0 0 482.428 482.429"
@@ -36,7 +36,7 @@
 					</button>
 				</header>
 				<input id="text" type="text" />
-			</form>
+			</div>
 		</div>
 		<div id="menu" class="menu">
 			<svg id="gear" viewBox="0 0 612 612" style="enable-background:new 0 0 612 612;">
@@ -180,39 +180,41 @@
 			<path data-templ="path" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;">
 			</path>
 
-			<g data-templ="connect-end" data-connect="in" data-connect-point="0,0"
-				data-connectable="true">
+			<g data-templ="connect-end" data-connect="in" data-connect-point="0,0" data-connectable="true">
 				<use xlink:href="#arrow" />
 			</g>
 
 			<g data-templ="circle">
-				<circle data-name="circle" r="60" fill="#ff6600" stroke="#fff" stroke-width="1" />
-				<text data-name="text" text-anchor="middle" alignment-baseline="central" fill="#fff"
-					style="user-select:none; pointer-events: none;"
-					font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">Sun</text>
+				<circle data-key="circle" r="60" fill="#ff6600" stroke="#fff" stroke-width="1" />
+				<text data-key="text" text-anchor="middle" alignment-baseline="central" fill="#fff"
+					style="user-select:none; pointer-events: none;">Sun</text>
 
-				<circle data-connect="out" data-connect-point="60,0" data-connect-dir="right" r="10" cx="60" cy="0">
+				<circle data-key="outright" data-connect="out" data-connect-point="60,0" data-connect-dir="right" r="10"
+					cx="60" cy="0">
 				</circle>
-				<circle data-connect="out" data-connect-point="-60,0" data-connect-dir="left" r="10" cx="-60" cy="0">
+				<circle data-key="outleft" data-connect="out" data-connect-point="-60,0" data-connect-dir="left" r="10"
+					cx="-60" cy="0">
 				</circle>
-				<circle data-connect="out" data-connect-point="0,60" data-connect-dir="bottom" r="10" cx="0" cy="60">
+				<circle data-key="outbottom" data-connect="out" data-connect-point="0,60" data-connect-dir="bottom"
+					r="10" cx="0" cy="60">
 				</circle>
-				<circle data-connect="out" data-connect-point="0,-60" data-connect-dir="top" r="10" cx="0" cy="-60">
+				<circle data-key="outtop" data-connect="out" data-connect-point="0,-60" data-connect-dir="top" r="10"
+					cx="0" cy="-60">
 				</circle>
 
-				<g data-connect="in" data-connect-point="60,0" data-connect-dir="right">
+				<g data-key="inright" data-connect="in" data-connect-point="60,0" data-connect-dir="right">
 					<circle class="empty" r="10" cx="60" cy="0"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="rotate(180 30 0)" />
 				</g>
-				<g data-connect="in" data-connect-point="-60,0" data-connect-dir="left">
+				<g data-key="inleft" data-connect="in" data-connect-point="-60,0" data-connect-dir="left">
 					<circle class="empty" r="10" cx="-60" cy="0"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(-60)" />
 				</g>
-				<g data-connect="in" data-connect-point="0,60" data-connect-dir="bottom">
+				<g data-key="inbottom" data-connect="in" data-connect-point="0,60" data-connect-dir="bottom">
 					<circle class="empty" r="10" cx="0" cy="60"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(0, 60) rotate(270 0 0)" />
 				</g>
-				<g data-connect="in" data-connect-point="0,-60" data-connect-dir="top">
+				<g data-key="intop" data-connect="in" data-connect-point="0,-60" data-connect-dir="top">
 					<circle class="empty" r="10" cx="0" cy="-60"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(0, -60) rotate(90 0 0)" />
 				</g>
@@ -220,31 +222,35 @@
 
 			<g data-templ="rect">
 				<rect width="120" height="70" rx="15" ry="15" fill="#1aaee5" stroke="#fff" stroke-width="1"></rect>
-				<text x="60" y="35" text-anchor="middle" data-name="text" alignment-baseline="central" fill="#fff"
+				<text x="60" y="35" text-anchor="middle" data-key="text" alignment-baseline="central" fill="#fff"
 					style="user-select:none; pointer-events: none;">Title</text>
 
-				<circle data-connect="out" data-connect-point="120,35" data-connect-dir="right" r="10" cx="120" cy="35">
+				<circle data-key="outright" data-connect="out" data-connect-point="120,35" data-connect-dir="right"
+					r="10" cx="120" cy="35">
 				</circle>
-				<circle data-connect="out" data-connect-point="0,35" data-connect-dir="left" r="10" cx="0" cy="35">
+				<circle data-key="outleft" data-connect="out" data-connect-point="0,35" data-connect-dir="left" r="10"
+					cx="0" cy="35">
 				</circle>
-				<circle data-connect="out" data-connect-point="60,0" data-connect-dir="top" r="10" cx="60" cy="0">
+				<circle data-key="outtop" data-connect="out" data-connect-point="60,0" data-connect-dir="top" r="10"
+					cx="60" cy="0">
 				</circle>
-				<circle data-connect="out" data-connect-point="60,70" data-connect-dir="bottom" r="10" cx="60" cy="70">
+				<circle data-key="outbottom" data-connect="out" data-connect-point="60,70" data-connect-dir="bottom"
+					r="10" cx="60" cy="70">
 				</circle>
 
-				<g data-connect="in" data-connect-point="120,35" data-connect-dir="right">
+				<g data-key="inright" data-connect="in" data-connect-point="120,35" data-connect-dir="right">
 					<circle class="empty" r="10" cx="120" cy="35"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(120, 35) rotate(180 0 0)" />
 				</g>
-				<g data-connect="in" data-connect-point="0,35" data-connect-dir="left">
+				<g data-key="inleft" data-connect="in" data-connect-point="0,35" data-connect-dir="left">
 					<circle class="empty" r="10" cx="0" cy="35"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(0, 35)" />
 				</g>
-				<g data-connect="in" data-connect-point="60,0" data-connect-dir="top">
+				<g data-key="intop" data-connect="in" data-connect-point="60,0" data-connect-dir="top">
 					<circle class="empty" r="10" cx="60" cy="0"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(60, 0) rotate(90 0 0)" />
 				</g>
-				<g data-connect="in" data-connect-point="60,70" data-connect-dir="bottom">
+				<g data-key="inbottom" data-connect="in" data-connect-point="60,70" data-connect-dir="bottom">
 					<circle class="empty" r="10" cx="60" cy="70"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(60, 70) rotate(270 0 0)" />
 				</g>
@@ -253,15 +259,17 @@
 			<g data-templ="rhomb">
 				<path d="M0 35 L60 0 L120 35 L60 70 Z" stroke-width="18" stroke-linejoin="round" stroke="#1D809F"
 					fill="#1D809F"></path>
-				<text x="60" y="35" text-anchor="middle" data-name="text" alignment-baseline="central" fill="#fff"
+				<text x="60" y="35" text-anchor="middle" data-key="text" alignment-baseline="central" fill="#fff"
 					style="user-select:none; pointer-events: none;">Title</text>
 
-				<circle data-connect="out" data-connect-point="128,35" data-connect-dir="right" r="10" cx="128" cy="35">
+				<circle data-key="outright" data-connect="out" data-connect-point="128,35" data-connect-dir="right"
+					r="10" cx="128" cy="35">
 				</circle>
-				<circle data-connect="out" data-connect-point="-8,35" data-connect-dir="left" r="10" cx="-8" cy="35">
+				<circle data-key="outleft" data-connect="out" data-connect-point="-8,35" data-connect-dir="left" r="10"
+					cx="-8" cy="35">
 				</circle>
 
-				<g data-connect="in" data-connect-point="60,-8" data-connect-dir="top">
+				<g data-key="intop" data-connect="in" data-connect-point="60,-8" data-connect-dir="top">
 					<circle class="empty" r="10" cx="60" cy="-8"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(60, -8) rotate(90 0 0)" />
 				</g>
@@ -269,12 +277,12 @@
 
 			<g data-templ="text">
 				<circle r="13" cx="0" cy="0"></circle>
-				<text data-name="text" fill="rgb(73, 80, 87)" alignment-baseline="central">Title</text>
+				<text data-key="text" fill="rgb(73, 80, 87)" alignment-baseline="central">Title</text>
 			</g>
 		</defs>
-		<g data-name="canvas"></g>
+		<g data-key="canvas"></g>
 	</svg>
-	<script src="index.min.js" type="module"></script>
+	<script src="index.js" type="module"></script>
 </body>
 
 </html>

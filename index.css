@@ -45,6 +45,8 @@ button {
 .menu {
 	overflow-x: auto;
 	white-space: nowrap;
+	/*left: 50%;
+	transform: translate(-50%, 0);*/
 	display: flex;
 	padding: 0 5px;
 }
@@ -122,8 +124,8 @@ button {
 }
 .panel.open .settings { display: block; }
 
-form { display: none;} 
-.panel.selected form { display: block;}
+.form { display: none;} 
+.panel.selected .form { display: block;}
 .panel.selected .notset { display: none;}
 
 .notset { 
@@ -131,14 +133,14 @@ form { display: none;}
 	text-align: center;
 }
 
-form {
+.form {
 	padding: 15px;
 }
-form footer {
+.form footer {
 	text-align: right;
 	padding-top: 15px;
 }
-form header {
+.form header {
 	text-align: right;
 	padding-bottom: 15px;
 }
