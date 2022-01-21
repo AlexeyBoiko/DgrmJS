@@ -26,7 +26,7 @@ interface PresenterShapeUpdateParam {
 	state?: Set<PresenterShapeState>;
 	/**
 	 * 'root' - key for outer element.
-	 * Other keys for inner elements: key = value of the 'data-name' attribute.
+	 * Other keys for inner elements: key = value of the 'data-key' attribute.
 	 */
 	props?: PresenterShapeProps
 }

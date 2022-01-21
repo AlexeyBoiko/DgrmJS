@@ -25,7 +25,7 @@ export class SvgPresenter extends EventTarget {
 		/** @type {SVGGElement}
 		 * @private
 		 */
-		this._canvasSvgEl = svg.querySelector('[data-name="canvas"]');
+		this._canvasSvgEl = svg.querySelector('[data-key="canvas"]');
 		this._svgElemToPresenterObj.set(this._canvasSvgEl, new SvgShape({ svgEl: this._canvasSvgEl, type: 'canvas' }));
 	}
 

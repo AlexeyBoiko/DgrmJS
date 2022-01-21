@@ -32,7 +32,7 @@ diagram.shapeAdd method add to canvas shape:
 - to position at point 120, 120
 - props set
   - ```<g>``` tag ```fill``` attribute to ```#344767```
-  - ```textContent``` of the inner element with ```data-name="text"``` to "Title"
+  - ```textContent``` of the inner element with ```data-key="text"``` to "Title"
 
 This way you can set any attribute of any shape object.
 
@@ -47,7 +47,7 @@ Add ```data-connect="out"``` to mark element as a out connector:
 ```html
 <g data-templ="circle">
     <circle ... />
-    <text data-name="text"></text>
+    <text data-key="text"></text>
  
     <!--
         out connector
@@ -68,7 +68,7 @@ Add ```data-connect="out"``` to mark element as a out connector:
 ```html
 <g data-templ="circle">
     <circle ... />
-    <text data-name="text"></text>
+    <text data-key="text"></text>
  
     <!--
         out connector
@@ -105,16 +105,16 @@ In this example:
         <g data-templ="circle">
             <circle ... />
             <!-- inner named element,
-                we can use 'data-name' value as a key
+                we can use 'data-key' value as a key
                 in shapeAdd(...) method -->
-            <text data-name="text"></text>
+            <text data-key="text"></text>
  
             <!-- connectors -->
             <circle data-connect="out" ...></circle>
             <circle data-connect="in" ...></circle>
         </g>
     </defs>
-    <g data-name="canvas"></g>
+    <g data-key="canvas"></g>
 </svg>
 <script type="module">
     import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-fuctory.js';

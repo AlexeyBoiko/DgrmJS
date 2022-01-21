@@ -71,7 +71,7 @@ export class SvgShape {
 		Object.keys(props).forEach(name => {
 			const shape = (name === 'root')
 				? elem
-				: elem.querySelector(`[data-name='${name}'`);
+				: elem.querySelector(`[data-key='${name}'`);
 
 			Object.keys(props[name]).forEach(attr => {
 				switch (attr) {
