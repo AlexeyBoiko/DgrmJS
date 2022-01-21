@@ -85,6 +85,8 @@ function menuToggle() {
 	}
 }
 
+// example connect shapes
+
 // const shape1 = diagram.shapeAdd({
 // 	templateKey: 'circle',
 // 	position: { x: 120, y: 120 },
