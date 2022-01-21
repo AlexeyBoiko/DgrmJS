@@ -23,7 +23,7 @@ export class Diagram extends EventTarget {
 
 		/** @private */
 		this._connectorManager = connectorManager;
-	}	
+	}
 
 	/**
 	 * subscribe to event
@@ -53,13 +53,13 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {DiagramShapeConnectParam} param
+	 * @param {DiagramPrivateShapeConnectParam} param
 	 * @returns {void}
 	 */
 	shapeConnect(param) {
 		this._connectorManager.add(
-			/** @type{IPresenterShape} */(param.start.shape).connectors.get(param.start.connector),
-			/** @type{IPresenterShape} */(param.end.shape).connectors.get(param.end.connector));
+			param.start.shape.connectors.get(param.start.connector),
+			param.end.shape.connectors.get(param.end.connector));
 	}
 
 	/** @param { CustomEvent<IPresenterEventDetail> } evt */
