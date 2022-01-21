@@ -60,18 +60,6 @@ export class SvgPresenter extends EventTarget {
 	}
 
 	/**
-	 * @template {IPresenterElement} T
-	 * @param {string} query
-	 * @returns {T | null}
-	 */
-	querySelector(query) {
-		/** @type {SVGGraphicsElement} */
-		const elem = this._svg.querySelector(query);
-		if (!elem) { return null; }
-		return /** @type {T} */(this._svgElemToPresenterObj.get(elem));
-	}
-
-	/**
 	 * @param {PresenterEventType} type
 	 * @param {EventListenerOrEventListenerObject} listener
 	 * @returns {IPresenter}

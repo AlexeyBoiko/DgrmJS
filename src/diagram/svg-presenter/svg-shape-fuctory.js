@@ -42,6 +42,7 @@ export function shapeCreate({ svgCanvas, listener, svgElemToPresenterObj, create
 			const connector = connectorCreate(el, shape);
 			el.addEventListener('pointerdown', listener);
 			svgElemToPresenterObj.set(el, connector);
+			shape.connectors.set(connector.key, connector);
 		});
 
 	svgElemToPresenterObj.set(shapeSvgEl, shape);
@@ -58,6 +59,7 @@ function connectorCreate(svgEl, shape) {
 		svgEl: svgEl,
 		connectorType: svgEl.getAttribute('data-connect') === 'in' ? 'in' : 'out',
 		shape: shape,
+		key: svgEl.getAttribute('data-key'),
 		innerPosition: parseConnectPointAttr(svgEl),
 		dir: /** @type {PresenterPathEndDirection} */(svgEl.getAttribute('data-connect-dir'))
 	});

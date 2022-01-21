@@ -4,7 +4,7 @@ import { SvgPresenter } from './svg-presenter.js';
 
 /**
  * @param {SVGSVGElement} svg
- * @returns {Diagram}
+ * @returns {IDiagram}
  */
 export function svgDiagramCreate(svg) {
 	const presenter = new SvgPresenter(svg);

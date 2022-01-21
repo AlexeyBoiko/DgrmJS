@@ -1,6 +1,5 @@
 interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
-	querySelector<T extends IPresenterElement>(query: string): T;
 	append(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParam): IPresenterElement;
 	delete(elem: IPresenterElement): void;
 }
@@ -75,6 +74,9 @@ interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 	connectable?: boolean;
 	defaultInConnector?: IPresenterConnector;
 
+	/** should be readonly */
+	connectors: Map<string, IPresenterConnector>;
+
 	postionGet(): Point;
 	update(param: PresenterShapeUpdateParam): void;
 }
@@ -83,6 +85,8 @@ type PresenterConnectorType = 'in' | 'out';
 interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
 	connectorType: PresenterConnectorType;
 	shape: IPresenterShape;
+	/** unique id into shape */
+	key: string;
 	/** position into parent shape */
 	innerPosition: Point;
 	dir?: PresenterPathEndDirection;

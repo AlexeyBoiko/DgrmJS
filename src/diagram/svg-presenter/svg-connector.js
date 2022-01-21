@@ -4,11 +4,12 @@ export class SvgConnector {
 	 * @param {object} param
 	 * @param {SVGGraphicsElement} param.svgEl
 	 * @param {PresenterConnectorType} param.connectorType
+	 * @param {string} param.key
 	 * @param {IPresenterShape} param.shape
 	 * @param {Point} param.innerPosition
 	 * @param {PresenterPathEndDirection=} param.dir
 	 */
-	constructor({ svgEl, connectorType, shape, innerPosition, dir }) {
+	constructor({ svgEl, connectorType, shape, key, innerPosition, dir }) {
 		/** @private */
 		this._svgEl = svgEl;
 
@@ -22,6 +23,7 @@ export class SvgConnector {
 		this.type = 'connector';
 		this.connectorType = connectorType;
 		this.shape = shape;
+		this.key = key;
 		this.innerPosition = innerPosition;
 		this.dir = dir;
 	}

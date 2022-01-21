@@ -15,9 +15,4 @@ interface IConnectorManager {
 	 * delete related to shape connectors
 	 */
 	deleteByShape(shape: IPresenterShape): void;
-
-	/**
-	 * count of connectors of connectorElem 
-	 */
-	any(connector: IPresenterConnector): boolean;
 }

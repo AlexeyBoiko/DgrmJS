@@ -1,5 +1,5 @@
 import { any, last } from '../infrastructure/iterable-utils.js';
-import { shapeStateDel } from '../shape-utils.js';
+import { shapeStateAdd, shapeStateDel } from '../shape-utils.js';
 
 /** @implements {IConnectorManager} */
 export class ConnectorManager {
@@ -11,8 +11,8 @@ export class ConnectorManager {
 	}
 
 	/**
-	 * @param {IConnectorConnector} connectorStart type must be connectorInElem
-	 * @param {IConnectorConnector} connectorEnd type must be connectorInElem
+	 * @param {IConnectorConnector} connectorStart
+	 * @param {IConnectorConnector} connectorEnd
 	 * @returns {void}
 	 */
 	add(connectorStart, connectorEnd) {
@@ -32,16 +32,17 @@ export class ConnectorManager {
 
 		path.start = connectorStart;
 		path.end = connectorEnd;
+		shapeStateAdd(connectorEnd, 'connected');
 
 		ConnectorManager._pathAdd(connectorStart.shape, path);
 		ConnectorManager._pathAdd(connectorEnd.shape, path);
 	}
 
 	/**
-	 * reconect to new connectorInElem
-	 * if connectorInElemOld has many connectors - take last
-	 * @param {IConnectorConnector} connectorOld type must be connectorInElem
-	 * @param {IConnectorConnector} connectorNew type must be connectorInElem
+	 * reconect to new connector
+	 * if connectorOld has many connectors - take last
+	 * @param {IConnectorConnector} connectorOld
+	 * @param {IConnectorConnector} connectorNew
 	 * @returns {void}
 	 */
 	replaceEnd(connectorOld, connectorNew) {
@@ -60,6 +61,12 @@ export class ConnectorManager {
 			}
 			ConnectorManager._pathAdd(connectorNew.shape, path);
 		}
+
+		// state
+		if (!any(connectorOld.shape.connectedPaths, path => path.start === connectorOld || path.end === connectorOld)) {
+			shapeStateDel(connectorOld, 'connected');
+		}
+		shapeStateAdd(connectorNew, 'connected');
 	}
 
 	/**
@@ -105,14 +112,6 @@ export class ConnectorManager {
 			}
 			this._presenter.delete(path);
 		}
-	}
-
-	/**
-	 * @param {IConnectorConnector} connector
-	 * @returns {boolean}
-	 */
-	any(connector) {
-		return any(connector.shape.connectedPaths, path => path.start === connector || path.end === connector);
 	}
 
 	/**

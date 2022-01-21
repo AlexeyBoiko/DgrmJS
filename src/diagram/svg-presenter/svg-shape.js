@@ -1,6 +1,6 @@
 import { svgPositionSet, svgPositionGet, svgRotate } from '../infrastructure/svg-utils.js';
 
-/** @implements {ISvgPresenterElement} */
+/** @implements {ISvgPresenterShape} */
 export class SvgShape {
 	/**
 	 * @param {object} param
@@ -22,6 +22,9 @@ export class SvgShape {
 		this.type = type || 'shape';
 		this.connectable = connectable;
 		this.defaultInConnector = defaultInConnector;
+
+		/** @type {Map<string, IPresenterConnector>} */
+		this.connectors = new Map();
 	}
 
 	/**
