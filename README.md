@@ -16,7 +16,7 @@ The main goal of the library is to set up workflows in BPM (Business Process Man
 
 ## Main idea
 - Allow developers to use standard SVG objects and features to declaratively create shapes that will be used in the diagram.  
-To create shape, developers should add special data- attributes to standard SVG markup.
+To create shape, developers should add special data- attributes to standard SVG markup. So any svg images can be used as a shape in a diagram.
 - DgrmJS dispatch events, like ‘shape is selected’ or ‘shape is connecting to another shape’.  
 Developers can use these events to implement their own logic, for example, make a JSON description of the workflow.
 ## How to use
