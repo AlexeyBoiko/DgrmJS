@@ -25,10 +25,44 @@ npm, cdn soon
 ### Simple shape
 This is a circle shape:
 
-<img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-simple-shape-code.png" alt="Simple shape code" width="650"/>
+```html
+<svg id="diagram" style="touch-action: none;">
+	<defs>
+		<!-- shape template 'circle' -->
+		<g data-templ="circle">
+			<circle ... />
+			<!-- inner named element,
+			we can use 'data-key' value as a key
+			in shapeAdd(...) method -->
+			<text data-key="text"></text>
+		</g>
+	</defs>
+	<g data-key="canvas"></g>
+</svg>
+<script type="module">
+	import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-fuctory.js';
+
+	const diagram = svgDiagramCreate(document.getElementById('diagram'))
+
+	// add shape to canvas
+	diagram.shapeAdd('shape', {
+		// template name
+		// (value of the 'data-templ' attribute)
+		templateKey: 'circle',
+		position: { x: 120, y: 120 },
+		props: {
+			// svg 'g' element will get 'fill' attribute with value '#344767'  
+			fill='#344767',
+			// inner svg element with 'data-key=text'
+			// will get 'textContent' value 'Title'
+			text: { textContent: 'Title' }
+		}
+	});
+</script>
+```
 
 diagram.shapeAdd method add to canvas shape:
-- created by template with name ‘circle’
+- created by template with name "circle"
 - to position at point 120, 120
 - props set
   - ```<g>``` tag ```fill``` attribute to ```#344767```
@@ -36,7 +70,7 @@ diagram.shapeAdd method add to canvas shape:
 
 This way you can set any attribute of any shape object.
 
-Result is a draggable circle with “Title” text:
+Result is a draggable circle with "Title" text:
 
 <img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-simple-shape-drag.gif" alt="draggable shape" width="500" />
 
