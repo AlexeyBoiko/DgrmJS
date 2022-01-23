@@ -25,9 +25,7 @@ let selecterShape;
 
 /** @ts-ignore */
 const diagram = svgDiagramCreate(document.getElementById('diagram'))
-	.on('select', /** @param { CustomEvent<IDiagramEventSelectDetail> } evt */ evt => shapeSelect(evt.detail.target))
-	.on('connect', evt => { console.log(evt); })
-	.on('disconnect', evt => { console.log(evt); });
+	.on('select', /** @param { CustomEvent<IDiagramEventSelectDetail> } evt */ evt => shapeSelect(evt.detail.target));
 
 /** @param {string} templateKey */
 function shapeAdd(templateKey) {
@@ -87,6 +85,7 @@ function menuToggle() {
 	}
 }
 
+//
 // example connect shapes
 
 // const shape1 = diagram.shapeAdd({
@@ -109,3 +108,10 @@ function menuToggle() {
 // 	start: { shape: shape1, connector: 'outright' },
 // 	end: { shape: shape2, connector: 'inright' }
 // });
+
+//
+// example cancel connect/disconnect
+
+// diagram
+// 	.on('connect', evt => { console.log(evt); evt.preventDefault(); })
+// 	.on('disconnect', evt => { console.log(evt); evt.preventDefault(); });

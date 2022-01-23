@@ -126,10 +126,10 @@ export class Diagram extends EventTarget {
 					//
 					// disconnect
 
-					this._dispatchEvent('disconnect', {
+					if (!this._dispatchEvent('disconnect', {
 						start: this._connectorManager.startConnectorGet(evt.detail.target),
 						end: evt.detail.target
-					});
+					})) { return; }
 
 					const connectorEnd = this.shapeAdd(connectorEndParams(evt.detail.target));
 					this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
@@ -152,10 +152,10 @@ export class Diagram extends EventTarget {
 		//
 		// connect connector
 
-		this._dispatchEvent('connect', {
+		if (!this._dispatchEvent('connect', {
 			start: this._connectorManager.startConnectorGet(this._movedShape.defaultInConnector),
 			end: evt.detail.target
-		});
+		})) { return; }
 
 		this._connectorManager.replaceEnd(this._movedShape.defaultInConnector, evt.detail.target);
 		this.shapeDel(this._movedShape);
@@ -249,6 +249,7 @@ export class Diagram extends EventTarget {
 	/**
 	 * @param {DiagramEventType} type
 	 * @param {IDiagramEventSelectDetail|IDiagramEventConnectDetail} detail
+	 * @returns {boolean}
 	 * @private
 	 */
 	_dispatchEvent(type, detail) {
