@@ -126,6 +126,11 @@ export class Diagram extends EventTarget {
 					//
 					// disconnect
 
+					if (!this._dispatchEvent('disconnect', {
+						start: this._connectorManager.startConnectorGet(evt.detail.target),
+						end: evt.detail.target
+					})) { return; }
+
 					const connectorEnd = this.shapeAdd(connectorEndParams(evt.detail.target));
 					this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 					this._connectorManager.replaceEnd(evt.detail.target, connectorEnd.defaultInConnector);
@@ -147,6 +152,11 @@ export class Diagram extends EventTarget {
 		//
 		// connect connector
 
+		if (!this._dispatchEvent('connect', {
+			start: this._connectorManager.startConnectorGet(this._movedShape.defaultInConnector),
+			end: evt.detail.target
+		})) { return; }
+
 		this._connectorManager.replaceEnd(this._movedShape.defaultInConnector, evt.detail.target);
 		this.shapeDel(this._movedShape);
 	}
@@ -157,7 +167,7 @@ export class Diagram extends EventTarget {
 	 */
 	_selectedSet(shape) {
 		if (shape !== this._selectedShape) {
-			this._dispatchEvent('select', shape);
+			this._dispatchEvent('select', { target: shape });
 
 			if (this._selectedShape) {
 				shapeStateDel(this._selectedShape, 'selected');
@@ -238,16 +248,14 @@ export class Diagram extends EventTarget {
 
 	/**
 	 * @param {DiagramEventType} type
-	 * @param {IPresenterShape} target
+	 * @param {IDiagramEventSelectDetail|IDiagramEventConnectDetail} detail
+	 * @returns {boolean}
 	 * @private
 	 */
-	_dispatchEvent(type, target) {
+	_dispatchEvent(type, detail) {
 		return this.dispatchEvent(new CustomEvent(type, {
 			cancelable: true,
-			/** @type {IDiagramEventDetail} */
-			detail: {
-				target: target
-			}
+			detail: detail
 		}));
 	}
 }
