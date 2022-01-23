@@ -5,15 +5,41 @@ interface IDiagram {
 	shapeConnect(param: DiagramShapeConnectParam): void;
 }
 
-interface IDiagramShape {
-	type: PresenterElementType;
-	update(param: PresenterShapeUpdateParam): void;
- }
 
-type DiagramEventType = 'select';
-interface IDiagramEventDetail {
-	target: IDiagramShape;
+// ui elements
+
+interface IDiagramElement {
+	type: PresenterElementType
 }
+
+/** type = 'shape'  */
+interface IDiagramShape extends IDiagramElement {
+	update(param: PresenterShapeUpdateParam): void;
+}
+
+/** type = 'connector' */
+interface IDiagramConnector extends IDiagramElement {
+	/** unique id into shape */
+	key: string;
+	shape: IDiagramShape;
+}
+
+
+// event
+
+type DiagramEventType = 'select' | 'connect';
+
+interface IDiagramEventSelectDetail<T extends IDiagramShape & IDiagramConnector> {
+	target: T;
+}
+
+interface IDiagramEventConnectDetail {
+	start: IDiagramConnector;
+	end: IDiagramConnector;
+}
+
+
+// method params
 
 interface DiagramConnectorEnd {
 	shape: IDiagramShape;

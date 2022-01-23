@@ -25,7 +25,8 @@ let selecterShape;
 
 /** @ts-ignore */
 const diagram = svgDiagramCreate(document.getElementById('diagram'))
-	.on('select', /** @param { CustomEvent<IDiagramEventDetail> } evt */ evt => shapeSelect(evt.detail.target));
+	.on('select', /** @param { CustomEvent<IDiagramEventSelectDetail> } evt */ evt => shapeSelect(evt.detail.target))
+	.on('connect', evt => { console.log(evt); });
 
 /** @param {string} templateKey */
 function shapeAdd(templateKey) {

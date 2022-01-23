@@ -115,6 +115,14 @@ export class ConnectorManager {
 	}
 
 	/**
+	 * @param {IConnectorConnector} connector
+	 * @returns {IConnectorConnector}
+	 */
+	startConnectorGet(connector) {
+		return last(connector.shape.connectedPaths, pp => pp.end === connector).start;
+	}
+
+	/**
 	 * @param {IConnetorShape} shape
 	 * @param {IConnectorPath} path
 	 * @private
