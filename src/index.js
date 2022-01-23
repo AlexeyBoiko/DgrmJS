@@ -86,6 +86,13 @@ function menuToggle() {
 }
 
 //
+// example cancel connect/disconnect
+
+// diagram
+// 	.on('connect', evt => { console.log(evt); evt.preventDefault(); })
+// 	.on('disconnect', evt => { console.log(evt); evt.preventDefault(); });
+
+//
 // example connect shapes
 
 // const shape1 = diagram.shapeAdd({
@@ -110,8 +117,39 @@ function menuToggle() {
 // });
 
 //
-// example cancel connect/disconnect
+// example restore diagram from data
 
-// diagram
-// 	.on('connect', evt => { console.log(evt); evt.preventDefault(); })
-// 	.on('disconnect', evt => { console.log(evt); evt.preventDefault(); });
+// /** @type {DiagramData} */
+// const diagramData = {
+// 	shapes: [
+// 		{
+// 			templateKey: 'circle',
+// 			position: { x: 120, y: 120 },
+// 			props: {
+// 				text: { textContent: 'Title1' }
+// 			}
+// 		},
+// 		{
+// 			templateKey: 'circle',
+// 			position: { x: 220, y: 220 },
+// 			props: {
+// 				text: { textContent: 'Title2' }
+// 			}
+// 		}
+// 	],
+// 	cons: [
+// 		{ start: { index: 0, connector: 'outright' }, end: { index: 1, connector: 'inright' } }
+// 	]
+// };
+
+// for (const con of diagramData.cons) {
+// 	diagram.shapeConnect({
+// 		start: { shape: diagram.shapeAdd(diagramData.shapes[con.start.index]), connector: con.start.connector },
+// 		end: { shape: diagram.shapeAdd(diagramData.shapes[con.end.index]), connector: con.end.connector }
+// 	});
+// 	diagramData.shapes[con.start.index] = null;
+// 	diagramData.shapes[con.end.index] = null;
+// }
+// for (const shape of diagramData.shapes) {
+// 	if (shape) { diagram.shapeAdd(shape); }
+// }
