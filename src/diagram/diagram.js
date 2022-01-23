@@ -126,6 +126,11 @@ export class Diagram extends EventTarget {
 					//
 					// disconnect
 
+					this._dispatchEvent('disconnect', {
+						start: this._connectorManager.startConnectorGet(evt.detail.target),
+						end: evt.detail.target
+					});
+
 					const connectorEnd = this.shapeAdd(connectorEndParams(evt.detail.target));
 					this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 					this._connectorManager.replaceEnd(evt.detail.target, connectorEnd.defaultInConnector);
