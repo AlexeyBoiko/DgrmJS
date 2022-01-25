@@ -135,21 +135,33 @@ function menuToggle() {
 // 			props: {
 // 				text: { textContent: 'Title2' }
 // 			}
+// 		},
+// 		{
+// 			templateKey: 'circle',
+// 			position: { x: 320, y: 320 },
+// 			props: {
+// 				text: { textContent: 'Title3' }
+// 			}
 // 		}
 // 	],
 // 	cons: [
-// 		{ start: { index: 0, connector: 'outright' }, end: { index: 1, connector: 'inright' } }
+// 		{ start: { index: 0, connector: 'outright' }, end: { index: 1, connector: 'inright' } },
+// 		{ start: { index: 0, connector: 'outright' }, end: { index: 2, connector: 'inright' } }
 // 	]
 // };
 
 // for (const con of diagramData.cons) {
+// 	if (!diagramData.shapes[con.start.index].ref) {
+// 		diagramData.shapes[con.start.index].ref = diagram.shapeAdd(diagramData.shapes[con.start.index]);
+// 	}
+// 	if (!diagramData.shapes[con.end.index].ref) {
+// 		diagramData.shapes[con.end.index].ref = diagram.shapeAdd(diagramData.shapes[con.end.index]);
+// 	}
 // 	diagram.shapeConnect({
-// 		start: { shape: diagram.shapeAdd(diagramData.shapes[con.start.index]), connector: con.start.connector },
-// 		end: { shape: diagram.shapeAdd(diagramData.shapes[con.end.index]), connector: con.end.connector }
+// 		start: { shape: diagramData.shapes[con.start.index].ref, connector: con.start.connector },
+// 		end: { shape: diagramData.shapes[con.end.index].ref, connector: con.end.connector }
 // 	});
-// 	diagramData.shapes[con.start.index] = null;
-// 	diagramData.shapes[con.end.index] = null;
 // }
 // for (const shape of diagramData.shapes) {
-// 	if (shape) { diagram.shapeAdd(shape); }
+// 	if (!shape.ref) { diagram.shapeAdd(shape); }
 // }
