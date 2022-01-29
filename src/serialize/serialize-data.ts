@@ -1,7 +1,8 @@
 interface SerializeData {
-	shapes: SerializeShape[],
+	/** shapes */
+	s: SerializeShape[],
 	/** connector info */
-	cons?: DiagramDataConnector[]
+	c?: DiagramDataConnector[]
 }
 
 interface SerializeShape<T = any> extends PresenterShapeAppendParam {
@@ -11,11 +12,14 @@ interface SerializeShape<T = any> extends PresenterShapeAppendParam {
 
 interface SerializeConnectorEnd {
 	/** index in 'shapes' */
-	index: number;
-	connector: string;
+	i: number;
+	/** connector */
+	c: string;
 }
 
 interface DiagramDataConnector {
-	start: SerializeConnectorEnd,
-	end: SerializeConnectorEnd
+	/** start */
+	s: SerializeConnectorEnd,
+	/** end */
+	e: SerializeConnectorEnd
 }

@@ -10,7 +10,7 @@ export function serialize(shapeData, connectors) {
 
 	/** @type {SerializeData} */
 	const serializeData = {
-		shapes: []
+		s: []
 	};
 
 	/** @type {Map<IDiagramShape, number>} */
@@ -18,13 +18,13 @@ export function serialize(shapeData, connectors) {
 
 	for (const shape of shapeData) {
 		shape[1].position = shape[0].postionGet();
-		shapeIndex.set(shape[0], serializeData.shapes.push(shape[1]) - 1);
+		shapeIndex.set(shape[0], serializeData.s.push(shape[1]) - 1);
 	}
 
 	if (connectors && connectors.length > 0) {
-		serializeData.cons = connectors.map(cc => ({
-			start: { index: shapeIndex.get(cc.start.shape), connector: cc.start.key },
-			end: { index: shapeIndex.get(cc.end.shape), connector: cc.end.key }
+		serializeData.c = connectors.map(cc => ({
+			s: { i: shapeIndex.get(cc.start.shape), c: cc.start.key },
+			e: { i: shapeIndex.get(cc.end.shape), c: cc.end.key }
 		}));
 	}
 

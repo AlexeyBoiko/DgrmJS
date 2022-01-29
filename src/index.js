@@ -125,17 +125,17 @@ if (window.location.hash) {
 	/** @type {SerializeData} */
 	const data = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
 
-	if (data.shapes && data.shapes.length > 0) {
+	if (data.s && data.s.length > 0) {
 		const shapes = [];
-		for (const shape of data.shapes) {
+		for (const shape of data.s) {
 			shapes.push(shapeAdd(shape));
 		}
 
-		if (data.cons && data.cons.length > 0) {
-			for (const con of data.cons) {
+		if (data.c && data.c.length > 0) {
+			for (const con of data.c) {
 				diagram.shapeConnect({
-					start: { shape: shapes[con.start.index], connector: con.start.connector },
-					end: { shape: shapes[con.end.index], connector: con.end.connector }
+					start: { shape: shapes[con.s.i], connector: con.s.c },
+					end: { shape: shapes[con.e.i], connector: con.e.c }
 				});
 			}
 		}
