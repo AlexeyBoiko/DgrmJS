@@ -1,57 +1,80 @@
 import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-fuctory.js';
+import { connectorEqual } from './index-helpers.js';
+import { serialize } from './serialize/serialize.js';
 
 //
 // html bind
 
-const settingsPanel = document.getElementById('panel');
+const panel = document.getElementById('panel');
 const textField = /** @type {HTMLInputElement} */(document.getElementById('text'));
-textField.addEventListener('input', _ => shapeUpdate());
-textField.addEventListener('change', _ => shapeUpdate());
-document.getElementById('del').addEventListener('click', evt => { evt.preventDefault(); shapeDel(); });
-document.getElementById('gear').addEventListener('click', evt => { evt.preventDefault(); menuToggle(); });
+textField.addEventListener('input', shapeUpdate);
+textField.addEventListener('change', shapeUpdate);
+document.getElementById('del').addEventListener('click', shapeDel);
+document.getElementById('gear').addEventListener('click', menuToggle);
 document.getElementById('menu').querySelectorAll('[data-shape]')
 	.forEach(itm => itm.addEventListener('click', /** @param {PointerEvent & { currentTarget: Element }} evt */evt => {
-		evt.preventDefault(); shapeAdd(evt.currentTarget.getAttribute('data-shape'));
+		evt.preventDefault(); shapeAddByKey(evt.currentTarget.getAttribute('data-shape'));
 	}));
+document.getElementById('save').addEventListener('click', generateLink);
 
 //
 // logic
 
-/** @type {WeakMap<IDiagramShape, string>} */
-const shapeData = new WeakMap();
+/** @type {Map<IDiagramShape, SerializeShape<string>>} */
+const shapeData = new Map();
+
+/** @type {IDiagramEventConnectDetail[]} */
+let connectors = [];
 
 /** @type {IDiagramShape} */
-let selecterShape;
+let selectedShape;
 
 /** @ts-ignore */
 const diagram = svgDiagramCreate(document.getElementById('diagram'))
-	.on('select', /** @param { CustomEvent<IDiagramEventSelectDetail> } evt */ evt => shapeSelect(evt.detail.target));
+	.on('select', /** @param { CustomEvent<IDiagramEventSelectDetail> } evt */ evt => shapeSelect(evt.detail.target))
+	.on('connect', /** @param { CustomEvent<IDiagramEventConnectDetail> } evt */ evt => {
+		connectors.push(evt.detail);
+	})
+	.on('disconnect', /** @param { CustomEvent<IDiagramEventConnectDetail> } evt */ evt => {
+		connectors.splice(connectors.findIndex(el => connectorEqual(el, evt.detail)), 1);
+	});
+
+/**
+ * @param {SerializeShape} param
+ * @returns {IDiagramShape}
+ * */
+function shapeAdd(param) {
+	param.props = { text: { textContent: param.detail } };
+	const shape = diagram.shapeAdd(param);
+	shapeData.set(shape, { templateKey: param.templateKey, detail: param.detail });
+	return shape;
+}
 
 /** @param {string} templateKey */
-function shapeAdd(templateKey) {
-	shapeData.set(diagram.shapeAdd({
+function shapeAddByKey(templateKey) {
+	shapeAdd({
 		templateKey: templateKey,
 		position: { x: 120, y: 120 },
-		props: {
-			text: { textContent: 'Title' }
-		}
-	}),
-	'Title');
+		detail: 'Title'
+	});
 }
 
 function shapeDel() {
-	if (!selecterShape) { return; }
+	if (!selectedShape) { return; }
 
-	shapeData.delete(selecterShape);
-	diagram.shapeDel(selecterShape);
+	shapeData.delete(selectedShape);
+	connectors = connectors
+		.filter(el => el.start.shape !== selectedShape && el.end.shape !== selectedShape);
+
+	diagram.shapeDel(selectedShape);
 	shapeSelect(null);
 }
 
 function shapeUpdate() {
-	if (!selecterShape) { return; }
+	if (!selectedShape) { return; }
 
-	shapeData.set(selecterShape, textField.value);
-	selecterShape.update({
+	shapeData.get(selectedShape).detail = textField.value;
+	selectedShape.update({
 		props: {
 			text: { textContent: textField.value }
 		}
@@ -61,27 +84,61 @@ function shapeUpdate() {
 /** @param {IDiagramShape} shape */
 function shapeSelect(shape) {
 	if (shape && shape.type === 'shape') {
-		selecterShape = shape;
-		settingsPanel.classList.add('selected');
+		selectedShape = shape;
+		panel.classList.add('selected');
 
 		if (shapeData.has(shape)) {
-			textField.value = shapeData.get(shape);
+			textField.value = shapeData.get(shape).detail;
 			textField.disabled = false;
 		} else {
 			textField.value = null;
 			textField.disabled = true;
 		}
 	} else {
-		selecterShape = null;
-		settingsPanel.classList.remove('selected');
+		selectedShape = null;
+		panel.classList.remove('selected');
 	}
 }
 
 function menuToggle() {
-	if (settingsPanel.classList.contains('open')) {
-		settingsPanel.classList.remove('open');
+	if (panel.classList.contains('open')) {
+		panel.classList.remove('open');
 	} else {
-		settingsPanel.classList.add('open');
+		panel.classList.add('open');
+	}
+}
+
+function generateLink() {
+	// alert('Link to diagram copied to clipboard');
+	const dataStr = serialize(shapeData, connectors);
+	if (dataStr) {
+		const url = new URL(window.location.href);
+		url.hash = encodeURIComponent(dataStr);
+		navigator.clipboard.writeText(`${url.toString()}`).then(_ => alert('Link to diagram copied to clipboard'));
+		return;
+	}
+
+	alert('Nothing to save');
+}
+
+if (window.location.hash) {
+	/** @type {SerializeData} */
+	const data = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
+
+	if (data.shapes && data.shapes.length > 0) {
+		const shapes = [];
+		for (const shape of data.shapes) {
+			shapes.push(shapeAdd(shape));
+		}
+
+		if (data.cons && data.cons.length > 0) {
+			for (const con of data.cons) {
+				diagram.shapeConnect({
+					start: { shape: shapes[con.start.index], connector: con.start.connector },
+					end: { shape: shapes[con.end.index], connector: con.end.connector }
+				});
+			}
+		}
 	}
 }
 
@@ -89,8 +146,8 @@ function menuToggle() {
 // example cancel connect/disconnect
 
 // diagram
-// 	.on('connect', evt => { console.log(evt); evt.preventDefault(); })
-// 	.on('disconnect', evt => { console.log(evt); evt.preventDefault(); });
+// 	.on('connect', evt => { evt.preventDefault(); })
+// 	.on('disconnect', evt => { evt.preventDefault(); });
 
 //
 // example connect shapes
@@ -115,53 +172,3 @@ function menuToggle() {
 // 	start: { shape: shape1, connector: 'outright' },
 // 	end: { shape: shape2, connector: 'inright' }
 // });
-
-//
-// example restore diagram from data
-
-// /** @type {DiagramData} */
-// const diagramData = {
-// 	shapes: [
-// 		{
-// 			templateKey: 'circle',
-// 			position: { x: 120, y: 120 },
-// 			props: {
-// 				text: { textContent: 'Title1' }
-// 			}
-// 		},
-// 		{
-// 			templateKey: 'circle',
-// 			position: { x: 220, y: 220 },
-// 			props: {
-// 				text: { textContent: 'Title2' }
-// 			}
-// 		},
-// 		{
-// 			templateKey: 'circle',
-// 			position: { x: 320, y: 320 },
-// 			props: {
-// 				text: { textContent: 'Title3' }
-// 			}
-// 		}
-// 	],
-// 	cons: [
-// 		{ start: { index: 0, connector: 'outright' }, end: { index: 1, connector: 'inright' } },
-// 		{ start: { index: 0, connector: 'outright' }, end: { index: 2, connector: 'inright' } }
-// 	]
-// };
-
-// for (const con of diagramData.cons) {
-// 	if (!diagramData.shapes[con.start.index].ref) {
-// 		diagramData.shapes[con.start.index].ref = diagram.shapeAdd(diagramData.shapes[con.start.index]);
-// 	}
-// 	if (!diagramData.shapes[con.end.index].ref) {
-// 		diagramData.shapes[con.end.index].ref = diagram.shapeAdd(diagramData.shapes[con.end.index]);
-// 	}
-// 	diagram.shapeConnect({
-// 		start: { shape: diagramData.shapes[con.start.index].ref, connector: con.start.connector },
-// 		end: { shape: diagramData.shapes[con.end.index].ref, connector: con.end.connector }
-// 	});
-// }
-// for (const shape of diagramData.shapes) {
-// 	if (!shape.ref) { diagram.shapeAdd(shape); }
-// }

@@ -78,7 +78,7 @@ button {
 		padding-left: 15px;
 	}
 
-	.menu #gear {
+	.menu .itm {
 		padding-right: 15px;
 		border-right: 1px solid rgb(204 207 210);
 		fill: rgba(58, 65, 111, 0.5);
