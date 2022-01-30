@@ -45,7 +45,7 @@ This is a circle shape:
 	const diagram = svgDiagramCreate(document.getElementById('diagram'))
 
 	// add shape to canvas
-	diagram.shapeAdd('shape', {
+	diagram.shapeAdd({
 		// template name
 		// (value of the 'data-templ' attribute)
 		templateKey: 'circle',
@@ -167,7 +167,7 @@ In this example:
         });
  
     // add shape to canvas
-    diagram.shapeAdd('shape', {
+    diagram.shapeAdd({
         templateKey: 'circle',
         position: { x: 120, y: 120 },
         props: {
