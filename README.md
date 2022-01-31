@@ -183,5 +183,5 @@ In this example:
 Soon
 
 ## License
-Not for commercial use. Contact me for details: [Alexey Boyko](https://github.com/AlexeyBoiko "Alexey Boyko").
+Free for teams of less than 5 people. Contact me for details: [Alexey Boyko](https://github.com/AlexeyBoiko "Alexey Boyko").
 
