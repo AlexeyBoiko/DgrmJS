@@ -41,7 +41,7 @@ This is a circle shape:
 	<g data-key="canvas"></g>
 </svg>
 <script type="module">
-	import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-fuctory.js';
+	import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-factory.js';
 
 	const diagram = svgDiagramCreate(document.getElementById('diagram'))
 
@@ -152,7 +152,7 @@ In this example:
     <g data-key="canvas"></g>
 </svg>
 <script type="module">
-    import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-fuctory.js';
+    import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-factory.js';
  
     const diagram = svgDiagramCreate(document.getElementById('diagram'))
         // subscribe to 'select' event

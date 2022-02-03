@@ -1,6 +1,6 @@
 // import { svgPositionSet } from '../infrastructure/svg-utils.js';
-import { pathCreate } from './svg-path-fuctory.js';
-import { shapeCreate } from './svg-shape-fuctory.js';
+import { pathCreate } from './svg-path-factory.js';
+import { shapeCreate } from './svg-shape-factory.js';
 import { SvgShape } from './svg-shape.js';
 
 /** @implements {IPresenter} */
