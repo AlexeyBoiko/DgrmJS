@@ -76,7 +76,9 @@ export class SvgShape {
 			Object.keys(props[name]).forEach(attr => {
 				switch (attr) {
 					case 'textContent':
-						shape.textContent = props[name][attr].toString();
+						shape.innerHTML = props[name][attr]
+							? props[name][attr].toString().replaceAll('\n', '<tspan x="0" dy="1.2em">&ZeroWidthSpace;</tspan>')
+							: '';
 						break;
 					default:
 						shape.setAttribute(attr, props[name][attr].toString());

@@ -1,5 +1,5 @@
 import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-factory.js';
-import { connectorEqual } from './index-helpers.js';
+import { connectorEqual, textContentTrim } from './index-helpers.js';
 import { serialize } from './serialize/serialize.js';
 
 //
@@ -44,7 +44,10 @@ const diagram = svgDiagramCreate(document.getElementById('diagram'))
  * @returns {IDiagramShape}
  * */
 function shapeAdd(param) {
-	param.props = { text: { textContent: param.detail } };
+	param.props = {
+		text:
+			{ textContent: textContentTrim(param.templateKey, param.detail) }
+	};
 	const shape = diagram.shapeAdd(param);
 	shapeData.set(shape, { templateKey: param.templateKey, detail: param.detail });
 	return shape;
@@ -76,7 +79,9 @@ function shapeUpdate() {
 	shapeData.get(selectedShape).detail = textField.value;
 	selectedShape.update({
 		props: {
-			text: { textContent: textField.value }
+			text: {
+				textContent: textContentTrim(shapeData.get(selectedShape).templateKey, textField.value)
+			}
 		}
 	});
 }
