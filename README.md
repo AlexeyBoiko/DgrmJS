@@ -75,7 +75,7 @@ Result is a draggable circle with "Title" text:
 
 <img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-simple-shape-drag.gif" alt="draggable shape" width="500" />
 
-### Add out connectors to shape
+### Add "out connectors" to shape
 "Out connector" is an element from which you can draw out a connecting line.  
 Add ```data-connect="out"``` to mark element as a out connector:
 
@@ -98,7 +98,7 @@ Add ```data-connect="out"``` to mark element as a out connector:
 ```
 <img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-out-connector.gif" alt="draggable shape" width="500" />
 
-### Add in connectors to shape
+### Add "in connectors" to shape
 "In connector" is an element where you can connect a connection line to a shape.
 ```html
 <g data-templ="circle">
