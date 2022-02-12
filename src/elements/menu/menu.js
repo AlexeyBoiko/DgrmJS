@@ -1,7 +1,8 @@
 /** @implements {Menu} */
 export class Menu extends HTMLElement {
 	connectedCallback() {
-		this.innerHTML = `
+		const shadow = this.attachShadow({ mode: 'closed' });
+		shadow.innerHTML = `
 			<style>
 			.menu {
 				overflow-x: auto;
@@ -119,9 +120,9 @@ export class Menu extends HTMLElement {
 			<a href="https://boyko.tech/" target="_blank">boyko.tech</a>
 		</div>`;
 
-		this.querySelectorAll('[data-shape]').forEach(el => el.addEventListener('click',
+		shadow.querySelectorAll('[data-shape]').forEach(el => el.addEventListener('click',
 			/** @param {PointerEvent & { currentTarget: Element }} evt */ evt => this._shapeClick(evt)));
-		this.querySelectorAll('.itm').forEach(el => el.addEventListener('click',
+		shadow.querySelectorAll('.itm').forEach(el => el.addEventListener('click',
 			/** @param {PointerEvent & { currentTarget: Element }} evt */ evt => this._itmClick(evt)));
 	};
 
