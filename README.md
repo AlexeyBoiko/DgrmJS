@@ -181,7 +181,10 @@ In this example:
 <img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/dgrmjs-update-on-select.gif" alt="draggable shape" width="500" />
 
 ## Documentation
-Soon
+Soon  
+
+Dgrm.js source files located in ``src/diagram`` folder. All other files and folders is part of the demo editor.  
+Diagram public interface is in ``src/diagram/diagram-public-types.ts``.
 
 ## License
 MIT License
