@@ -5,20 +5,16 @@ import { serialize } from './serialize/serialize.js';
 // elements
 import './elements/menu/menu.js';
 import './elements/shape-settings/shape-settings.js';
+import './elements/panel/panel.js';
 
 //
 // html bind
 
-const panel = document.getElementById('panel');
-
-/** @type {IMenu} */(document.getElementById('menu'))
+const panel = /** @type {IPanel} */(document.getElementById('panel'))
 	.on('shapeAddByKey', /** @param {CustomEvent<string>} evt */ evt => shapeAddByKey(evt.detail))
-	.on('generateLink', generateLink)
-	.on('settingsToggle', settingsToggle);
-
-const shapeSettings = /** @type {IShapeSettings} */(document.getElementById('shape-settings'))
-	.on('del', shapeDel)
-	.on('type', /** @param {CustomEvent<string>} evt */ evt => shapeUpdate(evt.detail));
+	.on('shapeDel', shapeDel)
+	.on('shapeType', /** @param {CustomEvent<string>} evt */ evt => shapeUpdate(evt.detail))
+	.on('generateLink', generateLink);
 
 //
 // logic
@@ -94,13 +90,13 @@ function shapeSelect(shape) {
 		selectedShape = shape;
 
 		if (shapeData.has(shape)) {
-			shapeSettings.update({
+			panel.shapeSettingsUpdate({
 				selected: true,
 				text: shapeData.get(shape).detail,
 				disabled: false
 			});
 		} else {
-			shapeSettings.update({
+			panel.shapeSettingsUpdate({
 				selected: true,
 				text: null,
 				disabled: true
@@ -108,17 +104,9 @@ function shapeSelect(shape) {
 		}
 	} else {
 		selectedShape = null;
-		shapeSettings.update({
+		panel.shapeSettingsUpdate({
 			selected: false
 		});
-	}
-}
-
-function settingsToggle() {
-	if (panel.classList.contains('open')) {
-		panel.classList.remove('open');
-	} else {
-		panel.classList.add('open');
 	}
 }
 
@@ -156,34 +144,3 @@ if (window.location.hash) {
 
 	history.replaceState(null, null, ' ');
 }
-
-//
-// example cancel connect/disconnect
-
-// diagram
-// 	.on('connect', evt => { evt.preventDefault(); })
-// 	.on('disconnect', evt => { evt.preventDefault(); });
-
-//
-// example connect shapes
-
-// const shape1 = diagram.shapeAdd({
-// 	templateKey: 'circle',
-// 	position: { x: 120, y: 120 },
-// 	props: {
-// 		text: { textContent: 'Title1' }
-// 	}
-// });
-
-// const shape2 = diagram.shapeAdd({
-// 	templateKey: 'circle',
-// 	position: { x: 220, y: 220 },
-// 	props: {
-// 		text: { textContent: 'Title2' }
-// 	}
-// });
-
-// diagram.shapeConnect({
-// 	start: { shape: shape1, connector: 'outright' },
-// 	end: { shape: shape2, connector: 'inright' }
-// });

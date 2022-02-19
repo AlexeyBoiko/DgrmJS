@@ -83,11 +83,11 @@ export class ShapeSettings extends HTMLElement {
 				</div>
 			</div>`;
 
-		shadow.querySelector('button').addEventListener('click', _ => this._dispatchEvent('del'));
+		shadow.querySelector('button').addEventListener('click', _ => this._dispatchEvent('shapeDel'));
 
 		this.textField = /** @type {HTMLTextAreaElement} */(shadow.querySelector('textarea'));
-		this.textField.addEventListener('input', _ => this._dispatchEvent('type', this.textField.value));
-		this.textField.addEventListener('change', _ => this._dispatchEvent('type', this.textField.value));
+		this.textField.addEventListener('input', _ => this._dispatchEvent('shapeType', this.textField.value));
+		this.textField.addEventListener('change', _ => this._dispatchEvent('shapeType', this.textField.value));
 
 		this.settingsDiv = shadow.getElementById('settings');
 	}

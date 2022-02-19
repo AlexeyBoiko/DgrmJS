@@ -13,24 +13,7 @@ a {
 	text-decoration: underline;
 }
 
-.panel {
-	position: fixed;
-	bottom: 0;
-	box-shadow: 0px 0px 58px 2px rgba(34, 60, 80, 0.2);
-	border-radius: 0 16px 0 0;
-	background-color: rgba(255,255,255, .7);
-}
-
 @media only screen and (max-width: 700px) {
-	.panel {
-		width: 100%;
-		border-radius: 0;
-	}
-
-	.panel.open {
-		border-radius: 16px 16px 0 0;
-	}
-
 	.links {
 		display: none;
 	}
@@ -42,6 +25,3 @@ a {
 	right: 0;
 	padding: 15px;
 }
-
-ap-shape-settings {display: none;}
-.panel.open ap-shape-settings { display: block; }

@@ -1,18 +1,36 @@
 import { terser } from 'rollup-plugin-terser';
+import minifyHTML from 'rollup-plugin-minify-html-literals';
 
 export default {
 	input: 'src/index.js',
 	output: {
-		file: 'dist/index.min.js',
+		file: 'dist/index.js',
 		format: 'iife',
-		plugins: [terser({
-			mangle: {
-				keep_classnames: false,
-				keep_fnames: false,
-				properties: {
-					regex: /^_/
+		plugins: [
+			terser({
+				mangle: {
+					keep_classnames: false,
+					keep_fnames: false,
+					properties: {
+						regex: /^_/
+					}
+				}
+			})]
+	},
+	plugins: [
+		minifyHTML({
+			options: {
+				shouldMinify(template) {
+					return (
+						template.parts.some(part => {
+							return (
+								part.text.includes('<style') ||
+								part.text.includes('<div')
+							);
+						})
+					);
 				}
 			}
-		})]
-	}
+		})
+	]
 };

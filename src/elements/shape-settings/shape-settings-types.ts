@@ -1,4 +1,4 @@
-type ShapeSettingsEventType = 'del'|'type';
+type ShapeSettingsEventType = 'shapeDel'|'shapeType';
 
 interface IShapeSettings extends HTMLElement {
 	update(params:ShapeSettingsUpdateParams):void;

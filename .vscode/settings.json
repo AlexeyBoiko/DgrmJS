@@ -2,5 +2,6 @@
     "liveServer.settings.root": "/src",
     "liveServer.settings.mount": [
         ["/", "/src"]
-    ]
+	],
+	"liveServer.settings.port": 5501
 }
