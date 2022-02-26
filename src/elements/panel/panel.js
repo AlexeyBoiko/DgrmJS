@@ -1,3 +1,6 @@
+import '../menu/menu.js';
+import '../shape-settings/shape-settings.js';
+
 export class Panel extends HTMLElement {
 	connectedCallback() {
 		const shadow = this.attachShadow({ mode: 'closed' });

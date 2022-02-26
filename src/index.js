@@ -3,8 +3,6 @@ import { connectorEqual, textContentTrim } from './index-helpers.js';
 import { serialize } from './serialize/serialize.js';
 
 // elements
-import './elements/menu/menu.js';
-import './elements/shape-settings/shape-settings.js';
 import './elements/panel/panel.js';
 
 //
@@ -137,6 +135,11 @@ if (window.location.hash) {
 				diagram.shapeConnect({
 					start: { shape: shapes[con.s.i], connector: con.s.c },
 					end: { shape: shapes[con.e.i], connector: con.e.c }
+				});
+
+				connectors.push({
+					start: { type: 'connector', key: con.s.c, shape: shapes[con.s.i] },
+					end: { type: 'connector', key: con.e.c, shape: shapes[con.e.i] }
 				});
 			}
 		}
