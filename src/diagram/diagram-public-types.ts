@@ -3,6 +3,7 @@ interface IDiagram {
 	shapeAdd(param: PresenterShapeAppendParam): IDiagramShape;
 	shapeDel(shape: IDiagramShape): void;
 	shapeConnect(param: DiagramShapeConnectParam): void;
+	shapeSetMoving(shape: IDiagramShape, offsetPoint: Point): void;
 }
 
 

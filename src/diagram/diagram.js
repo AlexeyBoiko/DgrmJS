@@ -80,7 +80,7 @@ export class Diagram extends EventTarget {
 				switch (evt.detail.target.type) {
 					case 'canvas':
 					case 'shape':
-						this._movedSet(/** @type {IPresenterShape} */(evt.detail.target), { x: evt.detail.offsetX, y: evt.detail.offsetY });
+						this.shapeSetMoving(/** @type {IPresenterShape} */(evt.detail.target), { x: evt.detail.offsetX, y: evt.detail.offsetY });
 						break;
 					case 'connector': {
 						this._onConnectorDown(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
@@ -117,7 +117,7 @@ export class Diagram extends EventTarget {
 				// connectorEnd create
 
 				const connectorEnd = this.shapeAdd(connectorEndParams(evt.detail.target));
-				this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
+				this.shapeSetMoving(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 				this._connectorManager.add(evt.detail.target, connectorEnd.defaultInConnector);
 				break;
 			}
@@ -132,7 +132,7 @@ export class Diagram extends EventTarget {
 					})) { return; }
 
 					const connectorEnd = this.shapeAdd(connectorEndParams(evt.detail.target));
-					this._movedSet(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
+					this.shapeSetMoving(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
 					this._connectorManager.replaceEnd(evt.detail.target, connectorEnd.defaultInConnector);
 				}
 				break;
@@ -188,9 +188,8 @@ export class Diagram extends EventTarget {
 	/**
 	 * @param {IPresenterShape} shape
 	 * @param {Point} offsetPoint
-	 * @private
 	 */
-	_movedSet(shape, offsetPoint) {
+	shapeSetMoving(shape, offsetPoint) {
 		/** @private */
 		this._movedShape = shape;
 
