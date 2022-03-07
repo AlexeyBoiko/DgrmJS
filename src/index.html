@@ -14,6 +14,21 @@
 	</div>
 	<svg id="diagram" xmlns="http://www.w3.org/2000/svg" style="touch-action: none;">
 		<style type="text/css">
+			text {
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Liberation Sans", sans-serif;
+				font-size: 14px;
+				color: rgb(73, 80, 87);
+				white-space: pre-wrap;
+			}
+			input[type=text] {
+				text-align: center;
+				border: none;
+    			padding: 0;
+				font-size: 14px;
+    			background-color: transparent;
+				color: transparent;
+				outline: none;
+			}
 			[data-connect="in"],
 			[data-connect="out"] {
 				stroke: rgb(108 187 247 / 51%);
@@ -97,8 +112,10 @@
 
 			<g data-templ="circle">
 				<circle data-key="circle" r="60" fill="#ff6600" stroke="#fff" stroke-width="1" />
+				
+				<rect data-text-for="text" x="-60" y="-20" width="120" height="40" fill="transparent" />
 				<text data-key="text" text-anchor="middle" alignment-baseline="central" fill="#fff"
-					style="user-select:none; pointer-events: none;">Sun</text>
+					style="user-select:none; pointer-events: none;">Title</text>
 
 				<circle data-key="outright" data-connect="out" data-connect-point="60,0" data-connect-dir="right" r="10"
 					cx="60" cy="0">
@@ -113,7 +130,7 @@
 					cx="0" cy="-60">
 				</circle>
 
-				<g К data-connect="in" data-connect-point="60,0" data-connect-dir="right">
+				<g data-connect="in" data-connect-point="60,0" data-connect-dir="right">
 					<circle class="empty" r="10" cx="60" cy="0"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="rotate(180 30 0)" />
 				</g>

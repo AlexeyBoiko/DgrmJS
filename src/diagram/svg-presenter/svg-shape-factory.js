@@ -45,6 +45,14 @@ export function shapeCreate({ svgCanvas, listener, svgElemToPresenterObj, create
 			shape.connectors.set(connector.key, connector);
 		});
 
+	// create text editor
+	shapeSvgEl.querySelectorAll('[data-text-for]').forEach(
+		el => {
+			inputShow(shapeSvgEl,
+				// @ts-ignore
+				/** @type {SVGRect} el */(el));
+		});
+
 	svgElemToPresenterObj.set(shapeSvgEl, shape);
 	return shape;
 }
@@ -76,4 +84,32 @@ function parseConnectPointAttr(svgEl) {
 	}
 	const point = svgEl.getAttribute('data-connect-point').split(',');
 	return { x: parseFloat(point[0]), y: parseFloat(point[1]) };
+}
+
+/**
+ * @param {SVGGElement} shapeSvgEl - where to place input
+ * @param {SVGRectElement} placeEl - where to place input
+ */
+function inputShow(shapeSvgEl, placeEl) {
+	const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+	foreign.width.baseVal.value = placeEl.width.baseVal.value;
+	foreign.height.baseVal.value = placeEl.height.baseVal.value;
+	foreign.x.baseVal.value = placeEl.x.baseVal.value;
+	foreign.y.baseVal.value = placeEl.y.baseVal.value;
+
+	/** @type {SVGTextElement} */
+	const textEl = shapeSvgEl.querySelector(`[data-key=${placeEl.getAttribute('data-text-for')}]`);
+
+	const input = document.createElement('input');
+	input.type = 'text';
+	input.style.width = `${placeEl.width.baseVal.value}px`;
+	input.style.height = `${placeEl.height.baseVal.value}px`;
+	input.style.caretColor = textEl.getAttribute('fill');
+	input.value = textEl.textContent;
+	input.oninput = function() {
+		textEl.innerHTML = input.value;
+	};
+	foreign.appendChild(input);
+
+	shapeSvgEl.appendChild(foreign);
 }
