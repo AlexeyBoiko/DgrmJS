@@ -25,6 +25,12 @@ export class SvgShape {
 
 		/** @type {Map<string, IPresenterConnector>} */
 		this.connectors = new Map();
+
+		// // text editors
+		// svgEl.querySelectorAll('[data-text-for]').forEach(txt => {
+
+		// 	txt.addEventListener('click', this);
+		// });
 	}
 
 	/**
@@ -87,4 +93,6 @@ export class SvgShape {
 			});
 		});
 	}
+
+	handleEvent(evt) {}
 }

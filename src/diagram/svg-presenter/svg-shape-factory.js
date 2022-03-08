@@ -91,25 +91,35 @@ function parseConnectPointAttr(svgEl) {
  * @param {SVGRectElement} placeEl - where to place input
  */
 function inputShow(shapeSvgEl, placeEl) {
-	const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-	foreign.width.baseVal.value = placeEl.width.baseVal.value;
-	foreign.height.baseVal.value = placeEl.height.baseVal.value;
-	foreign.x.baseVal.value = placeEl.x.baseVal.value;
-	foreign.y.baseVal.value = placeEl.y.baseVal.value;
-
 	/** @type {SVGTextElement} */
 	const textEl = shapeSvgEl.querySelector(`[data-key=${placeEl.getAttribute('data-text-for')}]`);
 
+	const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+	foreign.height.baseVal.value = placeEl.height.baseVal.value;
+	foreign.y.baseVal.value = placeEl.y.baseVal.value;
+	foreignWidthSet(foreign, textEl);
+
 	const input = document.createElement('input');
 	input.type = 'text';
-	input.style.width = `${placeEl.width.baseVal.value}px`;
-	input.style.height = `${placeEl.height.baseVal.value}px`;
+	input.style.width = '100%';
+	input.style.height = `${foreign.height.baseVal.value}px`;
 	input.style.caretColor = textEl.getAttribute('fill');
 	input.value = textEl.textContent;
 	input.oninput = function() {
 		textEl.innerHTML = input.value;
+		foreignWidthSet(foreign, textEl);
 	};
 	foreign.appendChild(input);
 
 	shapeSvgEl.appendChild(foreign);
+}
+
+/**
+ * @param {SVGForeignObjectElement} foreign
+ * @param {SVGTextElement} textEl
+ */
+function foreignWidthSet(foreign, textEl) {
+	const textBbox = textEl.getBBox();
+	foreign.width.baseVal.value = textBbox.width;
+	foreign.x.baseVal.value = textBbox.x;
 }
