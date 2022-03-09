@@ -132,6 +132,9 @@ export class SvgShape {
 		input.onblur = function() {
 			foreign.remove();
 		};
+		input.onpointerdown = function(evt) {
+			evt.stopImmediatePropagation();
+		};
 		foreign.appendChild(input);
 
 		svgEl.appendChild(foreign);
