@@ -19,11 +19,14 @@
 				font-size: 14px;
 				color: rgb(73, 80, 87);
 				white-space: pre-wrap;
+				user-select:none;
+				pointer-events: none;
 			}
 			input[type=text] {
 				text-align: center;
 				border: none;
     			padding: 0;
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Liberation Sans", sans-serif;
 				font-size: 14px;
     			background-color: transparent;
 				color: transparent;
@@ -121,8 +124,7 @@
 				<circle data-key="circle" r="60" fill="#ff6600" stroke="#fff" stroke-width="1" />
 				
 				<rect data-text-for="text" x="-45" y="-20" rx="15" ry="15" width="90" height="40" />
-				<text data-key="text" text-anchor="middle" alignment-baseline="central" fill="#fff"
-					style="user-select:none; pointer-events: none;">Title</text>
+				<text data-key="text" text-anchor="middle" alignment-baseline="central" fill="#fff">Title</text>
 
 				<circle data-key="outright" data-connect="out" data-connect-point="60,0" data-connect-dir="right" r="10"
 					cx="60" cy="0">
@@ -157,8 +159,7 @@
 
 			<g data-templ="rect">
 				<rect width="120" height="70" rx="15" ry="15" fill="#1aaee5" stroke="#fff" stroke-width="1"></rect>
-				<text x="60" y="35" text-anchor="middle" data-key="text" alignment-baseline="central" fill="#fff"
-					style="user-select:none; pointer-events: none;">Title</text>
+				<text x="60" y="35" text-anchor="middle" data-key="text" alignment-baseline="central" fill="#fff">Title</text>
 
 				<circle data-key="outright" data-connect="out" data-connect-point="120,35" data-connect-dir="right"
 					r="10" cx="120" cy="35">
@@ -194,8 +195,7 @@
 			<g data-templ="rhomb">
 				<path d="M0 35 L60 0 L120 35 L60 70 Z" stroke-width="18" stroke-linejoin="round" stroke="#1D809F"
 					fill="#1D809F"></path>
-				<text x="60" y="35" text-anchor="middle" data-key="text" alignment-baseline="central" fill="#fff"
-					style="user-select:none; pointer-events: none;">Title</text>
+				<text x="60" y="35" text-anchor="middle" data-key="text" alignment-baseline="central" fill="#fff">Title</text>
 
 				<circle data-key="outright" data-connect="out" data-connect-point="128,35" data-connect-dir="right"
 					r="10" cx="128" cy="35">
@@ -212,6 +212,8 @@
 
 			<g data-templ="text">
 				<circle r="13" cx="0" cy="0"></circle>
+
+				<rect data-text-for="text" x="-13" y="-19" rx="15" ry="15" width="90" height="40" />
 				<text data-key="text" fill="rgb(73, 80, 87)" alignment-baseline="central">Title</text>
 			</g>
 		</defs>
