@@ -147,7 +147,7 @@ export class SvgShape {
 	 */
 	static _foreignWidthSet(foreign, textEl) {
 		const textBbox = textEl.getBBox();
-		foreign.width.baseVal.value = textBbox.width;
+		foreign.width.baseVal.value = textBbox.width + 1;
 		foreign.x.baseVal.value = textBbox.x;
 	}
 }
