@@ -29,6 +29,13 @@
 				color: transparent;
 				outline: none;
 			}
+			[data-templ] [data-text-for] {
+				fill: transparent;
+			}
+			[data-templ].selected [data-text-for].empty {
+				fill: rgb(108 187 247 / 51%);
+			}
+
 			[data-connect="in"],
 			[data-connect="out"] {
 				stroke: rgb(108 187 247 / 51%);
@@ -113,7 +120,7 @@
 			<g data-templ="circle">
 				<circle data-key="circle" r="60" fill="#ff6600" stroke="#fff" stroke-width="1" />
 				
-				<rect data-text-for="text" x="-60" y="-20" width="120" height="40" fill="transparent" />
+				<rect data-text-for="text" x="-45" y="-20" rx="15" ry="15" width="90" height="40" />
 				<text data-key="text" text-anchor="middle" alignment-baseline="central" fill="#fff"
 					style="user-select:none; pointer-events: none;">Title</text>
 

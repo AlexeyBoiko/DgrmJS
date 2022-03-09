@@ -55,11 +55,21 @@ export class SvgShape {
 
 		if (param.props) {
 			SvgShape._attrsSet(this.svgEl, param.props);
+
+			// highlight empty text places
+			this.svgEl.querySelectorAll('[data-text-for]').forEach(el => {
+				if (/** @type {SVGTextElement} */ (this.svgEl.querySelector(`[data-key=${el.getAttribute('data-text-for')}]`)).getBBox().width === 0) {
+					el.classList.add('empty');
+				}
+			});
 		}
 
 		if (param.state) {
 			this._state = param.state;
-			if (this._state.has('selected')) { this.svgEl.classList.add('selected'); this._firstClick = true; } else { this.svgEl.classList.remove('selected'); }
+			if (this._state.has('selected')) {
+				this.svgEl.classList.add('selected');
+				this._firstClick = true;
+			} else { this.svgEl.classList.remove('selected'); }
 			if (this._state.has('hovered')) { this.svgEl.classList.add('hover'); } else { this.svgEl.classList.remove('hover'); }
 			if (this._state.has('disabled')) { this.svgEl.style.pointerEvents = 'none'; } else { this.svgEl.style.pointerEvents = 'auto'; }
 		}
@@ -113,6 +123,7 @@ export class SvgShape {
 	static _inputShow(svgEl, placeEl) {
 		/** @type {SVGTextElement} */
 		const textEl = svgEl.querySelector(`[data-key=${placeEl.getAttribute('data-text-for')}]`);
+		placeEl.classList.remove('empty');
 
 		const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
 		foreign.height.baseVal.value = placeEl.height.baseVal.value;
@@ -131,6 +142,7 @@ export class SvgShape {
 		};
 		input.onblur = function() {
 			foreign.remove();
+			if (!input.value) { placeEl.classList.add('empty'); } else { placeEl.classList.remove('empty'); }
 		};
 		input.onpointerdown = function(evt) {
 			evt.stopImmediatePropagation();
