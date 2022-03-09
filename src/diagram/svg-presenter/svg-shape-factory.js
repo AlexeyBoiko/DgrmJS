@@ -45,14 +45,6 @@ export function shapeCreate({ svgCanvas, listener, svgElemToPresenterObj, create
 			shape.connectors.set(connector.key, connector);
 		});
 
-	// create text editor
-	shapeSvgEl.querySelectorAll('[data-text-for]').forEach(
-		el => {
-			inputShow(shapeSvgEl,
-				// @ts-ignore
-				/** @type {SVGRect} el */(el));
-		});
-
 	svgElemToPresenterObj.set(shapeSvgEl, shape);
 	return shape;
 }
@@ -84,42 +76,4 @@ function parseConnectPointAttr(svgEl) {
 	}
 	const point = svgEl.getAttribute('data-connect-point').split(',');
 	return { x: parseFloat(point[0]), y: parseFloat(point[1]) };
-}
-
-/**
- * @param {SVGGElement} shapeSvgEl - where to place input
- * @param {SVGRectElement} placeEl - where to place input
- */
-function inputShow(shapeSvgEl, placeEl) {
-	/** @type {SVGTextElement} */
-	const textEl = shapeSvgEl.querySelector(`[data-key=${placeEl.getAttribute('data-text-for')}]`);
-
-	const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-	foreign.height.baseVal.value = placeEl.height.baseVal.value;
-	foreign.y.baseVal.value = placeEl.y.baseVal.value;
-	foreignWidthSet(foreign, textEl);
-
-	const input = document.createElement('input');
-	input.type = 'text';
-	input.style.width = '100%';
-	input.style.height = `${foreign.height.baseVal.value}px`;
-	input.style.caretColor = textEl.getAttribute('fill');
-	input.value = textEl.textContent;
-	input.oninput = function() {
-		textEl.innerHTML = input.value;
-		foreignWidthSet(foreign, textEl);
-	};
-	foreign.appendChild(input);
-
-	shapeSvgEl.appendChild(foreign);
-}
-
-/**
- * @param {SVGForeignObjectElement} foreign
- * @param {SVGTextElement} textEl
- */
-function foreignWidthSet(foreign, textEl) {
-	const textBbox = textEl.getBBox();
-	foreign.width.baseVal.value = textBbox.width;
-	foreign.x.baseVal.value = textBbox.x;
 }

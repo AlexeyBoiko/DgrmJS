@@ -26,11 +26,7 @@ export class SvgShape {
 		/** @type {Map<string, IPresenterConnector>} */
 		this.connectors = new Map();
 
-		// // text editors
-		// svgEl.querySelectorAll('[data-text-for]').forEach(txt => {
-
-		// 	txt.addEventListener('click', this);
-		// });
+		this.svgEl.addEventListener('click', this);
 	}
 
 	/**
@@ -50,6 +46,7 @@ export class SvgShape {
 	update(param) {
 		if (param.position) {
 			svgPositionSet(this.svgEl, param.position);
+			this._firstClick = true;
 		}
 
 		if (param.rotate) {
@@ -62,7 +59,7 @@ export class SvgShape {
 
 		if (param.state) {
 			this._state = param.state;
-			if (this._state.has('selected')) { this.svgEl.classList.add('selected'); } else { this.svgEl.classList.remove('selected'); }
+			if (this._state.has('selected')) { this.svgEl.classList.add('selected'); this._firstClick = true; } else { this.svgEl.classList.remove('selected'); }
 			if (this._state.has('hovered')) { this.svgEl.classList.add('hover'); } else { this.svgEl.classList.remove('hover'); }
 			if (this._state.has('disabled')) { this.svgEl.style.pointerEvents = 'none'; } else { this.svgEl.style.pointerEvents = 'auto'; }
 		}
@@ -94,5 +91,60 @@ export class SvgShape {
 		});
 	}
 
-	handleEvent(evt) {}
+	/**
+	 * @param {PointerEvent & { currentTarget: SVGGraphicsElement }} evt
+	 */
+	handleEvent(evt) {
+		evt.stopPropagation();
+
+		if (!this._firstClick) {
+			if (/** @type {Element} */ (evt.target).getAttribute('data-text-for')) {
+				// @ts-ignore
+				SvgShape._inputShow(this.svgEl, evt.target);
+			}
+		}
+		this._firstClick = false;
+	}
+
+	/**
+	 * @param {SVGGElement} svgEl
+	 * @param {SVGRectElement} placeEl - where to place input
+	 */
+	static _inputShow(svgEl, placeEl) {
+		/** @type {SVGTextElement} */
+		const textEl = svgEl.querySelector(`[data-key=${placeEl.getAttribute('data-text-for')}]`);
+
+		const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+		foreign.height.baseVal.value = placeEl.height.baseVal.value;
+		foreign.y.baseVal.value = placeEl.y.baseVal.value;
+		SvgShape._foreignWidthSet(foreign, textEl);
+
+		const input = document.createElement('input');
+		input.type = 'text';
+		input.style.width = '100%';
+		input.style.height = `${foreign.height.baseVal.value}px`;
+		input.style.caretColor = textEl.getAttribute('fill');
+		input.value = textEl.textContent;
+		input.oninput = function() {
+			textEl.innerHTML = input.value;
+			SvgShape._foreignWidthSet(foreign, textEl);
+		};
+		input.onblur = function() {
+			foreign.remove();
+		};
+		foreign.appendChild(input);
+
+		svgEl.appendChild(foreign);
+		input.focus();
+	}
+
+	/**
+	 * @param {SVGForeignObjectElement} foreign
+	 * @param {SVGTextElement} textEl
+	 */
+	static _foreignWidthSet(foreign, textEl) {
+		const textBbox = textEl.getBBox();
+		foreign.width.baseVal.value = textBbox.width;
+		foreign.x.baseVal.value = textBbox.x;
+	}
 }
