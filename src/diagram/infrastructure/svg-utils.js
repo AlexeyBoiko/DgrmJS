@@ -46,3 +46,15 @@ export function svgPositionGet(svgEl) {
 export function svgRotate(svgEl, angle, svg) {
 	ensureTransform(svgEl, SVGTransform.SVG_TRANSFORM_ROTATE, svg).setRotate(angle, 0, 0);
 }
+
+/**
+ * create multiline tspan markap
+ * @param {number} lineHeight
+ * @param {string} str
+ * @returns {string}
+ */
+export function svgStrToTspan(str, lineHeight) {
+	return str.split('\n').map((t, i) => {
+		return `<tspan x="0" dy="${i === 0 ? '.4em' : `${lineHeight}px`}" ${t.length === 0 ? 'visibility="hidden"' : ''}>${t.length === 0 ? '.' : t}</tspan>`;
+	}).join('\n');
+}

@@ -1,4 +1,4 @@
-import { svgPositionSet, svgPositionGet, svgRotate } from '../infrastructure/svg-utils.js';
+import { svgPositionSet, svgPositionGet, svgRotate, svgStrToTspan } from '../infrastructure/svg-utils.js';
 
 /** @implements {ISvgPresenterShape} */
 export class SvgShape {
@@ -90,7 +90,7 @@ export class SvgShape {
 				switch (attr) {
 					case 'textContent':
 						shape.innerHTML = props[name][attr]
-							? props[name][attr].toString().replaceAll('\n', '<tspan x="0" dy="1.2em">&ZeroWidthSpace;</tspan>')
+							? svgStrToTspan(props[name][attr].toString(), SvgShape._textLineHeightAttrParse(shape))
 							: '';
 						break;
 					default:
@@ -102,15 +102,20 @@ export class SvgShape {
 	}
 
 	/**
-	 * @param {PointerEvent & { currentTarget: SVGGraphicsElement }} evt
+	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	handleEvent(evt) {
 		evt.stopPropagation();
 
 		if (!this._firstClick) {
-			if (/** @type {Element} */ (evt.target).getAttribute('data-text-for')) {
-				// @ts-ignore
-				SvgShape._inputShow(this.svgEl, evt.target);
+			if (evt.target.tagName === 'tspan' || evt.target.getAttribute('data-text-for')) {
+				const placeEl = evt.target.tagName === 'tspan'
+					? this.svgEl.querySelector(`[data-text-for=${evt.target.parentElement.getAttribute('data-key')}]`)
+					: evt.target;
+				if (placeEl) {
+					// @ts-ignore
+					SvgShape._inputShow(this.svgEl, placeEl);
+				}
 			}
 		}
 		this._firstClick = false;
@@ -119,6 +124,7 @@ export class SvgShape {
 	/**
 	 * @param {SVGGElement} svgEl
 	 * @param {SVGRectElement} placeEl - where to place input
+	 * @private
 	 */
 	static _inputShow(svgEl, placeEl) {
 		/** @type {SVGTextElement} */
@@ -126,20 +132,21 @@ export class SvgShape {
 		placeEl.classList.remove('empty');
 
 		const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-		foreign.height.baseVal.value = placeEl.height.baseVal.value;
-		foreign.y.baseVal.value = placeEl.y.baseVal.value;
-		SvgShape._foreignWidthSet(foreign, textEl);
+		SvgShape._foreignWidthSet(placeEl, foreign, textEl);
 
-		const input = document.createElement('input');
-		input.type = 'text';
+		const input = document.createElement('textarea');
+		// input.type = 'text';
 		input.style.width = '100%';
-		input.style.height = `${foreign.height.baseVal.value}px`;
+		input.style.height = '100%';
 		input.style.caretColor = textEl.getAttribute('fill');
 		input.value = textEl.textContent;
+
+		const lineHeight = SvgShape._textLineHeightAttrParse(textEl);
 		input.oninput = function() {
-			textEl.innerHTML = input.value;
-			SvgShape._foreignWidthSet(foreign, textEl);
+			textEl.innerHTML = svgStrToTspan(input.value, lineHeight);
+			SvgShape._foreignWidthSet(placeEl, foreign, textEl);
 		};
+
 		input.onblur = function() {
 			foreign.remove();
 			if (!input.value) { placeEl.classList.add('empty'); } else { placeEl.classList.remove('empty'); }
@@ -154,12 +161,34 @@ export class SvgShape {
 	}
 
 	/**
+	 * @param {SVGRectElement} placeEl - where to place input
 	 * @param {SVGForeignObjectElement} foreign
 	 * @param {SVGTextElement} textEl
+	 * @private
 	 */
-	static _foreignWidthSet(foreign, textEl) {
+	static _foreignWidthSet(placeEl, foreign, textEl) {
 		const textBbox = textEl.getBBox();
-		foreign.width.baseVal.value = textBbox.width + 1;
-		foreign.x.baseVal.value = textBbox.x;
+		if (textBbox.width > 0) {
+			foreign.width.baseVal.value = textBbox.width;
+			foreign.x.baseVal.value = textBbox.x;
+
+			foreign.height.baseVal.value = textBbox.height;
+			foreign.y.baseVal.value = textBbox.y;
+		} else {
+			foreign.width.baseVal.value = placeEl.width.baseVal.value;
+			foreign.x.baseVal.value = placeEl.x.baseVal.value;
+
+			foreign.height.baseVal.value = placeEl.height.baseVal.value;
+			foreign.y.baseVal.value = placeEl.y.baseVal.value;
+		}
+	}
+
+	/**
+	 * @param {Element} textEl
+	 * @returns {number}
+	 * @private
+	 */
+	static _textLineHeightAttrParse(textEl) {
+		return parseInt(textEl.getAttribute('data-line-height'));
 	}
 }
