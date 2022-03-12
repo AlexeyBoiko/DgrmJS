@@ -48,17 +48,13 @@ export function svgRotate(svgEl, angle, svg) {
 }
 
 /**
- * create multiline tspan markap
+ * create multiline tspan markup
  * @param {string} str
  * @param {{x:number, lineHeight:number}} param
  * @returns {string}
  */
 export function svgStrToTspan(str, param) {
-	// return `<tspan x="${param.x}" dy=".4em" visibility="hidden">.</tspan>`;
-	// return str.split('\n').map((t, i) => {
-	// 	return `<tspan x="${param.x}" dy="${i === 0 ? '.4em' : `${param.lineHeight}px`}">${t.length === 0 ? '&nbsp;' : t.replace(' ', '&nbsp;')}</tspan>`;
-	// }).join('\n');
 	return str.split('\n').map((t, i) => {
-		return `<tspan x="${param.x}" dy="${i === 0 ? '.4em' : `${param.lineHeight}px`}" ${t.length === 0 ? 'visibility="hidden"' : ''}>${t.length === 0 ? '.' : t}</tspan>`;
+		return `<tspan x="${param.x}" dy="${i === 0 ? '.4em' : `${param.lineHeight}px`}" ${t.length === 0 ? 'visibility="hidden"' : ''}>${t.length === 0 ? '.' : t.replaceAll(' ', '&nbsp;')}</tspan>`;
 	}).join('');
 }
