@@ -1,4 +1,4 @@
-import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-factory.js';
+import { svgDiagramCreate } from './svg-diagram-factory.js';
 import { connectorEqual, textContentTrim } from './index-helpers.js';
 import { serialize } from './serialize/serialize.js';
 

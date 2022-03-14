@@ -1,4 +1,5 @@
-import { svgStrToTspan } from '../../infrastructure/svg-utils.js';
+import { svgStrToTspan } from '../../diagram/infrastructure/svg-utils.js';
+import { textParamsParse } from '../../diagram/svg-presenter/svg-shape/svg-shape.js';
 
 /** @implements {ISvgPresenterShape} */
 export class SvgShapeTextEditorDecorator {
@@ -103,17 +104,6 @@ export class SvgShapeTextEditorDecorator {
 		}
 		this._firstClick = false;
 	}
-}
-
-/**
- * @param {SVGTextElement} textEl
- * @returns {{x:number, lineHeight:number}}
- */
-export function textParamsParse(textEl) {
-	return {
-		x: textEl.x?.baseVal[0]?.value ?? 0,
-		lineHeight: parseInt(textEl.getAttribute('data-line-height'))
-	};
 }
 
 /**

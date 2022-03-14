@@ -1,5 +1,4 @@
 import { svgPositionSet, svgPositionGet, svgRotate, svgStrToTspan } from '../../infrastructure/svg-utils.js';
-import { textParamsParse } from './svg-shape-texteditor-decorator.js';
 
 /** @implements {ISvgPresenterShape} */
 export class SvgShape {
@@ -95,4 +94,15 @@ export class SvgShape {
 			});
 		});
 	}
+}
+
+/**
+ * @param {SVGTextElement} textEl
+ * @returns {{x:number, lineHeight:number}}
+ */
+export function textParamsParse(textEl) {
+	return {
+		x: textEl.x?.baseVal[0]?.value ?? 0,
+		lineHeight: parseInt(textEl.getAttribute('data-line-height'))
+	};
 }
