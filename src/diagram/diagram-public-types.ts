@@ -1,3 +1,5 @@
+// TODO: replace 'Presenter'types with 'Diagram'types
+
 interface IDiagram {
 	on(evtType: DiagramEventType, listener: EventListenerOrEventListenerObject): this;
 	shapeAdd(param: PresenterShapeAppendParam): IDiagramShape;
@@ -17,6 +19,13 @@ interface IDiagramElement {
 interface IDiagramShape extends IDiagramElement {
 	postionGet(): Point;
 	update(param: PresenterShapeUpdateParam): void;
+	on(type: DiagramShapeEventType, listener: EventListenerOrEventListenerObject): IDiagramShape;
+}
+
+type DiagramShapeEventType = 'update';
+interface IDiagramShapeEventUpdateDetail {
+	target: IPresenterShape;
+	props: PresenterShapeProps;
 }
 
 /** type = 'connector' */

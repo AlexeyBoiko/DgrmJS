@@ -28,7 +28,7 @@ export class SvgShape {
 	}
 
 	/**
-	 * @param {PresenterShapeEventType} type
+	 * @param {DiagramShapeEventType} type
 	 * @param {EventListenerOrEventListenerObject} listener
 	 * @returns {ISvgPresenterShape}
 	 */

@@ -68,12 +68,6 @@ interface IPresenterElement {
 	type: PresenterElementType,
 }
 
-type PresenterShapeEventType = 'update';
-interface IPresenterShapeEventUpdateDetail {
-	target: IPresenterShape;
-	props: PresenterShapeProps;
-}
-
 interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 
 	/** can be used as connector end  */
@@ -85,7 +79,7 @@ interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 
 	postionGet(): Point;
 	update(param: PresenterShapeUpdateParam): void;
-	on(type: PresenterShapeEventType, listener: EventListenerOrEventListenerObject): IPresenterShape;
+	on(type: DiagramShapeEventType, listener: EventListenerOrEventListenerObject): IPresenterShape;
 }
 
 type PresenterConnectorType = 'in' | 'out';

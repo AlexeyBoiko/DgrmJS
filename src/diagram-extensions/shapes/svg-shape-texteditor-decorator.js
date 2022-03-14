@@ -29,7 +29,7 @@ export class SvgShapeTextEditorDecorator {
 	stateGet() { return this._svgShape.stateGet(); }
 	postionGet() { return this._svgShape.postionGet(); }
 	/**
-	 * @param {PresenterShapeEventType} type
+	 * @param {DiagramShapeEventType} type
 	 * @param {EventListenerOrEventListenerObject} listener
 	 * @returns {IPresenterShape}
 	 */
@@ -93,7 +93,7 @@ export class SvgShapeTextEditorDecorator {
 					this._props,
 					_ => {
 						this._svgShape.svgEl.dispatchEvent(new CustomEvent('update', {
-							/** @type {IPresenterShapeEventUpdateDetail} */
+							/** @type {IDiagramShapeEventUpdateDetail} */
 							detail: {
 								target: this._svgShape,
 								props: this._props
@@ -120,7 +120,7 @@ function inputShow(svgEl, placeEl, shapeProps, onchangeCallback) {
 	placeEl.classList.remove('empty');
 
 	const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-	foreignWidthSet(placeEl, foreign, textEl);
+	foreignWidthSet(foreign, textEl);
 
 	const textarea = document.createElement('textarea');
 	textarea.style.width = '100%';
@@ -131,7 +131,7 @@ function inputShow(svgEl, placeEl, shapeProps, onchangeCallback) {
 	const lineHeight = textParamsParse(textEl);
 	textarea.oninput = function() {
 		textEl.innerHTML = svgStrToTspan(textarea.value, lineHeight);
-		foreignWidthSet(placeEl, foreign, textEl);
+		foreignWidthSet(foreign, textEl);
 		shapeProps[textKey].textContent = textarea.value;
 		onchangeCallback();
 	};
@@ -149,12 +149,11 @@ function inputShow(svgEl, placeEl, shapeProps, onchangeCallback) {
 }
 
 /**
- * @param {SVGRectElement} placeEl - where to place input
  * @param {SVGForeignObjectElement} foreign
  * @param {SVGTextElement} textEl
  * @private
  */
-function foreignWidthSet(placeEl, foreign, textEl) {
+function foreignWidthSet(foreign, textEl) {
 	const textBbox = textEl.getBBox();
 
 	foreign.width.baseVal.value = textBbox.width;

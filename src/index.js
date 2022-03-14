@@ -36,14 +36,22 @@ const diagram = svgDiagramCreate(document.getElementById('diagram'))
 /**
  * @param {SerializeShape} param
  * @returns {IDiagramShape}
- * */
+ */
 function shapeAdd(param) {
 	param.props = {
 		text: { textContent: textContentTrim(param.templateKey, param.detail) }
 	};
-	const shape = diagram.shapeAdd(param);
+	const shape = diagram.shapeAdd(param)
+		.on('update', shapeOnUpdate);
 	shapeData.set(shape, { templateKey: param.templateKey, detail: param.detail });
 	return shape;
+}
+
+/**
+ * @param { CustomEvent<IDiagramShapeEventUpdateDetail>} evt
+ */
+function shapeOnUpdate(evt) {
+	shapeData.get(evt.detail.target).detail = /** @type {string} */ (evt.detail.props.text.textContent);
 }
 
 /** @param {string} templateKey */
