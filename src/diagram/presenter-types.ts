@@ -65,7 +65,13 @@ interface IPresenterEventDetail {
 type PresenterElementType = 'canvas' | 'shape' | 'connector' | 'path';
 
 interface IPresenterElement {
-	type: PresenterElementType
+	type: PresenterElementType,
+}
+
+type PresenterShapeEventType = 'update';
+interface IPresenterShapeEventUpdateDetail {
+	target: IPresenterShape;
+	props: PresenterShapeProps;
 }
 
 interface IPresenterShape extends IPresenterElement, IPresenterStatable {
@@ -79,6 +85,7 @@ interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 
 	postionGet(): Point;
 	update(param: PresenterShapeUpdateParam): void;
+	on(type: PresenterShapeEventType, listener: EventListenerOrEventListenerObject): IPresenterShape;
 }
 
 type PresenterConnectorType = 'in' | 'out';

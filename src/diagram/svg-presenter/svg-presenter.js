@@ -1,13 +1,17 @@
-// import { svgPositionSet } from '../infrastructure/svg-utils.js';
-import { pathCreate } from './svg-path-factory.js';
-import { shapeCreate } from './svg-shape-factory.js';
-import { SvgShape } from './svg-shape.js';
+import { pathCreate } from './svg-path/svg-path-factory.js';
+import { SvgShape } from './svg-shape/svg-shape.js';
 
 /** @implements {IPresenter} */
 export class SvgPresenter extends EventTarget {
-	/** @param {SVGSVGElement} svg */
-	constructor(svg) {
+	/**
+	 * @param {SVGSVGElement} svg
+	 * @param {ISvgPresenterShapeFuctory} shapeFuctory
+	 * */
+	constructor(svg, shapeFuctory) {
 		super();
+
+		/** @private */
+		this._shapeFuctory = shapeFuctory;
 
 		/** @private */
 		this._svg = svg;
@@ -36,13 +40,15 @@ export class SvgPresenter extends EventTarget {
 	 */
 	append(type, param) {
 		switch (type) {
-			case 'shape':
-				return shapeCreate({
+			case 'shape': {
+				const shape = this._shapeFuctory({
 					svgCanvas: this._canvasSvgEl,
 					svgElemToPresenterObj: this._svgElemToPresenterObj,
 					listener: this,
 					createParams: /** @type {PresenterShapeAppendParam} */(param)
 				});
+				return shape;
+			}
 			case 'path':
 				return pathCreate({
 					svgCanvas: this._canvasSvgEl,
@@ -62,7 +68,7 @@ export class SvgPresenter extends EventTarget {
 	/**
 	 * @param {PresenterEventType} type
 	 * @param {EventListenerOrEventListenerObject} listener
-	 * @returns {IPresenter}
+	 * @returns {this}
 	 */
 	on(type, listener) {
 		this.addEventListener(type, listener);

@@ -1,5 +1,5 @@
-import { svgPositionSet, svgPositionGet, svgRotate, svgStrToTspan } from '../infrastructure/svg-utils.js';
-import { SvgTextEditorManager, textParamsParse } from './svg-text-editor.js';
+import { svgPositionSet, svgPositionGet, svgRotate, svgStrToTspan } from '../../infrastructure/svg-utils.js';
+import { textParamsParse } from './svg-shape-texteditor-decorator.js';
 
 /** @implements {ISvgPresenterShape} */
 export class SvgShape {
@@ -26,14 +26,19 @@ export class SvgShape {
 
 		/** @type {Map<string, IPresenterConnector>} */
 		this.connectors = new Map();
-
-		/** @type {SvgTextEditorManager} */
-		this._textEditorManager = new SvgTextEditorManager(this.svgEl);
 	}
 
 	/**
-	 * @returns {Set<PresenterShapeState>}
+	 * @param {PresenterShapeEventType} type
+	 * @param {EventListenerOrEventListenerObject} listener
+	 * @returns {ISvgPresenterShape}
 	 */
+	on(type, listener) {
+		this.svgEl.addEventListener(type, listener);
+		return this;
+	}
+
+	/** @returns {Set<PresenterShapeState>} */
 	stateGet() {
 		return new Set(this._state);
 	}
@@ -43,9 +48,7 @@ export class SvgShape {
 		return svgPositionGet(this.svgEl);
 	}
 
-	/**
-	 * @param {PresenterShapeUpdateParam} param
-	 * */
+	/** @param {PresenterShapeUpdateParam} param */
 	update(param) {
 		if (param.position) {
 			svgPositionSet(this.svgEl, param.position);
@@ -65,8 +68,6 @@ export class SvgShape {
 			if (this._state.has('hovered')) { this.svgEl.classList.add('hover'); } else { this.svgEl.classList.remove('hover'); }
 			if (this._state.has('disabled')) { this.svgEl.style.pointerEvents = 'none'; } else { this.svgEl.style.pointerEvents = 'auto'; }
 		}
-
-		this._textEditorManager.update(param);
 	}
 
 	/**

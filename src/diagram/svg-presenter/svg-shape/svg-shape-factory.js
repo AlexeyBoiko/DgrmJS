@@ -1,16 +1,13 @@
-import { svgPositionGet } from '../infrastructure/svg-utils.js';
-import { SvgConnector } from './svg-connector.js';
+import { svgPositionGet } from '../../infrastructure/svg-utils.js';
+import { SvgConnector } from '../svg-connector.js';
 import { SvgShape } from './svg-shape.js';
 
 /**
- * @param {object} param
- * @param {SVGGElement} param.svgCanvas
- * @param {EventListenerOrEventListenerObject} param.listener
- * @param {WeakMap<SVGGraphicsElement, IPresenterElement>} param.svgElemToPresenterObj
- * @param {PresenterShapeAppendParam} param.createParams
+ * @param {SVGGElement} svgCanvas
+ * @param {PresenterShapeAppendParam} createParams
  * @returns {SvgShape}
  */
-export function shapeCreate({ svgCanvas, listener, svgElemToPresenterObj, createParams }) {
+export function shapeCreate(svgCanvas, createParams) {
 	const shapeSvgEl = /** @type {SVGGElement} */ (svgCanvas.ownerSVGElement.getElementsByTagName('defs')[0]
 		.querySelector(`[data-templ='${createParams.templateKey}']`)
 		.cloneNode(true));
@@ -26,18 +23,26 @@ export function shapeCreate({ svgCanvas, listener, svgElemToPresenterObj, create
 	}
 
 	shape.update(createParams);
+	return shape;
+}
 
-	shape.connectable = shapeSvgEl.getAttribute('data-connectable') === 'true';
-	const defaultConnectPoint = parseConnectPointAttr(shapeSvgEl);
+/**
+ * @param {EventListenerOrEventListenerObject} listener
+ * @param {WeakMap<SVGGraphicsElement, IPresenterElement>} svgElemToPresenterObj
+ * @param {ISvgPresenterShape} shape
+ */
+export function connectorsInit(listener, svgElemToPresenterObj, shape) {
+	shape.connectable = shape.svgEl.getAttribute('data-connectable') === 'true';
+	const defaultConnectPoint = parseConnectPointAttr(shape.svgEl);
 	if (defaultConnectPoint) {
 		// !circile link!
-		shape.defaultInConnector = connectorCreate(shapeSvgEl, shape);
+		shape.defaultInConnector = connectorCreate(shape.svgEl, shape);
 	}
 
-	shapeSvgEl.addEventListener('pointerdown', listener);
+	shape.svgEl.addEventListener('pointerdown', listener);
 
 	// create connectors
-	shapeSvgEl.querySelectorAll('[data-connect]').forEach(
+	shape.svgEl.querySelectorAll('[data-connect]').forEach(
 		/** @param {SVGGraphicsElement} el */el => {
 			const connector = connectorCreate(el, shape);
 			el.addEventListener('pointerdown', listener);
@@ -45,8 +50,7 @@ export function shapeCreate({ svgCanvas, listener, svgElemToPresenterObj, create
 			shape.connectors.set(connector.key, connector);
 		});
 
-	svgElemToPresenterObj.set(shapeSvgEl, shape);
-	return shape;
+	svgElemToPresenterObj.set(shape.svgEl, shape);
 }
 
 /**

@@ -1,19 +1,45 @@
-import { svgStrToTspan } from '../infrastructure/svg-utils.js';
+import { svgStrToTspan } from '../../infrastructure/svg-utils.js';
 
-export class SvgTextEditorManager {
+/** @implements {ISvgPresenterShape} */
+export class SvgShapeTextEditorDecorator {
 	/**
-	 * @param {SVGGraphicsElement} svgEl
+	 * @param {ISvgPresenterShape} svgShape
+	 * @param {PresenterShapeProps} initProps
 	 */
-	constructor(svgEl) {
-		this.svgEl = svgEl;
-		svgEl.addEventListener('click', this);
+	constructor(svgShape, initProps) {
+		/**
+		 * @type {ISvgPresenterShape}
+		 * @private
+		 */
+		this._svgShape = svgShape;
+		this._svgShape.svgEl.addEventListener('click', this);
+
+		/** @private */
+		this._props = Object.assign({}, initProps);
+
+		// ISvgPresenterShape
+		this.svgEl = this._svgShape.svgEl;
+		this.type = this._svgShape.type;
+		this.connectable = this._svgShape.connectable;
+		this.defaultInConnector = this._svgShape.defaultInConnector;
+		this.connectors = this._svgShape.connectors;
 	}
+
+	stateGet() { return this._svgShape.stateGet(); }
+	postionGet() { return this._svgShape.postionGet(); }
+	/**
+	 * @param {PresenterShapeEventType} type
+	 * @param {EventListenerOrEventListenerObject} listener
+	 * @returns {IPresenterShape}
+	 */
+	on(type, listener) { return this._svgShape.on(type, listener); }
 
 	/**
 	 * @param {PresenterShapeUpdateParam} param
-	 *
 	 */
 	update(param) {
+		this._svgShape.update(param);
+
 		if (param.position) {
 			/** @private */
 			this._firstClick = true;
@@ -24,7 +50,7 @@ export class SvgTextEditorManager {
 			this._props = Object.assign({}, param.props);
 
 			// highlight empty text places
-			this.svgEl.querySelectorAll('[data-text-for]').forEach(el => {
+			this._svgShape.svgEl.querySelectorAll('[data-text-for]').forEach(el => {
 				if (!param.props[el.getAttribute('data-text-for')].textContent) {
 					el.classList.add('empty');
 				}
@@ -47,10 +73,10 @@ export class SvgTextEditorManager {
 			let placeEl;
 			switch (evt.target.tagName) {
 				case 'tspan':
-					placeEl = this.svgEl.querySelector(`[data-text-for=${evt.target.parentElement.getAttribute('data-key')}]`);
+					placeEl = this._svgShape.svgEl.querySelector(`[data-text-for=${evt.target.parentElement.getAttribute('data-key')}]`);
 					break;
 				case 'text':
-					placeEl = this.svgEl.querySelector(`[data-text-for=${evt.target.getAttribute('data-key')}]`);
+					placeEl = this._svgShape.svgEl.querySelector(`[data-text-for=${evt.target.getAttribute('data-key')}]`);
 					break;
 				default:
 					if (evt.target.getAttribute('data-text-for')) {
@@ -60,7 +86,19 @@ export class SvgTextEditorManager {
 			}
 
 			if (placeEl) {
-				inputShow(this.svgEl, placeEl, this._props);
+				inputShow(
+					this._svgShape.svgEl,
+					placeEl,
+					this._props,
+					_ => {
+						this._svgShape.svgEl.dispatchEvent(new CustomEvent('update', {
+							/** @type {IPresenterShapeEventUpdateDetail} */
+							detail: {
+								target: this._svgShape,
+								props: this._props
+							}
+						}));
+					});
 			}
 		}
 		this._firstClick = false;
@@ -82,9 +120,10 @@ export function textParamsParse(textEl) {
  * @param {SVGGElement} svgEl
  * @param {SVGRectElement} placeEl - where to place input
  * @param {PresenterShapeProps} shapeProps
+ * @param {{():void}} onchangeCallback
  * @private
  */
-function inputShow(svgEl, placeEl, shapeProps) {
+function inputShow(svgEl, placeEl, shapeProps, onchangeCallback) {
 	const textKey = placeEl.getAttribute('data-text-for');
 	/** @type {SVGTextElement} */
 	const textEl = svgEl.querySelector(`[data-key=${textKey}]`);
@@ -101,11 +140,11 @@ function inputShow(svgEl, placeEl, shapeProps) {
 
 	const lineHeight = textParamsParse(textEl);
 	textarea.oninput = function() {
-		shapeProps[textKey].textContent = textarea.value;
 		textEl.innerHTML = svgStrToTspan(textarea.value, lineHeight);
 		foreignWidthSet(placeEl, foreign, textEl);
+		shapeProps[textKey].textContent = textarea.value;
+		onchangeCallback();
 	};
-
 	textarea.onblur = function() {
 		foreign.remove();
 		if (!textarea.value) { placeEl.classList.add('empty'); } else { placeEl.classList.remove('empty'); }
