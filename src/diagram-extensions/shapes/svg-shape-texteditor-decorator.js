@@ -87,7 +87,6 @@ export class SvgShapeTextEditorDecorator {
 			}
 
 			if (placeEl) {
-				console.log('CLLL');
 				inputShow(
 					this._svgShape.svgEl,
 					placeEl,
@@ -152,8 +151,6 @@ function inputShow(svgEl, placeEl, shapeProps, onchangeCallback) {
 
 	textarea.select();
 	textarea.focus();
-
-	console.log(getComputedStyle(textarea).textAlign);
 }
 
 /**
