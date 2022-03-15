@@ -87,10 +87,12 @@ export class SvgShapeTextEditorDecorator {
 			}
 
 			if (placeEl) {
+				console.log('CLLL');
 				inputShow(
 					this._svgShape.svgEl,
 					placeEl,
 					this._props,
+					// onchangeCallback
 					_ => {
 						this._svgShape.svgEl.dispatchEvent(new CustomEvent('update', {
 							/** @type {IDiagramShapeEventUpdateDetail} */
@@ -120,18 +122,15 @@ function inputShow(svgEl, placeEl, shapeProps, onchangeCallback) {
 	placeEl.classList.remove('empty');
 
 	const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-	foreignWidthSet(foreign, textEl);
-
 	const textarea = document.createElement('textarea');
-	textarea.style.width = '100%';
-	textarea.style.height = '100%';
+
 	textarea.style.caretColor = textEl.getAttribute('fill');
 	textarea.value = shapeProps[textKey].textContent ? shapeProps[textKey].textContent.toString() : null;
 
 	const lineHeight = textParamsParse(textEl);
 	textarea.oninput = function() {
 		textEl.innerHTML = svgStrToTspan(textarea.value, lineHeight);
-		foreignWidthSet(foreign, textEl);
+		foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textareaStyle.textAlign);
 		shapeProps[textKey].textContent = textarea.value;
 		onchangeCallback();
 	};
@@ -142,23 +141,38 @@ function inputShow(svgEl, placeEl, shapeProps, onchangeCallback) {
 	textarea.onpointerdown = function(evt) {
 		evt.stopImmediatePropagation();
 	};
-	foreign.appendChild(textarea);
 
+	foreign.appendChild(textarea);
 	svgEl.appendChild(foreign);
+
+	const textareaStyle = getComputedStyle(textarea);
+	// must be in px
+	const textareaPaddingAndBorder = parseInt(textareaStyle.padding) + parseInt(textareaStyle.borderWidth);
+	foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textareaStyle.textAlign);
+
 	textarea.focus();
+
+	console.log(getComputedStyle(textarea).textAlign);
 }
 
 /**
- * @param {SVGForeignObjectElement} foreign
  * @param {SVGTextElement} textEl
+ * @param {SVGForeignObjectElement} foreign
+ * @param {HTMLTextAreaElement} textarea
+ * @param {number} textareaPaddingAndBorder
+ * @param {string} textAlign
  * @private
  */
-function foreignWidthSet(foreign, textEl) {
+function foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textAlign) {
 	const textBbox = textEl.getBBox();
+	const width = textBbox.width + 20;
 
-	foreign.width.baseVal.value = textBbox.width;
-	foreign.x.baseVal.value = textBbox.x;
+	foreign.width.baseVal.value = width + 2 * textareaPaddingAndBorder;
+	foreign.x.baseVal.value = textBbox.x - textareaPaddingAndBorder - ((textAlign === 'center') ? 10 : 0);
 
-	foreign.height.baseVal.value = textBbox.height;
-	foreign.y.baseVal.value = textBbox.y;
+	foreign.height.baseVal.value = textBbox.height + 2 * textareaPaddingAndBorder;
+	foreign.y.baseVal.value = textBbox.y - textareaPaddingAndBorder;
+
+	textarea.style.width = `${width}px`;
+	textarea.style.height = `${textBbox.height}px`;
 }
