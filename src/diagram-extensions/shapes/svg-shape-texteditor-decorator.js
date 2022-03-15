@@ -150,6 +150,7 @@ function inputShow(svgEl, placeEl, shapeProps, onchangeCallback) {
 	const textareaPaddingAndBorder = parseInt(textareaStyle.padding) + parseInt(textareaStyle.borderWidth);
 	foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textareaStyle.textAlign);
 
+	textarea.select();
 	textarea.focus();
 
 	console.log(getComputedStyle(textarea).textAlign);
