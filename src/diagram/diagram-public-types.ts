@@ -22,7 +22,7 @@ interface IDiagramShape extends IDiagramElement {
 	on(type: DiagramShapeEventType, listener: EventListenerOrEventListenerObject): IDiagramShape;
 }
 
-type DiagramShapeEventType = 'update';
+type DiagramShapeEventType = 'update' | 'click';
 interface IDiagramShapeEventUpdateDetail {
 	target: IPresenterShape;
 	props: PresenterShapeProps;

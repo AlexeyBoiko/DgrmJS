@@ -1,18 +1,21 @@
 import { svgDiagramCreate } from './svg-diagram-factory.js';
-import { connectorEqual, textContentTrim } from './index-helpers.js';
+import { connectorEqual } from './index-helpers.js';
 import { serialize } from './serialize/serialize.js';
 
 // elements
 import './elements/panel/panel.js';
 
 //
-// html bind
+// bind
 
-const panel = /** @type {IPanel} */(document.getElementById('panel'))
-	.on('shapeAddByKey', /** @param {CustomEvent<string>} evt */ evt => shapeAddByKey(evt.detail))
-	.on('shapeDel', shapeDel)
-	.on('shapeType', /** @param {CustomEvent<string>} evt */ evt => shapeUpdate(evt.detail))
+/** @type {IPanel} */(document.getElementById('panel'))
+	.on('shapeAddByKey', add)
 	.on('generateLink', generateLink);
+
+// @ts-ignore
+const diagram = svgDiagramCreate(document.getElementById('diagram'))
+	.on('connect', connect)
+	.on('disconnect', disconnect);
 
 //
 // logic
@@ -23,97 +26,57 @@ const shapeData = new Map();
 /** @type {IDiagramEventConnectDetail[]} */
 let connectors = [];
 
-/** @type {IDiagramShape} */
-let selectedShape;
-
-/** @ts-ignore */
-const diagram = svgDiagramCreate(document.getElementById('diagram'))
-	.on('select', /** @param { CustomEvent<IDiagramEventSelectDetail> } evt */ evt => shapeSelect(evt.detail.target))
-	.on('connect', /** @param { CustomEvent<IDiagramEventConnectDetail> } evt */ evt => connectors.push(evt.detail))
-	.on('disconnect', /** @param { CustomEvent<IDiagramEventConnectDetail> } evt */ evt =>
-		connectors.splice(connectors.findIndex(el => connectorEqual(el, evt.detail)), 1));
-
 /**
  * @param {SerializeShape} param
  * @returns {IDiagramShape}
  */
 function shapeAdd(param) {
 	param.props = {
-		text: { textContent: textContentTrim(param.templateKey, param.detail) }
+		text: { textContent: param.detail }
 	};
 	const shape = diagram.shapeAdd(param)
-		.on('update', shapeOnUpdate);
+		.on('update', update);
+		// .on('click', /** @param {PointerEvent & { target: SVGGraphicsElement }} evt */ evt => click(evt, shape));
 	shapeData.set(shape, { templateKey: param.templateKey, detail: param.detail });
 	return shape;
 }
 
-/**
- * @param { CustomEvent<IDiagramShapeEventUpdateDetail>} evt
- */
-function shapeOnUpdate(evt) {
-	shapeData.get(evt.detail.target).detail = /** @type {string} */ (evt.detail.props.text.textContent);
-}
-
-/** @param {string} templateKey */
-function shapeAddByKey(templateKey) {
+/** @param {CustomEvent<string>} evt */
+function add(evt) {
 	shapeAdd({
-		templateKey: templateKey,
+		templateKey: evt.detail,
 		position: { x: 120, y: 120 },
 		detail: 'Title'
 	});
 }
 
-function shapeDel() {
-	if (!selectedShape) { return; }
-
-	shapeData.delete(selectedShape);
-	connectors = connectors
-		.filter(el => el.start.shape !== selectedShape && el.end.shape !== selectedShape);
-
-	diagram.shapeDel(selectedShape);
-	shapeSelect(null);
+/** @param { CustomEvent<IDiagramShapeEventUpdateDetail>} evt */
+function update(evt) {
+	shapeData.get(evt.detail.target).detail = /** @type {string} */ (evt.detail.props.text.textContent);
 }
 
-/**
- * @param {string} text
- */
-function shapeUpdate(text) {
-	if (!selectedShape) { return; }
+// /**
+//  * @param {PointerEvent & { target: SVGGraphicsElement }} evt
+//  * @param {IDiagramShape} shape
+//  */
+// function click(evt, shape) {
+// 	if (evt.target.getAttribute('data-cmd') !== 'del') { return; }
 
-	shapeData.get(selectedShape).detail = text;
-	selectedShape.update({
-		props: {
-			text: {
-				textContent: textContentTrim(shapeData.get(selectedShape).templateKey, text)
-			}
-		}
-	});
+// 	shapeData.delete(shape);
+// 	connectors = connectors
+// 		.filter(el => el.start.shape !== shape && el.end.shape !== shape);
+
+// 	diagram.shapeDel(shape);
+// }
+
+/** @param { CustomEvent<IDiagramEventConnectDetail> } evt */
+function connect(evt) {
+	connectors.push(evt.detail);
 }
 
-/** @param {IDiagramShape} shape */
-function shapeSelect(shape) {
-	if (shape && shape.type === 'shape') {
-		selectedShape = shape;
-
-		if (shapeData.has(shape)) {
-			panel.shapeSettingsUpdate({
-				selected: true,
-				text: shapeData.get(shape).detail,
-				disabled: false
-			});
-		} else {
-			panel.shapeSettingsUpdate({
-				selected: true,
-				text: null,
-				disabled: true
-			});
-		}
-	} else {
-		selectedShape = null;
-		panel.shapeSettingsUpdate({
-			selected: false
-		});
-	}
+/** @param { CustomEvent<IDiagramEventConnectDetail> } evt */
+function disconnect(evt) {
+	connectors.splice(connectors.findIndex(el => connectorEqual(el, evt.detail)), 1);
 }
 
 function generateLink() {

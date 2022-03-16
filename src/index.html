@@ -23,17 +23,14 @@
 			}
 			textarea {
 				text-align: center;
-				border: 2px solid rgb(108 187 247 / 80%);
+				border: 2px solid rgb(108 187 247);
 				border-radius: .5rem;
     			padding: 10px;
 				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Liberation Sans", sans-serif;
 				font-size: 16px;
     			background-color: transparent;
 				color: transparent;
-				outline: none; 
-				/* outline: 2px solid rgb(225, 151, 211);*/
-
-				/* for text area */
+				outline: none;
 				overflow: hidden;
 				resize: none;
 				line-height: 20px;
@@ -75,7 +72,8 @@
 				display: unset;
 			}
 
-			[data-templ].selected [data-connect="out"] {
+			/* [data-cmd] { display: none; } */
+			[data-templ].selected [data-connect="out"] /*, [data-templ].selected [data-cmd] */ {
 				display: unset;
 			}
 
@@ -122,11 +120,19 @@
 					style="pointer-events: none;"></path>
 			</g>
 
+			<!-- <g id="del">
+				<circle r="14" fill="rgb(255 255 255 / 60%)" stroke="none" />
+				<circle r="10" stroke-width="1" fill="transparent" stroke="rgb(52 71 103)" />
+				<line x1="-5" y1="5" x2="5" y2="-5" stroke-width="2" stroke="rgb(52 71 103)" />
+				<line x1="-5" y1="-5" x2="5" y2="5" stroke-width="2" stroke="rgb(52 71 103)" />
+			</g> -->
+
 			<path data-templ="path" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;">
 			</path>
 
 			<g data-templ="connect-end" data-connect="in" data-connect-point="0,0" data-connectable="true">
 				<use xlink:href="#arrow" />
+				<!-- <use data-cmd="del" xlink:href="#del" x="-20" y="-20" /> -->
 			</g>
 
 			<g data-templ="circle">
@@ -164,6 +170,8 @@
 					<circle class="empty" r="10" cx="0" cy="-60"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(0, -60) rotate(90 0 0)" />
 				</g>
+
+				<!-- <use data-cmd="del" xlink:href="#del" x="-60" y="-60" /> -->
 			</g>
 
 			<g data-templ="rect">
@@ -201,6 +209,8 @@
 					<circle class="empty" r="10" cx="60" cy="70"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(60, 70) rotate(270 0 0)" />
 				</g>
+
+				<!-- <use data-cmd="del" xlink:href="#del" x="-10" y="-10" /> -->
 			</g>
 
 			<g data-templ="rhomb">
@@ -221,6 +231,8 @@
 					<circle class="empty" r="10" cx="60" cy="-8"></circle>
 					<use class="not-empty" xlink:href="#arrow" transform="translate(60, -8) rotate(90 0 0)" />
 				</g>
+
+				<!-- <use data-cmd="del" xlink:href="#del" x="-10" y="-10" /> -->
 			</g>
 
 			<g data-templ="text">
@@ -228,6 +240,8 @@
 
 				<rect data-text-for="text" x="-14" y="-14" rx="15" ry="15" width="90" height="40" />
 				<text data-key="text" data-line-height="20" fill="rgb(73, 80, 87)" alignment-baseline="central">Title</text>
+
+				<!-- <use data-cmd="del" xlink:href="#del" x="-20" y="-20" /> -->
 			</g>
 		</defs>
 		<g data-key="canvas"></g>

@@ -33,7 +33,7 @@ export class SvgShapeTextEditorDecorator {
 	 * @param {EventListenerOrEventListenerObject} listener
 	 * @returns {IPresenterShape}
 	 */
-	on(type, listener) { return this._svgShape.on(type, listener); }
+	on(type, listener) { this._svgShape.on(type, listener); return this; }
 
 	/**
 	 * @param {PresenterShapeUpdateParam} param
@@ -51,7 +51,7 @@ export class SvgShapeTextEditorDecorator {
 			this._props = Object.assign({}, param.props);
 
 			// highlight empty text places
-			this._svgShape.svgEl.querySelectorAll('[data-text-for]').forEach(el => {
+			this.svgEl.querySelectorAll('[data-text-for]').forEach(el => {
 				if (!param.props[el.getAttribute('data-text-for')].textContent) {
 					el.classList.add('empty');
 				}
@@ -74,10 +74,10 @@ export class SvgShapeTextEditorDecorator {
 			let placeEl;
 			switch (evt.target.tagName) {
 				case 'tspan':
-					placeEl = this._svgShape.svgEl.querySelector(`[data-text-for=${evt.target.parentElement.getAttribute('data-key')}]`);
+					placeEl = this.svgEl.querySelector(`[data-text-for=${evt.target.parentElement.getAttribute('data-key')}]`);
 					break;
 				case 'text':
-					placeEl = this._svgShape.svgEl.querySelector(`[data-text-for=${evt.target.getAttribute('data-key')}]`);
+					placeEl = this.svgEl.querySelector(`[data-text-for=${evt.target.getAttribute('data-key')}]`);
 					break;
 				default:
 					if (evt.target.getAttribute('data-text-for')) {
@@ -88,15 +88,15 @@ export class SvgShapeTextEditorDecorator {
 
 			if (placeEl) {
 				inputShow(
-					this._svgShape.svgEl,
+					this.svgEl,
 					placeEl,
 					this._props,
 					// onchangeCallback
 					_ => {
-						this._svgShape.svgEl.dispatchEvent(new CustomEvent('update', {
+						this.svgEl.dispatchEvent(new CustomEvent('update', {
 							/** @type {IDiagramShapeEventUpdateDetail} */
 							detail: {
-								target: this._svgShape,
+								target: this,
 								props: this._props
 							}
 						}));
