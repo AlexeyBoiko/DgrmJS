@@ -39,12 +39,7 @@ export class SvgShapeTextEditorDecorator {
 	 * @param {PresenterShapeUpdateParam} param
 	 */
 	update(param) {
-		this._svgShape.update(param);
-
-		if (param.position) {
-			/** @private */
-			this._firstClick = true;
-		}
+		if (param.position) { /** @private */ this._firstClick = false; }
 
 		if (param.props) {
 			/** @private */
@@ -59,8 +54,10 @@ export class SvgShapeTextEditorDecorator {
 		}
 
 		if (param.state) {
-			if (param.state.has('selected')) { this._firstClick = true; }
+			if (param.state.has('selected') && !this.stateGet().has('selected')) { this._firstClick = true; }
 		}
+
+		this._svgShape.update(param);
 	}
 
 	/**
@@ -102,6 +99,17 @@ export class SvgShapeTextEditorDecorator {
 						}));
 					});
 			}
+
+			// panel
+
+			const position = this.svgEl.getBoundingClientRect();
+
+			const newDiv = document.createElement('div');
+			newDiv.style.position = 'fixed';
+			newDiv.style.top = `${position.top - 30}px`;
+			newDiv.style.left = `${position.left}px`;
+			newDiv.innerHTML = 'Привет!';
+			document.body.append(newDiv);
 		}
 		this._firstClick = false;
 	}

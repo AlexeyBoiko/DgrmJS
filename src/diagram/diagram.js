@@ -67,12 +67,14 @@ export class Diagram extends EventTarget {
 		switch (evt.type) {
 			case 'pointermove':
 				if (this._movedShape) {
-					const shapePosition = {
-						x: this._movedDelta.x + evt.detail.offsetX,
-						y: this._movedDelta.y + evt.detail.offsetY
-					};
+					shapeStateAdd(this._movedShape, 'disabled');
 
-					this._movedShape.update({ position: shapePosition });
+					this._movedShape.update({
+						position: {
+							x: this._movedDelta.x + evt.detail.offsetX,
+							y: this._movedDelta.y + evt.detail.offsetY
+						}
+					});
 					this._connectorManager.updatePosition(this._movedShape);
 				}
 				break;
@@ -192,10 +194,6 @@ export class Diagram extends EventTarget {
 	shapeSetMoving(shape, offsetPoint) {
 		/** @private */
 		this._movedShape = shape;
-
-		if (this._movedShape.connectable) {
-			shapeStateAdd(this._movedShape, 'disabled');
-		}
 
 		const shapePosition = this._movedShape.postionGet();
 		/** @private */

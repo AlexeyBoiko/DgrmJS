@@ -14,6 +14,7 @@ import './elements/panel/panel.js';
 
 // @ts-ignore
 const diagram = svgDiagramCreate(document.getElementById('diagram'))
+	// .on('select', evt => console.log(evt))
 	.on('connect', connect)
 	.on('disconnect', disconnect);
 
