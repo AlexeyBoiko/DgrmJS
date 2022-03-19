@@ -19,10 +19,9 @@ interface IDiagramElement {
 interface IDiagramShape extends IDiagramElement {
 	postionGet(): Point;
 	update(param: PresenterShapeUpdateParam): void;
-	on(type: DiagramShapeEventType, listener: EventListenerOrEventListenerObject): IDiagramShape;
+	on(type: string, listener: EventListenerOrEventListenerObject): IDiagramShape;
 }
 
-type DiagramShapeEventType = 'update' | 'click';
 interface IDiagramShapeEventUpdateDetail {
 	target: IPresenterShape;
 	props: PresenterShapeProps;

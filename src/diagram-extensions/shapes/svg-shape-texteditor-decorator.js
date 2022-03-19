@@ -28,8 +28,9 @@ export class SvgShapeTextEditorDecorator {
 
 	stateGet() { return this._svgShape.stateGet(); }
 	postionGet() { return this._svgShape.postionGet(); }
+
 	/**
-	 * @param {DiagramShapeEventType} type
+	 * @param {string} type
 	 * @param {EventListenerOrEventListenerObject} listener
 	 * @returns {IPresenterShape}
 	 */
@@ -55,6 +56,8 @@ export class SvgShapeTextEditorDecorator {
 
 		if (param.state) {
 			if (param.state.has('selected') && !this.stateGet().has('selected')) { this._firstClick = true; }
+			this._panelDel();
+			this._textEditorDel();
 		}
 
 		this._svgShape.update(param);
@@ -67,51 +70,113 @@ export class SvgShapeTextEditorDecorator {
 		evt.stopPropagation();
 
 		if (!this._firstClick) {
-			/** @type {SVGRectElement} */
-			let placeEl;
-			switch (evt.target.tagName) {
-				case 'tspan':
-					placeEl = this.svgEl.querySelector(`[data-text-for=${evt.target.parentElement.getAttribute('data-key')}]`);
-					break;
-				case 'text':
-					placeEl = this.svgEl.querySelector(`[data-text-for=${evt.target.getAttribute('data-key')}]`);
-					break;
-				default:
-					if (evt.target.getAttribute('data-text-for')) {
-						placeEl = /** @type {SVGRectElement} */(evt.target);
-					}
-					break;
-			}
-
-			if (placeEl) {
-				inputShow(
-					this.svgEl,
-					placeEl,
-					this._props,
-					// onchangeCallback
-					_ => {
-						this.svgEl.dispatchEvent(new CustomEvent('update', {
-							/** @type {IDiagramShapeEventUpdateDetail} */
-							detail: {
-								target: this,
-								props: this._props
-							}
-						}));
-					});
-			}
-
-			// panel
-
-			const position = this.svgEl.getBoundingClientRect();
-
-			const newDiv = document.createElement('div');
-			newDiv.style.position = 'fixed';
-			newDiv.style.top = `${position.top - 30}px`;
-			newDiv.style.left = `${position.left}px`;
-			newDiv.innerHTML = 'Привет!';
-			document.body.append(newDiv);
+			this._textEditorShow(evt);
+			this._panelShow(evt);
 		}
 		this._firstClick = false;
+	}
+
+	/**
+	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
+	 * @private
+	 */
+	_textEditorShow(evt) {
+		if (this._textEditor) { return; }
+
+		/** @type {SVGRectElement} */
+		let placeEl;
+		switch (evt.target.tagName) {
+			case 'tspan':
+				placeEl = this.svgEl.querySelector(`[data-text-for=${evt.target.parentElement.getAttribute('data-key')}]`);
+				break;
+			case 'text':
+				placeEl = this.svgEl.querySelector(`[data-text-for=${evt.target.getAttribute('data-key')}]`);
+				break;
+			default:
+				if (evt.target.getAttribute('data-text-for')) {
+					placeEl = /** @type {SVGRectElement} */(evt.target);
+				}
+				break;
+		}
+
+		if (placeEl) {
+			/** @private */
+			this._textEditor = inputShow(
+				this.svgEl,
+				placeEl,
+				this._props,
+				// onchangeCallback
+				_ => {
+					this.svgEl.dispatchEvent(new CustomEvent('update', {
+						/** @type {IDiagramShapeEventUpdateDetail} */
+						detail: {
+							target: this,
+							props: this._props
+						}
+					}));
+				},
+				// onblurCallback
+				_ => this._textEditorDel());
+		}
+	}
+
+	/** @private */
+	_textEditorDel() {
+		if (!this._textEditor) { return; }
+
+		const textEditor = this._textEditor;
+		this._textEditor = null;
+		textEditor.remove();
+	}
+
+	/**
+	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
+	 * @private
+	 */
+	_panelShow(evt) {
+		if (this._panel) { return; }
+
+		const position = this.svgEl.getBoundingClientRect();
+
+		const panelDiv = document.createElement('div');
+		panelDiv.classList.add('pop-set');
+		panelDiv.style.position = 'fixed';
+		panelDiv.style.top = `${position.top - 50}px`;
+		panelDiv.style.left = `${position.left - 5}px`;
+		panelDiv.innerHTML = `
+			<style>
+			.pop-set {
+				position: fixed;
+				padding: 10px;
+				box-shadow: 0px 0px 58px 2px rgb(34 60 80 / 20%);
+				border-radius: 16px;
+				background-color: rgba(255,255,255, .8);
+			}
+			</style>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17 6h5v2h-2v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8H2V6h5V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3zm1 2H6v12h12V8zm-9 3h2v6H9v-6zm4 0h2v6h-2v-6zM9 4v2h6V4H9z" fill="rgba(52,71,103,1)"/></svg>`;
+		panelDiv.onclick = _ => {
+			this._panelDel();
+			this.svgEl.dispatchEvent(new CustomEvent('del', {
+				/** @type {IDiagramShapeEventUpdateDetail} */
+				detail: {
+					target: this,
+					props: this._props
+				}
+			}));
+		};
+		document.body.append(panelDiv);
+
+		/** @private */
+		this._panel = panelDiv;
+	}
+
+	/** @private */
+	_panelDel() {
+		if (!this._panel) { return; }
+
+		const panelDiv = this._panel;
+		this._panel = null;
+		panelDiv.remove();
 	}
 }
 
@@ -120,9 +185,11 @@ export class SvgShapeTextEditorDecorator {
  * @param {SVGRectElement} placeEl - where to place input
  * @param {PresenterShapeProps} shapeProps
  * @param {{():void}} onchangeCallback
+ * @param {{():void}} onblurCallback
+ * @returns {SVGForeignObjectElement}
  * @private
  */
-function inputShow(svgEl, placeEl, shapeProps, onchangeCallback) {
+function inputShow(svgEl, placeEl, shapeProps, onchangeCallback, onblurCallback) {
 	const textKey = placeEl.getAttribute('data-text-for');
 	/** @type {SVGTextElement} */
 	const textEl = svgEl.querySelector(`[data-key=${textKey}]`);
@@ -142,8 +209,8 @@ function inputShow(svgEl, placeEl, shapeProps, onchangeCallback) {
 		onchangeCallback();
 	};
 	textarea.onblur = function() {
-		foreign.remove();
 		if (!textarea.value) { placeEl.classList.add('empty'); } else { placeEl.classList.remove('empty'); }
+		onblurCallback();
 	};
 	textarea.onpointerdown = function(evt) {
 		evt.stopImmediatePropagation();
@@ -157,8 +224,8 @@ function inputShow(svgEl, placeEl, shapeProps, onchangeCallback) {
 	const textareaPaddingAndBorder = parseInt(textareaStyle.padding) + parseInt(textareaStyle.borderWidth);
 	foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textareaStyle.textAlign);
 
-	textarea.select();
 	textarea.focus();
+	return foreign;
 }
 
 /**

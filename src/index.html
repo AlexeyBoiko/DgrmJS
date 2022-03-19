@@ -4,7 +4,35 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="data:,">
-	<link rel="stylesheet" href="index.css?v=20220314">
+	<style>
+		html, body, #diagram {
+			height: 100%;
+			width: 100%;
+			margin: 0;
+			background-color: #fff;
+			user-select: none;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Liberation Sans", sans-serif;
+			color: rgb(73, 80, 87);
+		}
+
+		a {
+			color: #0d6efd;
+			text-decoration: underline;
+		}
+
+		@media only screen and (max-width: 700px) {
+			.links {
+				display: none;
+			}
+		}
+
+		.links {
+			position: fixed;
+			bottom: 0;
+			right: 0;
+			padding: 15px;
+		}
+	</style>
 </head>
 
 <body>
