@@ -1,17 +1,26 @@
 import { svgDiagramCreate } from './svg-diagram-factory.js';
 import { connectorEqual } from './index-helpers.js';
 import { serialize } from './serialize/serialize.js';
-import { SvgShapeTextEditorDecorator } from './diagram-extensions/shapes/svg-shape-texteditor-decorator.js';
+import { SvgShapeTextEditorDecorator } from './diagram-extensions/svg-shape-texteditor-decorator.js';
 
 // elements
 import './elements/panel/panel.js';
+import { pngSave } from './diagram-extensions/png-save.js';
+import { pngOpen } from './diagram-extensions/png-open.js';
 
 //
 // bind
 
+/** @type{SVGSVGElement} */
+// @ts-ignore
+const svg = document.getElementById('diagram');
+
 /** @type {IPanel} */(document.getElementById('panel'))
-	.on('shapeAddByKey', add)
-	.on('generateLink', generateLink);
+	.on('shapeDragOut', shapeAddingDragOut)
+	.on('shapeMove', shapeAddingMove)
+	.on('dgrmGenerateLink', generateLink)
+	.on('dgrmSave', save)
+	.on('dgrmOpen', open);
 
 const diagram = svgDiagramCreate(
 	// @ts-ignore
@@ -28,11 +37,47 @@ const diagram = svgDiagramCreate(
 //
 // logic
 
+//
+// diagram
+
 /** @type {Map<IDiagramShape, SerializeShape<string>>} */
 const shapeData = new Map();
 
 /** @type {IDiagramEventConnectDetail[]} */
 let connectors = [];
+
+//
+// adding shape with drag
+
+/** @type {Point} */ let addingShapeCenter;
+/** @type {IDiagramShape} */ let addingShape;
+
+/** @param { CustomEvent<IMenuShapeDragOutEventDetail> } evt */
+function shapeAddingDragOut(evt) {
+	const point = svg.querySelector(`[data-templ='${evt.detail.shape}']`).getAttribute('data-center').split(',');
+	addingShapeCenter = { x: parseFloat(point[0]), y: parseFloat(point[1]) };
+	addingShape = shapeAdd({
+		templateKey: evt.detail.shape,
+		// shapePosition
+		position: { x: evt.detail.clientX - addingShapeCenter.x, y: evt.detail.clientY - addingShapeCenter.y },
+		detail: 'Title'
+	});
+
+	diagram.shapeSetMoving(
+		addingShape,
+		// cursorPosition
+		{ x: evt.detail.clientX, y: evt.detail.clientY });
+}
+
+/**
+ * fire only on mobile
+ * @param {CustomEvent<IMenuShapeMoveEventDetail>} evt
+ */
+function shapeAddingMove(evt) {
+	addingShape.update({
+		position: { x: evt.detail.clientX - addingShapeCenter.x, y: evt.detail.clientY - addingShapeCenter.y }
+	});
+}
 
 /**
  * @param {SerializeShape} param
@@ -45,15 +90,6 @@ function shapeAdd(param) {
 	const shape = diagram.shapeAdd(param);
 	shapeData.set(shape, { templateKey: param.templateKey, detail: param.detail });
 	return shape;
-}
-
-/** @param {CustomEvent<string>} evt */
-function add(evt) {
-	shapeAdd({
-		templateKey: evt.detail,
-		position: { x: 120, y: 120 },
-		detail: 'Title'
-	});
 }
 
 /** @param { CustomEvent<IDiagramShapeEventUpdateDetail>} evt */
@@ -80,21 +116,45 @@ function disconnect(evt) {
 	connectors.splice(connectors.findIndex(el => connectorEqual(el, evt.detail)), 1);
 }
 
-function generateLink() {
-	const dataStr = serialize(shapeData, connectors);
-	if (dataStr) {
-		const url = new URL(window.location.href);
-		url.hash = encodeURIComponent(dataStr);
-		navigator.clipboard.writeText(`${url.toString()}`).then(_ => alert('Link to diagram copied to clipboard'));
+//
+// save/open/serialize
+
+function save() {
+	if (!shapeData.size) {
+		alert('Nothing to save');
 		return;
 	}
 
-	alert('Nothing to save');
+	pngSave(svg, serialize(shapeData, connectors));
+}
+
+function open() {
+	pngOpen(dgrmChunkVal => {
+		if (!dgrmChunkVal) { alert('File cannot be read. Use the exact image file you got from the application.'); }
+		createFromJson(dgrmChunkVal);
+	});
+}
+
+async function generateLink() {
+	if (!shapeData.size) {
+		alert('Nothing to save');
+		return;
+	}
+
+	const url = new URL(window.location.href);
+	url.hash = encodeURIComponent(serialize(shapeData, connectors));
+	await navigator.clipboard.writeText(url.toString());
+	alert('Link to diagram copied to clipboard');
 }
 
 if (window.location.hash) {
+	createFromJson(decodeURIComponent(window.location.hash.substring(1)));
+	history.replaceState(null, null, ' ');
+}
+
+function createFromJson(json) {
 	/** @type {SerializeData} */
-	const data = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
+	const data = JSON.parse(json);
 
 	if (data.s && data.s.length > 0) {
 		const shapes = [];
@@ -116,6 +176,4 @@ if (window.location.hash) {
 			}
 		}
 	}
-
-	history.replaceState(null, null, ' ');
 }

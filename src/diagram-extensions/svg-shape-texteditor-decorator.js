@@ -1,5 +1,5 @@
-import { svgStrToTspan } from '../../diagram/infrastructure/svg-utils.js';
-import { textParamsParse } from '../../diagram/svg-presenter/svg-shape/svg-shape.js';
+import { svgStrToTspan } from '../diagram/infrastructure/svg-utils.js';
+import { textParamsParse } from '../diagram/svg-presenter/svg-shape/svg-shape.js';
 
 /** @implements {ISvgPresenterShape} */
 export class SvgShapeTextEditorDecorator {
