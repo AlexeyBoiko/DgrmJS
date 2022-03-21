@@ -2,29 +2,30 @@ import { svgDiagramCreate } from './svg-diagram-factory.js';
 import { connectorEqual } from './index-helpers.js';
 import { serialize } from './serialize/serialize.js';
 import { SvgShapeTextEditorDecorator } from './diagram-extensions/svg-shape-texteditor-decorator.js';
-
-// elements
-import './elements/panel/panel.js';
 import { pngSave } from './diagram-extensions/png-save.js';
 import { pngOpen } from './diagram-extensions/png-open.js';
+
+// elements
+import './elements/menu-shape/menu-shape.js';
+import './elements/file-options/file-options.js';
 
 //
 // bind
 
-/** @type{SVGSVGElement} */
-// @ts-ignore
-const svg = document.getElementById('diagram');
-
-/** @type {IPanel} */(document.getElementById('panel'))
-	.on('shapeDragOut', shapeAddingDragOut)
-	.on('shapeMove', shapeAddingMove)
+/** @type {IFileOptions} */(document.getElementById('file-options'))
 	.on('dgrmGenerateLink', generateLink)
 	.on('dgrmSave', save)
 	.on('dgrmOpen', open);
 
+/** @type {IMenuShape} */(document.getElementById('menu-shape'))
+	.on('shapeDragOut', shapeAddingDragOut)
+	.on('shapeMove', shapeAddingMove);
+
+/** @type{SVGSVGElement} */
+// @ts-ignore
+const svg = document.getElementById('diagram');
 const diagram = svgDiagramCreate(
-	// @ts-ignore
-	document.getElementById('diagram'),
+	svg,
 	function(shape, param) {
 		// the way to add custom logic inside shapes - decorators
 		return new SvgShapeTextEditorDecorator(shape, param.createParams.props)
