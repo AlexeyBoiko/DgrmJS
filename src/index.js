@@ -93,12 +93,12 @@ function shapeAdd(param) {
 	return shape;
 }
 
-/** @param { CustomEvent<IDiagramShapeEventUpdateDetail>} evt */
+/** @param { CustomEvent<ISvgPresenterShapeEventUpdateDetail>} evt */
 function update(evt) {
 	shapeData.get(evt.detail.target).detail = /** @type {string} */ (evt.detail.props.text.textContent);
 }
 
-/** @param { CustomEvent<IDiagramShapeEventUpdateDetail>} evt */
+/** @param { CustomEvent<ISvgPresenterShapeEventUpdateDetail>} evt */
 function del(evt) {
 	shapeData.delete(evt.detail.target);
 	connectors = connectors

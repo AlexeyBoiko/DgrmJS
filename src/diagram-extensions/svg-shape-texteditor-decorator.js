@@ -32,7 +32,7 @@ export class SvgShapeTextEditorDecorator {
 	/**
 	 * @param {string} type
 	 * @param {EventListenerOrEventListenerObject} listener
-	 * @returns {IPresenterShape}
+	 * @returns {ISvgPresenterShape}
 	 */
 	on(type, listener) { this._svgShape.on(type, listener); return this; }
 
@@ -108,7 +108,7 @@ export class SvgShapeTextEditorDecorator {
 				// onchangeCallback
 				_ => {
 					this.svgEl.dispatchEvent(new CustomEvent('update', {
-						/** @type {IDiagramShapeEventUpdateDetail} */
+						/** @type {ISvgPresenterShapeEventUpdateDetail} */
 						detail: {
 							target: this,
 							props: this._props
@@ -157,7 +157,7 @@ export class SvgShapeTextEditorDecorator {
 		panelDiv.onclick = _ => {
 			this._panelDel();
 			this.svgEl.dispatchEvent(new CustomEvent('del', {
-				/** @type {IDiagramShapeEventUpdateDetail} */
+				/** @type {ISvgPresenterShapeEventUpdateDetail} */
 				detail: {
 					target: this,
 					props: this._props

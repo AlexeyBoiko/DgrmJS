@@ -79,7 +79,6 @@ interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 
 	postionGet(): Point;
 	update(param: PresenterShapeUpdateParam): void;
-	on(type: DiagramShapeEventType, listener: EventListenerOrEventListenerObject): IPresenterShape;
 }
 
 type PresenterConnectorType = 'in' | 'out';

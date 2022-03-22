@@ -2,7 +2,9 @@ interface ISvgPresenterElement extends IPresenterElement {
 	get svgEl() : SVGGraphicsElement;
 }
 
-interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape { }
+interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape { 
+	on(type: string, listener: EventListenerOrEventListenerObject): ISvgPresenterShape;
+}
 
 interface ISvgPresenterShapeFuctoryParam { 
 	svgCanvas: SVGGElement, 
@@ -17,4 +19,9 @@ interface ISvgPresenterShapeFuctory {
 
 interface ISvgPresenterShapeDecoratorFuctory {
 	(shape: ISvgPresenterShape, param: ISvgPresenterShapeFuctoryParam) : ISvgPresenterShape
+}
+
+interface ISvgPresenterShapeEventUpdateDetail {
+	target: ISvgPresenterShape;
+	props: PresenterShapeProps;
 }
