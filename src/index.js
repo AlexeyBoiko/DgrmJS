@@ -39,13 +39,37 @@ const diagram = svgDiagramCreate(
 // logic
 
 //
-// diagram
+// diagram data
 
 /** @type {Map<IDiagramShape, SerializeShape<string>>} */
 const shapeData = new Map();
 
 /** @type {IDiagramEventConnectDetail[]} */
 let connectors = [];
+
+/**
+ * @param {SerializeShape} param
+ * @returns {IDiagramShape}
+ */
+function shapeAdd(param) {
+	param.props = {
+		text: { textContent: param.detail }
+	};
+	const shape = diagram.shapeAdd(param);
+	shapeData.set(shape, { templateKey: param.templateKey, detail: param.detail });
+	return shape;
+}
+
+/**
+ * @param {IDiagramShape} shape
+ */
+function shapeDel(shape) {
+	shapeData.delete(shape);
+	connectors = connectors
+		.filter(el => el.start.shape !== shape && el.end.shape !== shape);
+
+	diagram.shapeDel(shape);
+}
 
 //
 // adding shape with drag
@@ -80,19 +104,6 @@ function shapeAddingMove(evt) {
 	});
 }
 
-/**
- * @param {SerializeShape} param
- * @returns {IDiagramShape}
- */
-function shapeAdd(param) {
-	param.props = {
-		text: { textContent: param.detail }
-	};
-	const shape = diagram.shapeAdd(param);
-	shapeData.set(shape, { templateKey: param.templateKey, detail: param.detail });
-	return shape;
-}
-
 /** @param { CustomEvent<ISvgPresenterShapeEventUpdateDetail>} evt */
 function update(evt) {
 	shapeData.get(evt.detail.target).detail = /** @type {string} */ (evt.detail.props.text.textContent);
@@ -100,11 +111,7 @@ function update(evt) {
 
 /** @param { CustomEvent<ISvgPresenterShapeEventUpdateDetail>} evt */
 function del(evt) {
-	shapeData.delete(evt.detail.target);
-	connectors = connectors
-		.filter(el => el.start.shape !== evt.detail.target && el.end.shape !== evt.detail.target);
-
-	diagram.shapeDel(evt.detail.target);
+	shapeDel(evt.detail.target);
 }
 
 /** @param { CustomEvent<IDiagramEventConnectDetail> } evt */
@@ -131,7 +138,8 @@ function save() {
 
 function open() {
 	pngOpen(dgrmChunkVal => {
-		if (!dgrmChunkVal) { alert('File cannot be read. Use the exact image file you got from the application.'); }
+		if (!dgrmChunkVal) { alert('File cannot be read. Use the exact image file you got from the application.'); return; }
+		shapeData.forEach((_, shape) => shapeDel(shape));
 		createFromJson(dgrmChunkVal);
 	});
 }

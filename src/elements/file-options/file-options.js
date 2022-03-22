@@ -26,9 +26,9 @@ export class FileOptions extends HTMLElement {
 			 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" fill="rgba(52,71,103,1)"/></svg>
 			 <div class="options" style="visibility: hidden;">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" fill="rgba(52,71,103,1)"/></svg>
-		 		<div data-cmd="dgrmGenerateLink" style="padding-top:30px;">Copy link to diagram to clipboard</div>
-		 		<div data-cmd="dgrmSave">Save diagram image</div>
-		 		<div data-cmd="dgrmOpen">Open diagram</div>
+				<div data-cmd="dgrmOpen" style="padding-top:30px;">Open diagram</div>
+				<div data-cmd="dgrmSave">Save diagram image</div>
+				<div data-cmd="dgrmGenerateLink">Copy link to diagram</div>
 		 	</div>`;
 		shadow.querySelectorAll('svg').forEach(el => el.addEventListener('click', this));
 		shadow.querySelectorAll('[data-cmd]').forEach(el => el.addEventListener('click', this));
