@@ -19,7 +19,7 @@ import './elements/file-options/file-options.js';
 
 /** @type {IMenuShape} */(document.getElementById('menu-shape'))
 	.on('shapeDragOut', shapeAddingDragOut)
-	.on('shapeMove', shapeAddingMove);
+	.on('shapeMove', shapeAddingMoveMobile);
 
 /** @type{SVGSVGElement} */
 // @ts-ignore
@@ -76,6 +76,7 @@ function shapeDel(shape) {
 
 /** @type {Point} */ let addingShapeCenter;
 /** @type {IDiagramShape} */ let addingShape;
+/** @type {Point} */ let shapeAddingCanvasPositionForMobile; // needed only for mobile
 
 /** @param { CustomEvent<IMenuShapeDragOutEventDetail> } evt */
 function shapeAddingDragOut(evt) {
@@ -92,17 +93,30 @@ function shapeAddingDragOut(evt) {
 		addingShape,
 		// cursorPosition
 		{ x: evt.detail.clientX, y: evt.detail.clientY });
+
+	// remember canvas position for mobile
+	const shapePosition = addingShape.postionGet();
+	shapeAddingCanvasPositionForMobile = {
+		x: evt.detail.clientX - addingShapeCenter.x - shapePosition.x,
+		y: evt.detail.clientY - addingShapeCenter.y - shapePosition.y
+	};
 }
 
 /**
  * fire only on mobile
  * @param {CustomEvent<IMenuShapeMoveEventDetail>} evt
  */
-function shapeAddingMove(evt) {
+function shapeAddingMoveMobile(evt) {
 	addingShape.update({
-		position: { x: evt.detail.clientX - addingShapeCenter.x, y: evt.detail.clientY - addingShapeCenter.y }
+		position: {
+			x: evt.detail.clientX - addingShapeCenter.x - shapeAddingCanvasPositionForMobile.x,
+			y: evt.detail.clientY - addingShapeCenter.y - shapeAddingCanvasPositionForMobile.y
+		}
 	});
 }
+
+//
+// diagram events
 
 /** @param { CustomEvent<ISvgPresenterShapeEventUpdateDetail>} evt */
 function update(evt) {
