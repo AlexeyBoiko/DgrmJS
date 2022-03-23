@@ -55,6 +55,10 @@ export function svgRotate(svgEl, angle, svg) {
  */
 export function svgStrToTspan(str, param) {
 	return str.split('\n').map((t, i) => {
-		return `<tspan x="${param.x}" dy="${i === 0 ? '.4em' : `${param.lineHeight}px`}" ${t.length === 0 ? 'visibility="hidden"' : ''}>${t.length === 0 ? '.' : t.replaceAll(' ', '&nbsp;')}</tspan>`;
+		return `<tspan x="${param.x}" dy="${i === 0 ? '.4em' : `${param.lineHeight}px`}" ${t.length === 0 ? 'visibility="hidden"' : ''}>${t.length === 0 ? '.' : escapeHtml(t).replaceAll(' ', '&nbsp;')}</tspan>`;
 	}).join('');
+}
+
+function escapeHtml(str) {
+	return str.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 }

@@ -3,7 +3,7 @@ import { connectorEqual } from './index-helpers.js';
 import { serialize } from './serialize/serialize.js';
 import { SvgShapeTextEditorDecorator } from './diagram-extensions/svg-shape-texteditor-decorator.js';
 import { pngSave } from './diagram-extensions/png-save.js';
-import { pngOpen } from './diagram-extensions/png-open.js';
+import { pngDgrmChunkGet, pngOpen } from './diagram-extensions/png-open.js';
 
 // elements
 import './elements/menu-shape/menu-shape.js';
@@ -142,27 +142,39 @@ function disconnect(evt) {
 // save/open/serialize
 
 function save() {
-	if (!shapeData.size) {
-		alert('Nothing to save');
-		return;
-	}
+	if (!shapeData.size) { alert('Nothing to save'); return; }
 
 	pngSave(svg, serialize(shapeData, connectors));
 }
 
+// open: from file dialo and drag'n'drop file to browser
+
+const cantOpenMsg = 'File cannot be read. Use the exact image file you got from the application.';
 function open() {
-	pngOpen(dgrmChunkVal => {
-		if (!dgrmChunkVal) { alert('File cannot be read. Use the exact image file you got from the application.'); return; }
-		shapeData.forEach((_, shape) => shapeDel(shape));
-		createFromJson(dgrmChunkVal);
+	pngOpen(dgrmChunk => {
+		if (!dgrmChunk) { alert(cantOpenMsg); return; }
+		loadFromJson(dgrmChunk);
 	});
 }
 
-async function generateLink() {
-	if (!shapeData.size) {
-		alert('Nothing to save');
-		return;
+svg.addEventListener('dragover', evt => { evt.preventDefault(); });
+svg.addEventListener('drop', async evt => {
+	evt.preventDefault();
+
+	if (evt.dataTransfer?.items?.length !== 1 ||
+		evt.dataTransfer.items[0].kind !== 'file' ||
+		evt.dataTransfer.items[0].type !== 'image/png') {
+		alert(cantOpenMsg); return;
 	}
+
+	const dgrmChunk = await pngDgrmChunkGet(evt.dataTransfer.items[0].getAsFile());
+	if (!dgrmChunk) { alert(cantOpenMsg); return; }
+
+	loadFromJson(dgrmChunk);
+});
+
+async function generateLink() {
+	if (!shapeData.size) { alert('Nothing to save'); return; }
 
 	const url = new URL(window.location.href);
 	url.hash = encodeURIComponent(serialize(shapeData, connectors));
@@ -175,6 +187,17 @@ if (window.location.hash) {
 	history.replaceState(null, null, ' ');
 }
 
+/**
+ * @param {string} json
+ */
+function loadFromJson(json) {
+	shapeData.forEach((_, shape) => shapeDel(shape));
+	createFromJson(json);
+}
+
+/**
+ * @param {string} json
+ */
 function createFromJson(json) {
 	/** @type {SerializeData} */
 	const data = JSON.parse(json);

@@ -10,14 +10,17 @@ export function pngOpen(callBack) {
 	input.accept = '.png';
 	input.onchange = async function() {
 		if (!input.files?.length) { return; }
-
-		const dgrmChunkVal = await pngChunkGet(input.files[0], 'dgRm');
-		if (!dgrmChunkVal) {
-			callBack(null);
-			return;
-		}
-
-		callBack(new TextDecoder().decode(dgrmChunkVal));
+		callBack(await pngDgrmChunkGet(input.files[0]));
 	};
 	input.click();
+}
+
+/**
+ * @param {Blob} png
+ * @returns {Promise<string|null>}
+ */
+export async function pngDgrmChunkGet(png) {
+	const dgrmChunkVal = await pngChunkGet(png, 'dgRm');
+	if (!dgrmChunkVal) { return null; }
+	return new TextDecoder().decode(dgrmChunkVal);
 }
