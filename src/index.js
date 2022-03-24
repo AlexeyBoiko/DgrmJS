@@ -12,6 +12,8 @@ import './elements/file-options/file-options.js';
 //
 // bind
 
+const tip = document.getElementById('tip');
+
 /** @type {IFileOptions} */(document.getElementById('file-options'))
 	.on('dgrmNew', clear)
 	.on('dgrmGenerateLink', generateLink)
@@ -53,6 +55,8 @@ let connectors = [];
  * @returns {IDiagramShape}
  */
 function shapeAdd(param) {
+	if (tip) { tip.remove(); }
+
 	param.props = {
 		text: { textContent: param.detail }
 	};
@@ -143,6 +147,8 @@ function disconnect(evt) {
 // file operations: new/save/open/serialize
 
 function clear() {
+	if (tip) { tip.remove(); }
+
 	shapeData.forEach((_, shape) => shapeDel(shape));
 }
 
@@ -152,7 +158,7 @@ function save() {
 	pngSave(svg, serialize(shapeData, connectors));
 }
 
-// open: from file dialo and drag'n'drop file to browser
+// open: from file dialog and drag'n'drop file to browser
 
 const cantOpenMsg = 'File cannot be read. Use the exact image file you got from the application.';
 function open() {
