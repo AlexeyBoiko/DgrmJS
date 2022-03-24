@@ -13,6 +13,7 @@ import './elements/file-options/file-options.js';
 // bind
 
 /** @type {IFileOptions} */(document.getElementById('file-options'))
+	.on('dgrmNew', clear)
 	.on('dgrmGenerateLink', generateLink)
 	.on('dgrmSave', save)
 	.on('dgrmOpen', open);
@@ -139,7 +140,11 @@ function disconnect(evt) {
 }
 
 //
-// save/open/serialize
+// file operations: new/save/open/serialize
+
+function clear() {
+	shapeData.forEach((_, shape) => shapeDel(shape));
+}
 
 function save() {
 	if (!shapeData.size) { alert('Nothing to save'); return; }
@@ -191,7 +196,7 @@ if (window.location.hash) {
  * @param {string} json
  */
 function loadFromJson(json) {
-	shapeData.forEach((_, shape) => shapeDel(shape));
+	clear();
 	createFromJson(json);
 }
 
