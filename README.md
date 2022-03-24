@@ -9,7 +9,7 @@ The main goal of the library is to set up workflows in BPM (Business Process Man
 
 <br />
 
-[Demo state machine workflow editor](https://alexeyboiko.github.io/DgrmJS/ "Diagram builder demo").
+[Demo state machine workflow editor](https://app.dgrm.net "Diagram builder demo").
 
 <img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-sample-workflow.png" alt="workflow" width="600"/>
 
