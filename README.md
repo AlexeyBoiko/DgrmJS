@@ -181,11 +181,31 @@ In this example:
 <img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/dgrmjs-update-on-select.gif" alt="draggable shape" width="500" />
 
 ## Documentation
-Soon  
-
-Dgrm.js source files located in ``src/diagram`` folder. All other files and folders is part of the demo editor.  
-Diagram public interface is in ``src/diagram/diagram-public-types.ts``.
+Soon
 
 ## License
-MIT License
+
+### Diagram Engine (``src/diagram`` folder)
+**MIT License**
+ 
+``src/diagram`` folder contains a diagram engine that can be used independently of other project files.  
+This diagram engine contains all main features (all you need to implement diagram editor in your project):
+- creating shapes with svg tempplates
+- drag'n'drop
+- connection of shapes
+- diagram events
+
+Source code in ``src/diagram`` folder is under the MIT License.
+
+### Diagram Extensions (``src/diagram-extensions`` folder)
+**Commercial License**
+ 
+``src/diagram-extensions`` folder contains additional features, like:
+- export/import to/from png/svg
+- text editor
+- shape editor panel
+- and other
+ 
+Source code in ``src/diagram-extensions`` folder is under the Commercial License.  
+Contact with [me](https://github.com/AlexeyBoiko) for details.
 
