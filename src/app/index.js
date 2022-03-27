@@ -1,9 +1,9 @@
-import { svgDiagramCreate } from './diagram/svg-presenter/svg-diagram-factory.js';
+import { svgDiagramCreate } from '../diagram/svg-presenter/svg-diagram-factory.js';
 import { connectorEqual } from './index-helpers.js';
 import { serialize } from './serialize/serialize.js';
-import { SvgShapeTextEditorDecorator } from './diagram-extensions/svg-shape-texteditor-decorator.js';
-import { pngSave } from './diagram-extensions/png-save.js';
-import { pngDgrmChunkGet, pngOpen } from './diagram-extensions/png-open.js';
+import { SvgShapeTextEditorDecorator } from '../diagram-extensions/svg-shape-texteditor-decorator.js';
+import { pngSave } from '../diagram-extensions/png-save.js';
+import { pngDgrmChunkGet, pngOpen } from '../diagram-extensions/png-open.js';
 
 // elements
 import './elements/menu-shape/menu-shape.js';
