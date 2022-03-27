@@ -1,7 +1,7 @@
-import { ConnectorManager } from './diagram/connector/connector-manager.js';
-import { Diagram } from './diagram/diagram.js';
-import { SvgPresenter } from './diagram/svg-presenter/svg-presenter.js';
-import { connectorsInit, shapeCreate } from './diagram/svg-presenter/svg-shape/svg-shape-factory.js';
+import { ConnectorManager } from '../connector/connector-manager.js';
+import { Diagram } from '../diagram.js';
+import { SvgPresenter } from './svg-presenter.js';
+import { connectorsInit, shapeCreate } from './svg-shape/svg-shape-factory.js';
 
 /**
  * @param {SVGSVGElement} svg
