@@ -2,7 +2,7 @@ import { terser } from 'rollup-plugin-terser';
 import minifyHTML from 'rollup-plugin-minify-html-literals';
 
 export default {
-	input: 'src/index.js',
+	input: 'src/app/index.js',
 	output: {
 		file: 'dist/index.js',
 		format: 'iife',

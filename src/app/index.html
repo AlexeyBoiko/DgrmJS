@@ -77,8 +77,9 @@
 
 			[data-connect="in"],
 			[data-connect="out"] {
-				stroke: rgb(108 187 247 / 51%);
-				fill: rgb(108 187 247 / 51%);
+				opacity: 0.51;
+				stroke: rgb(108 187 247);
+				fill: rgb(108 187 247);
 			}
 
 			[data-connect="in"].hover circle {
@@ -133,6 +134,17 @@
 			[data-connect="in"].connected .empty {
 				display: none;
 			}
+
+			@media (pointer: coarse) {
+				[data-connect] {
+					stroke-width: 15px;
+				}
+
+				[data-connect="in"].hover circle {
+					stroke-width: 55px;
+				}
+			}
+			
 		</style>
 		<defs>
 			<g id="arrow">
@@ -266,7 +278,6 @@
 
 			<g data-templ="text" data-center="15,0">
 				<circle data-no-click="" r="40" fill="transparent" stroke="transparent" stroke-width="1" />
-				<!-- <circle r="13" cx="-10" cy="0" class="marker"></circle> -->
 
 				<rect data-text-for="text" x="-14" y="-14" rx="15" ry="15" width="90" height="40" />
 				<text data-key="text" data-line-height="20" fill="rgb(73, 80, 87)" alignment-baseline="central">Title</text>
