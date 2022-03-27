@@ -89,8 +89,8 @@
 				fill: transparent;
 			}
 
-			[data-templ].selected use,
-			[data-templ="text"] .marker {
+			[data-templ].selected use
+			{
 				fill: rgb(108 187 247 / 51%);
 			}
 
@@ -132,14 +132,6 @@
 
 			[data-connect="in"].connected .empty {
 				display: none;
-			}
-
-			[data-templ="text"] .marker {
-				display: none;
-			}
-
-			[data-templ="text"].selected .marker {
-				display: unset;
 			}
 		</style>
 		<defs>
@@ -274,10 +266,18 @@
 
 			<g data-templ="text" data-center="15,0">
 				<circle data-no-click="" r="40" fill="transparent" stroke="transparent" stroke-width="1" />
-				<circle r="13" cx="0" cy="0" class="marker"></circle>
+				<!-- <circle r="13" cx="-10" cy="0" class="marker"></circle> -->
 
 				<rect data-text-for="text" x="-14" y="-14" rx="15" ry="15" width="90" height="40" />
 				<text data-key="text" data-line-height="20" fill="rgb(73, 80, 87)" alignment-baseline="central">Title</text>
+
+				<circle data-key="outleft" data-connect="out" data-connect-point="-10,0" data-connect-dir="left" r="10"
+					cx="-10" cy="0">
+				</circle>
+				<g data-key="inleft" data-connect="in" data-connect-point="-10,0" data-connect-dir="left">
+					<circle class="empty" r="10" cx="-10" cy="0"></circle>
+					<use class="not-empty" xlink:href="#arrow" transform="translate(-10, 0)" />
+				</g>
 			</g>
 		</defs>
 		<g data-key="canvas"></g>
