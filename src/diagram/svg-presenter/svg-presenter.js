@@ -76,7 +76,7 @@ export class SvgPresenter extends EventTarget {
 	}
 
 	/**
-	 * @param {PointerEvent & { currentTarget: SVGGraphicsElement }} evt
+	 * @param {PointerEvent & { currentTarget: SVGGraphicsElement, target: SVGGraphicsElement }} evt
 	 */
 	handleEvent(evt) {
 		evt.stopPropagation();
@@ -89,17 +89,21 @@ export class SvgPresenter extends EventTarget {
 			case 'pointerdown':
 				this._dispatchEvent(
 					evt.type,
-					evt.currentTarget,
+					evt.target.hasAttribute('data-no-click')
+						? /** @type {SVGGraphicsElement} */(document.elementsFromPoint(evt.clientX, evt.clientY)[1])
+						: evt.currentTarget,
 					evt.offsetX,
 					evt.offsetY);
 				break;
-			case 'pointerup':
+			case 'pointerup': {
+				const elems = document.elementsFromPoint(evt.clientX, evt.clientY);
 				this._dispatchEvent(
 					evt.type,
-					/** @type {SVGGraphicsElement} */(document.elementFromPoint(evt.clientX, evt.clientY)),
+					/** @type {SVGGraphicsElement} */(elems[0].hasAttribute('data-no-click') ? elems[1] : elems[0]),
 					evt.offsetX,
 					evt.offsetY);
 				break;
+			}
 		}
 	}
 

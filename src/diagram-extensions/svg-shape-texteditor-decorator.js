@@ -67,6 +67,8 @@ export class SvgShapeTextEditorDecorator {
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	handleEvent(evt) {
+		if (evt.target.hasAttribute('data-no-click')) { return; }
+
 		evt.stopPropagation();
 
 		if (!this._firstClick) {
@@ -141,8 +143,8 @@ export class SvgShapeTextEditorDecorator {
 		const panelDiv = document.createElement('div');
 		panelDiv.classList.add('pop-set');
 		panelDiv.style.position = 'fixed';
-		panelDiv.style.top = `${position.top - 50}px`;
-		panelDiv.style.left = `${position.left - 5}px`;
+		panelDiv.style.top = `${position.top - 35}px`;
+		panelDiv.style.left = `${position.left + 10}px`;
 		panelDiv.innerHTML = `
 			<style>
 			.pop-set {
