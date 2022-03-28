@@ -12,7 +12,7 @@ export function pngSave(svg, dgrmChunkVal) {
 	const svgCopy = svg.cloneNode(true);
 	svgCopy.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
 
-	const rectToShow = getBoundingRect(svg, '[data-key="canvas"] > [data-templ]');
+	const rectToShow = getBoundingRect(svg, '[data-key="canvas"]');
 
 	// diagram to left corner
 	/** @type{SVGGraphicsElement} */
