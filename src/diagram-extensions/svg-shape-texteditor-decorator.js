@@ -26,6 +26,10 @@ export class SvgShapeTextEditorDecorator {
 		this.connectors = this._svgShape.connectors;
 	}
 
+	/**
+	 * @param {PresenterShapeState} state
+	 */
+	stateHas(state) { return this._svgShape.stateHas(state); }
 	stateGet() { return this._svgShape.stateGet(); }
 	postionGet() { return this._svgShape.postionGet(); }
 

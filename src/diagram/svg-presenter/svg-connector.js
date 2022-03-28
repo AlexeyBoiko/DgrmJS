@@ -29,11 +29,18 @@ export class SvgConnector {
 	}
 
 	/**
-	 * NOT immutable, change with update method
+	 * @param {PresenterShapeState} state
+	 * @returns {boolean}
+	 */
+	stateHas(state) {
+		return this._state.has(state);
+	}
+
+	/**
 	 * @returns {Set<PresenterShapeState>}
 	 */
 	stateGet() {
-		return this._state;
+		return new Set(this._state);
 	}
 
 	/**

@@ -12,6 +12,7 @@ type PresenterChildAddType = 'shape' | 'path';
 
 type PresenterShapeState = 'selected' | 'disabled' | 'hovered' | 'connected';
 interface IPresenterStatable {
+	stateHas(state: PresenterShapeState): boolean;
 	stateGet(): Set<PresenterShapeState>;
 	update(param: { state: Set<PresenterShapeState> }): void;
 }

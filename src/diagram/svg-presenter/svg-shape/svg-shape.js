@@ -37,6 +37,14 @@ export class SvgShape {
 		return this;
 	}
 
+	/**
+	 * @param {PresenterShapeState} state
+	 * @returns {boolean}
+	 */
+	stateHas(state) {
+		return this._state.has(state);
+	}
+
 	/** @returns {Set<PresenterShapeState>} */
 	stateGet() {
 		return new Set(this._state);

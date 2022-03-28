@@ -5,8 +5,8 @@ import { setDel } from './infrastructure/iterable-utils.js';
  * @param {PresenterShapeState} state
  */
 export function shapeStateAdd(shape, state) {
-	const states = shape.stateGet();
-	if (!states.has(state)) {
+	if (!shape.stateHas(state)) {
+		const states = shape.stateGet();
 		shape.update({ state: states.add(state) });
 	}
 }
@@ -16,8 +16,8 @@ export function shapeStateAdd(shape, state) {
  * @param {PresenterShapeState} state
  */
 export function shapeStateDel(shape, state) {
-	const states = shape.stateGet();
-	if (states.has(state)) {
+	if (shape.stateHas(state)) {
+		const states = shape.stateGet();
 		shape.update({ state: setDel(states, state) });
 	}
 }
