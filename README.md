@@ -190,7 +190,7 @@ Soon
  
 ``src/diagram`` folder contains a diagram engine that can be used independently of other project files.  
 This diagram engine contains all main features (all you need to implement diagram editor in your project):
-- creating shapes with svg tempplates
+- creating shapes with svg templates
 - drag'n'drop
 - connection of shapes
 - diagram events
