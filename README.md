@@ -9,9 +9,9 @@ The main goal of the library is to set up workflows in BPM (Business Process Man
 
 <br />
 
-[Demo state machine workflow editor](https://app.dgrm.net "Diagram builder demo").
+Demo: diagram editor [dgrm.net](https://app.dgrm.net "Diagram builder").
 
-<img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-sample-workflow.png" alt="workflow" width="600"/>
+<img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-sample.png" alt="diagram" width="600"/>
 
 Article "[JavaScript SVG diagram editor 6.5 times smaller than Bootstrap](https://alexey-boyko.medium.com/javascript-svg-diagram-editor-which-weighs-6-5-less-than-bootstrap-open-source-library-b753feaaf835 "JavaScript SVG diagram editor 6.5 times smaller than Bootstrap")".
 
@@ -190,7 +190,7 @@ Soon
  
 ``src/diagram`` folder contains a diagram engine that can be used independently of other project files.  
 This diagram engine contains all main features (all you need to implement diagram editor in your project):
-- creating shapes with svg tempplates
+- creating shapes with svg templates
 - drag'n'drop
 - connection of shapes
 - diagram events
