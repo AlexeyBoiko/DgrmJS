@@ -85,13 +85,19 @@ function shapeDel(shape) {
 
 /** @param { CustomEvent<IMenuShapeDragOutEventDetail> } evt */
 function shapeAddingDragOut(evt) {
-	const point = svg.querySelector(`[data-templ='${evt.detail.shape}']`).getAttribute('data-center').split(',');
+	const selector = svg.querySelector(`[data-templ='${evt.detail.shape}']`);
+	const txtTags = [...selector.getElementsByTagName('text')];
+	let detail = 'Title';
+	if(txtTags?.length > 0) {
+		detail = txtTags[0].innerHTML
+	}
+	const point = selector.getAttribute('data-center').split(',');
 	addingShapeCenter = { x: parseFloat(point[0]), y: parseFloat(point[1]) };
 	addingShape = shapeAdd({
 		templateKey: evt.detail.shape,
 		// shapePosition
 		position: { x: evt.detail.clientX - addingShapeCenter.x, y: evt.detail.clientY - addingShapeCenter.y },
-		detail: 'Title'
+		detail
 	});
 
 	diagram.shapeSetMoving(
