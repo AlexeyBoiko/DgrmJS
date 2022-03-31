@@ -87,7 +87,9 @@ export class SvgShape {
 			const shape = (name === 'root')
 				? elem
 				: elem.querySelector(`[data-key='${name}'`);
-
+			if (!shape) {
+				return;
+			}
 			Object.keys(props[name]).forEach(attr => {
 				switch (attr) {
 					case 'textContent':
