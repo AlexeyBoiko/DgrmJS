@@ -4,17 +4,17 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "build": "npx rollup -c"
+    "build": "rollup -c"
   },
   "author": "Alexey Boyko",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^7.32.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.25.3",
+    "eslint": "^8.12.0",
+    "eslint-config-standard": "^17.0.0-1",
+    "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.2.0",
-    "rollup": "^2.67.3",
+    "eslint-plugin-promise": "^6.0.0",
+    "rollup": "^2.70.1",
     "rollup-plugin-minify-html-literals": "^1.2.6",
     "rollup-plugin-terser": "^7.0.2"
   }
