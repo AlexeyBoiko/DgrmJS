@@ -13,7 +13,9 @@ Demo: diagram editor [dgrm.net](https://app.dgrm.net "Diagram builder").
 
 <img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-sample.png" alt="diagram" width="600"/>
 
-Article "[JavaScript SVG diagram editor 6.5 times smaller than Bootstrap](https://alexey-boyko.medium.com/javascript-svg-diagram-editor-which-weighs-6-5-less-than-bootstrap-open-source-library-b753feaaf835 "JavaScript SVG diagram editor 6.5 times smaller than Bootstrap")".
+Articles:  
+[JavaScript SVG diagram editor 6.5 times smaller than Bootstrap](https://alexey-boyko.medium.com/javascript-svg-diagram-editor-which-weighs-6-5-less-than-bootstrap-open-source-library-b753feaaf835 "JavaScript SVG diagram editor 6.5 times smaller than Bootstrap").  
+[JavaScript diagram editor that renders diagrams from PNG images (open source)](https://medium.com/codex/javascript-diagram-editor-that-renders-diagrams-from-png-images-open-source-d1de0f053088 "JavaScript diagram editor that renders diagrams from PNG images (open source)").
 
 ## Main idea
 - Allow developers to use standard SVG objects and features to declaratively create shapes that will be used in the diagram.  
