@@ -246,10 +246,10 @@ function foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, te
 	const textBbox = textEl.getBBox();
 	const width = textBbox.width + 20;
 
-	foreign.width.baseVal.value = width + 2 * textareaPaddingAndBorder;
+	foreign.width.baseVal.value = width + 2 * textareaPaddingAndBorder + 2; // +2 magic number for fireFox
 	foreign.x.baseVal.value = textBbox.x - textareaPaddingAndBorder - ((textAlign === 'center') ? 10 : 0);
 
-	foreign.height.baseVal.value = textBbox.height + 2 * textareaPaddingAndBorder;
+	foreign.height.baseVal.value = textBbox.height + 2 * textareaPaddingAndBorder + 3; // +3 magic number for fireFox
 	foreign.y.baseVal.value = textBbox.y - textareaPaddingAndBorder;
 
 	textarea.style.width = `${width}px`;
