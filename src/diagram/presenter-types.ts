@@ -55,8 +55,8 @@ type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointer
 interface IPresenterEventDetail {
 	/**	null for pointermove */
 	target?: IPresenterElement;
-	offsetX: number;
-	offsetY: number;
+	clientX: number;
+	clientY: number;
 }
 
 

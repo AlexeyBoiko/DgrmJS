@@ -71,8 +71,8 @@ export class Diagram extends EventTarget {
 
 					this._movedShape.update({
 						position: {
-							x: this._movedDelta.x + evt.detail.offsetX,
-							y: this._movedDelta.y + evt.detail.offsetY
+							x: this._movedDelta.x + evt.detail.clientX,
+							y: this._movedDelta.y + evt.detail.clientY
 						}
 					});
 					this._connectorManager.updatePosition(this._movedShape);
@@ -82,7 +82,7 @@ export class Diagram extends EventTarget {
 				switch (evt.detail.target.type) {
 					case 'canvas':
 					case 'shape':
-						this.shapeSetMoving(/** @type {IPresenterShape} */(evt.detail.target), { x: evt.detail.offsetX, y: evt.detail.offsetY });
+						this.shapeSetMoving(/** @type {IPresenterShape} */(evt.detail.target), { x: evt.detail.clientX, y: evt.detail.clientY });
 						break;
 					case 'connector': {
 						this._onConnectorDown(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
@@ -119,7 +119,7 @@ export class Diagram extends EventTarget {
 				// connectorEnd create
 
 				const connectorEnd = this.shapeAdd(connectorEndParams(evt.detail.target));
-				this.shapeSetMoving(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
+				this.shapeSetMoving(connectorEnd, { x: evt.detail.clientX, y: evt.detail.clientY });
 				this._connectorManager.add(evt.detail.target, connectorEnd.defaultInConnector);
 				break;
 			}
@@ -134,7 +134,7 @@ export class Diagram extends EventTarget {
 					})) { return; }
 
 					const connectorEnd = this.shapeAdd(connectorEndParams(evt.detail.target));
-					this.shapeSetMoving(connectorEnd, { x: evt.detail.offsetX, y: evt.detail.offsetY });
+					this.shapeSetMoving(connectorEnd, { x: evt.detail.clientX, y: evt.detail.clientY });
 					this._connectorManager.replaceEnd(evt.detail.target, connectorEnd.defaultInConnector);
 				}
 				break;
@@ -189,17 +189,17 @@ export class Diagram extends EventTarget {
 
 	/**
 	 * @param {IPresenterShape} shape
-	 * @param {Point} offsetPoint
+	 * @param {Point} clientPoint
 	 */
-	shapeSetMoving(shape, offsetPoint) {
+	shapeSetMoving(shape, clientPoint) {
 		/** @private */
 		this._movedShape = shape;
 
 		const shapePosition = this._movedShape.postionGet();
 		/** @private */
 		this._movedDelta = {
-			x: shapePosition.x - offsetPoint.x,
-			y: shapePosition.y - offsetPoint.y
+			x: shapePosition.x - clientPoint.x,
+			y: shapePosition.y - clientPoint.y
 		};
 
 		this._selectedSet(this._movedShape);

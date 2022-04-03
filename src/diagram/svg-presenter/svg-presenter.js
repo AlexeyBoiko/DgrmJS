@@ -83,25 +83,23 @@ export class SvgPresenter extends EventTarget {
 		switch (evt.type) {
 			case 'pointermove': {
 				this._dispatchEnterLeave(evt);
-				this._dispatchEvent('pointermove', null, evt.offsetX, evt.offsetY);
+				this._dispatchEvent(evt, 'pointermove', null);
 				break;
 			}
 			case 'pointerdown':
 				this._dispatchEvent(
+					evt,
 					evt.type,
 					evt.target.hasAttribute('data-no-click')
 						? /** @type {SVGGraphicsElement} */(document.elementsFromPoint(evt.clientX, evt.clientY)[1])
-						: evt.currentTarget,
-					evt.offsetX,
-					evt.offsetY);
+						: evt.currentTarget);
 				break;
 			case 'pointerup': {
 				const elems = document.elementsFromPoint(evt.clientX, evt.clientY);
 				this._dispatchEvent(
+					evt,
 					evt.type,
-					/** @type {SVGGraphicsElement} */(elems[0].hasAttribute('data-no-click') ? elems[1] : elems[0]),
-					evt.offsetX,
-					evt.offsetY);
+					/** @type {SVGGraphicsElement} */(elems[0].hasAttribute('data-no-click') ? elems[1] : elems[0]));
 				break;
 			}
 		}
@@ -117,11 +115,11 @@ export class SvgPresenter extends EventTarget {
 		}
 
 		if (this._pointElem) {
-			this._dispatchEvent('pointerleave', this._pointElem, evt.offsetX, evt.offsetY);
+			this._dispatchEvent(evt, 'pointerleave', this._pointElem);
 		}
 
 		if (pointElem) {
-			this._dispatchEvent('pointerenter', pointElem, evt.offsetX, evt.offsetY);
+			this._dispatchEvent(evt, 'pointerenter', pointElem);
 		}
 
 		/**
@@ -132,13 +130,12 @@ export class SvgPresenter extends EventTarget {
 	}
 
 	/**
+	 * @param {PointerEvent & { currentTarget: SVGGraphicsElement }} parentEvt DOM event that trigger dispatching
 	 * @param {PresenterEventType} type
 	 * @param {SVGGraphicsElement} target
-	 * @param {number} offsetX
-	 * @param {number} offsetY
 	 * @private
 	 */
-	_dispatchEvent(type, target, offsetX, offsetY) {
+	_dispatchEvent(parentEvt, type, target) {
 		let targetPresenterObj = null;
 		if (target) {
 			targetPresenterObj = this._svgElemToPresenterObj.get((target === this._svg || target.ownerSVGElement !== this._svg)
@@ -157,8 +154,8 @@ export class SvgPresenter extends EventTarget {
 			/** @type {IPresenterEventDetail} */
 			detail: {
 				target: targetPresenterObj,
-				offsetX: offsetX,
-				offsetY: offsetY
+				clientX: parentEvt.clientX,
+				clientY: parentEvt.clientY
 			}
 		}));
 	}
