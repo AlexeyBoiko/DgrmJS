@@ -1,4 +1,5 @@
 # DgrmJS
+[![npm version](https://badge.fury.io/js/dgrm.svg)](https://badge.fury.io/js/dgrm)
 
 DgrmJS is a JavaScript library for creating SVG diagram editors.  
 The main goal of the library is to set up workflows in BPM (Business Process Management) systems.
@@ -23,8 +24,12 @@ To create shape, developers should add special data- attributes to standard SVG 
 - DgrmJS dispatch events, like ‘shape is selected’ or ‘shape is connecting to another shape’.  
 Developers can use these events to implement their own logic, for example, make a JSON description of the workflow.
 ## How to use
+See full minimalistic example - [GitHub repository: DgrmJS Example](https://github.com/AlexeyBoiko/DgrmJS-Example).
 ### Install
-npm, cdn soon
+From npm:
+```
+npm i dgrm
+```
 ### Simple shape
 This is a circle shape:
 
@@ -54,8 +59,6 @@ This is a circle shape:
 		templateKey: 'circle',
 		position: { x: 120, y: 120 },
 		props: {
-			// svg 'g' element will get 'fill' attribute with value '#344767'  
-			fill='#344767',
 			// inner svg element with 'data-key=text'
 			// will get 'textContent' value 'Title'
 			text: { textContent: 'Title' }
@@ -68,7 +71,6 @@ diagram.shapeAdd method add to canvas shape:
 - created by template with name "circle"
 - to position at point 120, 120
 - props set
-  - ```<g>``` tag ```fill``` attribute to ```#344767```
   - ```textContent``` of the inner element with ```data-key="text"``` to "Title"
 
 This way you can set any attribute of any shape object.
@@ -174,7 +176,6 @@ In this example:
         templateKey: 'circle',
         position: { x: 120, y: 120 },
         props: {
-            fill="#344767",
             text: { textContent: 'Title' }
         }
     });
