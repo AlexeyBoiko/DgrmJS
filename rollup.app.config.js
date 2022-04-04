@@ -4,7 +4,7 @@ import minifyHTML from 'rollup-plugin-minify-html-literals';
 export default {
 	input: 'src/app/index.js',
 	output: {
-		file: 'dist/index.js',
+		file: 'dist/app/index.js',
 		format: 'iife',
 		plugins: [
 			terser({

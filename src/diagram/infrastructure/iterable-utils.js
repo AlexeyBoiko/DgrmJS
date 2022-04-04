@@ -46,24 +46,6 @@ export function any(iterable, filter) {
 	return false;
 }
 
-// /**
-//  * @template T
-//  * @param {Iterable<T>} iterable
-//  * @param {{(el:T) :boolean}} filter
-//  * @returns {number}
-//  */
-// export function count(iterable, filter) {
-// 	if (!iterable) { return 0; }
-
-// 	let count = 0;
-// 	for (const el of iterable) {
-// 		if (!filter || filter(el)) {
-// 			count++;
-// 		}
-// 	}
-// 	return count;
-// }
-
 /**
  * @template T
  * @param {Set<T>} set

@@ -1,10 +1,10 @@
 {
-  "name": "svgdiagramjs",
+  "name": "dgrm",
   "version": "1.0.0",
   "description": "",
-  "main": "index.html",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c rollup.app.config.js",
+    "build-dgrm-npm": "rollup -c rollup.diagram-npm-package.config.js"
   },
   "author": "Alexey Boyko",
   "license": "ISC",
