@@ -5,6 +5,7 @@
 	"license": "MIT",
 	"repository": "AlexeyBoiko/DgrmJS",
 	"main": "index.js",
+	"types": "./types/index.d.ts",
 	"author": "Alexey Boyko",
 	"keywords": [
 		"diagram",

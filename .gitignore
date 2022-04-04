@@ -103,3 +103,6 @@ dist/*
 
 # TernJS port file
 .tern-port
+
+dist/diagram-npm-package/types/*
+!dist/diagram-npm-package/types/index.d.ts
