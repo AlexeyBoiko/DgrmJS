@@ -24,7 +24,7 @@ To create shape, developers should add special data- attributes to standard SVG 
 - DgrmJS dispatch events, like ‘shape is selected’ or ‘shape is connecting to another shape’.  
 Developers can use these events to implement their own logic, for example, make a JSON description of the workflow.
 ## How to use
-See full minimalistic example - [GitHub repository: DgrmJS Example](https://github.com/AlexeyBoiko/DgrmJS-Example).
+See a minimalistic example - [GitHub repository: DgrmJS Example](https://github.com/AlexeyBoiko/DgrmJS-Example).
 ### Install
 From npm:
 ```
