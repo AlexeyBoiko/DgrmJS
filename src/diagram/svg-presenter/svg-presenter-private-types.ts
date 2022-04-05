@@ -1,27 +1,29 @@
-interface ISvgPresenterElement extends IPresenterElement {
-	get svgEl() : SVGGraphicsElement;
+import { IPresenterElement, IPresenterShape, PresenterShapeAppendParam, PresenterShapeProps } from '../presenter-types';
+
+export interface ISvgPresenterElement extends IPresenterElement {
+	get svgEl(): SVGGraphicsElement;
 }
 
-interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape { 
+export interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape {
 	on(type: string, listener: EventListenerOrEventListenerObject): ISvgPresenterShape;
 }
 
-interface ISvgPresenterShapeFuctoryParam { 
-	svgCanvas: SVGGElement, 
-	listener: EventListenerOrEventListenerObject, 
+export interface ISvgPresenterShapeFuctoryParam {
+	svgCanvas: SVGGElement,
+	listener: EventListenerOrEventListenerObject,
 	svgElemToPresenterObj: WeakMap<SVGGraphicsElement, IPresenterElement>,
 	createParams: PresenterShapeAppendParam
 }
 
-interface ISvgPresenterShapeFuctory {
-	(param: ISvgPresenterShapeFuctoryParam) : ISvgPresenterShape
+export interface ISvgPresenterShapeFuctory {
+	(param: ISvgPresenterShapeFuctoryParam): ISvgPresenterShape
 }
 
-interface ISvgPresenterShapeDecoratorFuctory {
-	(shape: ISvgPresenterShape, param: ISvgPresenterShapeFuctoryParam) : ISvgPresenterShape
+export interface ISvgPresenterShapeDecoratorFuctory {
+	(shape: ISvgPresenterShape, param: ISvgPresenterShapeFuctoryParam): ISvgPresenterShape
 }
 
-interface ISvgPresenterShapeEventUpdateDetail {
+export interface ISvgPresenterShapeEventUpdateDetail {
 	target: ISvgPresenterShape;
 	props: PresenterShapeProps;
 }

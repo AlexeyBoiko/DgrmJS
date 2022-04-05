@@ -4,11 +4,10 @@
 
 import { connectorEndParams, shapeStateAdd, shapeStateDel } from './shape-utils.js';
 
-/** @implements {IDiagram} */
 export class Diagram extends EventTarget {
 	/**
-	 * @param {IPresenter} pesenter
-	 * @param {IConnectorManager} connectorManager
+	 * @param {import('./presenter-types').IPresenter} pesenter
+	 * @param {import('./connector-manager-types').IConnectorManager} connectorManager
 	 */
 	constructor(pesenter, connectorManager) {
 		super();
@@ -27,7 +26,7 @@ export class Diagram extends EventTarget {
 
 	/**
 	 * subscribe to event
-	 * @param {DiagramEventType} evtType
+	 * @param {import('./diagram-public-types').DiagramEventType} evtType
 	 * @param {EventListenerOrEventListenerObject} listener
 	 */
 	on(evtType, listener) {
@@ -36,15 +35,15 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {PresenterShapeAppendParam} param
-	 * @returns {IPresenterShape}
+	 * @param {import('./presenter-types').PresenterShapeAppendParam} param
+	 * @returns {import('./presenter-types').IPresenterShape}
 	 */
 	shapeAdd(param) {
-		return /** @type{IPresenterShape} */(this._presenter.append('shape', param));
+		return /** @type{import('./presenter-types').IPresenterShape} */(this._presenter.append('shape', param));
 	}
 
 	/**
-	 * @param {IPresenterShape} shape
+	 * @param {import('./presenter-types').IPresenterShape} shape
 	 * @returns {void}
 	 */
 	shapeDel(shape) {
@@ -53,7 +52,7 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {DiagramPrivateShapeConnectParam} param
+	 * @param {import('./diagram-private-types').DiagramPrivateShapeConnectParam} param
 	 * @returns {void}
 	 */
 	shapeConnect(param) {
@@ -62,7 +61,7 @@ export class Diagram extends EventTarget {
 			param.end.shape.connectors.get(param.end.connector));
 	}
 
-	/** @param { CustomEvent<IPresenterEventDetail> } evt */
+	/** @param { CustomEvent<import('./presenter-types').IPresenterEventDetail> } evt */
 	handleEvent(evt) {
 		switch (evt.type) {
 			case 'pointermove':
@@ -82,16 +81,16 @@ export class Diagram extends EventTarget {
 				switch (evt.detail.target.type) {
 					case 'canvas':
 					case 'shape':
-						this.shapeSetMoving(/** @type {IPresenterShape} */(evt.detail.target), { x: evt.detail.clientX, y: evt.detail.clientY });
+						this.shapeSetMoving(/** @type {import('./presenter-types').IPresenterShape} */(evt.detail.target), { x: evt.detail.clientX, y: evt.detail.clientY });
 						break;
 					case 'connector': {
-						this._onConnectorDown(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
+						this._onConnectorDown(/** @type { CustomEvent<import('./presenter-types').IPresenterEventDetail & { target: import('./presenter-types').IPresenterConnector }>} */(evt));
 					}
 				}
 				break;
 			case 'pointerup':
 				if (evt.detail.target.type === 'connector') {
-					this._onConnectorUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
+					this._onConnectorUp(/** @type { CustomEvent<import('./presenter-types').IPresenterEventDetail & { target: import('./presenter-types').IPresenterConnector }>} */(evt));
 				}
 				this._movedClean();
 				this._hoveredClean();
@@ -99,7 +98,7 @@ export class Diagram extends EventTarget {
 			case 'pointerenter':
 				if (this._movedShape && this._movedShape.connectable &&
 					(evt.detail.target.type === 'connector' || evt.detail.target.type === 'shape')) {
-					this._hoveredSet(/** @type {IPresenterStatable & IPresenterElement} */(evt.detail.target));
+					this._hoveredSet(/** @type {import('./presenter-types').IPresenterStatable & import('./presenter-types').IPresenterElement} */(evt.detail.target));
 				}
 				break;
 			case 'pointerleave':
@@ -109,7 +108,7 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} evt
+	 * @param { CustomEvent<import('./presenter-types').IPresenterEventDetail & { target: import('./presenter-types').IPresenterConnector }>} evt
 	 * @private
 	 */
 	_onConnectorDown(evt) {
@@ -143,7 +142,7 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} evt
+	 * @param { CustomEvent<import('./presenter-types').IPresenterEventDetail & { target: import('./presenter-types').IPresenterConnector }>} evt
 	 * @private
 	 */
 	_onConnectorUp (evt) {
@@ -164,7 +163,7 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterShape} shape
+	 * @param {import('./presenter-types').IPresenterShape} shape
 	 * @private
 	 */
 	_selectedSet(shape) {
@@ -180,7 +179,7 @@ export class Diagram extends EventTarget {
 			}
 
 			/**
-			 * @type {IPresenterShape}
+			 * @type {import('./presenter-types').IPresenterShape}
 			 * @private
 			 */
 			this._selectedShape = shape;
@@ -188,8 +187,8 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterShape} shape
-	 * @param {Point} clientPoint
+	 * @param {import('./presenter-types').IPresenterShape} shape
+	 * @param {import('./presenter-types').Point} clientPoint
 	 */
 	shapeSetMoving(shape, clientPoint) {
 		/** @private */
@@ -216,7 +215,7 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterStatable & IPresenterElement} shape
+	 * @param {import('./presenter-types').IPresenterStatable & import('./presenter-types').IPresenterElement} shape
 	 * @private
 	 */
 	_hoveredSet(shape) {
@@ -225,7 +224,7 @@ export class Diagram extends EventTarget {
 
 		shapeStateAdd(shape, 'hovered');
 		if (shape.type === 'connector') {
-			shapeStateAdd(/** @type {IPresenterConnector} */(shape).shape, 'hovered');
+			shapeStateAdd(/** @type {import('./presenter-types').IPresenterConnector} */(shape).shape, 'hovered');
 		}
 	}
 
@@ -237,15 +236,15 @@ export class Diagram extends EventTarget {
 
 		shapeStateDel(this._hoveredShape, 'hovered');
 		if (this._hoveredShape.type === 'connector') {
-			shapeStateDel(/** @type {IPresenterConnector} */(this._hoveredShape).shape, 'hovered');
+			shapeStateDel(/** @type {import('./presenter-types').IPresenterConnector} */(this._hoveredShape).shape, 'hovered');
 		}
 
 		this._hoveredShape = null;
 	}
 
 	/**
-	 * @param {DiagramEventType} type
-	 * @param {IDiagramEventSelectDetail|IDiagramEventConnectDetail} detail
+	 * @param {import('./diagram-public-types').DiagramEventType} type
+	 * @param {import('./diagram-public-types').IDiagramEventSelectDetail|import('./diagram-public-types').IDiagramEventConnectDetail} detail
 	 * @returns {boolean}
 	 * @private
 	 */

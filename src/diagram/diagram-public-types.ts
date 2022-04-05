@@ -1,6 +1,8 @@
 // TODO: replace 'Presenter'types with 'Diagram'types
 
-interface IDiagram {
+import { Point, PresenterElementType, PresenterShapeAppendParam, PresenterShapeUpdateParam } from './presenter-types';
+
+export interface IDiagram {
 	on(evtType: DiagramEventType, listener: EventListenerOrEventListenerObject): this;
 	shapeAdd(param: PresenterShapeAppendParam): IDiagramShape;
 	shapeDel(shape: IDiagramShape): void;
@@ -11,18 +13,18 @@ interface IDiagram {
 
 // ui elements
 
-interface IDiagramElement {
+export interface IDiagramElement {
 	type: PresenterElementType
 }
 
 /** type = 'shape'  */
-interface IDiagramShape extends IDiagramElement {
+export interface IDiagramShape extends IDiagramElement {
 	postionGet(): Point;
 	update(param: PresenterShapeUpdateParam): void;
 }
 
 /** type = 'connector' */
-interface IDiagramConnector extends IDiagramElement {
+export interface IDiagramConnector extends IDiagramElement {
 	/** unique id into shape */
 	key: string;
 	shape: IDiagramShape;
@@ -31,13 +33,13 @@ interface IDiagramConnector extends IDiagramElement {
 
 // event
 
-type DiagramEventType = 'select' | 'connect' | 'disconnect';
+export type DiagramEventType = 'select' | 'connect' | 'disconnect';
 
-interface IDiagramEventSelectDetail<T extends IDiagramShape & IDiagramConnector> {
+export interface IDiagramEventSelectDetail<T extends IDiagramShape & IDiagramConnector> {
 	target: T;
 }
 
-interface IDiagramEventConnectDetail {
+export interface IDiagramEventConnectDetail {
 	start: IDiagramConnector;
 	end: IDiagramConnector;
 }
@@ -45,12 +47,12 @@ interface IDiagramEventConnectDetail {
 
 // method params
 
-interface DiagramConnectorEnd {
+export interface DiagramConnectorEnd {
 	shape: IDiagramShape;
 	/** connector id */
 	connector: string;
 }
-interface DiagramShapeConnectParam {
+export interface DiagramShapeConnectParam {
 	start: DiagramConnectorEnd;
 	end: DiagramConnectorEnd;
 }

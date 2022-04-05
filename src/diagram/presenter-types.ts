@@ -1,4 +1,4 @@
-interface IPresenter {
+export interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
 	append(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParam): IPresenterElement;
 	delete(elem: IPresenterElement): void;
@@ -8,16 +8,16 @@ interface IPresenter {
 //
 // create/update ui elements params
 
-type PresenterChildAddType = 'shape' | 'path';
+export type PresenterChildAddType = 'shape' | 'path';
 
-type PresenterShapeState = 'selected' | 'disabled' | 'hovered' | 'connected';
-interface IPresenterStatable {
+export type PresenterShapeState = 'selected' | 'disabled' | 'hovered' | 'connected';
+export interface IPresenterStatable {
 	stateHas(state: PresenterShapeState): boolean;
 	stateGet(): Set<PresenterShapeState>;
 	update(param: { state: Set<PresenterShapeState> }): void;
 }
 
-interface PresenterShapeUpdateParam {
+export interface PresenterShapeUpdateParam {
 	position?: Point;
 	/** position inside canvas, 
 	 * otherwise, the absolute coordinate disregarding the canvas offset
@@ -31,19 +31,19 @@ interface PresenterShapeUpdateParam {
 	 */
 	props?: PresenterShapeProps
 }
-interface PresenterShapeProps {
+export interface PresenterShapeProps {
 	[key: string]: { [key: string]: string | number | boolean }
 }
 
-interface PresenterShapeAppendParam extends PresenterShapeUpdateParam {
+export interface PresenterShapeAppendParam extends PresenterShapeUpdateParam {
 	templateKey: string;
 }
 
-interface PresenterPathUpdateParam {
+export interface PresenterPathUpdateParam {
 	start?: PresenterPathEnd;
 	end?: PresenterPathEnd;
 }
-interface PresenterPathAppendParam extends PresenterPathUpdateParam {
+export interface PresenterPathAppendParam extends PresenterPathUpdateParam {
 	templateKey: string;
 }
 
@@ -52,7 +52,7 @@ interface PresenterPathAppendParam extends PresenterPathUpdateParam {
 // events
 
 type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointerenter' | 'pointerleave';
-interface IPresenterEventDetail {
+export interface IPresenterEventDetail {
 	/**	null for pointermove */
 	target?: IPresenterElement;
 	clientX: number;
@@ -63,13 +63,13 @@ interface IPresenterEventDetail {
 //
 // ui elements
 
-type PresenterElementType = 'canvas' | 'shape' | 'connector' | 'path';
+export type PresenterElementType = 'canvas' | 'shape' | 'connector' | 'path';
 
-interface IPresenterElement {
+export interface IPresenterElement {
 	type: PresenterElementType,
 }
 
-interface IPresenterShape extends IPresenterElement, IPresenterStatable {
+export interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 
 	/** can be used as connector end  */
 	connectable?: boolean;
@@ -82,8 +82,8 @@ interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 	update(param: PresenterShapeUpdateParam): void;
 }
 
-type PresenterConnectorType = 'in' | 'out';
-interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
+export type PresenterConnectorType = 'in' | 'out';
+export interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
 	connectorType: PresenterConnectorType;
 	shape: IPresenterShape;
 	/** unique id into shape */
@@ -93,13 +93,13 @@ interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
 	dir?: PresenterPathEndDirection;
 }
 
-type PresenterPathEndType = 'start' | 'end';
-type PresenterPathEndDirection = 'left' | 'right' | 'top' | 'bottom';
-interface PresenterPathEnd {
+export type PresenterPathEndType = 'start' | 'end';
+export type PresenterPathEndDirection = 'left' | 'right' | 'top' | 'bottom';
+export interface PresenterPathEnd {
 	position: Point,
 	dir?: PresenterPathEndDirection
 }
-interface IPresenterPath extends IPresenterElement {
+export interface IPresenterPath extends IPresenterElement {
 	/**
 	 * update path
 	 * @param endType end or start of path that change position
@@ -112,4 +112,4 @@ interface IPresenterPath extends IPresenterElement {
 //
 // common
 
-type Point = { x: number, y: number };
+export type Point = { x: number, y: number };

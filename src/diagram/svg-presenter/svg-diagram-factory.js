@@ -5,16 +5,16 @@ import { connectorsInit, shapeCreate } from './svg-shape/svg-shape-factory.js';
 
 /**
  * @param {SVGSVGElement} svg
- * @param {ISvgPresenterShapeDecoratorFuctory=} shapeDecoratorFuctory
- * @returns {IDiagram}
+ * @param {import('./svg-presenter-private-types.js').ISvgPresenterShapeDecoratorFuctory=} shapeDecoratorFuctory
+ * @returns {import('../diagram-public-types.js').IDiagram}
  */
 export function svgDiagramCreate(svg, shapeDecoratorFuctory) {
 	/**
-	 * @param {ISvgPresenterShapeFuctoryParam} param
-	 * @returns {ISvgPresenterShape}
+	 * @param {import('./svg-presenter-private-types.js').ISvgPresenterShapeFuctoryParam} param
+	 * @returns {import('./svg-presenter-private-types.js').ISvgPresenterShape}
 	 */
 	function shapeFuctory(param) {
-		/** @type {ISvgPresenterShape} */
+		/** @type {import('./svg-presenter-private-types.js').ISvgPresenterShape} */
 		let shape = shapeCreate(param.svgCanvas, param.createParams);
 		if (shapeDecoratorFuctory) {
 			shape = shapeDecoratorFuctory(shape, param);

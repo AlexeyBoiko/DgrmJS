@@ -1,18 +1,20 @@
-// interface IConnectorShapePathPoints {
+// export interface IConnectorShapePathPoints {
 // 	startInnerPosition?: Point, 
 // 	endInnerPosition?: Point
 // }
 
-interface IConnetorShape extends IPresenterShape {
+import { IPresenterConnector, IPresenterPath, IPresenterShape } from '../presenter-types';
+
+export interface IConnetorShape extends IPresenterShape {
 	connectedPaths?: Set<IConnectorPath>;
 }
 
-interface IConnectorConnector extends IPresenterConnector {
+export interface IConnectorConnector extends IPresenterConnector {
 	shape: IConnetorShape;
 	// 	connectedPaths?: Map<IPresenterPath, PresenterPathEndType>;
 }
 
-interface IConnectorPath extends IPresenterPath {
+export interface IConnectorPath extends IPresenterPath {
 	start: IConnectorConnector;
 	end: IConnectorConnector;
 }

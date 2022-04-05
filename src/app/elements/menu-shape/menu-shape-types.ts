@@ -1,15 +1,15 @@
-type MenuShapeEventType = 'tab' | 'shapeDragOut'|'shapeMove';
-interface IMenuShape extends HTMLElement {
+export type MenuShapeEventType = 'tab' | 'shapeDragOut'|'shapeMove';
+export interface IMenuShape extends HTMLElement {
 	on(type:MenuShapeEventType, listener:EventListenerOrEventListenerObject): this;
 }
 
-interface IMenuShapeDragOutEventDetail {
+export interface IMenuShapeDragOutEventDetail {
 	shape: string;
 	clientX: number;
 	clientY: number;
 }
 
-interface IMenuShapeMoveEventDetail {
+export interface IMenuShapeMoveEventDetail {
 	shape: string;
 	clientX: number;
 	clientY: number;

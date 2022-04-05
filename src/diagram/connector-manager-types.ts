@@ -1,4 +1,6 @@
-interface IConnectorManager {
+import { IPresenterConnector, IPresenterShape } from './presenter-types';
+
+export interface IConnectorManager {
 	add(connectorStart: IPresenterConnector, connectorEnd: IPresenterConnector): void;
 
 	/** reconect to new connector */

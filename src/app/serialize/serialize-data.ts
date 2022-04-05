@@ -1,23 +1,25 @@
-interface SerializeData {
+import { PresenterShapeAppendParam } from '../../diagram/presenter-types';
+
+export interface SerializeData {
 	/** shapes */
 	s: SerializeShape[],
 	/** connector info */
 	c?: DiagramDataConnector[]
 }
 
-interface SerializeShape<T = any> extends PresenterShapeAppendParam {
+export interface SerializeShape<T = any> extends PresenterShapeAppendParam {
 	/** to store additional data associated with the shape */
 	detail?: T;
 }
 
-interface SerializeConnectorEnd {
+export interface SerializeConnectorEnd {
 	/** index in 'shapes' */
 	i: number;
 	/** connector */
 	c: string;
 }
 
-interface DiagramDataConnector {
+export interface DiagramDataConnector {
 	/** start */
 	s: SerializeConnectorEnd,
 	/** end */
