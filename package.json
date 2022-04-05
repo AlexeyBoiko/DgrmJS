@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build": "rollup -c rollup.app.config.js",
-    "generate_types": "tsc src/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir dist/diagram-npm-package/types",
+    "generate_types": "rm -rf dist/diagram-npm-package/types; tsc src/diagram/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir dist/diagram-npm-package/types",
     "build-dgrm-npm": "rollup -c rollup.diagram-npm-package.config.js"
   },
   "author": "Alexey Boyko",
