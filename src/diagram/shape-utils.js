@@ -29,7 +29,7 @@ export function shapeStateDel(shape, state) {
  * @private
  */
 export function connectorEndParams(connector) {
-	const shapePosition = connector.shape.postionGet();
+	const shapePosition = connector.shape.positionGet();
 	const innerPosition = connector.innerPosition;
 	return {
 		templateKey: 'connect-end',

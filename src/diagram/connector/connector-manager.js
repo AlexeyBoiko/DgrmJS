@@ -79,7 +79,7 @@ export class ConnectorManager {
 			return;
 		}
 
-		const shapePosition = shape.postionGet();
+		const shapePosition = shape.positionGet();
 		for (const path of shape.connectedPaths) {
 			path.update({
 				start: path.start.shape === shape
@@ -138,7 +138,7 @@ export class ConnectorManager {
 	 * @private
 	 */
 	static _pathPoint(connector) {
-		const shapePosition = connector.shape.postionGet();
+		const shapePosition = connector.shape.positionGet();
 		return {
 			x: shapePosition.x + connector.innerPosition.x,
 			y: shapePosition.y + connector.innerPosition.y

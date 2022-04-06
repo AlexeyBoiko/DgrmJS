@@ -17,7 +17,7 @@ interface IDiagramElement {
 
 /** type = 'shape'  */
 interface IDiagramShape extends IDiagramElement {
-	postionGet(): Point;
+	positionGet(): Point;
 	update(param: PresenterShapeUpdateParam): void;
 }
 

@@ -17,7 +17,7 @@ export function serialize(shapeData, connectors) {
 	const shapeIndex = new Map();
 
 	for (const shape of shapeData) {
-		shape[1].position = shape[0].postionGet();
+		shape[1].position = shape[0].positionGet();
 		shapeIndex.set(shape[0], serializeData.s.push(shape[1]) - 1);
 	}
 

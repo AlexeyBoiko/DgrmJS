@@ -78,7 +78,7 @@ interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 	/** should be readonly */
 	connectors: Map<string, IPresenterConnector>;
 
-	postionGet(): Point;
+	positionGet(): Point;
 	update(param: PresenterShapeUpdateParam): void;
 }
 

@@ -31,7 +31,7 @@ export class SvgShapeTextEditorDecorator {
 	 */
 	stateHas(state) { return this._svgShape.stateHas(state); }
 	stateGet() { return this._svgShape.stateGet(); }
-	postionGet() { return this._svgShape.postionGet(); }
+	positionGet() { return this._svgShape.positionGet(); }
 
 	/**
 	 * @param {string} type

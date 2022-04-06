@@ -100,7 +100,7 @@ function shapeAddingDragOut(evt) {
 		{ x: evt.detail.clientX, y: evt.detail.clientY });
 
 	// remember canvas position for mobile
-	const shapePosition = addingShape.postionGet();
+	const shapePosition = addingShape.positionGet();
 	shapeAddingCanvasPositionForMobile = {
 		x: evt.detail.clientX - addingShapeCenter.x - shapePosition.x,
 		y: evt.detail.clientY - addingShapeCenter.y - shapePosition.y
