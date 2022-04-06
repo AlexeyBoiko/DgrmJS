@@ -6,6 +6,9 @@ import { connectorEndParams, shapeStateAdd, shapeStateDel } from './shape-utils.
 
 /** @implements {IDiagram} */
 export class Diagram extends EventTarget {
+
+	/** @type{IPresenter} */ #presenter;
+
 	/**
 	 * @param {IPresenter} pesenter
 	 * @param {IConnectorManager} connectorManager
@@ -14,7 +17,7 @@ export class Diagram extends EventTarget {
 		super();
 
 		/** @private */
-		this._presenter = pesenter
+		this.#presenter = pesenter
 			.on('pointermove', this)
 			.on('pointerdown', this)
 			.on('pointerup', this)
@@ -40,7 +43,7 @@ export class Diagram extends EventTarget {
 	 * @returns {IPresenterShape}
 	 */
 	shapeAdd(param) {
-		return /** @type{IPresenterShape} */(this._presenter.append('shape', param));
+		return /** @type{IPresenterShape} */(this.#presenter.append('shape', param));
 	}
 
 	/**
@@ -49,7 +52,7 @@ export class Diagram extends EventTarget {
 	 */
 	shapeDel(shape) {
 		this._connectorManager.deleteByShape(shape);
-		this._presenter.delete(shape);
+		this.#presenter.delete(shape);
 	}
 
 	/**
