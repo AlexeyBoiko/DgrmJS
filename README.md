@@ -6,7 +6,7 @@ The main goal of the library is to set up workflows in BPM (Business Process Man
 
 - Works on desktop and mobile
 - Has no dependency
-- Small size
+- 10.7 kB without compression 
 
 <br />
 
