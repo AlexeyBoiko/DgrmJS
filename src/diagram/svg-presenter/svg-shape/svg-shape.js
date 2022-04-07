@@ -51,7 +51,7 @@ export class SvgShape {
 	}
 
 	/** @returns {Point} */
-	postionGet() {
+	positionGet() {
 		return svgPositionGet(this.svgEl);
 	}
 

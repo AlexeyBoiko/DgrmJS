@@ -195,7 +195,7 @@ export class Diagram extends EventTarget {
 		/** @private */
 		this._movedShape = shape;
 
-		const shapePosition = this._movedShape.postionGet();
+		const shapePosition = this._movedShape.positionGet();
 		/** @private */
 		this._movedDelta = {
 			x: shapePosition.x - clientPoint.x,
