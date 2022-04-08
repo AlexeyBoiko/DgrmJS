@@ -49,19 +49,14 @@ export class SvgShapeTextEditorDecorator {
 		if (param.props) {
 			/** @private */
 			this._props = Object.assign({}, param.props);
-
-			// highlight empty text places
-			this.svgEl.querySelectorAll('[data-text-for]').forEach(el => {
-				if (!param.props[el.getAttribute('data-text-for')].textContent) {
-					el.classList.add('empty');
-				}
-			});
+			this._textEditorHighlightEmpty();
 		}
 
 		if (param.state) {
 			if (param.state.has('selected') && !this.stateGet().has('selected')) { this._firstClick = true; }
 			this._panelDel();
 			this._textEditorDel();
+			this._textEditorHighlightEmpty();
 		}
 
 		this._svgShape.update(param);
@@ -80,6 +75,15 @@ export class SvgShapeTextEditorDecorator {
 			this._panelShow(evt);
 		}
 		this._firstClick = false;
+	}
+
+	/** @private */
+	_textEditorHighlightEmpty() {
+		this.svgEl.querySelectorAll('[data-text-for]').forEach(el => {
+			if (!this._props[el.getAttribute('data-text-for')].textContent) {
+				el.classList.add('empty');
+			}
+		});
 	}
 
 	/**
