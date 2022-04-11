@@ -49,14 +49,15 @@ export class SvgShapeTextEditorDecorator {
 		if (param.props) {
 			/** @private */
 			this._props = Object.assign({}, param.props);
-			this._textEditorHighlightEmpty();
 		}
 
 		if (param.state) {
-			if (param.state.has('selected') && !this.stateGet().has('selected')) { this._firstClick = true; }
+			if (param.state.has('selected') && !this.stateGet().has('selected')) {
+				this._firstClick = true;
+				this._textEditorHighlightEmpty();
+			}
 			this._panelDel();
 			this._textEditorDel();
-			this._textEditorHighlightEmpty();
 		}
 
 		this._svgShape.update(param);
