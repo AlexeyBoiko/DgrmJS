@@ -6,19 +6,19 @@ interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape {
 	on(type: string, listener: EventListenerOrEventListenerObject): ISvgPresenterShape;
 }
 
-interface ISvgPresenterShapeFuctoryParam { 
+interface ISvgPresenterShapeFactoryParam { 
 	svgCanvas: SVGGElement, 
 	listener: EventListenerOrEventListenerObject, 
 	svgElemToPresenterObj: WeakMap<SVGGraphicsElement, IPresenterElement>,
 	createParams: PresenterShapeAppendParam
 }
 
-interface ISvgPresenterShapeFuctory {
-	(param: ISvgPresenterShapeFuctoryParam) : ISvgPresenterShape
+interface ISvgPresenterShapeFactory {
+	(param: ISvgPresenterShapeFactoryParam) : ISvgPresenterShape
 }
 
 interface ISvgPresenterShapeDecoratorFuctory {
-	(shape: ISvgPresenterShape, param: ISvgPresenterShapeFuctoryParam) : ISvgPresenterShape
+	(shape: ISvgPresenterShape, param: ISvgPresenterShapeFactoryParam) : ISvgPresenterShape
 }
 
 interface ISvgPresenterShapeEventUpdateDetail {

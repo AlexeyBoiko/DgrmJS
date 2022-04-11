@@ -10,10 +10,10 @@ import { connectorsInit, shapeCreate } from './svg-shape/svg-shape-factory.js';
  */
 export function svgDiagramCreate(svg, shapeDecoratorFuctory) {
 	/**
-	 * @param {ISvgPresenterShapeFuctoryParam} param
+	 * @param {ISvgPresenterShapeFactoryParam} param
 	 * @returns {ISvgPresenterShape}
 	 */
-	function shapeFuctory(param) {
+	function shapeFactory(param) {
 		/** @type {ISvgPresenterShape} */
 		let shape = shapeCreate(param.svgCanvas, param.createParams);
 		if (shapeDecoratorFuctory) {
@@ -25,6 +25,6 @@ export function svgDiagramCreate(svg, shapeDecoratorFuctory) {
 		return shape;
 	}
 
-	const presenter = new SvgPresenter(svg, shapeFuctory);
+	const presenter = new SvgPresenter(svg, shapeFactory);
 	return new Diagram(presenter, new ConnectorManager(presenter));
 }

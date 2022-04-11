@@ -5,13 +5,13 @@ import { SvgShape } from './svg-shape/svg-shape.js';
 export class SvgPresenter extends EventTarget {
 	/**
 	 * @param {SVGSVGElement} svg
-	 * @param {ISvgPresenterShapeFuctory} shapeFuctory
+	 * @param {ISvgPresenterShapeFactory} shapeFactory
 	 * */
-	constructor(svg, shapeFuctory) {
+	constructor(svg, shapeFactory) {
 		super();
 
 		/** @private */
-		this._shapeFuctory = shapeFuctory;
+		this._shapeFactory = shapeFactory;
 
 		/** @private */
 		this._svg = svg;
@@ -41,7 +41,7 @@ export class SvgPresenter extends EventTarget {
 	append(type, param) {
 		switch (type) {
 			case 'shape': {
-				const shape = this._shapeFuctory({
+				const shape = this._shapeFactory({
 					svgCanvas: this._canvasSvgEl,
 					svgElemToPresenterObj: this._svgElemToPresenterObj,
 					listener: this,
