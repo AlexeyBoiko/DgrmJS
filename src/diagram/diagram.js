@@ -6,6 +6,7 @@ import { connectorEndParams, shapeStateAdd, shapeStateDel } from './shape-utils.
 
 /** @implements {IDiagram} */
 export class Diagram extends EventTarget {
+    readOnly = false
 	/**
 	 * @param {IPresenter} pesenter
 	 * @param {IConnectorManager} connectorManager
@@ -64,6 +65,9 @@ export class Diagram extends EventTarget {
 
 	/** @param { CustomEvent<IPresenterEventDetail> } evt */
 	handleEvent(evt) {
+		if (this.readOnly) {
+            return
+        }
 		switch (evt.type) {
 			case 'pointermove':
 				if (this._movedShape) {
