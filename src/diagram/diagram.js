@@ -66,8 +66,8 @@ export class Diagram extends EventTarget {
 	/** @param { CustomEvent<IPresenterEventDetail> } evt */
 	handleEvent(evt) {
 		if (this.readOnly) {
-            return
-        }
+			return
+		}
 		switch (evt.type) {
 			case 'pointermove':
 				if (this._movedShape) {
