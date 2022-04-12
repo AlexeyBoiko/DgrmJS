@@ -71,6 +71,7 @@ interface IPresenterElement {
 
 interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 
+	readOnly?: boolean;
 	/** can be used as connector end  */
 	connectable?: boolean;
 	defaultInConnector?: IPresenterConnector;

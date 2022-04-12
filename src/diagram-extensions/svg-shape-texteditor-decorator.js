@@ -3,6 +3,8 @@ import { textParamsParse } from '../diagram/svg-presenter/svg-shape/svg-shape.js
 
 /** @implements {ISvgPresenterShape} */
 export class SvgShapeTextEditorDecorator {
+	readOnly = false
+
 	/**
 	 * @param {ISvgPresenterShape} svgShape
 	 * @param {PresenterShapeProps} initProps
@@ -71,7 +73,7 @@ export class SvgShapeTextEditorDecorator {
 
 		evt.stopPropagation();
 
-		if (!this._firstClick) {
+		if (!this._firstClick && !this.readOnly) {
 			this._textEditorShow(evt);
 			this._panelShow(evt);
 		}

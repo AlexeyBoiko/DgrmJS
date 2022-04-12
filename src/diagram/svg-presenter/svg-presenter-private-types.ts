@@ -3,6 +3,7 @@ interface ISvgPresenterElement extends IPresenterElement {
 }
 
 interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape { 
+	readOnly?: boolean;
 	on(type: string, listener: EventListenerOrEventListenerObject): ISvgPresenterShape;
 }
 

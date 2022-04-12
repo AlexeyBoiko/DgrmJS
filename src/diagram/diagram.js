@@ -6,7 +6,7 @@ import { connectorEndParams, shapeStateAdd, shapeStateDel } from './shape-utils.
 
 /** @implements {IDiagram} */
 export class Diagram extends EventTarget {
-	readOnly = false
+	#readOnly = true
 	/**
 	 * @param {IPresenter} pesenter
 	 * @param {IConnectorManager} connectorManager
@@ -24,6 +24,11 @@ export class Diagram extends EventTarget {
 
 		/** @private */
 		this._connectorManager = connectorManager;
+	}
+
+	set readOnly(readOnly) {
+		this.#readOnly = readOnly
+		// TODO notify svg-shape-texteditor-decorator.js in some ways
 	}
 
 	/**
@@ -65,12 +70,11 @@ export class Diagram extends EventTarget {
 
 	/** @param { CustomEvent<IPresenterEventDetail> } evt */
 	handleEvent(evt) {
-		if (this.readOnly) {
-			return
-		}
+		this.readOnly = this.#readOnly
 		switch (evt.type) {
 			case 'pointermove':
 				if (this._movedShape) {
+					if (this.#readOnly && this._movedShape.type !== 'canvas') { return }
 					shapeStateAdd(this._movedShape, 'disabled');
 
 					this._movedShape.update({
@@ -89,6 +93,7 @@ export class Diagram extends EventTarget {
 						this.shapeSetMoving(/** @type {IPresenterShape} */(evt.detail.target), { x: evt.detail.clientX, y: evt.detail.clientY });
 						break;
 					case 'connector': {
+						if (this.#readOnly) { return }
 						this._onConnectorDown(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
 					}
 				}
@@ -175,11 +180,11 @@ export class Diagram extends EventTarget {
 		if (shape !== this._selectedShape) {
 			this._dispatchEvent('select', { target: shape });
 
-			if (this._selectedShape) {
+			if (this._selectedShape && !this.#readOnly) {
 				shapeStateDel(this._selectedShape, 'selected');
 			}
 
-			if (shape) {
+			if (shape && !this.#readOnly) {
 				shapeStateAdd(shape, 'selected');
 			}
 
