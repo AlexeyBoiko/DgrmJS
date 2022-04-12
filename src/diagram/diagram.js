@@ -6,7 +6,7 @@ import { connectorEndParams, shapeStateAdd, shapeStateDel } from './shape-utils.
 
 /** @implements {IDiagram} */
 export class Diagram extends EventTarget {
-    readOnly = false
+	readOnly = false
 	/**
 	 * @param {IPresenter} pesenter
 	 * @param {IConnectorManager} connectorManager
