@@ -1,5 +1,5 @@
-import { svgStrToTspan } from '../diagram/infrastructure/svg-utils.js';
 import { textParamsParse } from '../diagram/svg-presenter/svg-shape/svg-shape.js';
+import { textareaCreate } from './infrastructure/svg-textarea.js';
 
 /** @implements {ISvgPresenterShape} */
 export class SvgShapeTextEditorDecorator {
@@ -111,13 +111,25 @@ export class SvgShapeTextEditorDecorator {
 		}
 
 		if (placeEl) {
+			placeEl.classList.remove('empty');
+			const textKey = placeEl.getAttribute('data-text-for');
+
+			/** @type {SVGTextElement} */
+			const textEl = this.svgEl.querySelector(`[data-key=${textKey}]`);
+
 			/** @private */
-			this._textEditor = inputShow(
-				this.svgEl,
-				placeEl,
-				this._props,
-				// onchangeCallback
-				_ => {
+			this._textEditor = textareaCreate(
+				// textEl
+				textEl,
+				// textParam
+				textParamsParse(textEl),
+				// val
+				this._props[textKey]?.textContent.toString(),
+				// onchange
+				val => {
+					if (!this._props[textKey]) { this._props[textKey] = {}; }
+					this._props[textKey].textContent = val;
+
 					this.svgEl.dispatchEvent(new CustomEvent('update', {
 						/** @type {ISvgPresenterShapeEventUpdateDetail} */
 						detail: {
@@ -126,8 +138,11 @@ export class SvgShapeTextEditorDecorator {
 						}
 					}));
 				},
-				// onblurCallback
-				_ => this._textEditorDel());
+				// onblur
+				val => {
+					this._textEditorDel();
+					if (!val) { placeEl.classList.add('empty'); } else { placeEl.classList.remove('empty'); }
+				});
 		}
 	}
 
@@ -189,81 +204,4 @@ export class SvgShapeTextEditorDecorator {
 		this._panel = null;
 		panelDiv.remove();
 	}
-}
-
-/**
- * @param {SVGGElement} svgEl
- * @param {SVGRectElement} placeEl - where to place input
- * @param {PresenterShapeProps} shapeProps
- * @param {{():void}} onchangeCallback
- * @param {{():void}} onblurCallback
- * @returns {SVGForeignObjectElement}
- * @private
- */
-function inputShow(svgEl, placeEl, shapeProps, onchangeCallback, onblurCallback) {
-	const textKey = placeEl.getAttribute('data-text-for');
-	/** @type {SVGTextElement} */
-	const textEl = svgEl.querySelector(`[data-key=${textKey}]`);
-	placeEl.classList.remove('empty');
-
-	const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-	const textarea = document.createElement('textarea');
-
-	textarea.style.caretColor = textEl.getAttribute('fill');
-	textarea.value = shapeProps[textKey]?.textContent
-		? shapeProps[textKey].textContent.toString()
-		: null;
-
-	const textParams = textParamsParse(textEl);
-	textarea.oninput = function() {
-		textEl.innerHTML = svgStrToTspan(textarea.value, textParams);
-		foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textareaStyle.textAlign);
-
-		if (!shapeProps[textKey]) { shapeProps[textKey] = {}; }
-		shapeProps[textKey].textContent = textarea.value;
-
-		onchangeCallback();
-	};
-	textarea.onblur = function() {
-		if (!textarea.value) { placeEl.classList.add('empty'); } else { placeEl.classList.remove('empty'); }
-		onblurCallback();
-	};
-	textarea.onpointerdown = function(evt) {
-		evt.stopImmediatePropagation();
-	};
-
-	foreign.appendChild(textarea);
-	svgEl.appendChild(foreign);
-
-	const textareaStyle = getComputedStyle(textarea);
-	// must be in px
-	const textareaPaddingAndBorder = parseInt(textareaStyle.padding) + parseInt(textareaStyle.borderWidth);
-	foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textareaStyle.textAlign);
-
-	textarea.focus();
-	return foreign;
-}
-
-/**
- * @param {SVGTextElement} textEl
- * @param {SVGForeignObjectElement} foreign
- * @param {HTMLTextAreaElement} textarea
- * @param {number} textareaPaddingAndBorder
- * @param {string} textAlign
- * @private
- */
-function foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textAlign) {
-	
-
-	const textBbox = textEl.getBBox();
-	const width = textBbox.width + 20;
-
-	foreign.width.baseVal.value = width + 2 * textareaPaddingAndBorder + 2; // +2 magic number for FireFox
-	foreign.x.baseVal.value = textBbox.x - textareaPaddingAndBorder - ((textAlign === 'center') ? 10 : 0);
-
-	foreign.height.baseVal.value = textBbox.height + 2 * textareaPaddingAndBorder + 3; // +3 magic number for FireFox
-	foreign.y.baseVal.value = textBbox.y - textareaPaddingAndBorder;
-
-	textarea.style.width = `${width}px`;
-	textarea.style.height = `${textBbox.height}px`;
 }
