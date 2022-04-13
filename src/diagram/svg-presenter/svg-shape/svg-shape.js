@@ -1,4 +1,4 @@
-import { svgPositionSet, svgPositionGet, svgRotate, svgStrToTspan } from '../../infrastructure/svg-utils.js';
+import { svgPositionSet, svgPositionGet, svgRotate, svgTextDraw } from '../../infrastructure/svg-utils.js';
 
 /** @implements {ISvgPresenterShape} */
 export class SvgShape {
@@ -91,9 +91,8 @@ export class SvgShape {
 			Object.keys(props[name]).forEach(attr => {
 				switch (attr) {
 					case 'textContent':
-						shape.innerHTML = svgStrToTspan(
-							props[name][attr] ? props[name][attr].toString() : '',
-							textParamsParse(/** @type {SVGTextElement} */(shape)));
+						textDraw(/** @type {SVGTextElement} */(shape),
+							props[name][attr]?.toString());
 						break;
 					default:
 						shape.setAttribute(attr, props[name][attr].toString());
@@ -106,11 +105,22 @@ export class SvgShape {
 
 /**
  * @param {SVGTextElement} textEl
- * @returns {{x:number, lineHeight:number}}
+ * @param {string} str
+ * @returns {void}
+ */
+function textDraw(textEl, str) {
+	svgTextDraw(textEl, str, textParamsParse(textEl));
+}
+
+/**
+ * @param {SVGTextElement} textEl
+ * @returns {{lineHeight:number, verticalMiddle?:number}}
  */
 export function textParamsParse(textEl) {
 	return {
-		x: textEl.x?.baseVal[0]?.value ?? 0,
-		lineHeight: parseInt(textEl.getAttribute('data-line-height'))
+		lineHeight: parseInt(textEl.getAttribute('data-line-height')),
+		verticalMiddle: textEl.hasAttribute('data-vertical-middle')
+			? parseInt(textEl.getAttribute('data-vertical-middle'))
+			: null
 	};
 }
