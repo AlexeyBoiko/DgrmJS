@@ -31,7 +31,7 @@ interface IDiagramConnector extends IDiagramElement {
 
 // event
 
-type DiagramEventType = 'select' | 'connect' | 'disconnect';
+type DiagramEventType = 'select' | 'connect' | 'disconnect' | 'onclick';
 
 interface IDiagramEventSelectDetail<T extends IDiagramShape & IDiagramConnector> {
 	target: T;

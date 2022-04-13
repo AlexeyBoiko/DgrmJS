@@ -79,6 +79,7 @@ export class Diagram extends EventTarget {
 				}
 				break;
 			case 'pointerdown':
+				this._dispatchEvent('onclick', { target: evt.detail.target })
 				switch (evt.detail.target.type) {
 					case 'canvas':
 					case 'shape':
