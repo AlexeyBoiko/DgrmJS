@@ -81,7 +81,7 @@ export class SvgShapeTextEditorDecorator {
 	/** @private */
 	_textEditorHighlightEmpty() {
 		this.svgEl.querySelectorAll('[data-text-for]').forEach(el => {
-			if (!this._props[el.getAttribute('data-text-for')].textContent) {
+			if (!this._props[el.getAttribute('data-text-for')]?.textContent) {
 				el.classList.add('empty');
 			}
 		});
@@ -210,13 +210,18 @@ function inputShow(svgEl, placeEl, shapeProps, onchangeCallback, onblurCallback)
 	const textarea = document.createElement('textarea');
 
 	textarea.style.caretColor = textEl.getAttribute('fill');
-	textarea.value = shapeProps[textKey].textContent ? shapeProps[textKey].textContent.toString() : null;
+	textarea.value = shapeProps[textKey]?.textContent
+		? shapeProps[textKey].textContent.toString()
+		: null;
 
-	const lineHeight = textParamsParse(textEl);
+	const textParams = textParamsParse(textEl);
 	textarea.oninput = function() {
-		textEl.innerHTML = svgStrToTspan(textarea.value, lineHeight);
+		textEl.innerHTML = svgStrToTspan(textarea.value, textParams);
 		foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textareaStyle.textAlign);
+
+		if (!shapeProps[textKey]) { shapeProps[textKey] = {}; }
 		shapeProps[textKey].textContent = textarea.value;
+
 		onchangeCallback();
 	};
 	textarea.onblur = function() {
@@ -248,13 +253,15 @@ function inputShow(svgEl, placeEl, shapeProps, onchangeCallback, onblurCallback)
  * @private
  */
 function foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textAlign) {
+	
+
 	const textBbox = textEl.getBBox();
 	const width = textBbox.width + 20;
 
-	foreign.width.baseVal.value = width + 2 * textareaPaddingAndBorder + 2; // +2 magic number for fireFox
+	foreign.width.baseVal.value = width + 2 * textareaPaddingAndBorder + 2; // +2 magic number for FireFox
 	foreign.x.baseVal.value = textBbox.x - textareaPaddingAndBorder - ((textAlign === 'center') ? 10 : 0);
 
-	foreign.height.baseVal.value = textBbox.height + 2 * textareaPaddingAndBorder + 3; // +3 magic number for fireFox
+	foreign.height.baseVal.value = textBbox.height + 2 * textareaPaddingAndBorder + 3; // +3 magic number for FireFox
 	foreign.y.baseVal.value = textBbox.y - textareaPaddingAndBorder;
 
 	textarea.style.width = `${width}px`;
