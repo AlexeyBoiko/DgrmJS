@@ -1,5 +1,5 @@
 # DgrmJS
-[NPM](https://badge.fury.io/js/dgrm) | [Donate](https://www.patreon.com/dgrm)
+[NPM](https://badge.fury.io/js/dgrm)
 
 DgrmJS is a JavaScript library for creating SVG flow diagram editors.  
 The main goal of the library is to set up workflows in BPM (Business Process Management) systems.
