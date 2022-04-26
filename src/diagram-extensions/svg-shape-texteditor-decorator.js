@@ -67,7 +67,8 @@ export class SvgShapeTextEditorDecorator {
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	handleEvent(evt) {
-		if (evt.target.hasAttribute('data-no-click')) { return; }
+		if (evt.target.hasAttribute('data-no-click') ||
+			document.elementFromPoint(evt.clientX, evt.clientY) !== evt.target) { return; }
 
 		evt.stopPropagation();
 
