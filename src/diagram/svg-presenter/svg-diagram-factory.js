@@ -5,10 +5,10 @@ import { connectorsInit, shapeCreate } from './svg-shape/svg-shape-factory.js';
 
 /**
  * @param {SVGSVGElement} svg
- * @param {ISvgPresenterShapeDecoratorFuctory=} shapeDecoratorFuctory
+ * @param {ISvgPresenterShapeDecoratorFactory=} shapeDecoratorFactory
  * @returns {IDiagram}
  */
-export function svgDiagramCreate(svg, shapeDecoratorFuctory) {
+export function svgDiagramCreate(svg, shapeDecoratorFactory) {
 	/**
 	 * @param {ISvgPresenterShapeFactoryParam} param
 	 * @returns {ISvgPresenterShape}
@@ -16,8 +16,8 @@ export function svgDiagramCreate(svg, shapeDecoratorFuctory) {
 	function shapeFactory(param) {
 		/** @type {ISvgPresenterShape} */
 		let shape = shapeCreate(param.svgCanvas, param.createParams);
-		if (shapeDecoratorFuctory) {
-			shape = shapeDecoratorFuctory(shape, param);
+		if (shapeDecoratorFactory) {
+			shape = shapeDecoratorFactory(shape, param);
 		}
 		param.svgElemToPresenterObj.set(shape.svgEl, shape);
 
