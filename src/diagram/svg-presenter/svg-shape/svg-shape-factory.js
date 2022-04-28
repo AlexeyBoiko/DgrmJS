@@ -1,4 +1,3 @@
-import { svgPositionGet } from '../../infrastructure/svg-utils.js';
 import { SvgConnector } from '../svg-connector.js';
 import { SvgShape } from './svg-shape.js';
 
@@ -16,13 +15,6 @@ export function shapeCreate(svgCanvas, createParams) {
 	svgCanvas.append(shapeSvgEl);
 	const shape = new SvgShape({ svgEl: shapeSvgEl });
 
-	if (!createParams.postionIsIntoCanvas) {
-		const canvasPosition = svgPositionGet(svgCanvas);
-		createParams.position.x -= canvasPosition.x;
-		createParams.position.y -= canvasPosition.y;
-	}
-
-	shape.update(createParams);
 	return shape;
 }
 
