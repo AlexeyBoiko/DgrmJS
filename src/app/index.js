@@ -112,12 +112,14 @@ function shapeAddingDragOut(evt) {
  * @param {CustomEvent<IMenuShapeMoveEventDetail>} evt
  */
 function shapeAddingMoveMobile(evt) {
-	addingShape.update({
-		position: {
-			x: evt.detail.clientX - addingShapeCenter.x - shapeAddingCanvasPositionForMobile.x,
-			y: evt.detail.clientY - addingShapeCenter.y - shapeAddingCanvasPositionForMobile.y
-		}
-	});
+	diagram.shapeUpdate(
+		addingShape,
+		{
+			position: {
+				x: evt.detail.clientX - addingShapeCenter.x - shapeAddingCanvasPositionForMobile.x,
+				y: evt.detail.clientY - addingShapeCenter.y - shapeAddingCanvasPositionForMobile.y
+			}
+		});
 }
 
 //
