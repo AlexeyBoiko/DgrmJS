@@ -6,11 +6,13 @@ import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
  * @implements {IAppDiagramSerializable}
  * @mixes AppDiagramPngMixin
  */
-export class AppDiagramSerializable {
+export class AppDiagramSerializable extends EventTarget {
 	/**
 	 * @param {SVGSVGElement} svg
 	 */
 	constructor(svg) {
+		super();
+
 		this.svg = svg;
 
 		/**
@@ -82,6 +84,12 @@ export class AppDiagramSerializable {
 				templateKey: param.templateKey,
 				detail: /** @type {string} */(param.props.text?.textContent)
 			});
+
+		this.dispatchEvent(new CustomEvent('shapeAdd', {
+			cancelable: true,
+			detail: shape
+		}));
+
 		return shape;
 	}
 
@@ -170,6 +178,16 @@ export class AppDiagramSerializable {
 				});
 			}
 		}
+	}
+
+	/**
+	 * subscribe to event
+	 * @param {AppDiagramEventType} evtType
+	 * @param {EventListenerOrEventListenerObject} listener
+	 */
+	on(evtType, listener) {
+		this.addEventListener(evtType, listener);
+		return this;
 	}
 }
 

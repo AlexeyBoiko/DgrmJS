@@ -10,6 +10,13 @@ interface IAppDiagramSerializable {
 
 	dataGet(): AppSerializeData;
 	dataSet(data:AppSerializeData): void;
+
+	on(evtType: AppDiagramEventType, listener: EventListenerOrEventListenerObject): this;
+}
+
+type AppDiagramEventType = 'shapeAdd';
+interface IAppDiagramDetail<T extends IDiagramShape> {
+	target: T;
 }
 
 interface AppSerializeData {

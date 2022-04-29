@@ -8,15 +8,14 @@ import './elements/file-options/file-options.js';
 //
 // bind
 
-// const tip = document.getElementById('tip');
-
 /** @type{SVGSVGElement} */
 // @ts-ignore
 const svg = document.getElementById('diagram');
 
 /** @type {IAppDiagramSerializable & IAppPngExportable} */
 // @ts-ignore
-const diagram = new AppDiagramSerializable(svg);
+const diagram = new AppDiagramSerializable(svg)
+	.on('shapeAdd', _ => document.getElementById('tip')?.remove());
 
 /** @type {IFileOptions} */(document.getElementById('file-options'))
 	.on('dgrmNew', _ => diagram.clear())
