@@ -6,6 +6,7 @@ interface IDiagram {
 	shapeDel(shape: IDiagramShape): void;
 	shapeConnect(param: DiagramShapeConnectParam): void;
 	shapeSetMoving(shape: IDiagramShape, offsetPoint: Point): void;
+	shapeUpdate(shape: IDiagramShape, param: PresenterShapeUpdateParam): void;
 }
 
 
@@ -18,7 +19,7 @@ interface IDiagramElement {
 /** type = 'shape'  */
 interface IDiagramShape extends IDiagramElement {
 	positionGet(): Point;
-	update(param: PresenterShapeUpdateParam): void;
+	//update(param: PresenterShapeUpdateParam): void;
 }
 
 /** type = 'connector' */

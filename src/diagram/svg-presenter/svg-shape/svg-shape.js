@@ -91,8 +91,10 @@ export class SvgShape {
 			Object.keys(props[name]).forEach(attr => {
 				switch (attr) {
 					case 'textContent':
-						textDraw(/** @type {SVGTextElement} */(shape),
-							props[name][attr]?.toString());
+						svgTextDraw(
+							/** @type {SVGTextElement} */(shape),
+							props[name][attr]?.toString(),
+							textParamsParse(/** @type {SVGTextElement} */(shape)));
 						break;
 					default:
 						shape.setAttribute(attr, props[name][attr].toString());
@@ -101,15 +103,6 @@ export class SvgShape {
 			});
 		});
 	}
-}
-
-/**
- * @param {SVGTextElement} textEl
- * @param {string} str
- * @returns {void}
- */
-function textDraw(textEl, str) {
-	svgTextDraw(textEl, str, textParamsParse(textEl));
 }
 
 /**

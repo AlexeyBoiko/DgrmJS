@@ -45,6 +45,14 @@ export class Diagram extends EventTarget {
 
 	/**
 	 * @param {IPresenterShape} shape
+	 * @param {PresenterShapeUpdateParam} param
+	 */
+	shapeUpdate(shape, param) {
+		shape.update(param);
+	}
+
+	/**
+	 * @param {IPresenterShape} shape
 	 * @returns {void}
 	 */
 	shapeDel(shape) {
