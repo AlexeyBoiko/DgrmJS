@@ -213,3 +213,10 @@ Source code in ``src/diagram`` folder is under the MIT License.
 Source code in ``src/diagram-extensions`` folder is under the Commercial License.  
 Contact with [me](https://github.com/AlexeyBoiko) for details.
 
+### App (``src/app`` folder)
+**Commercial License**
+ 
+``src/app`` folder contains diagram builder [dgrm.net](https://app.dgrm.net "Diagram builder").
+ 
+Source code in ``src/app`` folder is under the Commercial License.  
+Contact with [me](https://github.com/AlexeyBoiko) for details.
