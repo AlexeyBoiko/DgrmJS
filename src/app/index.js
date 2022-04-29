@@ -1,9 +1,5 @@
-import { svgDiagramCreate } from '../diagram/svg-presenter/svg-diagram-factory.js';
-import { connectorEqual } from './index-helpers.js';
-import { serialize } from './serialize/serialize.js';
-import { SvgShapeTextEditorDecorator } from '../diagram-extensions/svg-shape-texteditor-decorator.js';
-import { pngSave } from '../diagram-extensions/png-save.js';
-import { pngDgrmChunkGet, pngOpen } from '../diagram-extensions/png-open.js';
+import { fileOpen, fileSave } from '../diagram-extensions/infrastructure/file-utils.js';
+import { AppDiagramSerializable } from './app-diagram-serializable.js';
 
 // elements
 import './elements/menu-shape/menu-shape.js';
@@ -12,10 +8,18 @@ import './elements/file-options/file-options.js';
 //
 // bind
 
-const tip = document.getElementById('tip');
+// const tip = document.getElementById('tip');
+
+/** @type{SVGSVGElement} */
+// @ts-ignore
+const svg = document.getElementById('diagram');
+
+/** @type {IAppDiagramSerializable & IAppPngExportable} */
+// @ts-ignore
+const diagram = new AppDiagramSerializable(svg);
 
 /** @type {IFileOptions} */(document.getElementById('file-options'))
-	.on('dgrmNew', clear)
+	.on('dgrmNew', _ => diagram.clear())
 	.on('dgrmGenerateLink', generateLink)
 	.on('dgrmSave', save)
 	.on('dgrmOpen', open);
@@ -24,57 +28,8 @@ const tip = document.getElementById('tip');
 	.on('shapeDragOut', shapeAddingDragOut)
 	.on('shapeMove', shapeAddingMoveMobile);
 
-/** @type{SVGSVGElement} */
-// @ts-ignore
-const svg = document.getElementById('diagram');
-const diagram = svgDiagramCreate(
-	svg,
-	function(shape, param) {
-		// the way to add custom logic inside shapes - decorators
-		return new SvgShapeTextEditorDecorator(shape, param.createParams.props)
-			.on('update', update)
-			.on('del', del);
-	})
-	.on('connect', connect)
-	.on('disconnect', disconnect);
-
 //
 // logic
-
-//
-// diagram data
-
-/** @type {Map<IDiagramShape, SerializeShape<string>>} */
-const shapeData = new Map();
-
-/** @type {IDiagramEventConnectDetail[]} */
-let connectors = [];
-
-/**
- * @param {SerializeShape} param
- * @returns {IDiagramShape}
- */
-function shapeAdd(param) {
-	if (tip) { tip.remove(); }
-
-	param.props = {
-		text: { textContent: param.detail }
-	};
-	const shape = diagram.shapeAdd(param);
-	shapeData.set(shape, { templateKey: param.templateKey, detail: param.detail });
-	return shape;
-}
-
-/**
- * @param {IDiagramShape} shape
- */
-function shapeDel(shape) {
-	shapeData.delete(shape);
-	connectors = connectors
-		.filter(el => el.start.shape !== shape && el.end.shape !== shape);
-
-	diagram.shapeDel(shape);
-}
 
 //
 // adding shape with drag
@@ -87,11 +42,12 @@ function shapeDel(shape) {
 function shapeAddingDragOut(evt) {
 	const point = svg.querySelector(`[data-templ='${evt.detail.shape}']`).getAttribute('data-center').split(',');
 	addingShapeCenter = { x: parseFloat(point[0]), y: parseFloat(point[1]) };
-	addingShape = shapeAdd({
+	addingShape = diagram.shapeAdd({
 		templateKey: evt.detail.shape,
-		// shapePosition
 		position: { x: evt.detail.clientX - addingShapeCenter.x, y: evt.detail.clientY - addingShapeCenter.y },
-		detail: 'Title'
+		props: {
+			text: { textContent: 'Title' }
+		}
 	});
 
 	diagram.shapeSetMoving(
@@ -123,50 +79,21 @@ function shapeAddingMoveMobile(evt) {
 }
 
 //
-// diagram events
-
-/** @param { CustomEvent<ISvgPresenterShapeEventUpdateDetail>} evt */
-function update(evt) {
-	shapeData.get(evt.detail.target).detail = /** @type {string} */ (evt.detail.props.text.textContent);
-}
-
-/** @param { CustomEvent<ISvgPresenterShapeEventUpdateDetail>} evt */
-function del(evt) {
-	shapeDel(evt.detail.target);
-}
-
-/** @param { CustomEvent<IDiagramEventConnectDetail> } evt */
-function connect(evt) {
-	connectors.push(evt.detail);
-}
-
-/** @param { CustomEvent<IDiagramEventConnectDetail> } evt */
-function disconnect(evt) {
-	connectors.splice(connectors.findIndex(el => connectorEqual(el, evt.detail)), 1);
-}
-
-//
 // file operations: new/save/open/serialize
 
-function clear() {
-	if (tip) { tip.remove(); }
-
-	shapeData.forEach((_, shape) => shapeDel(shape));
-}
-
 function save() {
-	if (!shapeData.size) { alert('Nothing to save'); return; }
-
-	pngSave(svg, serialize(shapeData, connectors));
+	diagram.pngCreate(png => {
+		if (!png) { alert('Diagram is empty'); return; }
+		fileSave(png, 'dgrm.png');
+	});
 }
 
 // open: from file dialog and drag'n'drop file to browser
 
 const cantOpenMsg = 'File cannot be read. Use the exact image file you got from the application.';
 function open() {
-	pngOpen(dgrmChunk => {
-		if (!dgrmChunk) { alert(cantOpenMsg); return; }
-		loadFromJson(dgrmChunk);
+	fileOpen('.png', async png => {
+		if (!await diagram.pngLoad(png)) { alert(cantOpenMsg); }
 	});
 }
 
@@ -180,59 +107,20 @@ svg.addEventListener('drop', async evt => {
 		alert(cantOpenMsg); return;
 	}
 
-	const dgrmChunk = await pngDgrmChunkGet(evt.dataTransfer.items[0].getAsFile());
-	if (!dgrmChunk) { alert(cantOpenMsg); return; }
-
-	loadFromJson(dgrmChunk);
+	if (!await diagram.pngLoad(evt.dataTransfer.items[0].getAsFile())) { alert(cantOpenMsg); }
 });
 
 async function generateLink() {
-	if (!shapeData.size) { alert('Nothing to save'); return; }
+	const diagramData = diagram.dataGet();
+	if (!diagramData) { alert('Diagram is empty'); return; }
 
 	const url = new URL(window.location.href);
-	url.hash = encodeURIComponent(serialize(shapeData, connectors));
+	url.hash = encodeURIComponent(JSON.stringify(diagramData));
 	await navigator.clipboard.writeText(url.toString());
 	alert('Link to diagram copied to clipboard');
 }
 
 if (window.location.hash) {
-	createFromJson(decodeURIComponent(window.location.hash.substring(1)));
+	diagram.dataSet(JSON.parse(decodeURIComponent(window.location.hash.substring(1))));
 	history.replaceState(null, null, ' ');
-}
-
-/**
- * @param {string} json
- */
-function loadFromJson(json) {
-	clear();
-	createFromJson(json);
-}
-
-/**
- * @param {string} json
- */
-function createFromJson(json) {
-	/** @type {SerializeData} */
-	const data = JSON.parse(json);
-
-	if (data.s && data.s.length > 0) {
-		const shapes = [];
-		for (const shape of data.s) {
-			shapes.push(shapeAdd(shape));
-		}
-
-		if (data.c && data.c.length > 0) {
-			for (const con of data.c) {
-				diagram.shapeConnect({
-					start: { shape: shapes[con.s.i], connector: con.s.c },
-					end: { shape: shapes[con.e.i], connector: con.e.c }
-				});
-
-				connectors.push({
-					start: { type: 'connector', key: con.s.c, shape: shapes[con.s.i] },
-					end: { type: 'connector', key: con.e.c, shape: shapes[con.e.i] }
-				});
-			}
-		}
-	}
 }

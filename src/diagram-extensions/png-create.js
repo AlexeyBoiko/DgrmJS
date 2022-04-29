@@ -4,9 +4,10 @@ import { pngChunkSet } from './infrastructure/png-chunk-utils.js';
 
 /**
  * @param {SVGSVGElement} svg
+ * @param {BlobCallback} callBack
  * @param {string?=} dgrmChunkVal
  */
-export function pngSave(svg, dgrmChunkVal) {
+export function pngCreate(svg, callBack, dgrmChunkVal) {
 	/** @type {SVGSVGElement} */
 	// @ts-ignore
 	const svgCopy = svg.cloneNode(true);
@@ -26,14 +27,13 @@ export function pngSave(svg, dgrmChunkVal) {
 
 	svgToPng(svgCopy,
 		{ x: 0, y: 0, height: rectToShow.height + 30, width: rectToShow.width + 30 },
+		// scale
 		3,
-		async function(blob) {
-			const link = document.createElement('a');
-			link.download = 'dgrm.png';
-			link.href = URL.createObjectURL(dgrmChunkVal
-				? await pngChunkSet(blob, 'dgRm', new TextEncoder().encode(dgrmChunkVal))
-				: blob);
-			link.click();
-			URL.revokeObjectURL(link.href);
-		});
+		// callBack
+		!dgrmChunkVal
+			? callBack
+			: async function(blob) {
+				callBack(await pngChunkSet(blob, 'dgRm', new TextEncoder().encode(dgrmChunkVal)));
+			}
+	);
 }
