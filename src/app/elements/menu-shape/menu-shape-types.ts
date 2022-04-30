@@ -1,6 +1,5 @@
-type MenuShapeEventType = 'tab' | 'shapeDragOut'|'shapeMove';
 interface IMenuShape extends HTMLElement {
-	on(type:MenuShapeEventType, listener:EventListenerOrEventListenerObject): this;
+	init(diagram: IAppDiagramSerializable):void;
 }
 
 interface IMenuShapeDragOutEventDetail {
@@ -10,7 +9,6 @@ interface IMenuShapeDragOutEventDetail {
 }
 
 interface IMenuShapeMoveEventDetail {
-	shape: string;
 	clientX: number;
 	clientY: number;
 }
