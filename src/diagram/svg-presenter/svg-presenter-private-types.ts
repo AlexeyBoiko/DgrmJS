@@ -3,7 +3,6 @@ interface ISvgPresenterElement extends IPresenterElement {
 }
 
 interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape { 
-	on(type: string, listener: EventListenerOrEventListenerObject): ISvgPresenterShape;
 }
 
 interface ISvgPresenterShapeFactoryParam { 

@@ -28,16 +28,6 @@ export class SvgShape {
 	}
 
 	/**
-	 * @param {string} type
-	 * @param {EventListenerOrEventListenerObject} listener
-	 * @returns {ISvgPresenterShape}
-	 */
-	on(type, listener) {
-		this.svgEl.addEventListener(type, listener);
-		return this;
-	}
-
-	/**
 	 * @param {PresenterShapeState} state
 	 * @returns {boolean}
 	 */
