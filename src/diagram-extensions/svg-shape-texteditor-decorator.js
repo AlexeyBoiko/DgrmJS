@@ -36,9 +36,12 @@ export class SvgShapeTextEditorDecorator {
 	/**
 	 * @param {string} type
 	 * @param {EventListenerOrEventListenerObject} listener
-	 * @returns {ISvgPresenterShape}
+	 * @returns {SvgShapeTextEditorDecorator}
 	 */
-	on(type, listener) { this._svgShape.on(type, listener); return this; }
+	on(type, listener) {
+		this.svgEl.addEventListener(type, listener);
+		return this;
+	}
 
 	/**
 	 * @param {PresenterShapeUpdateParam} param
