@@ -15,7 +15,10 @@ export class SvgShapeTextEditorDecorator {
 		this._svgShape = svgShape;
 		this._svgShape.svgEl.addEventListener('click', this);
 
-		/** @private */
+		/**
+		 * @type {PresenterShapeProps}
+		 * @private
+		 */
 		this._props = Object.assign({}, initProps);
 
 		// ISvgPresenterShape
@@ -50,7 +53,6 @@ export class SvgShapeTextEditorDecorator {
 		if (param.position) { /** @private */ this._firstClick = false; }
 
 		if (param.props) {
-			/** @private */
 			this._props = Object.assign({}, param.props);
 		}
 
