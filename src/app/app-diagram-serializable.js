@@ -39,7 +39,7 @@ export class AppDiagramSerializable extends EventTarget {
 	}
 
 	/**
-	 * @param {CustomEvent<ISvgPresenterShapeEventUpdateDetail> & CustomEvent<IDiagramEventConnectDetail>} evt
+	 * @param {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail> & CustomEvent<IDiagramEventConnectDetail>} evt
 	 */
 	handleEvent(evt) {
 		switch (evt.type) {

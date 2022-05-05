@@ -19,8 +19,3 @@ interface ISvgPresenterShapeFactory {
 interface ISvgPresenterShapeDecoratorFactory {
 	(shape: ISvgPresenterShape, param: ISvgPresenterShapeFactoryParam) : ISvgPresenterShape
 }
-
-interface ISvgPresenterShapeEventUpdateDetail {
-	target: ISvgPresenterShape;
-	props: PresenterShapeProps;
-}

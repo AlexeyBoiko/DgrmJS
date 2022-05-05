@@ -135,7 +135,7 @@ export class SvgShapeTextEditorDecorator {
 					this._props[textKey].textContent = val;
 
 					this.svgEl.dispatchEvent(new CustomEvent('update', {
-						/** @type {ISvgPresenterShapeEventUpdateDetail} */
+						/** @type {ShapeTextEditorDecoratorEventUpdateDetail} */
 						detail: {
 							target: this,
 							props: this._props
@@ -187,10 +187,9 @@ export class SvgShapeTextEditorDecorator {
 		panelDiv.onclick = _ => {
 			this._panelDel();
 			this.svgEl.dispatchEvent(new CustomEvent('del', {
-				/** @type {ISvgPresenterShapeEventUpdateDetail} */
+				/** @type {ShapeTextEditorDecoratorEventUpdateDetail} */
 				detail: {
-					target: this,
-					props: this._props
+					target: this
 				}
 			}));
 		};
