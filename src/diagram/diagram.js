@@ -62,10 +62,10 @@ export class Diagram extends EventTarget {
 
 	/**
 	 * @param {DiagramPrivateShapeConnectParam} param
-	 * @returns {void}
+	 * @returns {IConnectorPath}
 	 */
 	shapeConnect(param) {
-		this._connectorManager.add(
+		return this._connectorManager.add(
 			param.start.shape.connectors.get(param.start.connector),
 			param.end.shape.connectors.get(param.end.connector));
 	}

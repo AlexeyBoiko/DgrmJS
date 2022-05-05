@@ -13,7 +13,7 @@ export class ConnectorManager {
 	/**
 	 * @param {IConnectorConnector} connectorStart
 	 * @param {IConnectorConnector} connectorEnd
-	 * @returns {void}
+	 * @returns {IConnectorPath}
 	 */
 	add(connectorStart, connectorEnd) {
 		const path = /** @type {IConnectorPath} */(this._presenter.append(
@@ -36,6 +36,7 @@ export class ConnectorManager {
 
 		ConnectorManager._pathAdd(connectorStart.shape, path);
 		ConnectorManager._pathAdd(connectorEnd.shape, path);
+		return path
 	}
 
 	/**

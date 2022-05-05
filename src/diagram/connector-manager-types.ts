@@ -1,5 +1,5 @@
 interface IConnectorManager {
-	add(connectorStart: IPresenterConnector, connectorEnd: IPresenterConnector): void;
+	add(connectorStart: IPresenterConnector, connectorEnd: IPresenterConnector): IConnectorPath;
 
 	/** reconect to new connector */
 	replaceEnd(connectorOld: IPresenterConnector, connectorNew: IPresenterConnector): void;
