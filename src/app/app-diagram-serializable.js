@@ -75,18 +75,16 @@ export class AppDiagramSerializable extends EventTarget {
 	 * @returns {IDiagramShape}
 	 */
 	shapeAdd(param) {
-		const shape = this._diagram.shapeAdd(param);
+		const shape = /** @type {SvgShapeTextEditorDecorator} */(this._diagram.shapeAdd(param))
+			.on('update', this)
+			.on('del', this);
+
 		this._shapeData.set(
 			shape,
 			{
 				templateKey: param.templateKey,
 				detail: /** @type {string} */(param.props.text?.textContent)
 			});
-
-		/** @type {SvgShapeTextEditorDecorator} */
-		(shape)
-			.on('update', this)
-			.on('del', this);
 
 		this.dispatchEvent(new CustomEvent('shapeAdd', {
 			cancelable: true,
