@@ -10,7 +10,6 @@ import { svgTextDraw } from '../../diagram/infrastructure/svg-utils.js';
  * @param {{(val:string):void}} onchange
  * @param {{(val:string):void}} onblur
  * @returns {SVGForeignObjectElement}
- * @private
  */
 export function textareaCreate(textEl, textParam, val, onchange, onblur) {
 	const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
@@ -48,7 +47,6 @@ export function textareaCreate(textEl, textParam, val, onchange, onblur) {
  * @param {HTMLTextAreaElement} textarea
  * @param {number} textareaPaddingAndBorder
  * @param {string} textAlign
- * @private
  */
 function foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textAlign) {
 	const textBbox = textEl.getBBox();

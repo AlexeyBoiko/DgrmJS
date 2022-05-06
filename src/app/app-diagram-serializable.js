@@ -32,7 +32,9 @@ export class AppDiagramSerializable extends EventTarget {
 			svg,
 			(shape, param) => {
 				// the way to add custom logic inside shapes - decorators
-				return new SvgShapeTextEditorDecorator(shape, param.createParams.props);
+				return new SvgShapeTextEditorDecorator(shape, param.createParams.props)
+					.on('update', this)
+					.on('del', this);
 			})
 			.on('connect', this)
 			.on('disconnect', this);
@@ -75,9 +77,7 @@ export class AppDiagramSerializable extends EventTarget {
 	 * @returns {IDiagramShape}
 	 */
 	shapeAdd(param) {
-		const shape = /** @type {SvgShapeTextEditorDecorator} */(this._diagram.shapeAdd(param))
-			.on('update', this)
-			.on('del', this);
+		const shape = this._diagram.shapeAdd(param);
 
 		this._shapeData.set(
 			shape,
