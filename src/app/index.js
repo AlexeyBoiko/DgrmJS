@@ -1,4 +1,4 @@
-import { AppDiagramSerializable } from './app-diagram-serializable.js';
+import { AppDiagramSerializable } from './diagram/app-diagram-serializable.js';
 
 // elements
 import './elements/menu-shape/menu-shape.js';

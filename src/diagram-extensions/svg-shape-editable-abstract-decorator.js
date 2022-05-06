@@ -36,7 +36,10 @@ export class SvgShapeEditableAbstractDecorator {
 	 * @param {PresenterShapeUpdateParam} param
 	 */
 	update(param) {
-		if (param.position) { /** @private */ this._firstClick = false; }
+		if (param.position) {
+			/** @private */
+			this._firstClick = false;
+		}
 
 		if (param.state) {
 			if (param.state.has('selected') && !this.stateGet().has('selected')) {

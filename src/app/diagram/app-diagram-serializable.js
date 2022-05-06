@@ -1,6 +1,7 @@
-import { svgDiagramCreate } from '../diagram/svg-presenter/svg-diagram-factory.js';
-import { SvgShapeTextEditorDecorator } from '../diagram-extensions/svg-shape-texteditor-decorator.js';
+import { svgDiagramCreate } from '../../diagram/svg-presenter/svg-diagram-factory.js';
+// import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
+import { AppCircleDecorator } from '../shapes/app-circle-decorator.js';
 
 /**
  * @implements {IAppDiagramSerializable}
@@ -32,7 +33,17 @@ export class AppDiagramSerializable extends EventTarget {
 			svg,
 			(shape, param) => {
 				// the way to add custom logic inside shapes - decorators
-				return new SvgShapeTextEditorDecorator(shape, param.createParams.props)
+				// return new SvgShapeTextEditorDecorator(shape, param.createParams.props)
+				// 	.on('update', this)
+				// 	.on('del', this);
+
+				// TODO:
+				//	- other shapes decorators
+				//	- remove "on('update', this)", "on('del', this)"
+				//		- add ".on('add', this)" to IDiagram, subscribe to 'update', 'del' there
+				//		- pass IDiagram into consructor, don't create it here
+
+				return new AppCircleDecorator(shape, param.createParams.props)
 					.on('update', this)
 					.on('del', this);
 			})

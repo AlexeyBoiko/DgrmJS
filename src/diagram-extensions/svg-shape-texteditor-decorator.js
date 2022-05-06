@@ -68,10 +68,11 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	_textEditorShow(evt) {
 		if (this._textEditor) { return; }
 
+		/** @private */
 		this._textEditor = textEditorShow(this.svgEl, this._props, evt.target,
 			// onchange
 			textEl => {
-				this._onTextChange(textEl);
+				this.onTextChange(textEl);
 			},
 			// onblur
 			_ => { this._textEditorDel(); }
@@ -81,7 +82,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	/**
 	 * @param {SVGTextElement} textEl
 	 */
-	_onTextChange(textEl) {
+	onTextChange(textEl) {
 		this.svgEl.dispatchEvent(new CustomEvent('update', {
 			/** @type {ShapeTextEditorDecoratorEventUpdateDetail} */
 			detail: {
