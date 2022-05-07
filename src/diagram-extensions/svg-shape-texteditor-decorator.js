@@ -95,10 +95,8 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	/** @private */
 	_textEditorDel() {
 		if (!this._textEditor) { return; }
-
-		const textEditor = this._textEditor;
+		this._textEditor.remove();
 		this._textEditor = null;
-		textEditor.remove();
 	}
 
 	/** @private */
@@ -141,9 +139,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	/** @private */
 	_panelDel() {
 		if (!this._panel) { return; }
-
-		const panelDiv = this._panel;
+		this._panel.remove();
 		this._panel = null;
-		panelDiv.remove();
 	}
 }
