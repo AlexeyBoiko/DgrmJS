@@ -48,14 +48,23 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	onEdit(evt) {
-		this._textEditorShow(evt);
 		this._panelShow();
 	}
 
 	/**
-	  * when shape leave edit mode
-	  * override this method
-	  */
+	 * click on shape
+	 * override this method
+	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
+	 * @param {boolean} isEditState
+	 */
+	onClick(evt, isEditState) {
+		if (isEditState) { this._textEditorShow(evt); }
+	}
+
+	/**
+	 * when shape leave edit mode
+	 * override this method
+	 */
 	onEditLeave() {
 		this._textEditorDel();
 		this._panelDel();
@@ -94,9 +103,14 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 
 	/** @private */
 	_textEditorDel() {
-		if (!this._textEditor) { return; }
-		this._textEditor.remove();
-		this._textEditor = null;
+		if (this._textEditor && !this._lock) {
+			/** @private */
+			this._lock = true;
+
+			this._textEditor.remove();
+			this._textEditor = null;
+			this._lock = false;
+		}
 	}
 
 	/** @private */

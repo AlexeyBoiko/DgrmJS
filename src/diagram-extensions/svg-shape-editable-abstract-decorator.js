@@ -46,8 +46,8 @@ export class SvgShapeEditableAbstractDecorator {
 				this._firstClick = true;
 			}
 
-			if (this._isEdit) {
-				this._isEdit = false;
+			if (this._isEditState) {
+				this._isEditState = false;
 				this.onEditLeave();
 			}
 		}
@@ -64,12 +64,14 @@ export class SvgShapeEditableAbstractDecorator {
 
 		evt.stopPropagation();
 
-		if (!this._firstClick && !this._isEdit) {
+		if (!this._firstClick && !this._isEditState) {
 			/** @private */
-			this._isEdit = true;
+			this._isEditState = true;
 			this.onEdit(evt);
 		}
 		this._firstClick = false;
+
+		this.onClick(evt, this._isEditState);
 	}
 
 	/**
@@ -84,4 +86,12 @@ export class SvgShapeEditableAbstractDecorator {
 	 * override this method
 	 */
 	onEditLeave() {}
+
+	/**
+	 * click on shape
+	 * override this method
+	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
+	 * @param {boolean} isEditState
+	 */
+	onClick(evt, isEditState) {}
 }

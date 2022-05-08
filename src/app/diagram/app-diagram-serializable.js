@@ -1,5 +1,4 @@
 import { svgDiagramCreate } from '../../diagram/svg-presenter/svg-diagram-factory.js';
-// import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
 import { AppCircleDecorator } from '../shapes/app-circle-decorator.js';
 
