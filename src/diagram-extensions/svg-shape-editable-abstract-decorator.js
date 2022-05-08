@@ -45,7 +45,11 @@ export class SvgShapeEditableAbstractDecorator {
 			if (param.state.has('selected') && !this.stateGet().has('selected')) {
 				this._firstClick = true;
 			}
-			this.onEditLeave();
+
+			if (this._isEdit) {
+				this._isEdit = false;
+				this.onEditLeave();
+			}
 		}
 
 		this._svgShape.update(param);
@@ -60,7 +64,9 @@ export class SvgShapeEditableAbstractDecorator {
 
 		evt.stopPropagation();
 
-		if (!this._firstClick) {
+		if (!this._firstClick && !this._isEdit) {
+			/** @private */
+			this._isEdit = true;
 			this.onEdit(evt);
 		}
 		this._firstClick = false;
