@@ -11,7 +11,7 @@ import { textareaCreate } from './infrastructure/svg-textarea.js';
  * @param {SVGGraphicsElement} svgShapeEl
  * @param {PresenterShapeProps} props
  * @param {SVGGraphicsElement} targetEl
- * @param {{(textEl:SVGTextElement):void}} onchange
+ * @param {{(textEl:SVGTextElement, updatedProp:PresenterShapeProps):void}} onchange
  * @param {{():void}} onblur
  * @returns {SVGForeignObjectElement}
  */
@@ -49,10 +49,7 @@ export function textEditorShow(svgShapeEl, props, targetEl, onchange, onblur) {
 		props[textKey]?.textContent.toString(),
 		// onchange
 		val => {
-			if (!props[textKey]) { props[textKey] = {}; }
-			props[textKey].textContent = val;
-
-			onchange(textEl);
+			onchange(textEl, { [textKey]: { textContent: val } });
 		},
 		// onblur
 		val => {

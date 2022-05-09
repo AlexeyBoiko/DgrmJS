@@ -14,7 +14,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 		 * @type {PresenterShapeProps}
 		 * @private
 		 */
-		this._props = Object.assign({}, initProps);
+		this._props = Object.assign({}, initProps); // TODO: save only 'textContent' props
 	}
 
 	/**
@@ -31,15 +31,15 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * @param {PresenterShapeUpdateParam} param
 	 */
 	update(param) {
-		super.update(param);
-
 		if (param.props) {
-			this._props = Object.assign({}, param.props);
+			Object.assign(this._props, param.props); // TODO: save only 'textContent' props
 		}
 
 		if (param.state && param.state.has('selected') && !this.stateGet().has('selected')) {
 			textEditorHighlightEmpty(this.svgEl, this._props);
 		}
+
+		super.update(param);
 	}
 
 	/**
@@ -48,6 +48,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	onEdit(evt) {
+		// textEditorHighlightEmpty(this.svgEl, this._props);
 		this._panelShow();
 	}
 
@@ -80,8 +81,9 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 		/** @private */
 		this._textEditor = textEditorShow(this.svgEl, this._props, evt.target,
 			// onchange
-			textEl => {
-				this.onTextChange(textEl);
+			(textEl, updatedProp) => {
+				Object.assign(this._props, updatedProp);
+				this.onTextChange(textEl, updatedProp);
 			},
 			// onblur
 			_ => { this._textEditorDel(); }
@@ -89,14 +91,17 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	}
 
 	/**
+	 * when text changed
+	 * can be overridden
 	 * @param {SVGTextElement} textEl
+	 * @param {PresenterShapeProps} updatedProp
 	 */
-	onTextChange(textEl) {
+	onTextChange(textEl, updatedProp) {
 		this.svgEl.dispatchEvent(new CustomEvent('update', {
 			/** @type {ShapeTextEditorDecoratorEventUpdateDetail} */
 			detail: {
 				target: this,
-				props: this._props
+				props: updatedProp
 			}
 		}));
 	}

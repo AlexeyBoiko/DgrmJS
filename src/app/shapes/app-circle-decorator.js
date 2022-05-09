@@ -3,11 +3,30 @@ import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-
 
 export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	/**
-	 * @param {SVGTextElement} textEl
+	 * @param {PresenterShapeUpdateParam} param
 	 */
-	onTextChange(textEl) {
-		super.onTextChange(textEl);
+	update(param) {
+		if (param.props?.text?.textContent !== undefined) {
+			this._onTextChange(/** @type {SVGTextElement} */ (this._getElem('text')));
+		}
+		super.update(param);
+	}
 
+	/**
+	 * @param {SVGTextElement} textEl
+	 * @param {PresenterShapeProps} updatedProp
+	 */
+	onTextChange(textEl, updatedProp) {
+		super.onTextChange(textEl, updatedProp);
+		this._onTextChange(textEl);
+	}
+
+	/**
+	 * @private
+	 * @param {SVGTextElement} textEl
+	 * @returns {void}
+	 */
+	_onTextChange(textEl) {
 		// init
 
 		if (!this._circle) {
