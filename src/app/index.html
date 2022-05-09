@@ -137,7 +137,6 @@
 					stroke-width: 55px;
 				}
 			}
-			
 		</style>
 		<defs>
 			<g id="arrow">
@@ -175,20 +174,20 @@
 				</circle>
 
 				<g data-key="inright" data-connect="in" data-connect-point="60,0" data-connect-dir="right">
-					<circle class="empty" r="10" cx="60" cy="0"></circle>
-					<use class="not-empty" xlink:href="#arrow" transform="rotate(180 30 0)" />
+					<circle data-key="inright-empty" class="empty" r="10" cx="60" cy="0"></circle>
+					<use data-key="inright-not-empty" class="not-empty" xlink:href="#arrow" x="-60" y="0" transform="rotate(180)" />
 				</g>
 				<g data-key="inleft" data-connect="in" data-connect-point="-60,0" data-connect-dir="left">
-					<circle class="empty" r="10" cx="-60" cy="0"></circle>
-					<use class="not-empty" xlink:href="#arrow" transform="translate(-60)" />
+					<circle data-key="inleft-empty" class="empty" r="10" cx="-60" cy="0"></circle>
+					<use data-key="inleft-not-empty" class="not-empty" xlink:href="#arrow" x="-60" y="0" />
 				</g>
 				<g data-key="inbottom" data-connect="in" data-connect-point="0,60" data-connect-dir="bottom">
-					<circle class="empty" r="10" cx="0" cy="60"></circle>
-					<use class="not-empty" xlink:href="#arrow" transform="translate(0, 60) rotate(270 0 0)" />
+					<circle data-key="inbottom-empty" class="empty" r="10" cx="0" cy="60"></circle>
+					<use data-key="inbottom-not-empty" class="not-empty" xlink:href="#arrow" x="-60" y="0" transform="rotate(270)" />
 				</g>
 				<g data-key="intop" data-connect="in" data-connect-point="0,-60" data-connect-dir="top">
-					<circle class="empty" r="10" cx="0" cy="-60"></circle>
-					<use class="not-empty" xlink:href="#arrow" transform="translate(0, -60) rotate(90 0 0)" />
+					<circle data-key="intop-empty" class="empty" r="10" cx="0" cy="-60"></circle>
+					<use data-key="intop-not-empty" class="not-empty" xlink:href="#arrow" x="-60" y="0" transform="rotate(90)"  />
 				</g>
 			</g>
 
