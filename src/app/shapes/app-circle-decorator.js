@@ -6,10 +6,10 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	 * @param {PresenterShapeUpdateParam} param
 	 */
 	update(param) {
+		super.update(param);
 		if (param.props?.text?.textContent !== undefined) {
 			this._onTextChange(/** @type {SVGTextElement} */ (this._getElem('text')));
 		}
-		super.update(param);
 	}
 
 	/**
