@@ -59,6 +59,16 @@ export class SvgShape {
 			SvgShape._attrsSet(this.svgEl, param.props);
 		}
 
+		if (param.connectors) {
+			Object.keys(param.connectors).forEach(connectorKey => {
+				const connectorUpdateParams = param.connectors[connectorKey];
+				const connectorData = this.connectors.get(connectorKey);
+				console.log(connectorKey);
+				if (connectorUpdateParams.innerPosition) { connectorData.innerPosition = connectorUpdateParams.innerPosition; }
+				if (connectorUpdateParams.dir) { connectorData.dir = connectorUpdateParams.dir; }
+			});
+		}
+
 		if (param.state) {
 			this._state = param.state;
 			if (this._state.has('selected')) { this.svgEl.classList.add('selected'); } else { this.svgEl.classList.remove('selected'); }

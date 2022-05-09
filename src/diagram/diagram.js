@@ -49,6 +49,9 @@ export class Diagram extends EventTarget {
 	 */
 	shapeUpdate(shape, param) {
 		shape.update(param);
+		if (param.position || param.connectors) {
+			this._connectorManager.updatePosition(shape);
+		}
 	}
 
 	/**

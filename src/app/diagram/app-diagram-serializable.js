@@ -42,7 +42,7 @@ export class AppDiagramSerializable extends EventTarget {
 				//		- add ".on('add', this)" to IDiagram, subscribe to 'update', 'del' there
 				//		- pass IDiagram into consructor, don't create it here
 
-				return new AppCircleDecorator(shape, param.createParams.props)
+				return new AppCircleDecorator(this._diagram, shape, param.createParams.props)
 					.on('update', this)
 					.on('del', this);
 			})

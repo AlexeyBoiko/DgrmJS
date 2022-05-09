@@ -3,6 +3,16 @@ import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-
 
 export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	/**
+	 * @param {IDiagram} diagram
+	 * @param {ISvgPresenterShape} svgShape
+	 * @param {PresenterShapeProps} initProps
+	 */
+	constructor(diagram, svgShape, initProps) {
+		super(svgShape, initProps);
+		this._diagram = diagram;
+	}
+
+	/**
 	 * @param {PresenterShapeUpdateParam} param
 	 */
 	update(param) {
@@ -81,7 +91,9 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	 */
 	_resize(mainRadius) {
 		const radNegative = -1 * mainRadius;
-		this.update({
+
+		this._diagram.shapeUpdate(this, {
+			// visability
 			props: {
 				main: { r: mainRadius },
 				outer: { r: mainRadius + 20 },
@@ -99,6 +111,19 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 				'inbottom-not-empty': { x: radNegative },
 				'intop-empty': { cy: radNegative },
 				'intop-not-empty': { x: radNegative }
+			},
+			// connectors data
+			connectors: {
+				// out
+				outright: { innerPosition: { x: mainRadius, y: 0 } },
+				outleft: { innerPosition: { x: radNegative, y: 0 } },
+				outbottom: { innerPosition: { x: 0, y: mainRadius } },
+				outtop: { innerPosition: { x: 0, y: radNegative } },
+				// in
+				inright: { innerPosition: { x: mainRadius, y: 0 } },
+				inleft: { innerPosition: { x: radNegative, y: 0 } },
+				inbottom: { innerPosition: { x: 0, y: mainRadius } },
+				intop: { innerPosition: { x: 0, y: radNegative } }
 			}
 		});
 	}
