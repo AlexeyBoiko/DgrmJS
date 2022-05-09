@@ -23,7 +23,7 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 			this._testCircle = /** @type {SVGCircleElement}} */ (this._circle.cloneNode(false));
 			this._testCircle.style.fill = 'transparent';
 			this._testCircle.style.stroke = 'transparent';
-			this.svgEl.appendChild(this._testCircle);
+			this._testCircle.removeAttribute('data-key');
 			this.svgEl.insertBefore(this._testCircle, this._circle);
 		}
 
@@ -61,19 +61,27 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	 * @param {number} mainRadius
 	 */
 	_resize(mainRadius) {
-		this._circle.r.baseVal.value = mainRadius;
-		/** @type {SVGCircleElement}} */(this._getElem('outer')).r.baseVal.value = mainRadius + 20;
-
-		// out connectors
-		this._cx('outright', mainRadius);
-		this._cx('outleft', -1 * mainRadius);
-		this._cy('outbottom', mainRadius);
-		this._cy('outtop', -1 * mainRadius);
-
-		// in connectors
-		/** @type {SVGCircleElement}} */(this._getElem('inright').getElementsByTagName('circle')[0]).cx.baseVal.value = mainRadius;
-
-		// redrow connector lines
+		const radNegative = -1 * mainRadius;
+		this.update({
+			props: {
+				main: { r: mainRadius },
+				outer: { r: mainRadius + 20 },
+				// out connectors
+				outright: { cx: mainRadius },
+				outleft: { cx: radNegative },
+				outbottom: { cy: mainRadius },
+				outtop: { cy: radNegative },
+				// in connectors
+				'inright-empty': { cx: mainRadius },
+				'inright-not-empty': { x: radNegative },
+				'inleft-empty': { cx: radNegative },
+				'inleft-not-empty': { x: radNegative },
+				'inbottom-empty': { cy: mainRadius },
+				'inbottom-not-empty': { x: radNegative },
+				'intop-empty': { cy: radNegative },
+				'intop-not-empty': { x: radNegative }
+			}
+		});
 	}
 
 	/**
@@ -86,37 +94,17 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	}
 
 	/**
-	 * set 'cx' of the circle with {dataKey}
-	 * @private
-	 * @param {string} dataKey
-	 * @param {number} val
+	 * when shape leave edit mode
+	 * override this method
 	 */
-	_cx(dataKey, val) {
-		/** @type {SVGCircleElement}} */(this._getElem(dataKey)).cx.baseVal.value = val;
+	onEditLeave() {
+		super.onEditLeave();
+
+		if (this._testCircle) {
+			this._testCircle.remove();
+			this._testCircle = null;
+		}
 	}
-
-	/**
-	 * set 'cx' of the circle with {dataKey}
-	 * @private
-	 * @param {string} dataKey
-	 * @param {number} val
-	 */
-	_cy(dataKey, val) {
-		/** @type {SVGCircleElement}} */(this._getElem(dataKey)).cy.baseVal.value = val;
-	}
-
-	// /**
-	//   * when shape leave edit mode
-	//   * override this method
-	//   */
-	// onEditLeave() {
-	// 	super.onEditLeave();
-
-	// 	if (this._testCircle) {
-	// 		this._testCircle.remove();
-	// 		this._testCircle = null;
-	// 	}
-	// }
 }
 
 /**
