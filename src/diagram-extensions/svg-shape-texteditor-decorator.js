@@ -48,7 +48,6 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	onEdit(evt) {
-		// textEditorHighlightEmpty(this.svgEl, this._props);
 		this._panelShow();
 	}
 

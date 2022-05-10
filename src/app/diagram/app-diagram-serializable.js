@@ -1,6 +1,4 @@
-import { svgDiagramCreate } from '../../diagram/svg-presenter/svg-diagram-factory.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
-import { AppCircleDecorator } from '../shapes/app-circle-decorator.js';
 
 /**
  * @implements {IAppDiagramSerializable}
@@ -9,8 +7,9 @@ import { AppCircleDecorator } from '../shapes/app-circle-decorator.js';
 export class AppDiagramSerializable extends EventTarget {
 	/**
 	 * @param {SVGSVGElement} svg
+	 * @param {IDiagram} diagram
 	 */
-	constructor(svg) {
+	constructor(svg, diagram) {
 		super();
 
 		this.svg = svg;
@@ -28,14 +27,7 @@ export class AppDiagramSerializable extends EventTarget {
 		this._connectors = [];
 
 		/** @private */
-		this._diagram = svgDiagramCreate(
-			svg,
-			(shape, param) =>
-			// the way to add custom logic inside shapes - decorators
-			// return new SvgShapeTextEditorDecorator(shape, param.createParams.props)
-			// 	.on('update', this)
-			// 	.on('del', this);
-				new AppCircleDecorator(this._diagram, shape, param.createParams.props))
+		this._diagram = diagram
 			.on('connect', this)
 			.on('disconnect', this)
 			.on('add', this);
@@ -51,7 +43,7 @@ export class AppDiagramSerializable extends EventTarget {
 					.on('txtUpd', this)
 					.on('del', this);
 				break;
-			case 'update':
+			case 'txtUpd':
 				this._shapeData.get(evt.detail.target).detail =
 					/** @type {string} */ (evt.detail.props.text.textContent);
 				break;
