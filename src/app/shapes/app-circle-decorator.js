@@ -64,10 +64,8 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 
 			this._resize(radius(this._testCircle));
 		} else {
-			if (this._mainRadiusMin === radius(this._circle)) { return; }
-
 			do { radiusIncrement(this._testCircle, -20); }
-			while (!this._isOut(textEl));
+			while (!this._isOut(textEl) && this._mainRadiusMin <= radius(this._testCircle));
 
 			radiusIncrement(this._testCircle, 20);
 			if (radius(this._circle) !== radius(this._testCircle)) {

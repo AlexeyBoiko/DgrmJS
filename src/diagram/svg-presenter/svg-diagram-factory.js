@@ -26,11 +26,11 @@ export function svgDiagramCreate(svg, shapeDecoratorFactory) {
 		if (shapeDecoratorFactory) {
 			shape = shapeDecoratorFactory(shape, param);
 		}
-		shape.update(param.createParams);
 
 		param.svgElemToPresenterObj.set(shape.svgEl, shape);
-
 		connectorsInit(param.listener, param.svgElemToPresenterObj, shape);
+		shape.update(param.createParams);
+
 		return shape;
 	}
 

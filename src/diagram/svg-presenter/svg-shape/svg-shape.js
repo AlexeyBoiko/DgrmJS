@@ -63,7 +63,6 @@ export class SvgShape {
 			Object.keys(param.connectors).forEach(connectorKey => {
 				const connectorUpdateParams = param.connectors[connectorKey];
 				const connectorData = this.connectors.get(connectorKey);
-				console.log(connectorKey);
 				if (connectorUpdateParams.innerPosition) { connectorData.innerPosition = connectorUpdateParams.innerPosition; }
 				if (connectorUpdateParams.dir) { connectorData.dir = connectorUpdateParams.dir; }
 			});
