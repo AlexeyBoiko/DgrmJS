@@ -30,24 +30,15 @@ export class AppDiagramSerializable extends EventTarget {
 		/** @private */
 		this._diagram = svgDiagramCreate(
 			svg,
-			(shape, param) => {
-				// the way to add custom logic inside shapes - decorators
-				// return new SvgShapeTextEditorDecorator(shape, param.createParams.props)
-				// 	.on('update', this)
-				// 	.on('del', this);
-
-				// TODO:
-				//	- other shapes decorators
-				//	- remove "on('update', this)", "on('del', this)"
-				//		- add ".on('add', this)" to IDiagram, subscribe to 'update', 'del' there
-				//		- pass IDiagram into consructor, don't create it here
-
-				return new AppCircleDecorator(this._diagram, shape, param.createParams.props)
-					.on('update', this)
-					.on('del', this);
-			})
+			(shape, param) =>
+			// the way to add custom logic inside shapes - decorators
+			// return new SvgShapeTextEditorDecorator(shape, param.createParams.props)
+			// 	.on('update', this)
+			// 	.on('del', this);
+				new AppCircleDecorator(this._diagram, shape, param.createParams.props))
 			.on('connect', this)
-			.on('disconnect', this);
+			.on('disconnect', this)
+			.on('add', this);
 	}
 
 	/**
@@ -55,6 +46,11 @@ export class AppDiagramSerializable extends EventTarget {
 	 */
 	handleEvent(evt) {
 		switch (evt.type) {
+			case 'add':
+				/** @type {IShapeTextEditorDecorator} */(evt.detail.target)
+					.on('txtUpd', this)
+					.on('del', this);
+				break;
 			case 'update':
 				this._shapeData.get(evt.detail.target).detail =
 					/** @type {string} */ (evt.detail.props.text.textContent);

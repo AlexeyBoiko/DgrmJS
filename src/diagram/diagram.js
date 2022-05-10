@@ -40,7 +40,10 @@ export class Diagram extends EventTarget {
 	 * @returns {IPresenterShape}
 	 */
 	shapeAdd(param) {
-		return /** @type{IPresenterShape} */(this._presenter.append('shape', param));
+		const shape = /** @type{IPresenterShape} */(this._presenter.append('shape', param));
+		// return /** @type{IPresenterShape} */(this._presenter.append('shape', param));
+		this._dispatchEvent('add', { target: shape });
+		return shape;
 	}
 
 	/**

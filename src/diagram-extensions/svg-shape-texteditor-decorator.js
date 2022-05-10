@@ -1,7 +1,7 @@
 import { SvgShapeEditableAbstractDecorator } from './svg-shape-editable-abstract-decorator.js';
 import { textEditorHighlightEmpty, textEditorShow } from './text-editor-utils.js';
 
-/** @implements {ISvgPresenterShape} */
+/** @implements {IShapeTextEditorDecorator} */
 export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorator {
 	/**
 	 * @param {ISvgPresenterShape} svgShape
@@ -18,7 +18,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	}
 
 	/**
-	 * @param {string} type
+	 * @param {ShapeTextEditorEventType} type
 	 * @param {EventListenerOrEventListenerObject} listener
 	 * @returns {SvgShapeTextEditorDecorator}
 	 */
@@ -97,7 +97,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * @param {PresenterShapeProps} updatedProp
 	 */
 	onTextChange(textEl, updatedProp) {
-		this.svgEl.dispatchEvent(new CustomEvent('update', {
+		this.svgEl.dispatchEvent(new CustomEvent('txtUpd', {
 			/** @type {ShapeTextEditorDecoratorEventUpdateDetail} */
 			detail: {
 				target: this,
