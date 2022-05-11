@@ -1,5 +1,6 @@
 import { svgTextIsOut } from '../../diagram-extensions/infrastructure/svg-text-is-out.js';
 import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
+import { cloneUnshiftTransparent } from './dom-utils.js';
 
 export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	/**
@@ -18,7 +19,7 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	update(param) {
 		super.update(param);
 		if (param.props?.text?.textContent !== undefined) {
-			this._onTextChange(/** @type {SVGTextElement} */ (this._getElem('text')));
+			this._onTextChange(/** @type {SVGTextElement} */ (this.svgEl.querySelector('[data-key="text"]')));
 		}
 	}
 
@@ -39,37 +40,38 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	_onTextChange(textEl) {
 		// init
 
-		if (!this._circle) {
+		if (!this._radius) {
 			/** @private */
-			this._circle = /** @type {SVGCircleElement}} */ (this._getElem('main'));
+			this._radius = 60;
 
 			/** @private */
-			this._mainRadiusMin = radius(this._circle);
+			this._radiusTest = 60;
+
+			/** @private */
+			this._radiusMin = 60;
 		}
 
 		if (!this._testCircle) {
 			/** @private */
-			this._testCircle = /** @type {SVGCircleElement}} */ (this._circle.cloneNode(false));
-			this._testCircle.style.fill = 'transparent';
-			this._testCircle.style.stroke = 'transparent';
-			this._testCircle.removeAttribute('data-key');
-			this.svgEl.insertBefore(this._testCircle, this._circle);
+			this._testCircle = /** @type {SVGCircleElement}} */(cloneUnshiftTransparent(this.svgEl, 'main'));
 		}
 
 		// resize
 
 		if (this._isOut(textEl)) {
-			do { radiusIncrement(this._testCircle, 20); }
+			do { this._increment(20); }
 			while (this._isOut(textEl));
 
-			this._resize(radius(this._testCircle));
+			this._resize(this._radiusTest);
 		} else {
-			do { radiusIncrement(this._testCircle, -20); }
-			while (!this._isOut(textEl) && this._mainRadiusMin <= radius(this._testCircle));
+			if (this._radiusMin === this._radiusTest) { return; }
 
-			radiusIncrement(this._testCircle, 20);
-			if (radius(this._circle) !== radius(this._testCircle)) {
-				this._resize(this._testCircle.r.baseVal.value);
+			do { this._increment(-20); }
+			while (!this._isOut(textEl) && this._radiusMin <= this._radiusTest);
+
+			this._increment(20);
+			if (this._radius !== this._radiusTest) {
+				this._resize(this._radiusTest);
 			}
 		}
 	}
@@ -80,7 +82,16 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	 * @returns {boolean}
 	 */
 	_isOut(textEl) {
-		return svgTextIsOut(textEl, this._testCircle, 5);
+		return svgTextIsOut(textEl, this._testCircle, 2);
+	}
+
+	/**
+	 * @private
+	 * @param {number} val
+	 */
+	_increment(val) {
+		this._radiusTest = this._radiusTest + val;
+		this._testCircle.r.baseVal.value = this._radiusTest;
 	}
 
 	/**
@@ -88,8 +99,9 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	 * @param {number} mainRadius
 	 */
 	_resize(mainRadius) {
-		const radNegative = -1 * mainRadius;
+		this._radius = mainRadius;
 
+		const radNegative = -1 * mainRadius;
 		this._diagram.shapeUpdate(this, {
 			// visability
 			props: {
@@ -127,15 +139,6 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	}
 
 	/**
-	 * @private
-	 * @param {string} dataKey keyAttr value
-	 * @returns {Element}
-	 */
-	_getElem(dataKey) {
-		return this.svgEl.querySelector(`[data-key="${dataKey}"]`);
-	}
-
-	/**
 	 * when shape leave edit mode
 	 * override this method
 	 */
@@ -147,19 +150,4 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 			this._testCircle = null;
 		}
 	}
-}
-
-/**
- * @param {SVGCircleElement} circle
- */
-function radius(circle) {
-	return circle.r.baseVal.value;
-}
-
-/**
- * @param {SVGCircleElement} circle
- * @param {number} val
- */
-function radiusIncrement(circle, val) {
-	circle.r.baseVal.value = circle.r.baseVal.value + val;
 }

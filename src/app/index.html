@@ -230,18 +230,18 @@
 			</g>
 
 			<g data-templ="rhomb" data-center="60,35">
-				<path data-no-click="" d="M -40 35 L60 -35 L160 35 L60 105 Z" stroke-width="1" stroke="transparent" fill="transparent"></path>
-				<path d="M0 35 L60 0 L120 35 L60 70 Z" stroke-width="18" stroke-linejoin="round" stroke="#1D809F"
+				<path data-key="outer" data-no-click="" d="M -40 35 L60 -35 L160 35 L60 105 Z" stroke-width="1" stroke="transparent" fill="transparent"></path>
+				<path data-key="main" d="M0 35 L60 0 L120 35 L60 70 Z" stroke-width="18" stroke-linejoin="round" stroke="#1D809F"
 					fill="#1D809F"></path>
 				
 				<rect data-text-for="text" x="15" y="15" rx="15" ry="15" width="90" height="40" />
 				<text data-key="text" data-line-height="20" data-vertical-middle="45" x="60" y="35" text-anchor="middle" alignment-baseline="central" fill="#fff">&nbsp;</text>
 
-				<circle data-key="outright" data-connect="out" data-connect-point="128,35" data-connect-dir="right"
-					r="10" cx="128" cy="35">
-				</circle>
 				<circle data-key="outleft" data-connect="out" data-connect-point="-8,35" data-connect-dir="left" r="10"
 					cx="-8" cy="35">
+				</circle>
+				<circle data-key="outright" data-connect="out" data-connect-point="128,35" data-connect-dir="right"
+					r="10" cx="128" cy="35">
 				</circle>
 				<circle data-key="outtop" data-connect="out" data-connect-point="60,-8" data-connect-dir="top" r="10"
 					cx="60" cy="-8">
@@ -251,20 +251,20 @@
 				</circle>
 
 				<g data-key="inleft" data-connect="in" data-connect-point="-8,35" data-connect-dir="left">
-					<circle class="empty" r="10" cx="-8" cy="35"></circle>
-					<use class="not-empty" xlink:href="#arrow" transform="translate(-8, 35)" />
+					<circle data-key="inleft-empty" class="empty" r="10" cx="-8" cy="35"></circle>
+					<use data-key="inleft-not-empty" class="not-empty" xlink:href="#arrow" x="-8" y="35" />
 				</g>
 				<g data-key="inright" data-connect="in" data-connect-point="128,35" data-connect-dir="right">
-					<circle class="empty" r="10" cx="128" cy="35"></circle>
-					<use class="not-empty" xlink:href="#arrow" transform="translate(128,35) rotate(180 0 0)" />
+					<circle data-key="inright-empty" class="empty" r="10" cx="128" cy="35"></circle>
+					<use data-key="inright-not-empty" class="not-empty" xlink:href="#arrow" x="-128" y="-35" transform="rotate(180)" />
 				</g>
 				<g data-key="intop" data-connect="in" data-connect-point="60,-8" data-connect-dir="top">
-					<circle class="empty" r="10" cx="60" cy="-8"></circle>
-					<use class="not-empty" xlink:href="#arrow" transform="translate(60, -8) rotate(90 0 0)" />
+					<circle data-key="intop-empty" class="empty" r="10" cx="60" cy="-8"></circle>
+					<use data-key="intop-not-empty" class="not-empty" xlink:href="#arrow" x="-8" y="-60" transform="rotate(90)" />
 				</g>
 				<g data-key="inbottom" data-connect="in" data-connect-point="60,78" data-connect-dir="bottom">
-					<circle class="empty" r="10" cx="60" cy="78"></circle>
-					<use class="not-empty" xlink:href="#arrow" transform="translate(60,78) rotate(270 0 0)" />
+					<circle data-key="inbottom-empty" class="empty" r="10" cx="60" cy="78"></circle>
+					<use data-key="inbottom-not-empty" class="not-empty" xlink:href="#arrow" x="-78" y="60" transform="rotate(270)" />
 				</g>
 			</g>
 
