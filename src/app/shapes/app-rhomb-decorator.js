@@ -59,17 +59,17 @@ export class AppRhombDecorator extends SvgShapeTextEditorDecorator {
 		// resize
 
 		if (this._isOut(textEl)) {
-			do { this._increment(20); }
+			do { this._increment(40); }
 			while (this._isOut(textEl));
 
 			this._resize(this._widthTest);
 		} else {
 			if (this._widthMin === this._widthTest) { return; }
 
-			do { this._increment(-20); }
+			do { this._increment(-40); }
 			while (!this._isOut(textEl) && this._widthMin <= this._widthTest);
 
-			this._increment(20);
+			this._increment(40);
 			if (this._width !== this._widthTest) {
 				this._resize(this._widthTest);
 			}
