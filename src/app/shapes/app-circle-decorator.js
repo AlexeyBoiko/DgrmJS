@@ -1,6 +1,7 @@
 import { svgTextIsOut } from '../../diagram-extensions/infrastructure/svg-text-is-out.js';
 import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
 import { cloneUnshiftTransparent } from './dom-utils.js';
+import { resizeAlg } from './infrastructure/resize-alg.js';
 
 export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	/**
@@ -10,7 +11,12 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	 */
 	constructor(diagram, svgShape, initProps) {
 		super(svgShape, initProps);
+
+		/** @private */
 		this._diagram = diagram;
+
+		/** @private */
+		this._radius = 60;
 	}
 
 	/**
@@ -38,60 +44,28 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	 * @returns {void}
 	 */
 	_onTextChange(textEl) {
-		// init
-
-		if (!this._radius) {
-			/** @private */
-			this._radius = 60;
-
-			/** @private */
-			this._radiusTest = 60;
-
-			/** @private */
-			this._radiusMin = 60;
-		}
-
 		if (!this._testCircle) {
 			/** @private */
 			this._testCircle = /** @type {SVGCircleElement}} */(cloneUnshiftTransparent(this.svgEl, 'main'));
 		}
 
-		// resize
+		const newRadius = resizeAlg(
+			// minVal
+			60,
+			// incrementVal
+			20,
+			// currentVal
+			this._radius,
+			// isOutFunc
+			radius => {
+				this._testCircle.r.baseVal.value = radius;
+				return svgTextIsOut(textEl, this._testCircle, 2);
+			});
 
-		if (this._isOut(textEl)) {
-			do { this._increment(20); }
-			while (this._isOut(textEl));
-
-			this._resize(this._radiusTest);
-		} else {
-			if (this._radiusMin === this._radiusTest) { return; }
-
-			do { this._increment(-20); }
-			while (!this._isOut(textEl) && this._radiusMin <= this._radiusTest);
-
-			this._increment(20);
-			if (this._radius !== this._radiusTest) {
-				this._resize(this._radiusTest);
-			}
+		if (newRadius) {
+			this._radius = newRadius;
+			this._resize(newRadius);
 		}
-	}
-
-	/**
-	 * @private
-	 * @param {SVGTextElement} textEl
-	 * @returns {boolean}
-	 */
-	_isOut(textEl) {
-		return svgTextIsOut(textEl, this._testCircle, 2);
-	}
-
-	/**
-	 * @private
-	 * @param {number} val
-	 */
-	_increment(val) {
-		this._radiusTest = this._radiusTest + val;
-		this._testCircle.r.baseVal.value = this._radiusTest;
 	}
 
 	/**
@@ -99,8 +73,6 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	 * @param {number} mainRadius
 	 */
 	_resize(mainRadius) {
-		this._radius = mainRadius;
-
 		const radNegative = -1 * mainRadius;
 		this._diagram.shapeUpdate(this, {
 			// visability

@@ -7,7 +7,7 @@ import { any } from '../../diagram/infrastructure/iterable-utils.js';
  * @param {number} padding
  * @returns {boolean}
  */
-export function svgTextIsOut(textEl, shapeEl, padding) {
+export function svgTextIsOut(textEl, shapeEl, padding = 0) {
 	return any(textEl.getElementsByTagName('tspan'), span => {
 		const box = span.getBBox();
 		const leftX = box.x - padding;

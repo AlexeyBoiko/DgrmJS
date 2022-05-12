@@ -1,6 +1,7 @@
 import { svgTextIsOut } from '../../diagram-extensions/infrastructure/svg-text-is-out.js';
 import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
 import { cloneUnshiftTransparent } from './dom-utils.js';
+import { resizeAlg } from './infrastructure/resize-alg.js';
 
 export class AppRhombDecorator extends SvgShapeTextEditorDecorator {
 	/**
@@ -10,7 +11,12 @@ export class AppRhombDecorator extends SvgShapeTextEditorDecorator {
 	 */
 	constructor(diagram, svgShape, initProps) {
 		super(svgShape, initProps);
+
+		/** @private */
 		this._diagram = diagram;
+
+		/** @private */
+		this._width = 120;
 	}
 
 	/**
@@ -38,67 +44,34 @@ export class AppRhombDecorator extends SvgShapeTextEditorDecorator {
 	 * @returns {void}
 	 */
 	_onTextChange(textEl) {
-		// init
-
-		if (!this._width) {
-			/** @private */
-			this._width = 120;
-
-			/** @private */
-			this._widthTest = 120;
-
-			/** @private */
-			this._widthMin = 120;
-		}
-
 		if (!this._testPath) {
 			/** @private */
 			this._testPath = /** @type {SVGPathElement}} */(cloneUnshiftTransparent(this.svgEl, 'main'));
 		}
 
-		// resize
+		const newWidth = resizeAlg(
+			// minVal
+			120,
+			// incrementVal
+			40,
+			// currentVal
+			this._width,
+			// isOutFunc
+			width => {
+				this._testPath.setAttribute('d', rhombPathCalc(120, 70, width));
+				return svgTextIsOut(textEl, this._testPath);
+			});
 
-		if (this._isOut(textEl)) {
-			do { this._increment(40); }
-			while (this._isOut(textEl));
-
-			this._resize(this._widthTest);
-		} else {
-			if (this._widthMin === this._widthTest) { return; }
-
-			do { this._increment(-40); }
-			while (!this._isOut(textEl) && this._widthMin <= this._widthTest);
-
-			this._increment(40);
-			if (this._width !== this._widthTest) {
-				this._resize(this._widthTest);
-			}
+		if (newWidth) {
+			this._width = newWidth;
+			this._resize(newWidth);
 		}
-	}
-
-	/**
-	 * @private
-	 * @param {SVGTextElement} textEl
-	 * @returns {boolean}
-	 */
-	_isOut(textEl) {
-		return svgTextIsOut(textEl, this._testPath, 2);
-	}
-
-	/**
-	 * @param {number} val
-	 */
-	_increment(val) {
-		this._widthTest = this._widthTest + val;
-		this._testPath.setAttribute('d', rhombPathCalc(120, 70, this._widthTest));
 	}
 
 	/**
 	 * @param {number} width
 	 */
 	_resize(width) {
-		this._width = width;
-
 		const connectors = rhombCalc(120, 70, width + 16);
 		this._diagram.shapeUpdate(this, {
 			// visability
