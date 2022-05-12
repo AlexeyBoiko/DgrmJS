@@ -99,12 +99,12 @@ export class AppRhombDecorator extends SvgShapeTextEditorDecorator {
 	_resize(width) {
 		this._width = width;
 
-		const connectors = rhombCalc(120, 70, this._widthTest + 16);
+		const connectors = rhombCalc(120, 70, width + 16);
 		this._diagram.shapeUpdate(this, {
 			// visability
 			props: {
-				main: { d: rhombPathCalc(120, 70, this._widthTest) },
-				outer: { d: rhombPathCalc(120, 70, this._widthTest + 80) },
+				main: { d: rhombPathCalc(120, 70, width) },
+				outer: { d: rhombPathCalc(120, 70, width + 80) },
 				// out connectors
 				outleft: { cx: connectors.l.x },
 				outright: { cx: connectors.r.x },
