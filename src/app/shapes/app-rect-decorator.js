@@ -14,10 +14,14 @@ export class AppRectDecorator extends SvgShapeTextEditorDecorator {
 		this._diagram = diagram;
 
 		/** @private */
-		this._currentWidth = 120;
+		this._currentWidth = 150;
+		/** @private */
+		this._minWidth = 150;
 
 		/** @private */
 		this._currentHeight = 70;
+		/** @private */
+		this._minHeight = 70;
 	}
 
 	/**
@@ -50,9 +54,9 @@ export class AppRectDecorator extends SvgShapeTextEditorDecorator {
 			const width = span.getBBox().width + 4; // 2 padding
 			if (width > maxWidth) { maxWidth = width; }
 		}
-		const newWidth = ceil(120, 40, maxWidth); // 120 - min width
+		const newWidth = ceil(this._minWidth, 40, maxWidth);
 
-		const newHeight = ceil(70, 20, textEl.getBBox().height + 4); // 2 padding
+		const newHeight = ceil(this._minHeight, 20, textEl.getBBox().height + 4); // 2 padding
 
 		if (newWidth !== this._currentWidth || newHeight !== this._currentHeight) {
 			this._currentWidth = newWidth;
@@ -67,7 +71,7 @@ export class AppRectDecorator extends SvgShapeTextEditorDecorator {
 	 * @param {number} height
 	 */
 	_resize(width, height) {
-		const rect = rectCalc(120, 70, width, height);
+		const rect = rectCalc(this._minWidth, this._minHeight, width, height);
 		const connectors = {
 			r: { cx: width + rect.x, cy: height / 2 + rect.y },
 			l: { cx: rect.x, cy: height / 2 + rect.y },
@@ -78,7 +82,7 @@ export class AppRectDecorator extends SvgShapeTextEditorDecorator {
 			// visability
 			props: {
 				main: rect,
-				outer: rectCalc(120, 70, width + 40, height + 40),
+				outer: rectCalc(this._minWidth, this._minHeight, width + 40, height + 40),
 				// out connectors
 				outright: connectors.r,
 				outleft: connectors.l,

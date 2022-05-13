@@ -6,7 +6,7 @@
  */
 export function ceil(min, step, val) {
 	if (val <= min) { return min; }
-	return Math.ceil(val / step) * step;
+	return min + Math.ceil((val - min) / step) * step;
 }
 
 /**
