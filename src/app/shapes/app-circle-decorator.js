@@ -1,7 +1,5 @@
-import { svgTextIsOut } from '../../diagram-extensions/infrastructure/svg-text-is-out.js';
 import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
-import { cloneUnshiftTransparent } from './dom-utils.js';
-import { resizeAlg } from './infrastructure/resize-alg.js';
+import { boxPoints } from './infrastructure/box-points.js';
 
 export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	/**
@@ -16,7 +14,7 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 		this._diagram = diagram;
 
 		/** @private */
-		this._radius = 60;
+		this._currentRadius = 60;
 	}
 
 	/**
@@ -44,26 +42,22 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	 * @returns {void}
 	 */
 	_onTextChange(textEl) {
-		if (!this._testCircle) {
-			/** @private */
-			this._testCircle = /** @type {SVGCircleElement}} */(cloneUnshiftTransparent(this.svgEl, 'main'));
+		let maxRadius = 0;
+		for (const span of textEl.getElementsByTagName('tspan')) {
+			for (const point of boxPoints(span.getBBox())) {
+				const r = point.x ** 2 + point.y ** 2;
+				if (r > maxRadius) { maxRadius = r; }
+			}
+		}
+		maxRadius = Math.sqrt(maxRadius);
+
+		let newRadius = 60; // 60 - min radius
+		if (maxRadius > 60) {
+			newRadius = Math.ceil(maxRadius / 20) * 20; // 20 - resize step
 		}
 
-		const newRadius = resizeAlg(
-			// minVal
-			60,
-			// incrementVal
-			20,
-			// currentVal
-			this._radius,
-			// isOutFunc
-			radius => {
-				this._testCircle.r.baseVal.value = radius;
-				return svgTextIsOut(textEl, this._testCircle, 2);
-			});
-
-		if (newRadius) {
-			this._radius = newRadius;
+		if (newRadius !== this._currentRadius) {
+			this._currentRadius = newRadius;
 			this._resize(newRadius);
 		}
 	}
@@ -108,18 +102,5 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 				intop: { innerPosition: { x: 0, y: radNegative } }
 			}
 		});
-	}
-
-	/**
-	 * when shape leave edit mode
-	 * override this method
-	 */
-	onEditLeave() {
-		super.onEditLeave();
-
-		if (this._testCircle) {
-			this._testCircle.remove();
-			this._testCircle = null;
-		}
 	}
 }
