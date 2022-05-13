@@ -1,7 +1,6 @@
 import { svgTextIsOut } from '../../diagram-extensions/infrastructure/svg-text-is-out.js';
 import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
-import { cloneUnshiftTransparent } from './dom-utils.js';
-import { resizeAlg } from './infrastructure/resize-alg.js';
+import { resizeAlg } from './infrastructure/resize-utils.js';
 
 export class AppRhombDecorator extends SvgShapeTextEditorDecorator {
 	/**
@@ -152,4 +151,22 @@ function rhombCalc(baseWidth, baseHeight, width) {
 function rhombPathCalc(baseWidth, baseHeight, width) {
 	const rhomb = rhombCalc(baseWidth, baseHeight, width);
 	return `M${rhomb.l.x} ${rhomb.l.y} L${rhomb.t.x} ${rhomb.t.y} L${rhomb.r.x} ${rhomb.r.y} L${rhomb.b.x} ${rhomb.b.y} Z`;
+}
+
+/**
+ * - get inner element with 'data-key' attr = {dataKey}
+ * - clone it, make transparent
+ *  - and add to {svgEl}
+ * @param {SVGGraphicsElement} svgEl
+ * @param {string} dataKey
+ * @returns {SVGGraphicsElement}
+ */
+function cloneUnshiftTransparent(svgEl, dataKey) {
+	const cloned = svgEl.querySelector(`[data-key="${dataKey}"]`);
+	const clone = /** @type {SVGGraphicsElement}} */ (cloned.cloneNode(false));
+	clone.style.fill = 'transparent';
+	clone.style.stroke = 'transparent';
+	clone.removeAttribute('data-key');
+	svgEl.insertBefore(clone, cloned);
+	return clone;
 }

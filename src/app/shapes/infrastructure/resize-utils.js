@@ -1,4 +1,15 @@
 /**
+ * get the ceiling for a number {val} with a given floor height {step}
+ * @param {number} min
+ * @param {number} step
+ * @param {number} val
+ */
+export function ceil(min, step, val) {
+	if (val <= min) { return min; }
+	return Math.ceil(val / step) * step;
+}
+
+/**
  * Find minimal val when !isOutFunc()
  * @param {number} minVal
  * @param {number} incrementVal

@@ -1,5 +1,6 @@
 import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
 import { boxPoints } from './infrastructure/box-points.js';
+import { ceil } from './infrastructure/resize-utils.js';
 
 export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	/**
@@ -42,19 +43,14 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	 * @returns {void}
 	 */
 	_onTextChange(textEl) {
-		let maxRadius = 0;
+		let maxRadiusQrt = 0;
 		for (const span of textEl.getElementsByTagName('tspan')) {
 			for (const point of boxPoints(span.getBBox())) {
 				const r = point.x ** 2 + point.y ** 2;
-				if (r > maxRadius) { maxRadius = r; }
+				if (r > maxRadiusQrt) { maxRadiusQrt = r; }
 			}
 		}
-		maxRadius = Math.sqrt(maxRadius);
-
-		let newRadius = 60; // 60 - min radius
-		if (maxRadius > 60) {
-			newRadius = Math.ceil(maxRadius / 20) * 20; // 20 - resize step
-		}
+		const newRadius = ceil(60, 20, Math.sqrt(maxRadiusQrt));
 
 		if (newRadius !== this._currentRadius) {
 			this._currentRadius = newRadius;
