@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-	"lint": "eslint src/**/*.js",
+    "lint": "eslint src/**/*.js",
+	"tscheck": "./node_modules/.bin/tsc --noEmit -p ./jsconfig.json",
     "build": "rollup -c rollup.app.config.js",
     "build-dgrm-npm": "rollup -c rollup.diagram-npm-package.config.js"
   },
@@ -13,10 +14,12 @@
     "eslint": "^8.12.0",
     "eslint-config-standard": "^17.0.0-1",
     "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-n": "^15.2.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "rollup": "^2.70.1",
     "rollup-plugin-minify-html-literals": "^1.2.6",
-    "rollup-plugin-terser": "^7.0.2"
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.6.4"
   }
 }

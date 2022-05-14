@@ -266,7 +266,7 @@ export class Diagram extends EventTarget {
 	_dispatchEvent(type, detail) {
 		return this.dispatchEvent(new CustomEvent(type, {
 			cancelable: true,
-			detail: detail
+			detail
 		}));
 	}
 }

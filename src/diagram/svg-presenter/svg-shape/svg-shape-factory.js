@@ -52,9 +52,9 @@ export function connectorsInit(listener, svgElemToPresenterObj, shape) {
  */
 function connectorCreate(svgEl, shape) {
 	return new SvgConnector({
-		svgEl: svgEl,
+		svgEl,
 		connectorType: svgEl.getAttribute('data-connect') === 'in' ? 'in' : 'out',
-		shape: shape,
+		shape,
 		key: svgEl.getAttribute('data-key'),
 		innerPosition: parseConnectPointAttr(svgEl),
 		dir: /** @type {PresenterPathEndDirection} */(svgEl.getAttribute('data-connect-dir'))
