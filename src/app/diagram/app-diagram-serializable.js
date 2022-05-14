@@ -1,5 +1,3 @@
-import { svgDiagramCreate } from '../diagram/svg-presenter/svg-diagram-factory.js';
-import { SvgShapeTextEditorDecorator } from '../diagram-extensions/svg-shape-texteditor-decorator.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
 
 /**
@@ -9,8 +7,9 @@ import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
 export class AppDiagramSerializable extends EventTarget {
 	/**
 	 * @param {SVGSVGElement} svg
+	 * @param {IDiagram} diagram
 	 */
-	constructor(svg) {
+	constructor(svg, diagram) {
 		super();
 
 		this.svg = svg;
@@ -28,22 +27,23 @@ export class AppDiagramSerializable extends EventTarget {
 		this._connectors = [];
 
 		/** @private */
-		this._diagram = svgDiagramCreate(
-			svg,
-			(shape, param) => {
-				// the way to add custom logic inside shapes - decorators
-				return new SvgShapeTextEditorDecorator(shape, param.createParams.props);
-			})
+		this._diagram = diagram
 			.on('connect', this)
-			.on('disconnect', this);
+			.on('disconnect', this)
+			.on('add', this);
 	}
 
 	/**
-	 * @param {CustomEvent<ISvgPresenterShapeEventUpdateDetail> & CustomEvent<IDiagramEventConnectDetail>} evt
+	 * @param {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail> & CustomEvent<IDiagramEventConnectDetail>} evt
 	 */
 	handleEvent(evt) {
 		switch (evt.type) {
-			case 'update':
+			case 'add':
+				/** @type {IShapeTextEditorDecorator} */(evt.detail.target)
+					.on('txtUpd', this)
+					.on('del', this);
+				break;
+			case 'txtUpd':
 				this._shapeData.get(evt.detail.target).detail =
 					/** @type {string} */ (evt.detail.props.text.textContent);
 				break;
@@ -76,17 +76,13 @@ export class AppDiagramSerializable extends EventTarget {
 	 */
 	shapeAdd(param) {
 		const shape = this._diagram.shapeAdd(param);
+
 		this._shapeData.set(
 			shape,
 			{
 				templateKey: param.templateKey,
 				detail: /** @type {string} */(param.props.text?.textContent)
 			});
-
-		/** @type {SvgShapeTextEditorDecorator} */
-		(shape)
-			.on('update', this)
-			.on('del', this);
 
 		this.dispatchEvent(new CustomEvent('shapeAdd', {
 			cancelable: true,

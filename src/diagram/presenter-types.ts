@@ -29,7 +29,9 @@ interface PresenterShapeUpdateParam {
 	 * 'root' - key for outer element.
 	 * Other keys for inner elements: key = value of the 'data-key' attribute.
 	 */
-	props?: PresenterShapeProps
+	props?: PresenterShapeProps;
+
+	connectors?: { [key: string]: { innerPosition?: Point; dir?: PresenterPathEndDirection; } };
 }
 interface PresenterShapeProps {
 	[key: string]: { [key: string]: string | number | boolean }
@@ -90,7 +92,7 @@ interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
 	key: string;
 	/** position into parent shape */
 	innerPosition: Point;
-	dir?: PresenterPathEndDirection;
+	dir: PresenterPathEndDirection;
 }
 
 type PresenterPathEndType = 'start' | 'end';

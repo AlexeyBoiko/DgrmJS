@@ -1,40 +1,24 @@
-import { textParamsParse } from '../diagram/svg-presenter/svg-shape/svg-shape.js';
-import { textareaCreate } from './infrastructure/svg-textarea.js';
+import { SvgShapeEditableAbstractDecorator } from './svg-shape-editable-abstract-decorator.js';
+import { textEditorHighlightEmpty, textEditorShow } from './text-editor-utils.js';
 
-/** @implements {ISvgPresenterShape} */
-export class SvgShapeTextEditorDecorator {
+/** @implements {IShapeTextEditorDecorator} */
+export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorator {
 	/**
 	 * @param {ISvgPresenterShape} svgShape
 	 * @param {PresenterShapeProps} initProps
 	 */
 	constructor(svgShape, initProps) {
+		super(svgShape);
+
 		/**
-		 * @type {ISvgPresenterShape}
+		 * @type {PresenterShapeProps}
 		 * @private
 		 */
-		this._svgShape = svgShape;
-		this._svgShape.svgEl.addEventListener('click', this);
-
-		/** @private */
-		this._props = Object.assign({}, initProps);
-
-		// ISvgPresenterShape
-		this.svgEl = this._svgShape.svgEl;
-		this.type = this._svgShape.type;
-		this.connectable = this._svgShape.connectable;
-		this.defaultInConnector = this._svgShape.defaultInConnector;
-		this.connectors = this._svgShape.connectors;
+		this._props = Object.assign({}, initProps); // TODO: save only 'textContent' props
 	}
 
 	/**
-	 * @param {PresenterShapeState} state
-	 */
-	stateHas(state) { return this._svgShape.stateHas(state); }
-	stateGet() { return this._svgShape.stateGet(); }
-	positionGet() { return this._svgShape.positionGet(); }
-
-	/**
-	 * @param {string} type
+	 * @param {ShapeTextEditorEventType} type
 	 * @param {EventListenerOrEventListenerObject} listener
 	 * @returns {SvgShapeTextEditorDecorator}
 	 */
@@ -47,48 +31,43 @@ export class SvgShapeTextEditorDecorator {
 	 * @param {PresenterShapeUpdateParam} param
 	 */
 	update(param) {
-		if (param.position) { /** @private */ this._firstClick = false; }
-
 		if (param.props) {
-			/** @private */
-			this._props = Object.assign({}, param.props);
+			Object.assign(this._props, param.props); // TODO: save only 'textContent' props
 		}
 
-		if (param.state) {
-			if (param.state.has('selected') && !this.stateGet().has('selected')) {
-				this._firstClick = true;
-				this._textEditorHighlightEmpty();
-			}
-			this._panelDel();
-			this._textEditorDel();
+		if (param.state && param.state.has('selected') && !this.stateGet().has('selected')) {
+			textEditorHighlightEmpty(this.svgEl, this._props);
 		}
 
-		this._svgShape.update(param);
+		super.update(param);
 	}
 
 	/**
+	 * when shape enter edit mode
+	 * override this method
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
-	handleEvent(evt) {
-		if (evt.target.hasAttribute('data-no-click') ||
-			document.elementFromPoint(evt.clientX, evt.clientY) !== evt.target) { return; }
-
-		evt.stopPropagation();
-
-		if (!this._firstClick) {
-			this._textEditorShow(evt);
-			this._panelShow(evt);
-		}
-		this._firstClick = false;
+	onEdit(evt) {
+		this._panelShow();
 	}
 
-	/** @private */
-	_textEditorHighlightEmpty() {
-		this.svgEl.querySelectorAll('[data-text-for]').forEach(el => {
-			if (!this._props[el.getAttribute('data-text-for')]?.textContent) {
-				el.classList.add('empty');
-			}
-		});
+	/**
+	 * click on shape
+	 * override this method
+	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
+	 * @param {boolean} isEditState
+	 */
+	onClick(evt, isEditState) {
+		if (isEditState) { this._textEditorShow(evt); }
+	}
+
+	/**
+	 * when shape leave edit mode
+	 * override this method
+	 */
+	onEditLeave() {
+		this._textEditorDel();
+		this._panelDel();
 	}
 
 	/**
@@ -98,81 +77,59 @@ export class SvgShapeTextEditorDecorator {
 	_textEditorShow(evt) {
 		if (this._textEditor) { return; }
 
-		/** @type {SVGRectElement} */
-		let placeEl;
-		switch (evt.target.tagName) {
-			case 'tspan':
-				placeEl = this.svgEl.querySelector(`[data-text-for=${evt.target.parentElement.getAttribute('data-key')}]`);
-				break;
-			case 'text':
-				placeEl = this.svgEl.querySelector(`[data-text-for=${evt.target.getAttribute('data-key')}]`);
-				break;
-			default:
-				if (evt.target.getAttribute('data-text-for')) {
-					placeEl = /** @type {SVGRectElement} */(evt.target);
-				}
-				break;
-		}
+		/** @private */
+		this._textEditor = textEditorShow(this.svgEl, this._props, evt.target,
+			// onchange
+			(textEl, updatedProp) => {
+				Object.assign(this._props, updatedProp);
+				this.onTextChange(textEl, updatedProp);
+			},
+			// onblur
+			_ => { this._textEditorDel(); }
+		);
+	}
 
-		if (placeEl) {
-			placeEl.classList.remove('empty');
-			const textKey = placeEl.getAttribute('data-text-for');
-
-			/** @type {SVGTextElement} */
-			const textEl = this.svgEl.querySelector(`[data-key=${textKey}]`);
-
-			/** @private */
-			this._textEditor = textareaCreate(
-				// textEl
-				textEl,
-				// textParam
-				textParamsParse(textEl),
-				// val
-				this._props[textKey]?.textContent.toString(),
-				// onchange
-				val => {
-					if (!this._props[textKey]) { this._props[textKey] = {}; }
-					this._props[textKey].textContent = val;
-
-					this.svgEl.dispatchEvent(new CustomEvent('update', {
-						/** @type {ISvgPresenterShapeEventUpdateDetail} */
-						detail: {
-							target: this,
-							props: this._props
-						}
-					}));
-				},
-				// onblur
-				val => {
-					this._textEditorDel();
-					if (!val) { placeEl.classList.add('empty'); } else { placeEl.classList.remove('empty'); }
-				});
-		}
+	/**
+	 * when text changed
+	 * can be overridden
+	 * @param {SVGTextElement} textEl
+	 * @param {PresenterShapeProps} updatedProp
+	 */
+	onTextChange(textEl, updatedProp) {
+		this.svgEl.dispatchEvent(new CustomEvent('txtUpd', {
+			/** @type {ShapeTextEditorDecoratorEventUpdateDetail} */
+			detail: {
+				target: this,
+				props: updatedProp
+			}
+		}));
 	}
 
 	/** @private */
 	_textEditorDel() {
-		if (!this._textEditor) { return; }
+		if (this._textEditor && !this._lock) {
+			/** @private */
+			this._lock = true;
 
-		const textEditor = this._textEditor;
-		this._textEditor = null;
-		textEditor.remove();
+			this._textEditor.remove();
+			this._textEditor = null;
+			this._lock = false;
+		}
 	}
 
-	/**
-	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
-	 * @private
-	 */
-	_panelShow(evt) {
+	// TODO: extract panel from here
+
+	/** @private */
+	_panelShow() {
 		if (this._panel) { return; }
 
-		const position = this.svgEl.getBoundingClientRect();
+		// const position = this.svgEl.getBoundingClientRect();
 
 		const panelDiv = document.createElement('div');
 		panelDiv.classList.add('pop-set');
 		panelDiv.style.position = 'fixed';
-		panelDiv.style.top = `${position.top - 35}px`;
-		panelDiv.style.left = `${position.left + 10}px`;
+		// panelDiv.style.top = `${position.top - 35}px`;
+		// panelDiv.style.left = `${position.left + 10}px`;
 		panelDiv.innerHTML = `
 			<style>
 			.pop-set {
@@ -187,25 +144,33 @@ export class SvgShapeTextEditorDecorator {
 		panelDiv.onclick = _ => {
 			this._panelDel();
 			this.svgEl.dispatchEvent(new CustomEvent('del', {
-				/** @type {ISvgPresenterShapeEventUpdateDetail} */
+				/** @type {ShapeTextEditorDecoratorEventUpdateDetail} */
 				detail: {
-					target: this,
-					props: this._props
+					target: this
 				}
 			}));
 		};
-		document.body.append(panelDiv);
 
 		/** @private */
 		this._panel = panelDiv;
+		this.panelUpdPos();
+
+		document.body.append(panelDiv);
+	}
+
+	/** update panel position */
+	panelUpdPos() {
+		if (!this._panel) { return; }
+
+		const position = this.svgEl.getBoundingClientRect();
+		this._panel.style.top = `${position.top - 35}px`;
+		this._panel.style.left = `${position.left + 10}px`;
 	}
 
 	/** @private */
 	_panelDel() {
 		if (!this._panel) { return; }
-
-		const panelDiv = this._panel;
+		this._panel.remove();
 		this._panel = null;
-		panelDiv.remove();
 	}
 }
