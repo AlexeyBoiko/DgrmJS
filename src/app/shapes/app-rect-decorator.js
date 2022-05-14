@@ -19,9 +19,9 @@ export class AppRectDecorator extends SvgShapeTextEditorDecorator {
 		this._minWidth = 150;
 
 		/** @private */
-		this._currentHeight = 70;
+		this._currentHeight = 50;
 		/** @private */
-		this._minHeight = 70;
+		this._minHeight = 50;
 	}
 
 	/**
