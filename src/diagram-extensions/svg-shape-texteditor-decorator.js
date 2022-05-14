@@ -160,6 +160,8 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 
 	/** update panel position */
 	panelUpdPos() {
+		if (!this._panel) { return; }
+
 		const position = this.svgEl.getBoundingClientRect();
 		this._panel.style.top = `${position.top - 35}px`;
 		this._panel.style.left = `${position.left + 10}px`;
