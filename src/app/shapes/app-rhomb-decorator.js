@@ -64,6 +64,7 @@ export class AppRhombDecorator extends SvgShapeTextEditorDecorator {
 		if (newWidth) {
 			this._width = newWidth;
 			this._resize(newWidth);
+			this.panelUpdPos();
 		}
 	}
 

@@ -62,6 +62,7 @@ export class AppRectDecorator extends SvgShapeTextEditorDecorator {
 			this._currentWidth = newWidth;
 			this._currentHeight = newHeight;
 			this._resize(newWidth, newHeight);
+			this.panelUpdPos();
 		}
 	}
 

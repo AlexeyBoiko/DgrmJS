@@ -55,6 +55,7 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 		if (newRadius !== this._currentRadius) {
 			this._currentRadius = newRadius;
 			this._resize(newRadius);
+			this.panelUpdPos();
 		}
 	}
 

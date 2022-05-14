@@ -117,17 +117,19 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 		}
 	}
 
+	// TODO: extract panel from here
+
 	/** @private */
 	_panelShow() {
 		if (this._panel) { return; }
 
-		const position = this.svgEl.getBoundingClientRect();
+		// const position = this.svgEl.getBoundingClientRect();
 
 		const panelDiv = document.createElement('div');
 		panelDiv.classList.add('pop-set');
 		panelDiv.style.position = 'fixed';
-		panelDiv.style.top = `${position.top - 35}px`;
-		panelDiv.style.left = `${position.left + 10}px`;
+		// panelDiv.style.top = `${position.top - 35}px`;
+		// panelDiv.style.left = `${position.left + 10}px`;
 		panelDiv.innerHTML = `
 			<style>
 			.pop-set {
@@ -148,10 +150,19 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 				}
 			}));
 		};
-		document.body.append(panelDiv);
 
 		/** @private */
 		this._panel = panelDiv;
+		this.panelUpdPos();
+
+		document.body.append(panelDiv);
+	}
+
+	/** update panel position */
+	panelUpdPos() {
+		const position = this.svgEl.getBoundingClientRect();
+		this._panel.style.top = `${position.top - 35}px`;
+		this._panel.style.left = `${position.left + 10}px`;
 	}
 
 	/** @private */
