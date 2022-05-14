@@ -120,7 +120,7 @@ function rectCalc(baseWidth, baseHeight, width, height) {
 	return {
 		y: (baseHeight - height) / 2,
 		x: (baseWidth - width) / 2,
-		width: width,
-		height: height
+		width,
+		height
 	};
 }
