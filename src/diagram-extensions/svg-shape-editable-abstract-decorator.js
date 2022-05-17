@@ -15,6 +15,9 @@ export class SvgShapeEditableAbstractDecorator {
 		 * @private
 		 */
 		this._svgShape = svgShape;
+
+		this._svgShape.svgEl.addEventListener('pointerdown', this);
+		this._svgShape.svgEl.addEventListener('pointerup', this);
 		this._svgShape.svgEl.addEventListener('click', this);
 
 		// ISvgPresenterShape
@@ -36,20 +39,9 @@ export class SvgShapeEditableAbstractDecorator {
 	 * @param {PresenterShapeUpdateParam} param
 	 */
 	update(param) {
-		if (param.position) {
-			/** @private */
-			this._firstClick = false;
-		}
-
-		if (param.state) {
-			if (param.state.has('selected') && !this.stateGet().has('selected')) {
-				this._firstClick = true;
-			}
-
-			if (this._isEditState) {
-				this._isEditState = false;
-				this.onEditLeave();
-			}
+		if (param.state && this._isEditState) {
+			this._isEditState = false;
+			this.onEditLeave();
 		}
 
 		this._svgShape.update(param);
@@ -62,16 +54,26 @@ export class SvgShapeEditableAbstractDecorator {
 		if (evt.target.hasAttribute('data-no-click') ||
 			document.elementFromPoint(evt.clientX, evt.clientY) !== evt.target) { return; }
 
-		evt.stopPropagation();
-
-		if (!this._firstClick && !this._isEditState) {
-			/** @private */
-			this._isEditState = true;
-			this.onEdit(evt);
+		if (evt.type === 'click') {
+			this.onClick(evt, this._isEditState);
+			return;
 		}
-		this._firstClick = false;
 
-		this.onClick(evt, this._isEditState);
+		if (this._isEditState) { return; }
+
+		switch (evt.type) {
+			case 'pointerdown':
+				/** @private */
+				this._isSelectedOnDown = this.stateGet().has('selected');
+				break;
+			case 'pointerup':
+				if (this._isSelectedOnDown) {
+					/** @private */
+					this._isEditState = true;
+					this.onEdit(evt);
+				}
+				break;
+		}
 	}
 
 	/**
