@@ -48,6 +48,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	onEdit(evt) {
+		this.svgEl.classList.add('edit');
 		this._panelShow();
 	}
 
@@ -66,6 +67,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * override this method
 	 */
 	onEditLeave() {
+		this.svgEl.classList.remove('edit');
 		this._textEditorDel();
 		this._panelDel();
 	}
