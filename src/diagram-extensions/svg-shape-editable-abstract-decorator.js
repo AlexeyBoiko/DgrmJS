@@ -47,6 +47,10 @@ export class SvgShapeEditableAbstractDecorator {
 		this._svgShape.update(param);
 	}
 
+	dispose() {
+		if (this._isEditState) { this.onEditLeave(); }
+	}
+
 	/**
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */

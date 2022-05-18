@@ -61,6 +61,7 @@ export class SvgPresenter extends EventTarget {
 	 * @param {ISvgPresenterElement} elem
 	 */
 	delete(elem) {
+		if (elem.dispose) { elem.dispose(); }
 		this._svgElemToPresenterObj.delete(elem.svgEl);
 		elem.svgEl.remove();
 	}

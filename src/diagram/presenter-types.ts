@@ -67,8 +67,9 @@ interface IPresenterEventDetail {
 
 type PresenterElementType = 'canvas' | 'shape' | 'connector' | 'path';
 
-interface IPresenterElement {
-	type: PresenterElementType,
+interface IPresenterElement extends IDisposable {
+	type: PresenterElementType;
+	
 }
 
 interface IPresenterShape extends IPresenterElement, IPresenterStatable {
@@ -109,9 +110,3 @@ interface IPresenterPath extends IPresenterElement {
 	 */
 	update(param: PresenterPathUpdateParam): void;
 }
-
-
-//
-// common
-
-type Point = { x: number, y: number };
