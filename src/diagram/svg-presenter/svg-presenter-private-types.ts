@@ -6,8 +6,7 @@ interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape {
 }
 
 interface ISvgPresenterShapeFactoryParam { 
-	svgCanvas: SVGGElement, 
-	listener: EventListenerOrEventListenerObject, 
+	svgCanvas: SVGGElement,
 	svgElemToPresenterObj: WeakMap<SVGGraphicsElement, IPresenterElement>,
 	createParams: PresenterShapeAppendParam
 }

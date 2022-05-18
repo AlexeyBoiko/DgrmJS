@@ -28,7 +28,7 @@ export function svgDiagramCreate(svg, shapeDecoratorFactory) {
 		}
 
 		param.svgElemToPresenterObj.set(shape.svgEl, shape);
-		connectorsInit(param.listener, param.svgElemToPresenterObj, shape);
+		connectorsInit(param.svgElemToPresenterObj, shape);
 		shape.update(param.createParams);
 
 		return shape;
