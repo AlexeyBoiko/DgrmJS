@@ -48,6 +48,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	onEdit(evt) {
+		this.svgEl.classList.add('edit');
 		this._panelShow();
 	}
 
@@ -66,6 +67,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * override this method
 	 */
 	onEditLeave() {
+		this.svgEl.classList.remove('edit');
 		this._textEditorDel();
 		this._panelDel();
 	}
@@ -161,9 +163,8 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	/** update panel position */
 	panelUpdPos() {
 		if (!this._panel) { return; }
-
 		const position = this.svgEl.getBoundingClientRect();
-		this._panel.style.top = `${position.top - 35}px`;
+		this._panel.style.top = `${window.scrollY + position.top - 35}px`; // window.scrollY fix IPhone keyboard
 		this._panel.style.left = `${position.left + 10}px`;
 	}
 

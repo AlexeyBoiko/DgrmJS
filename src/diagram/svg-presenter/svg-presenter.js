@@ -44,7 +44,6 @@ export class SvgPresenter extends EventTarget {
 				const shape = this._shapeFactory({
 					svgCanvas: this._canvasSvgEl,
 					svgElemToPresenterObj: this._svgElemToPresenterObj,
-					listener: this,
 					createParams: /** @type {PresenterShapeAppendParam} */(param)
 				});
 				return shape;
@@ -61,6 +60,7 @@ export class SvgPresenter extends EventTarget {
 	 * @param {ISvgPresenterElement} elem
 	 */
 	delete(elem) {
+		if (elem.dispose) { elem.dispose(); }
 		this._svgElemToPresenterObj.delete(elem.svgEl);
 		elem.svgEl.remove();
 	}
@@ -79,7 +79,6 @@ export class SvgPresenter extends EventTarget {
 	 * @param {PointerEvent & { currentTarget: SVGGraphicsElement, target: SVGGraphicsElement }} evt
 	 */
 	handleEvent(evt) {
-		evt.stopPropagation();
 		switch (evt.type) {
 			case 'pointermove': {
 				this._dispatchEnterLeave(evt);
@@ -87,13 +86,6 @@ export class SvgPresenter extends EventTarget {
 				break;
 			}
 			case 'pointerdown':
-				this._dispatchEvent(
-					evt,
-					evt.type,
-					evt.target.hasAttribute('data-no-click')
-						? /** @type {SVGGraphicsElement} */(document.elementsFromPoint(evt.clientX, evt.clientY)[1])
-						: evt.currentTarget);
-				break;
 			case 'pointerup': {
 				const elems = document.elementsFromPoint(evt.clientX, evt.clientY);
 				this._dispatchEvent(
