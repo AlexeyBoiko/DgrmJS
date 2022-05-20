@@ -78,7 +78,8 @@ export class AppRhombDecorator extends SvgShapeTextEditorDecorator {
 			// visability
 			props: {
 				main: rhomb,
-				outer: rhomb,
+				outer: { d: rhombPathCalc(120, 70, width + 80) },
+				border: rhomb,
 				// out connectors
 				outleft: { cx: connectors.l.x },
 				outright: { cx: connectors.r.x },
