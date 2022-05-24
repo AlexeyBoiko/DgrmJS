@@ -41,7 +41,6 @@ export class Diagram extends EventTarget {
 	 */
 	shapeAdd(param) {
 		const shape = /** @type{IPresenterShape} */(this._presenter.append('shape', param));
-		// return /** @type{IPresenterShape} */(this._presenter.append('shape', param));
 		this._dispatchEvent('add', { target: shape });
 		return shape;
 	}
@@ -80,14 +79,17 @@ export class Diagram extends EventTarget {
 	handleEvent(evt) {
 		switch (evt.type) {
 			case 'pointermove':
-				if (this._activeConnector) {
-					this._connectorStartMove(this._activeConnector, evt);
-					this._activeConnector = null;
+				if (this._downElement) {
+					if (this._downElement.type === 'connector') {
+						this._connectorStartMove(/** @type {IPresenterConnector} */(this._downElement), evt);
+					} else {
+						this.shapeSetMoving(/** @type {IPresenterShape} */(this._downElement), { x: evt.detail.clientX, y: evt.detail.clientY });
+					}
+					this._downElement = null;
+					shapeStateAdd(this._movedShape, 'disabled');
 				}
 
 				if (this._movedShape) {
-					shapeStateAdd(this._movedShape, 'disabled');
-
 					this._movedShape.update({
 						position: {
 							x: this._movedDelta.x + evt.detail.clientX,
@@ -98,27 +100,24 @@ export class Diagram extends EventTarget {
 				}
 				break;
 			case 'pointerdown':
-				switch (evt.detail.target.type) {
-					case 'canvas':
-					case 'shape':
-						this.shapeSetMoving(/** @type {IPresenterShape} */(evt.detail.target), { x: evt.detail.clientX, y: evt.detail.clientY });
-						break;
-					case 'connector': {
-						/**
-						 * @private
-						 * @type {IPresenterConnector}
-						 */
-						this._activeConnector = /** @type {IPresenterConnector} */(evt.detail.target);
-						// this._activeConnector = /** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt).detail.target;
-						// this._onConnectorDown(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
-					}
-				}
+				/**
+				 * @private
+				 * @type {IPresenterElement}
+				 */
+				this._downElement = evt.detail.target;
 				break;
 			case 'pointerup':
 				if (evt.detail.target.type === 'connector') {
 					this._connectorOnUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
+				} else if (this._downElement) {
+					// if click without move
+
+					this._selectedSet(this._downElement.type === 'connector'
+						? /** @type {IPresenterConnector} */(this._downElement).shape
+						: /** @type {IPresenterShape} */(this._downElement));
+					this._downElement = null;
 				}
-				this._activeConnector = null;
+
 				this._movedClean();
 				this._hoveredClean();
 				break;
@@ -191,7 +190,7 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterShape} shape
+	 * @param {IPresenterShape?=} shape
 	 * @private
 	 */
 	_selectedSet(shape) {
@@ -229,7 +228,7 @@ export class Diagram extends EventTarget {
 			y: shapePosition.y - clientPoint.y
 		};
 
-		this._selectedSet(this._movedShape);
+		this._selectedSet();
 	}
 
 	/** @private */

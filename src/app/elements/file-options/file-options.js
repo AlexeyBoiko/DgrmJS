@@ -21,6 +21,8 @@ export class FileOptions extends HTMLElement {
 
 				top: 0px;
 				left: 0px;
+
+				z-index: 1;
 			}
 
 			.options div, .options a { 
