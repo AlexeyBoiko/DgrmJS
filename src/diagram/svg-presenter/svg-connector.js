@@ -1,3 +1,5 @@
+import { stateClassSync } from './svg-presenter-utils.js';
+
 /** @implements {IPresenterConnector} */
 export class SvgConnector {
 	/**
@@ -48,7 +50,8 @@ export class SvgConnector {
 	 */
 	update(param) {
 		this._state = param.state;
-		if (this._state.has('connected')) { this._svgEl.classList.add('connected'); } else { this._svgEl.classList.remove('connected'); }
-		if (this._state.has('hovered')) { this._svgEl.classList.add('hover'); } else { this._svgEl.classList.remove('hover'); }
+		for (const state of ['connected', 'hovered', 'selected']) {
+			stateClassSync(this._state, this._svgEl, /** @type{PresenterShapeState} */(state));
+		}
 	}
 }

@@ -1,4 +1,5 @@
 import { svgPositionSet, svgPositionGet, svgRotate, svgTextDraw } from '../../infrastructure/svg-utils.js';
+import { stateClassSync } from '../svg-presenter-utils.js';
 
 /** @implements {ISvgPresenterShape} */
 export class SvgShape {
@@ -70,9 +71,9 @@ export class SvgShape {
 
 		if (param.state) {
 			this._state = param.state;
-			if (this._state.has('selected')) { this.svgEl.classList.add('selected'); } else { this.svgEl.classList.remove('selected'); }
-			if (this._state.has('hovered')) { this.svgEl.classList.add('hover'); } else { this.svgEl.classList.remove('hover'); }
-			if (this._state.has('disabled')) { this.svgEl.style.pointerEvents = 'none'; } else { this.svgEl.style.pointerEvents = 'auto'; }
+			for (const state of ['selected', 'hovered', 'disabled']) {
+				stateClassSync(this._state, this.svgEl, /** @type{PresenterShapeState} */(state));
+			}
 		}
 	}
 

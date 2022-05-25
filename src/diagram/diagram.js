@@ -110,14 +110,12 @@ export class Diagram extends EventTarget {
 				if (evt.detail.target.type === 'connector') {
 					this._connectorOnUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
 				} else if (this._downElement) {
-					// if click without move
+					// if click on shape without move
 
-					this._selectedSet(this._downElement.type === 'connector'
-						? /** @type {IPresenterConnector} */(this._downElement).shape
-						: /** @type {IPresenterShape} */(this._downElement));
-					this._downElement = null;
+					this._selectedSet(/** @type {IPresenterShape} */(this._downElement));
 				}
 
+				this._downElement = null;
 				this._movedClean();
 				this._hoveredClean();
 				break;
@@ -173,7 +171,10 @@ export class Diagram extends EventTarget {
 	 * @private
 	 */
 	_connectorOnUp (evt) {
-		if (!this._movedShape || !this._movedShape.connectable || evt.detail.target.connectorType !== 'in') {
+		if (evt.detail.target.connectorType !== 'in') { return; }
+
+		if (!this._movedShape?.connectable) {
+			this._selectedSet(evt.detail.target);
 			return;
 		}
 
@@ -190,7 +191,7 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterShape?=} shape
+	 * @param {IPresenterStatable?=} shape
 	 * @private
 	 */
 	_selectedSet(shape) {
@@ -206,7 +207,7 @@ export class Diagram extends EventTarget {
 			}
 
 			/**
-			 * @type {IPresenterShape}
+			 * @type {IPresenterStatable}
 			 * @private
 			 */
 			this._selectedShape = shape;
