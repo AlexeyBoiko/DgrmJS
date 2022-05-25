@@ -92,7 +92,7 @@
 				fill: rgb(108 187 247);
 			}
 
-			[data-connect="in"].hover circle {
+			[data-connect="in"].hovered circle {
 				stroke-width: 25px;
 			}
 
@@ -133,15 +133,15 @@
 				stroke: rgb(108 187 247 / 51%);
 			}
 
-			[data-templ].hover [data-connect="in"] {
+			[data-templ].hovered [data-connect="in"] {
 				display: unset;
 			}
 
-			[data-templ].hover [data-connect="in"] .empty {
+			[data-templ].hovered [data-connect="in"] .empty {
 				display: unset;
 			}
 
-			[data-templ].hover [data-connect="in"] .not-empty {
+			[data-templ].hovered [data-connect="in"] .not-empty {
 				display: none;
 			}
 
@@ -157,12 +157,16 @@
 				display: none;
 			}
 
+			[data-templ].disabled {
+				pointer-events: none;
+			}
+
 			@media (pointer: coarse) {
 				[data-connect] {
 					stroke-width: 15px;
 				}
 
-				[data-connect="in"].hover circle {
+				[data-connect="in"].hovered circle {
 					stroke-width: 55px;
 				}
 			}
@@ -330,7 +334,7 @@
 		</defs>
 		<g data-key="canvas"></g>
 	</svg>
-	<script src="index.js?v=20220524" type="module"></script>
+	<script src="index.js?v=20220525" type="module"></script>
 </body>
 
 </html>
