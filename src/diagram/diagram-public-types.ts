@@ -19,14 +19,13 @@ interface IDiagramElement {
 /** type = 'shape'  */
 interface IDiagramShape extends IDiagramElement {
 	positionGet(): Point;
-	//update(param: PresenterShapeUpdateParam): void;
 }
 
 /** type = 'connector' */
 interface IDiagramConnector extends IDiagramElement {
-	/** unique id into shape */
-	key: string;
 	shape: IDiagramShape;
+	/** connector id into shape */
+	key: string;
 }
 
 
@@ -48,8 +47,8 @@ interface IDiagramEventConnectDetail {
 
 interface DiagramConnectorEnd {
 	shape: IDiagramShape;
-	/** connector id */
-	connector: string;
+	/** connector id into shape */
+	key: string;
 }
 interface DiagramShapeConnectParam {
 	start: DiagramConnectorEnd;

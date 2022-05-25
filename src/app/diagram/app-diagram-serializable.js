@@ -167,8 +167,8 @@ export class AppDiagramSerializable extends EventTarget {
 		if (data.c && data.c.length > 0) {
 			for (const conJson of data.c) {
 				this._diagram.shapeConnect({
-					start: { shape: shapes[conJson.s.i], connector: conJson.s.c },
-					end: { shape: shapes[conJson.e.i], connector: conJson.e.c }
+					start: { shape: shapes[conJson.s.i], key: conJson.s.c },
+					end: { shape: shapes[conJson.e.i], key: conJson.e.c }
 				});
 
 				this._connectors.push({

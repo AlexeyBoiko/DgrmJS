@@ -71,8 +71,8 @@ export class Diagram extends EventTarget {
 	 */
 	shapeConnect(param) {
 		this._connectorManager.add(
-			param.start.shape.connectors.get(param.start.connector),
-			param.end.shape.connectors.get(param.end.connector));
+			param.start.shape.connectors.get(param.start.key),
+			param.end.shape.connectors.get(param.end.key));
 	}
 
 	/** @param { CustomEvent<IPresenterEventDetail> } evt */
