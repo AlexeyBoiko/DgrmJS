@@ -6,15 +6,15 @@ import { connectorsInit, shapeCreate } from './svg-shape/svg-shape-factory.js';
 
 /**
  * @param {SVGSVGElement} svg
- * @param {ISvgPresenterShapeDecoratorFactory=} shapeDecoratorFactory
+ * @param {ISvgPresenterShapeFactory?=} shapeFactory
  * @returns {IDiagram}
  */
-export function svgDiagramCreate(svg, shapeDecoratorFactory) {
+export function svgDiagramCreate(svg, shapeFactory) {
 	/**
 	 * @param {ISvgPresenterShapeFactoryParam} param
 	 * @returns {ISvgPresenterShape}
 	 */
-	function shapeFactory(param) {
+	function _shapeFactory(param) {
 		if (!param.createParams.postionIsIntoCanvas) {
 			const canvasPosition = svgPositionGet(param.svgCanvas);
 			param.createParams.position.x -= canvasPosition.x;
@@ -22,10 +22,7 @@ export function svgDiagramCreate(svg, shapeDecoratorFactory) {
 		}
 
 		/** @type {ISvgPresenterShape} */
-		let shape = shapeCreate(param.svgCanvas, param.createParams);
-		if (shapeDecoratorFactory) {
-			shape = shapeDecoratorFactory(shape, param);
-		}
+		const shape = shapeFactory ? shapeFactory(param) : shapeCreate(param.svgCanvas, param.createParams);
 
 		param.svgElemToPresenterObj.set(shape.svgEl, shape);
 		connectorsInit(param.svgElemToPresenterObj, shape);
@@ -34,6 +31,6 @@ export function svgDiagramCreate(svg, shapeDecoratorFactory) {
 		return shape;
 	}
 
-	const presenter = new SvgPresenter(svg, shapeFactory);
+	const presenter = new SvgPresenter(svg, _shapeFactory);
 	return new Diagram(presenter, new ConnectorManager(presenter));
 }

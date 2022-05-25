@@ -14,7 +14,3 @@ interface ISvgPresenterShapeFactoryParam {
 interface ISvgPresenterShapeFactory {
 	(param: ISvgPresenterShapeFactoryParam) : ISvgPresenterShape
 }
-
-interface ISvgPresenterShapeDecoratorFactory {
-	(shape: ISvgPresenterShape, param: ISvgPresenterShapeFactoryParam) : ISvgPresenterShape
-}

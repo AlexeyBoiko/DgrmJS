@@ -13,9 +13,7 @@ export function shapeCreate(svgCanvas, createParams) {
 
 	// TODO: to reduce DOM changes (for performance) 'shape.update' must go before 'svg.append'
 	svgCanvas.append(shapeSvgEl);
-	const shape = new SvgShape({ svgEl: shapeSvgEl });
-
-	return shape;
+	return new SvgShape({ svgEl: shapeSvgEl });
 }
 
 /**
