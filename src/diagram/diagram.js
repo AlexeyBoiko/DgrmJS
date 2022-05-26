@@ -36,13 +36,26 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {PresenterShapeAppendParam} param
-	 * @returns {IPresenterShape}
+	 * @param {PresenterChildAddType} type
+	 * @param {PresenterShapeAppendParam | DiagramPrivateShapeConnectParam} param
+	 * @returns {IDiagramElement}
 	 */
-	shapeAdd(param) {
-		const shape = /** @type{IPresenterShape} */(this._presenter.append('shape', param));
-		this._dispatchEvent('add', { target: shape });
-		return shape;
+	add(type, param) {
+		/** @type {IDiagramElement} */
+		let element;
+		switch (type) {
+			case 'shape':
+				element = this._presenter.append('shape', /** @type {PresenterShapeAppendParam} */(param));
+				break;
+			case 'path':
+				element = this._connectorManager.add(
+					/** @type {DiagramPrivateShapeConnectParam} */(param).start.shape.connectors.get(/** @type {DiagramPrivateShapeConnectParam} */(param).start.key),
+					/** @type {DiagramPrivateShapeConnectParam} */(param).end.shape.connectors.get(/** @type {DiagramPrivateShapeConnectParam} */(param).end.key));
+				break;
+		}
+
+		this._dispatchEvent('add', { target: element });
+		return element;
 	}
 
 	/**
@@ -57,22 +70,11 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterShape} shape
+	 * @param {IDiagramElement} shape
 	 * @returns {void}
 	 */
-	shapeDel(shape) {
-		this._connectorManager.deleteByShape(shape);
-		this._presenter.delete(shape);
-	}
-
-	/**
-	 * @param {DiagramPrivateShapeConnectParam} param
-	 * @returns {void}
-	 */
-	shapeConnect(param) {
-		this._connectorManager.add(
-			param.start.shape.connectors.get(param.start.key),
-			param.end.shape.connectors.get(param.end.key));
+	del(shape) {
+		this._connectorManager.del(/** @type { IPresenterShape | IPresenterPath} */(shape));
 	}
 
 	/** @param { CustomEvent<IPresenterEventDetail> } evt */
@@ -142,7 +144,7 @@ export class Diagram extends EventTarget {
 				//
 				// connectorEnd create
 
-				const connectorEnd = this.shapeAdd(connectorEndParams(connector));
+				const connectorEnd = /** @type {IPresenterShape} */(this.add('shape', connectorEndParams(connector)));
 				this.shapeSetMoving(connectorEnd, { x: evt.detail.clientX, y: evt.detail.clientY });
 				this._connectorManager.add(connector, connectorEnd.defaultInConnector);
 				break;
@@ -157,7 +159,7 @@ export class Diagram extends EventTarget {
 						end: connector
 					})) { return; }
 
-					const connectorEnd = this.shapeAdd(connectorEndParams(connector));
+					const connectorEnd = /** @type {IPresenterShape} */(this.add('shape', connectorEndParams(connector)));
 					this.shapeSetMoving(connectorEnd, { x: evt.detail.clientX, y: evt.detail.clientY });
 					this._connectorManager.replaceEnd(connector, connectorEnd.defaultInConnector);
 				}
@@ -187,7 +189,7 @@ export class Diagram extends EventTarget {
 		})) { return; }
 
 		this._connectorManager.replaceEnd(this._movedShape.defaultInConnector, evt.detail.target);
-		this.shapeDel(this._movedShape);
+		this.del(this._movedShape);
 	}
 
 	/**

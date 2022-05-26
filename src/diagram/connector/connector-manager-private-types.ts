@@ -7,7 +7,7 @@ interface IConnectorConnector extends IPresenterConnector {
 }
 
 interface IConnectorPath extends IPresenterPath {
-	start: IConnectorConnector;
-	end: IConnectorConnector;
+	start?: IConnectorConnector;
+	end?: IConnectorConnector;
 }
 

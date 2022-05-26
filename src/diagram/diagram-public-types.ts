@@ -2,11 +2,10 @@
 
 interface IDiagram {
 	on(evtType: DiagramEventType, listener: EventListenerOrEventListenerObject): this;
-	shapeAdd(param: PresenterShapeAppendParam): IDiagramShape;
-	shapeDel(shape: IDiagramShape): void;
-	shapeConnect(param: DiagramShapeConnectParam): void;
-	shapeSetMoving(shape: IDiagramShape, offsetPoint: Point): void;
+	add(type: PresenterChildAddType, param: PresenterShapeAppendParam | DiagramShapeConnectParam): IDiagramElement;
+	del(element: IDiagramElement): void;
 	shapeUpdate(shape: IDiagramShape, param: PresenterShapeUpdateParam): void;
+	shapeSetMoving(shape: IDiagramShape, offsetPoint: Point): void;
 }
 
 
@@ -33,10 +32,12 @@ interface IDiagramConnector extends IDiagramElement {
 
 type DiagramEventType = 'add' | 'select' | 'connect' | 'disconnect';
 
+// DiagramEventType = 'add' | 'select'
 interface IDiagramEventSelectDetail<T extends IDiagramShape | IDiagramConnector> {
 	target: T;
 }
 
+// DiagramEventType = 'connect' | 'disconnect'
 interface IDiagramEventConnectDetail {
 	start: IDiagramConnector;
 	end: IDiagramConnector;
