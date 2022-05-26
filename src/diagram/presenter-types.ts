@@ -69,7 +69,6 @@ type PresenterElementType = 'canvas' | 'shape' | 'connector' | 'path';
 
 interface IPresenterElement extends IDisposable {
 	type: PresenterElementType;
-	
 }
 
 interface IPresenterShape extends IPresenterElement, IPresenterStatable {
