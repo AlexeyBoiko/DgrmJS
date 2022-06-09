@@ -49,8 +49,8 @@ export class Diagram extends EventTarget {
 				break;
 			case 'path':
 				element = this._connectorManager.add(
-					/** @type {DiagramPrivateShapeConnectParam} */(param).start.shape.connectors.get(/** @type {DiagramPrivateShapeConnectParam} */(param).start.key),
-					/** @type {DiagramPrivateShapeConnectParam} */(param).end.shape.connectors.get(/** @type {DiagramPrivateShapeConnectParam} */(param).end.key));
+					connectorGet(/** @type {DiagramPrivateShapeConnectParam} */(param).start),
+					connectorGet(/** @type {DiagramPrivateShapeConnectParam} */(param).end));
 				break;
 		}
 
@@ -146,7 +146,10 @@ export class Diagram extends EventTarget {
 
 				const connectorEnd = /** @type {IPresenterShape} */(this.add('shape', connectorEndParams(connector)));
 				this.shapeSetMoving(connectorEnd, { x: evt.detail.clientX, y: evt.detail.clientY });
-				this._connectorManager.add(connector, connectorEnd.defaultInConnector);
+				this.add('path', {
+					start: connector,
+					end: connectorEnd.defaultInConnector
+				});
 				break;
 			}
 			case 'in': {
@@ -284,4 +287,14 @@ export class Diagram extends EventTarget {
 			detail
 		}));
 	}
+}
+
+/**
+ * @param {DiagramPrivateConnectorEnd | IPresenterConnector} startOrEnd
+ * @returns {IPresenterConnector}
+ */
+function connectorGet(startOrEnd) {
+	return /** @type {IPresenterConnector} */(startOrEnd).type
+		? /** @type {IPresenterConnector} */(startOrEnd)
+		: startOrEnd.shape.connectors.get(startOrEnd.key);
 }
