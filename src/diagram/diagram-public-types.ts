@@ -2,11 +2,10 @@
 
 interface IDiagram {
 	on(evtType: DiagramEventType, listener: EventListenerOrEventListenerObject): this;
-	shapeAdd(param: PresenterShapeAppendParam): IDiagramShape;
-	shapeDel(shape: IDiagramShape): void;
-	shapeConnect(param: DiagramShapeConnectParam): void;
-	shapeSetMoving(shape: IDiagramShape, offsetPoint: Point): void;
+	add(type: PresenterChildAddType, param: PresenterShapeAppendParam | DiagramShapeConnectParam): IDiagramElement;
+	del(element: IDiagramElement): void;
 	shapeUpdate(shape: IDiagramShape, param: PresenterShapeUpdateParam): void;
+	shapeSetMoving(shape: IDiagramShape, offsetPoint: Point): void;
 }
 
 
@@ -19,14 +18,13 @@ interface IDiagramElement {
 /** type = 'shape'  */
 interface IDiagramShape extends IDiagramElement {
 	positionGet(): Point;
-	//update(param: PresenterShapeUpdateParam): void;
 }
 
 /** type = 'connector' */
 interface IDiagramConnector extends IDiagramElement {
-	/** unique id into shape */
-	key: string;
 	shape: IDiagramShape;
+	/** connector id into shape */
+	key: string;
 }
 
 
@@ -34,10 +32,12 @@ interface IDiagramConnector extends IDiagramElement {
 
 type DiagramEventType = 'add' | 'select' | 'connect' | 'disconnect';
 
-interface IDiagramEventSelectDetail<T extends IDiagramShape & IDiagramConnector> {
+// DiagramEventType = 'add' | 'select'
+interface IDiagramEventSelectDetail<T extends IDiagramShape | IDiagramConnector> {
 	target: T;
 }
 
+// DiagramEventType = 'connect' | 'disconnect'
 interface IDiagramEventConnectDetail {
 	start: IDiagramConnector;
 	end: IDiagramConnector;
@@ -48,8 +48,8 @@ interface IDiagramEventConnectDetail {
 
 interface DiagramConnectorEnd {
 	shape: IDiagramShape;
-	/** connector id */
-	connector: string;
+	/** connector id into shape */
+	key: string;
 }
 interface DiagramShapeConnectParam {
 	start: DiagramConnectorEnd;

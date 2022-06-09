@@ -39,9 +39,11 @@ export class AppDiagramSerializable extends EventTarget {
 	handleEvent(evt) {
 		switch (evt.type) {
 			case 'add':
-				/** @type {IShapeTextEditorDecorator} */(evt.detail.target)
-					.on('txtUpd', this)
-					.on('del', this);
+				if (evt.detail.target.type === 'shape') {
+					/** @type {IShapeTextEditorDecorator} */(evt.detail.target)
+						.on('txtUpd', this)
+						.on('del', this);
+				}
 				break;
 			case 'txtUpd':
 				this._shapeData.get(evt.detail.target).detail =
@@ -64,7 +66,7 @@ export class AppDiagramSerializable extends EventTarget {
 	 * @private
 	 */
 	_shapeDel(shape) {
-		this._diagram.shapeDel(shape);
+		this._diagram.del(shape);
 		this._shapeData.delete(shape);
 		this._connectors = this._connectors
 			.filter(el => el.start.shape !== shape && el.end.shape !== shape);
@@ -75,7 +77,7 @@ export class AppDiagramSerializable extends EventTarget {
 	 * @returns {IDiagramShape}
 	 */
 	shapeAdd(param) {
-		const shape = this._diagram.shapeAdd(param);
+		const shape = /** @type {IDiagramShape} */(this._diagram.add('shape', param));
 
 		this._shapeData.set(
 			shape,
@@ -166,9 +168,9 @@ export class AppDiagramSerializable extends EventTarget {
 
 		if (data.c && data.c.length > 0) {
 			for (const conJson of data.c) {
-				this._diagram.shapeConnect({
-					start: { shape: shapes[conJson.s.i], connector: conJson.s.c },
-					end: { shape: shapes[conJson.e.i], connector: conJson.e.c }
+				this._diagram.add('path', {
+					start: { shape: shapes[conJson.s.i], key: conJson.s.c },
+					end: { shape: shapes[conJson.e.i], key: conJson.e.c }
 				});
 
 				this._connectors.push({

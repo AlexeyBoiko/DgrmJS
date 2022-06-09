@@ -13,7 +13,7 @@ export class ConnectorManager {
 	/**
 	 * @param {IConnectorConnector} connectorStart
 	 * @param {IConnectorConnector} connectorEnd
-	 * @returns {void}
+	 * @returns {IPresenterPath}
 	 */
 	add(connectorStart, connectorEnd) {
 		const path = /** @type {IConnectorPath} */(this._presenter.append(
@@ -36,6 +36,8 @@ export class ConnectorManager {
 
 		ConnectorManager._pathAdd(connectorStart.shape, path);
 		ConnectorManager._pathAdd(connectorEnd.shape, path);
+
+		return path;
 	}
 
 	/**
@@ -93,24 +95,45 @@ export class ConnectorManager {
 	}
 
 	/**
-	 * delete related to shape connectors
+	 * @param { IConnetorShape | IConnectorPath } shapeOrPath
+	 */
+	del(shapeOrPath) {
+		switch (shapeOrPath.type) {
+			case 'shape': this._deleteShape(/** @type {IConnetorShape} */(shapeOrPath)); break;
+			case 'path': this._deletePath(/** @type {IConnectorPath} */(shapeOrPath)); break;
+		}
+	}
+
+	/**
+	 * @param {IConnectorPath} path
+	 * @private
+	 */
+	_deletePath(path) {
+		path.end.shape.connectedPaths.delete(path);
+		if (!any(path.end.shape.connectedPaths, pp => pp.end === path.end)) {
+			shapeStateDel(path.end, 'connected');
+		}
+
+		path.start.shape.connectedPaths.delete(path);
+
+		if (path.end.shape.connectable) {
+			this._presenter.delete(path.end.shape);
+		}
+		this._presenter.delete(path);
+	}
+
+	/**
+	 * delete shape and related to shape connectors
 	 * @param {IConnetorShape} shape
 	 * @returns {void}
+	 * @private
 	 */
-	deleteByShape(shape) {
+	_deleteShape(shape) {
+		this._presenter.delete(shape);
+
 		if (!any(shape.connectedPaths)) { return; }
-
 		for (const path of shape.connectedPaths) {
-			path.end.shape.connectedPaths.delete(path);
-			shapeStateDel(path.end, 'connected');
-
-			path.start.shape.connectedPaths.delete(path);
-			shapeStateDel(path.start, 'connected');
-
-			if (path.end.shape.connectable) {
-				this._presenter.delete(path.end.shape);
-			}
-			this._presenter.delete(path);
+			this._deletePath(path);
 		}
 	}
 

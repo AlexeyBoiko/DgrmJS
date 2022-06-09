@@ -1,6 +1,6 @@
 interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
-	append(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParam): IPresenterElement;
+	append(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParam): IPresenterShape | IPresenterPath;
 	delete(elem: IPresenterElement): void;
 }
 
@@ -69,7 +69,6 @@ type PresenterElementType = 'canvas' | 'shape' | 'connector' | 'path';
 
 interface IPresenterElement extends IDisposable {
 	type: PresenterElementType;
-	
 }
 
 interface IPresenterShape extends IPresenterElement, IPresenterStatable {

@@ -1,9 +1,9 @@
 interface DiagramPrivateConnectorEnd extends DiagramConnectorEnd {
 	shape: IPresenterShape;
 	/** connector id */
-	connector: string;
+	key: string;
 }
 interface DiagramPrivateShapeConnectParam extends DiagramShapeConnectParam {
-	start: DiagramPrivateConnectorEnd;
-	end: DiagramPrivateConnectorEnd;
+	start: DiagramPrivateConnectorEnd | IPresenterConnector;
+	end: DiagramPrivateConnectorEnd | IPresenterConnector;
 }

@@ -1,5 +1,5 @@
 interface IConnectorManager {
-	add(connectorStart: IPresenterConnector, connectorEnd: IPresenterConnector): void;
+	add(connectorStart: IPresenterConnector, connectorEnd: IPresenterConnector): IPresenterPath;
 
 	/** reconect to new connector */
 	replaceEnd(connectorOld: IPresenterConnector, connectorNew: IPresenterConnector): void;
@@ -10,6 +10,6 @@ interface IConnectorManager {
 	/** update connectors of the shape */
 	updatePosition(shape: IPresenterShape): void;
 
-	/** delete related to shape connectors */
-	deleteByShape(shape: IPresenterShape): void;
+	/** delete shape and related to shape connectors */
+	del(shapeOrPath: IConnetorShape | IConnectorPath): void;
 }
