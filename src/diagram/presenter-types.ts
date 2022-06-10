@@ -11,7 +11,7 @@ interface IPresenter {
 type PresenterChildAddType = 'shape' | 'path';
 
 type PresenterShapeState = 'selected' | 'disabled' | 'hovered' | 'connected';
-interface IPresenterStatable {
+interface IPresenterStatable extends IDiagramElement {
 	stateHas(state: PresenterShapeState): boolean;
 	stateGet(): Set<PresenterShapeState>;
 	update(param: { state: Set<PresenterShapeState> }): void;
@@ -102,6 +102,8 @@ interface PresenterPathEnd {
 	dir?: PresenterPathEndDirection
 }
 interface IPresenterPath extends IPresenterElement {
+	start?: IPresenterConnector;
+	end?: IPresenterConnector;
 	/**
 	 * update path
 	 * @param endType end or start of path that change position

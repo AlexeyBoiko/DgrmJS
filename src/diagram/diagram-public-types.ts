@@ -32,16 +32,17 @@ interface IDiagramConnector extends IDiagramElement {
 
 type DiagramEventType = 'add' | 'select' | 'connect' | 'disconnect';
 
+// TODO: remove IDiagramEventSelectDetail replace with CustomEvent
 // DiagramEventType = 'add' | 'select'
-interface IDiagramEventSelectDetail<T extends IDiagramShape | IDiagramConnector> {
+interface IDiagramEventDetail<T extends IDiagramElement> {
 	target: T;
 }
 
-// DiagramEventType = 'connect' | 'disconnect'
-interface IDiagramEventConnectDetail {
-	start: IDiagramConnector;
-	end: IDiagramConnector;
-}
+// // DiagramEventType = 'connect' | 'disconnect'
+// interface IDiagramEventConnectDetail {
+// 	start: IDiagramConnector;
+// 	end: IDiagramConnector;
+// }
 
 
 // method params

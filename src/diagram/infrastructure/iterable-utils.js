@@ -48,6 +48,21 @@ export function any(iterable, filter) {
 
 /**
  * @template T
+ * @template TRes
+ * @param {Iterable<T>} iterable
+ * @param {(el:T) => TRes} mapFn
+ * @returns {Array<TRes>}
+ */
+export function map(iterable, mapFn) {
+	const res = [];
+	for (const el of iterable) {
+		res.push(mapFn(el));
+	}
+	return res;
+}
+
+/**
+ * @template T
  * @param {Set<T>} set
  * @param {T} el
  * @returns {Set<T>}
@@ -55,4 +70,21 @@ export function any(iterable, filter) {
 export function setDel(set, el) {
 	set.delete(el);
 	return set;
+}
+
+/**
+ * @template T
+ * @param {Set<T>} set
+ * @param {{(el:T) :boolean}} filter
+ * @returns {void}
+ */
+export function setFilter(set, filter) {
+	const toDel = [];
+	for (const el of set) {
+		if (filter(el)) { toDel.push(el); }
+	}
+
+	for (const el of toDel) {
+		set.delete(el);
+	}
 }
