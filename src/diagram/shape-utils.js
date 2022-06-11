@@ -2,7 +2,7 @@ import { setDel } from './infrastructure/iterable-utils.js';
 
 /**
  * @param {IPresenterStatable} shape
- * @param {PresenterShapeState} state
+ * @param {DiagramShapeState} state
  */
 export function shapeStateAdd(shape, state) {
 	if (!shape.stateHas(state)) {
@@ -13,7 +13,7 @@ export function shapeStateAdd(shape, state) {
 
 /**
  * @param {IPresenterStatable} shape
- * @param {PresenterShapeState} state
+ * @param {DiagramShapeState} state
  */
 export function shapeStateDel(shape, state) {
 	if (shape.stateHas(state)) {
@@ -25,7 +25,7 @@ export function shapeStateDel(shape, state) {
 /**
  * create param for connectorEnd shape
  * @param {IPresenterConnector} connector
- * @returns {PresenterShapeAppendParam}
+ * @returns {DiagramShapeAddParam}
  * @private
  */
 export function connectorEndParams(connector) {

@@ -8,7 +8,7 @@ interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape {
 interface ISvgPresenterShapeFactoryParam { 
 	svgCanvas: SVGGElement,
 	svgElemToPresenterObj: WeakMap<SVGGraphicsElement, IPresenterElement>,
-	createParams: PresenterShapeAppendParam
+	createParams: DiagramShapeAddParam
 }
 
 interface ISvgPresenterShapeFactory {

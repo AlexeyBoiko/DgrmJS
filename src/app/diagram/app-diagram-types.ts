@@ -2,10 +2,10 @@
 
 interface IAppDiagramSerializable {
 	svg: SVGSVGElement;
-	shapeAdd(param: PresenterShapeAppendParam): IDiagramShape;
+	shapeAdd(param: DiagramShapeAddParam): IDiagramShape;
 	// shapeDel(shape: IDiagramShape): void;
 	shapeSetMoving(shape: IDiagramShape, offsetPoint: Point): void;
-	shapeUpdate(shape: IDiagramShape, param: PresenterShapeUpdateParam): void;
+	shapeUpdate(shape: IDiagramShape, param: DiagramShapeUpdateParam): void;
 	clear(): void;
 
 	dataGet(): AppSerializeData;

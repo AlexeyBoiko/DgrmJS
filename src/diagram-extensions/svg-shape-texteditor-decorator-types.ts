@@ -1,6 +1,6 @@
 interface ShapeTextEditorDecoratorEventUpdateDetail {
 	target: ISvgPresenterShape;
-	props?: PresenterShapeProps;
+	props?: DiagramShapeProps;
 }
 
 type ShapeTextEditorEventType = 'txtUpd' | 'del';

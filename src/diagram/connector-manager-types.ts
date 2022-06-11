@@ -5,11 +5,11 @@ interface IConnectorManager {
 	replaceEnd(connectorOld: IPresenterConnector, connectorNew: IPresenterConnector): void;
 
 	/** get start connector element by the end connector element */
-	startConnectorGet(connector: IPresenterConnector): IPresenterConnector;
+	pathGetByEnd(connectorEnd: IPresenterConnector): IPresenterPath;
 
 	/** update connectors of the shape */
 	updatePosition(shape: IPresenterShape): void;
 
 	/** delete shape and related to shape connectors */
-	del(shapeOrPath: IConnetorShape | IConnectorPath): void;
+	del(shapeOrPath: IConnetorShape | IPresenterPath): void;
 }

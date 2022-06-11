@@ -9,9 +9,9 @@ import { textareaCreate } from './infrastructure/svg-textarea.js';
  *
  * function encapsulate parsing text editor attributes
  * @param {SVGGraphicsElement} svgShapeEl
- * @param {PresenterShapeProps} props
+ * @param {DiagramShapeProps} props
  * @param {SVGGraphicsElement} targetEl
- * @param {{(textEl:SVGTextElement, updatedProp:PresenterShapeProps):void}} onchange
+ * @param {{(textEl:SVGTextElement, updatedProp:DiagramShapeProps):void}} onchange
  * @param {{():void}} onblur
  * @returns {SVGForeignObjectElement}
  */
@@ -60,7 +60,7 @@ export function textEditorShow(svgShapeEl, props, targetEl, onchange, onblur) {
 
 /**
  * @param {SVGGraphicsElement} svgShapeEl
- * @param {PresenterShapeProps} props
+ * @param {DiagramShapeProps} props
  */
 export function textEditorHighlightEmpty(svgShapeEl, props) {
 	svgShapeEl.querySelectorAll('[data-text-for]').forEach(el => {

@@ -5,13 +5,13 @@ import { textEditorHighlightEmpty, textEditorShow } from './text-editor-utils.js
 export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorator {
 	/**
 	 * @param {ISvgPresenterShape} svgShape
-	 * @param {PresenterShapeProps} initProps
+	 * @param {DiagramShapeProps} initProps
 	 */
 	constructor(svgShape, initProps) {
 		super(svgShape);
 
 		/**
-		 * @type {PresenterShapeProps}
+		 * @type {DiagramShapeProps}
 		 * @private
 		 */
 		this._props = Object.assign({}, initProps); // TODO: save only 'textContent' props
@@ -28,7 +28,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	}
 
 	/**
-	 * @param {PresenterShapeUpdateParam} param
+	 * @param {DiagramShapeUpdateParam} param
 	 */
 	update(param) {
 		if (param.props) {
@@ -95,7 +95,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * when text changed
 	 * can be overridden
 	 * @param {SVGTextElement} textEl
-	 * @param {PresenterShapeProps} updatedProp
+	 * @param {DiagramShapeProps} updatedProp
 	 */
 	onTextChange(textEl, updatedProp) {
 		this.svgEl.dispatchEvent(new CustomEvent('txtUpd', {

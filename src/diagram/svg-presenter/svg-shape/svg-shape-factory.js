@@ -3,7 +3,7 @@ import { SvgShape } from './svg-shape.js';
 
 /**
  * @param {SVGGElement} svgCanvas
- * @param {PresenterShapeAppendParam} createParams
+ * @param {DiagramShapeAddParam} createParams
  * @returns {SvgShape}
  */
 export function shapeCreate(svgCanvas, createParams) {
@@ -51,7 +51,7 @@ function connectorCreate(svgEl, shape) {
 		shape,
 		key: svgEl.getAttribute('data-key'),
 		innerPosition: parseConnectPointAttr(svgEl),
-		dir: /** @type {PresenterPathEndDirection} */(svgEl.getAttribute('data-connect-dir'))
+		dir: /** @type {DiagramPathEndDirection} */(svgEl.getAttribute('data-connect-dir'))
 	});
 }
 

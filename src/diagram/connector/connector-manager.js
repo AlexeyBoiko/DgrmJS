@@ -138,11 +138,11 @@ export class ConnectorManager {
 	}
 
 	/**
-	 * @param {IConnectorConnector} connector
-	 * @returns {IConnectorConnector}
+	 * @param {IConnectorConnector} endConnector
+	 * @returns {IConnectorPath}
 	 */
-	startConnectorGet(connector) {
-		return last(connector.shape.connectedPaths, pp => pp.end === connector).start;
+	pathGetByEnd(endConnector) {
+		return last(endConnector.shape.connectedPaths, pp => pp.end === endConnector);
 	}
 
 	/**
@@ -169,8 +169,8 @@ export class ConnectorManager {
 	}
 
 	/**
-	 * @param {PresenterPathEndDirection} dir
-	 * @returns {PresenterPathEndDirection}
+	 * @param {DiagramPathEndDirection} dir
+	 * @returns {DiagramPathEndDirection}
 	 * @private
 	 */
 	static _dirRevers(dir) {

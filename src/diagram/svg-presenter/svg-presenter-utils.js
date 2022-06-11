@@ -1,7 +1,7 @@
 /**
- * @param {Set<PresenterShapeState>} states
+ * @param {Set<DiagramShapeState>} states
  * @param {SVGGraphicsElement} svgEl
- * @param {PresenterShapeState} state
+ * @param {DiagramShapeState} state
  */
 export function stateClassSync(states, svgEl, state) {
 	if (states.has(state)) { svgEl.classList.add(state); } else { svgEl.classList.remove(state); }

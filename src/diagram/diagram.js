@@ -36,8 +36,8 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {PresenterChildAddType} type
-	 * @param {PresenterShapeAppendParam | DiagramPrivateShapeConnectParam} param
+	 * @param {DiagramChildAddType} type
+	 * @param {DiagramShapeAddParam | DiagramPrivateShapeConnectParam} param
 	 * @returns {IDiagramElement}
 	 */
 	add(type, param) {
@@ -45,7 +45,7 @@ export class Diagram extends EventTarget {
 		let element;
 		switch (type) {
 			case 'shape':
-				element = this._presenter.append('shape', /** @type {PresenterShapeAppendParam} */(param));
+				element = this._presenter.append('shape', /** @type {DiagramShapeAddParam} */(param));
 				break;
 			case 'path':
 				element = this._connectorManager.add(
@@ -54,13 +54,13 @@ export class Diagram extends EventTarget {
 				break;
 		}
 
-		this._dispatchEvent('add', { target: element });
+		this._dispatchEvent('add', element);
 		return element;
 	}
 
 	/**
 	 * @param {IPresenterShape} shape
-	 * @param {PresenterShapeUpdateParam} param
+	 * @param {DiagramShapeUpdateParam} param
 	 */
 	shapeUpdate(shape, param) {
 		shape.update(param);
@@ -157,10 +157,10 @@ export class Diagram extends EventTarget {
 					//
 					// disconnect
 
-					if (!this._dispatchEvent('disconnect', {
-						start: this._connectorManager.startConnectorGet(connector),
-						end: connector
-					})) { return; }
+					if (!this._dispatchEvent('disconnect',
+						this._connectorManager.pathGetByEnd(connector))) {
+						return;
+					}
 
 					const connectorEnd = /** @type {IPresenterShape} */(this.add('shape', connectorEndParams(connector)));
 					this.shapeSetMoving(connectorEnd, { x: evt.detail.clientX, y: evt.detail.clientY });
@@ -186,10 +186,9 @@ export class Diagram extends EventTarget {
 		//
 		// connect connector
 
-		if (!this._dispatchEvent('connect', {
-			start: this._connectorManager.startConnectorGet(this._movedShape.defaultInConnector),
-			end: evt.detail.target
-		})) { return; }
+		if (!this._dispatchEvent('connect',
+			this._connectorManager.pathGetByEnd(this._movedShape.defaultInConnector)
+		)) { return; }
 
 		this._connectorManager.replaceEnd(this._movedShape.defaultInConnector, evt.detail.target);
 		this.del(this._movedShape);
@@ -201,7 +200,7 @@ export class Diagram extends EventTarget {
 	 */
 	_selectedSet(shape) {
 		if (shape !== this._selectedShape) {
-			this._dispatchEvent('select', { target: shape });
+			this._dispatchEvent('select', shape);
 
 			if (this._selectedShape) {
 				shapeStateDel(this._selectedShape, 'selected');
@@ -277,14 +276,14 @@ export class Diagram extends EventTarget {
 
 	/**
 	 * @param {DiagramEventType} type
-	 * @param {IDiagramEventSelectDetail|IDiagramEventConnectDetail} detail
+	 * @param {IDiagramElement} target
 	 * @returns {boolean}
 	 * @private
 	 */
-	_dispatchEvent(type, detail) {
+	_dispatchEvent(type, target) {
 		return this.dispatchEvent(new CustomEvent(type, {
 			cancelable: true,
-			detail
+			detail: { target }
 		}));
 	}
 }

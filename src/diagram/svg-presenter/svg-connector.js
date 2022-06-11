@@ -9,19 +9,19 @@ export class SvgConnector {
 	 * @param {string} param.key
 	 * @param {IPresenterShape} param.shape
 	 * @param {Point} param.innerPosition
-	 * @param {PresenterPathEndDirection=} param.dir
+	 * @param {DiagramPathEndDirection=} param.dir
 	 */
 	constructor({ svgEl, connectorType, shape, key, innerPosition, dir }) {
 		/** @private */
 		this._svgEl = svgEl;
 
 		/**
-		 * @type {Set<PresenterShapeState>}
+		 * @type {Set<DiagramShapeState>}
 		 * @private
 		 */
 		this._state = new Set();
 
-		/** @type {PresenterElementType} */
+		/** @type {DiagramElementType} */
 		this.type = 'connector';
 		this.connectorType = connectorType;
 		this.shape = shape;
@@ -31,7 +31,7 @@ export class SvgConnector {
 	}
 
 	/**
-	 * @param {PresenterShapeState} state
+	 * @param {DiagramShapeState} state
 	 * @returns {boolean}
 	 */
 	stateHas(state) {
@@ -39,19 +39,19 @@ export class SvgConnector {
 	}
 
 	/**
-	 * @returns {Set<PresenterShapeState>}
+	 * @returns {Set<DiagramShapeState>}
 	 */
 	stateGet() {
 		return new Set(this._state);
 	}
 
 	/**
-	 * @param {{ state: Set<PresenterShapeState>; }} param
+	 * @param {{ state: Set<DiagramShapeState>; }} param
 	 */
 	update(param) {
 		this._state = param.state;
 		for (const state of ['connected', 'hovered', 'selected']) {
-			stateClassSync(this._state, this._svgEl, /** @type{PresenterShapeState} */(state));
+			stateClassSync(this._state, this._svgEl, /** @type{DiagramShapeState} */(state));
 		}
 	}
 }

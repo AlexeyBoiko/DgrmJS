@@ -1,3 +1,5 @@
+import { map } from '../../diagram/infrastructure/iterable-utils.js';
+import { setFilter } from '../infrastructure/iterable-utils.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
 
 /**
@@ -21,10 +23,10 @@ export class AppDiagramSerializable extends EventTarget {
 		this._shapeData = new Map();
 
 		/**
-		 * @type {IDiagramEventConnectDetail[]}
+		 * @type {Set<IDiagramPath>}
 		 * @private
 		 */
-		this._connectors = [];
+		this._paths = new Set();
 
 		/** @private */
 		this._diagram = diagram
@@ -34,7 +36,7 @@ export class AppDiagramSerializable extends EventTarget {
 	}
 
 	/**
-	 * @param {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail> & CustomEvent<IDiagramEventConnectDetail>} evt
+	 * @param {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail> & CustomEvent<IDiagramEventDetail>} evt
 	 */
 	handleEvent(evt) {
 		switch (evt.type) {
@@ -53,10 +55,10 @@ export class AppDiagramSerializable extends EventTarget {
 				this._shapeDel(evt.detail.target);
 				break;
 			case 'connect':
-				this._connectors.push(evt.detail);
+				this._paths.add(evt.detail.target);
 				break;
 			case 'disconnect':
-				this._connectors.splice(this._connectors.findIndex(el => connectorEqual(el, evt.detail)), 1);
+				this._paths.delete(evt.detail.target);
 				break;
 		}
 	}
@@ -68,12 +70,11 @@ export class AppDiagramSerializable extends EventTarget {
 	_shapeDel(shape) {
 		this._diagram.del(shape);
 		this._shapeData.delete(shape);
-		this._connectors = this._connectors
-			.filter(el => el.start.shape !== shape && el.end.shape !== shape);
+		setFilter(this._paths, el => el.start.shape !== shape && el.end.shape !== shape);
 	}
 
 	/**
-	 * @param {PresenterShapeAppendParam} param
+	 * @param {DiagramShapeAddParam} param
 	 * @returns {IDiagramShape}
 	 */
 	shapeAdd(param) {
@@ -96,7 +97,7 @@ export class AppDiagramSerializable extends EventTarget {
 
 	/**
 	 * @param {IDiagramShape} shape
-	 * @param {PresenterShapeUpdateParam} param
+	 * @param {DiagramShapeUpdateParam} param
 	 * @returns {void}
 	 */
 	shapeUpdate(shape, param) { this._diagram.shapeUpdate(shape, param); }
@@ -134,10 +135,10 @@ export class AppDiagramSerializable extends EventTarget {
 			shapeIndex.set(shape[0], serializeData.s.push(/** @type {AppSerializeShape} */(shape[1])) - 1);
 		}
 
-		if (this._connectors && this._connectors.length > 0) {
-			serializeData.c = this._connectors.map(cc => ({
-				s: { i: shapeIndex.get(cc.start.shape), c: cc.start.key },
-				e: { i: shapeIndex.get(cc.end.shape), c: cc.end.key }
+		if (this._paths && this._paths.size > 0) {
+			serializeData.c = map(this._paths, path => ({
+				s: { i: shapeIndex.get(path.start.shape), c: path.start.key },
+				e: { i: shapeIndex.get(path.end.shape), c: path.end.key }
 			}));
 		}
 
@@ -168,15 +169,10 @@ export class AppDiagramSerializable extends EventTarget {
 
 		if (data.c && data.c.length > 0) {
 			for (const conJson of data.c) {
-				this._diagram.add('path', {
+				this._paths.add(/** @type {IDiagramPath} */(this._diagram.add('path', {
 					start: { shape: shapes[conJson.s.i], key: conJson.s.c },
 					end: { shape: shapes[conJson.e.i], key: conJson.e.c }
-				});
-
-				this._connectors.push({
-					start: { type: 'connector', key: conJson.s.c, shape: shapes[conJson.s.i] },
-					end: { type: 'connector', key: conJson.e.c, shape: shapes[conJson.e.i] }
-				});
+				})));
 			}
 		}
 	}
@@ -190,16 +186,6 @@ export class AppDiagramSerializable extends EventTarget {
 		this.addEventListener(evtType, listener);
 		return this;
 	}
-}
-
-/**
- * @param {IDiagramEventConnectDetail} con1
- * @param {IDiagramEventConnectDetail} con2
- * @returns {boolean}
- */
-function connectorEqual(con1, con2) {
-	return con1.start.shape === con2.start.shape && con1.start.key === con2.start.key &&
-	con1.end.shape === con2.end.shape && con1.end.key === con2.end.key;
 }
 
 //
