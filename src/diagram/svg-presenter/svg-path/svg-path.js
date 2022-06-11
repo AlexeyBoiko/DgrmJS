@@ -11,7 +11,7 @@ export class SvgPath {
 		this._start = start;
 		this._end = end;
 
-		/** @type {PresenterElementType} */
+		/** @type {DiagramElementType} */
 		this.type = 'path';
 		this._update();
 	}
@@ -44,7 +44,7 @@ export class SvgPath {
 	}
 
 	/**
-	 * @param {PresenterPathEndDirection} dir
+	 * @param {DiagramPathEndDirection} dir
 	 * @param {number} x
 	 * @param {number} coef
 	 * @return {number}
@@ -57,7 +57,7 @@ export class SvgPath {
 	}
 
 	/**
-	 * @param {PresenterPathEndDirection} dir
+	 * @param {DiagramPathEndDirection} dir
 	 * @param {number} y
 	 * @param {number} coef
 	 * @return {number}

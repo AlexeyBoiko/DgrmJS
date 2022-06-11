@@ -1,4 +1,5 @@
-import { map, setFilter } from '../../diagram/infrastructure/iterable-utils.js';
+import { map } from '../../diagram/infrastructure/iterable-utils.js';
+import { setFilter } from '../infrastructure/iterable-utils.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
 
 /**
@@ -22,7 +23,7 @@ export class AppDiagramSerializable extends EventTarget {
 		this._shapeData = new Map();
 
 		/**
-		 * @type {Set<IPresenterPath>}
+		 * @type {Set<IDiagramPath>}
 		 * @private
 		 */
 		this._paths = new Set();
@@ -57,7 +58,7 @@ export class AppDiagramSerializable extends EventTarget {
 				this._paths.add(evt.detail.target);
 				break;
 			case 'disconnect':
-				this._paths.delete(evt.detail.target); // .splice(this._paths.findIndex(el => connectorEqual(el, evt.detail)), 1);
+				this._paths.delete(evt.detail.target);
 				break;
 		}
 	}
@@ -69,14 +70,11 @@ export class AppDiagramSerializable extends EventTarget {
 	_shapeDel(shape) {
 		this._diagram.del(shape);
 		this._shapeData.delete(shape);
-
-		// this._paths = this._paths
-		// 	.filter(el => el.start.shape !== shape && el.end.shape !== shape);
 		setFilter(this._paths, el => el.start.shape !== shape && el.end.shape !== shape);
 	}
 
 	/**
-	 * @param {PresenterShapeAppendParam} param
+	 * @param {DiagramShapeAddParam} param
 	 * @returns {IDiagramShape}
 	 */
 	shapeAdd(param) {
@@ -99,7 +97,7 @@ export class AppDiagramSerializable extends EventTarget {
 
 	/**
 	 * @param {IDiagramShape} shape
-	 * @param {PresenterShapeUpdateParam} param
+	 * @param {DiagramShapeUpdateParam} param
 	 * @returns {void}
 	 */
 	shapeUpdate(shape, param) { this._diagram.shapeUpdate(shape, param); }
@@ -142,10 +140,6 @@ export class AppDiagramSerializable extends EventTarget {
 				s: { i: shapeIndex.get(path.start.shape), c: path.start.key },
 				e: { i: shapeIndex.get(path.end.shape), c: path.end.key }
 			}));
-			// this._paths.map(cc => ({
-			// 	s: { i: shapeIndex.get(cc.start.shape), c: cc.start.key },
-			// 	e: { i: shapeIndex.get(cc.end.shape), c: cc.end.key }
-			// }));
 		}
 
 		return serializeData;
@@ -175,15 +169,10 @@ export class AppDiagramSerializable extends EventTarget {
 
 		if (data.c && data.c.length > 0) {
 			for (const conJson of data.c) {
-				this._paths.add(/** @type {IPresenterPath} */(this._diagram.add('path', {
+				this._paths.add(/** @type {IDiagramPath} */(this._diagram.add('path', {
 					start: { shape: shapes[conJson.s.i], key: conJson.s.c },
 					end: { shape: shapes[conJson.e.i], key: conJson.e.c }
 				})));
-
-				// this._paths.push({
-				// 	start: { type: 'connector', key: conJson.s.c, shape: shapes[conJson.s.i] },
-				// 	end: { type: 'connector', key: conJson.e.c, shape: shapes[conJson.e.i] }
-				// });
 			}
 		}
 	}
@@ -198,16 +187,6 @@ export class AppDiagramSerializable extends EventTarget {
 		return this;
 	}
 }
-
-// /**
-//  * @param {IDiagramEventConnectDetail} con1
-//  * @param {IDiagramEventConnectDetail} con2
-//  * @returns {boolean}
-//  */
-// function connectorEqual(con1, con2) {
-// 	return con1.start.shape === con2.start.shape && con1.start.key === con2.start.key &&
-// 	con1.end.shape === con2.end.shape && con1.end.key === con2.end.key;
-// }
 
 //
 // Mixin

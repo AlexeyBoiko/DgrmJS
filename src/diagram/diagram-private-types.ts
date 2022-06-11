@@ -3,7 +3,7 @@ interface DiagramPrivateConnectorEnd extends DiagramConnectorEnd {
 	/** connector id */
 	key: string;
 }
-interface DiagramPrivateShapeConnectParam extends DiagramShapeConnectParam {
+interface DiagramPrivateShapeConnectParam extends DiagramPathAddParam {
 	start: DiagramPrivateConnectorEnd | IPresenterConnector;
 	end: DiagramPrivateConnectorEnd | IPresenterConnector;
 }

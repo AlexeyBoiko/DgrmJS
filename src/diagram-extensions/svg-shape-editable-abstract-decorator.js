@@ -29,14 +29,14 @@ export class SvgShapeEditableAbstractDecorator {
 	}
 
 	/**
-	 * @param {PresenterShapeState} state
+	 * @param {DiagramShapeState} state
 	 */
 	stateHas(state) { return this._svgShape.stateHas(state); }
 	stateGet() { return this._svgShape.stateGet(); }
 	positionGet() { return this._svgShape.positionGet(); }
 
 	/**
-	 * @param {PresenterShapeUpdateParam} param
+	 * @param {DiagramShapeUpdateParam} param
 	 */
 	update(param) {
 		if (param.state && this._isEditState) {

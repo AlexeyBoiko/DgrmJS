@@ -5,7 +5,7 @@ export class AppRectDecorator extends SvgShapeTextEditorDecorator {
 	/**
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape
-	 * @param {PresenterShapeProps} initProps
+	 * @param {DiagramShapeProps} initProps
 	 */
 	constructor(diagram, svgShape, initProps) {
 		super(svgShape, initProps);
@@ -25,7 +25,7 @@ export class AppRectDecorator extends SvgShapeTextEditorDecorator {
 	}
 
 	/**
-	 * @param {PresenterShapeUpdateParam} param
+	 * @param {DiagramShapeUpdateParam} param
 	 */
 	update(param) {
 		super.update(param);
@@ -36,7 +36,7 @@ export class AppRectDecorator extends SvgShapeTextEditorDecorator {
 
 	/**
 	 * @param {SVGTextElement} textEl
-	 * @param {PresenterShapeProps} updatedProp
+	 * @param {DiagramShapeProps} updatedProp
 	 */
 	onTextChange(textEl, updatedProp) {
 		super.onTextChange(textEl, updatedProp);

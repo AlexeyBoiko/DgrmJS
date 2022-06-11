@@ -1,6 +1,6 @@
 interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
-	append(type: PresenterChildAddType, param: PresenterShapeAppendParam | PresenterPathAppendParam): IPresenterShape | IPresenterPath;
+	append(type: DiagramChildAddType, param: DiagramShapeAddParam | PresenterPathAppendParam): IPresenterShape | IPresenterPath;
 	delete(elem: IPresenterElement): void;
 }
 
@@ -8,37 +8,10 @@ interface IPresenter {
 //
 // create/update ui elements params
 
-type PresenterChildAddType = 'shape' | 'path';
-
-type PresenterShapeState = 'selected' | 'disabled' | 'hovered' | 'connected';
 interface IPresenterStatable extends IDiagramElement {
-	stateHas(state: PresenterShapeState): boolean;
-	stateGet(): Set<PresenterShapeState>;
-	update(param: { state: Set<PresenterShapeState> }): void;
-}
-
-interface PresenterShapeUpdateParam {
-	position?: Point;
-	/** position inside canvas, 
-	 * otherwise, the absolute coordinate disregarding the canvas offset
-	 */
-	postionIsIntoCanvas?: boolean;
-	rotate?: number;
-	state?: Set<PresenterShapeState>;
-	/**
-	 * 'root' - key for outer element.
-	 * Other keys for inner elements: key = value of the 'data-key' attribute.
-	 */
-	props?: PresenterShapeProps;
-
-	connectors?: { [key: string]: { innerPosition?: Point; dir?: PresenterPathEndDirection; } };
-}
-interface PresenterShapeProps {
-	[key: string]: { [key: string]: string | number | boolean }
-}
-
-interface PresenterShapeAppendParam extends PresenterShapeUpdateParam {
-	templateKey: string;
+	stateHas(state: DiagramShapeState): boolean;
+	stateGet(): Set<DiagramShapeState>;
+	update(param: { state: Set<DiagramShapeState> }): void;
 }
 
 interface PresenterPathUpdateParam {
@@ -65,10 +38,8 @@ interface IPresenterEventDetail {
 //
 // ui elements
 
-type PresenterElementType = 'canvas' | 'shape' | 'connector' | 'path';
-
 interface IPresenterElement extends IDisposable {
-	type: PresenterElementType;
+	type: DiagramElementType;
 }
 
 interface IPresenterShape extends IPresenterElement, IPresenterStatable {
@@ -81,7 +52,7 @@ interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 	connectors: Map<string, IPresenterConnector>;
 
 	positionGet(): Point;
-	update(param: PresenterShapeUpdateParam): void;
+	update(param: DiagramShapeUpdateParam): void;
 }
 
 type PresenterConnectorType = 'in' | 'out';
@@ -92,14 +63,12 @@ interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
 	key: string;
 	/** position into parent shape */
 	innerPosition: Point;
-	dir: PresenterPathEndDirection;
+	dir: DiagramPathEndDirection;
 }
 
-type PresenterPathEndType = 'start' | 'end';
-type PresenterPathEndDirection = 'left' | 'right' | 'top' | 'bottom';
 interface PresenterPathEnd {
 	position: Point,
-	dir?: PresenterPathEndDirection
+	dir?: DiagramPathEndDirection
 }
 interface IPresenterPath extends IPresenterElement {
 	start?: IPresenterConnector;

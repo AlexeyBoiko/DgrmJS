@@ -12,14 +12,14 @@ export class SvgShape {
 	 */
 	constructor({ svgEl, type = null, connectable = null, defaultInConnector = null }) {
 		/**
-		 * @type {Set<PresenterShapeState>}
+		 * @type {Set<DiagramShapeState>}
 		 * @private
 		 */
 		this._state = new Set();
 
 		this.svgEl = svgEl;
 
-		/** @type {PresenterElementType} */
+		/** @type {DiagramElementType} */
 		this.type = type || 'shape';
 		this.connectable = connectable;
 		this.defaultInConnector = defaultInConnector;
@@ -29,14 +29,14 @@ export class SvgShape {
 	}
 
 	/**
-	 * @param {PresenterShapeState} state
+	 * @param {DiagramShapeState} state
 	 * @returns {boolean}
 	 */
 	stateHas(state) {
 		return this._state.has(state);
 	}
 
-	/** @returns {Set<PresenterShapeState>} */
+	/** @returns {Set<DiagramShapeState>} */
 	stateGet() {
 		return new Set(this._state);
 	}
@@ -46,7 +46,7 @@ export class SvgShape {
 		return svgPositionGet(this.svgEl);
 	}
 
-	/** @param {PresenterShapeUpdateParam} param */
+	/** @param {DiagramShapeUpdateParam} param */
 	update(param) {
 		if (param.position) {
 			svgPositionSet(this.svgEl, param.position);
@@ -72,14 +72,14 @@ export class SvgShape {
 		if (param.state) {
 			this._state = param.state;
 			for (const state of ['selected', 'hovered', 'disabled']) {
-				stateClassSync(this._state, this.svgEl, /** @type{PresenterShapeState} */(state));
+				stateClassSync(this._state, this.svgEl, /** @type{DiagramShapeState} */(state));
 			}
 		}
 	}
 
 	/**
 	 * @param {Element} elem
-	 * @param {PresenterShapeProps} props
+	 * @param {DiagramShapeProps} props
 	 * @private
 	 */
 	static _attrsSet(elem, props) {

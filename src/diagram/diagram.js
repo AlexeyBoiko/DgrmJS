@@ -36,8 +36,8 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {PresenterChildAddType} type
-	 * @param {PresenterShapeAppendParam | DiagramPrivateShapeConnectParam} param
+	 * @param {DiagramChildAddType} type
+	 * @param {DiagramShapeAddParam | DiagramPrivateShapeConnectParam} param
 	 * @returns {IDiagramElement}
 	 */
 	add(type, param) {
@@ -45,7 +45,7 @@ export class Diagram extends EventTarget {
 		let element;
 		switch (type) {
 			case 'shape':
-				element = this._presenter.append('shape', /** @type {PresenterShapeAppendParam} */(param));
+				element = this._presenter.append('shape', /** @type {DiagramShapeAddParam} */(param));
 				break;
 			case 'path':
 				element = this._connectorManager.add(
@@ -60,7 +60,7 @@ export class Diagram extends EventTarget {
 
 	/**
 	 * @param {IPresenterShape} shape
-	 * @param {PresenterShapeUpdateParam} param
+	 * @param {DiagramShapeUpdateParam} param
 	 */
 	shapeUpdate(shape, param) {
 		shape.update(param);
@@ -157,10 +157,6 @@ export class Diagram extends EventTarget {
 					//
 					// disconnect
 
-					// if (!this._dispatchEvent('disconnect', {
-					// 	start: this._connectorManager.pathGetByEnd(connector).start,
-					// 	end: connector
-					// })) { return; }
 					if (!this._dispatchEvent('disconnect',
 						this._connectorManager.pathGetByEnd(connector))) {
 						return;
@@ -190,10 +186,6 @@ export class Diagram extends EventTarget {
 		//
 		// connect connector
 
-		// if (!this._dispatchEvent('connect', {
-		// 	start: this._connectorManager.pathGetByEnd(this._movedShape.defaultInConnector).start,
-		// 	end: evt.detail.target
-		// })) { return; }
 		if (!this._dispatchEvent('connect',
 			this._connectorManager.pathGetByEnd(this._movedShape.defaultInConnector)
 		)) { return; }

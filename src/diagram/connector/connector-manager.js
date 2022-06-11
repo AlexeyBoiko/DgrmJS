@@ -169,8 +169,8 @@ export class ConnectorManager {
 	}
 
 	/**
-	 * @param {PresenterPathEndDirection} dir
-	 * @returns {PresenterPathEndDirection}
+	 * @param {DiagramPathEndDirection} dir
+	 * @returns {DiagramPathEndDirection}
 	 * @private
 	 */
 	static _dirRevers(dir) {
