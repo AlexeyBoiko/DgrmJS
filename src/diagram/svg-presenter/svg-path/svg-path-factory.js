@@ -17,6 +17,8 @@ export function pathCreate({ svgCanvas, createParams }) {
 	return new SvgPath({
 		svgEl: pathSvgEl,
 		start: createParams.start,
-		end: createParams.end
+		end: createParams.end,
+		startConnector: createParams.startConnector,
+		endConnector: createParams.endConnector
 	});
 }

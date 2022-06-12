@@ -6,24 +6,6 @@ interface IPresenter {
 
 
 //
-// create/update ui elements params
-
-interface IPresenterStatable extends IDiagramElement {
-	stateHas(state: DiagramShapeState): boolean;
-	stateGet(): Set<DiagramShapeState>;
-	update(param: { state: Set<DiagramShapeState> }): void;
-}
-
-interface PresenterPathUpdateParam {
-	start?: PresenterPathEnd;
-	end?: PresenterPathEnd;
-}
-interface PresenterPathAppendParam extends PresenterPathUpdateParam {
-	templateKey: string;
-}
-
-
-//
 // events
 
 type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointerenter' | 'pointerleave';
@@ -40,6 +22,12 @@ interface IPresenterEventDetail {
 
 interface IPresenterElement extends IDisposable {
 	type: DiagramElementType;
+}
+
+interface IPresenterStatable extends IDiagramElement {
+	stateHas(state: DiagramShapeState): boolean;
+	stateGet(): Set<DiagramShapeState>;
+	update(param: { state: Set<DiagramShapeState> }): void;
 }
 
 interface IPresenterShape extends IPresenterElement, IPresenterStatable {
@@ -66,17 +54,29 @@ interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
 	dir: DiagramPathEndDirection;
 }
 
-interface PresenterPathEnd {
-	position: Point,
-	dir?: DiagramPathEndDirection
-}
-interface IPresenterPath extends IPresenterElement {
+interface IPresenterPath extends IPresenterElement, IPresenterStatable {
 	start?: IPresenterConnector;
 	end?: IPresenterConnector;
 	/**
 	 * update path
-	 * @param endType end or start of path that change position
 	 * @param {PresenterPathEnd} param new position and direction
 	 */
 	update(param: PresenterPathUpdateParam): void;
+}
+
+interface PresenterPathEnd {
+	position: Point,
+	dir?: DiagramPathEndDirection
+}
+
+interface PresenterPathUpdateParam {
+	start?: PresenterPathEnd;
+	end?: PresenterPathEnd;
+	startConnector?: IPresenterConnector;
+	endConnector?: IPresenterConnector;
+	state?: Set<DiagramShapeState>;
+}
+
+interface PresenterPathAppendParam extends PresenterPathUpdateParam {
+	templateKey: string;
 }

@@ -27,11 +27,11 @@ export class ConnectorManager {
 				end: {
 					position: ConnectorManager._pathPoint(connectorEnd),
 					dir: connectorEnd.dir ? connectorEnd.dir : ConnectorManager._dirRevers(connectorStart.dir)
-				}
+				},
+				startConnector: connectorStart,
+				endConnector: connectorEnd
 			}));
 
-		path.start = connectorStart;
-		path.end = connectorEnd;
 		shapeStateAdd(connectorEnd, 'connected');
 
 		ConnectorManager._pathAdd(connectorStart.shape, path);
@@ -53,10 +53,10 @@ export class ConnectorManager {
 			end: {
 				position: ConnectorManager._pathPoint(connectorNew),
 				dir: connectorNew.dir ? connectorNew.dir : connectorOld.dir
-			}
+			},
+			endConnector: connectorNew
 		});
 
-		path.end = connectorNew;
 		if (connectorOld.shape !== connectorNew.shape) {
 			if (path.start.shape !== connectorOld.shape) {
 				connectorOld.shape.connectedPaths.delete(path);

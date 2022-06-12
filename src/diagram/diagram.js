@@ -179,7 +179,7 @@ export class Diagram extends EventTarget {
 		if (evt.detail.target.connectorType !== 'in') { return; }
 
 		if (!this._movedShape?.connectable) {
-			this._selectedSet(evt.detail.target);
+			this._selectedSet(this._connectorManager.pathGetByEnd(evt.detail.target));
 			return;
 		}
 
