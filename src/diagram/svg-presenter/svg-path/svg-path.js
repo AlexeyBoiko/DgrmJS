@@ -1,5 +1,4 @@
 import { shapeStateAdd, shapeStateDel } from '../../shape-utils.js';
-import { stateClassSync } from '../svg-presenter-utils.js';
 
 /** @implements {IPresenterPath} */
 export class SvgPath {
@@ -14,7 +13,14 @@ export class SvgPath {
 	constructor({ svgEl, start, end, startConnector, endConnector }) {
 		/** @type {DiagramElementType} */
 		this.type = 'path';
+		/** @type {SVGGElement} */
 		this.svgEl = svgEl;
+
+		/**
+		 * @type {SVGPathElement}
+		 * @private
+		 */
+		this._path = svgEl.getElementsByTagName('path')[0];
 
 		/**
 		 * @type {Set<DiagramShapeState>}
@@ -56,19 +62,33 @@ export class SvgPath {
 
 		if (param.state) {
 			this._state = param.state;
-			stateClassSync(this._state, this.svgEl, 'selected');
 
 			if (param.state.has('selected')) {
-				shapeStateAdd(this.end, 'selected');
+				this._selectedPath = /** @type {SVGPathElement} */(this._path.cloneNode());
+				this._selectedPath.classList.add('selected');
+				this.svgEl.append(this._selectedPath);
+
+				shapeStateAdd(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
 			} else {
-				shapeStateDel(this.end, 'selected');
+				this._selectedPathDel();
+				shapeStateDel(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
 			}
 		}
 	}
 
+	dispose() {
+		this._selectedPathDel();
+		this._path = null;
+	}
+
+	/** @private */
+	_selectedPathDel() {
+		if (this._selectedPath) { this._selectedPath.remove(); }
+	}
+
 	/** @private */
 	_update() {
-		this.svgEl.setAttribute('d', SvgPath._calcDAttr(70, this._start, this._end));
+		this._path.setAttribute('d', SvgPath._calcDAttr(70, this._start, this._end));
 	}
 
 	/**

@@ -3,7 +3,7 @@
  * - call 'onEdit' when shape enter in edit mode - on second click on a shape
  * - call 'onEditLeave' when shape leave edit mode
  * - inheritors must override 'onEdit', 'onEditLeave' methods
- * @implements {ISvgPresenterShape}
+ * @implements {IPresenterShape}
  */
 export class SvgShapeEditableAbstractDecorator {
 	/**

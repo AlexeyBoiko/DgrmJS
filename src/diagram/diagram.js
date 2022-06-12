@@ -113,8 +113,9 @@ export class Diagram extends EventTarget {
 					this._connectorOnUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
 				} else if (this._downElement) {
 					// if click on shape without move
-
-					this._selectedSet(/** @type {IPresenterShape} */(this._downElement));
+					this._selectedSet(/** @type {IPresenterShape} */(this._downElement).connectable
+						? this._connectorManager.pathGetByEnd(/** @type {IPresenterShape} */(this._downElement).defaultInConnector)
+						: /** @type {IPresenterShape} */(this._downElement));
 				}
 
 				this._downElement = null;
