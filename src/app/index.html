@@ -106,6 +106,13 @@
 				stroke: transparent;
 			}
 
+			[data-connect="in"].connected.selected {
+				display: unset;
+				opacity: 0.51;
+				stroke: rgb(108 187 247);
+				fill: rgb(108 187 247);
+			}
+
 			[data-templ].selected [data-connect="out"] {
 				display: unset;
 			}
@@ -139,17 +146,17 @@
 				pointer-events: none;
 			}
 
-			[data-templ="path"].selected circle {
+			<!-- [data-templ="path"].selected circle {
 				stroke: rgb(108 187 247 / 51%);
 				fill: rgb(108 187 247 / 51%);
-			}
+			} -->
 			path.selected {
 				stroke-width: 10px !important;
 				stroke: rgb(108 187 247 / 30%);
 			}
 
 			@media (pointer: coarse) {
-				[data-connect] {
+				[data-connect], [data-connect] circle {
 					stroke-width: 15px;
 				}
 
@@ -170,7 +177,7 @@
 			</g>
 
 			<g data-templ="connect-end" data-connect="in" data-connect-point="0,0" data-connectable="true">
-				<circle r="24" fill="transparent" stroke="transparent" stroke-width="1" />
+				<circle r="10" />
 			</g>
 
 			<g data-templ="circle" data-center="0,0">
