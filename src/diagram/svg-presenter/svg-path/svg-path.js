@@ -1,5 +1,6 @@
 import { svgPositionSet, svgRotate } from '../../infrastructure/svg-utils.js';
 import { shapeStateAdd, shapeStateDel } from '../../shape-utils.js';
+import { stateClassSync } from '../svg-presenter-utils.js';
 
 /** @implements {IPresenterPath} */
 export class SvgPath {
@@ -71,6 +72,7 @@ export class SvgPath {
 		if (param.state) {
 			this._state = param.state;
 
+			stateClassSync(this._state, this.svgEl, 'selected');
 			if (param.state.has('selected')) {
 				this._selectedPath = /** @type {SVGPathElement} */(this._path.cloneNode());
 				this._selectedPath.classList.add('selected');
