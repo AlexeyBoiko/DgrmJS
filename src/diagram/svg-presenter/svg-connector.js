@@ -51,7 +51,7 @@ export class SvgConnector {
 	update(param) {
 		this._state = param.state;
 		for (const state of ['connected', 'hovered', 'selected']) {
-			stateClassSync(this._state, this._svgEl, /** @type{DiagramShapeState} */(state));
+			stateClassSync(this._state, this._svgEl, /** @type {DiagramShapeState} */(state));
 		}
 	}
 }

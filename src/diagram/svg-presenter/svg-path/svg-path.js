@@ -1,3 +1,4 @@
+import { svgPositionSet, svgRotate } from '../../infrastructure/svg-utils.js';
 import { shapeStateAdd, shapeStateDel } from '../../shape-utils.js';
 
 /** @implements {IPresenterPath} */
@@ -20,7 +21,13 @@ export class SvgPath {
 		 * @type {SVGPathElement}
 		 * @private
 		 */
-		this._path = svgEl.getElementsByTagName('path')[0];
+		this._path = svgEl.querySelector('[data-key="path"]');
+
+		/**
+		 * @type {SVGGraphicsElement}
+		 * @private
+		 */
+		this._arrow = svgEl.querySelector('[data-key="arrow"]');
 
 		/**
 		 * @type {Set<DiagramShapeState>}
@@ -34,7 +41,8 @@ export class SvgPath {
 		this._start = start;
 		this._end = end;
 
-		this._update();
+		this._pathUpdate();
+		this._arrowUpdate();
 	}
 
 	/**
@@ -52,9 +60,9 @@ export class SvgPath {
 	 */
 	update(param) {
 		if (param.start) { Object.assign(this._start, param.start); }
-		if (param.end) { Object.assign(this._end, param.end); }
+		if (param.end) { Object.assign(this._end, param.end); this._arrowUpdate(); }
 		if (param.start || param.end) {
-			this._update();
+			this._pathUpdate();
 		}
 
 		if (param.endConnector) { this.end = param.endConnector; }
@@ -70,25 +78,27 @@ export class SvgPath {
 
 				shapeStateAdd(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
 			} else {
-				this._selectedPathDel();
+				if (this._selectedPath) { this._selectedPath.remove(); }
 				shapeStateDel(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
 			}
 		}
 	}
 
-	dispose() {
-		this._selectedPathDel();
-		this._path = null;
-	}
-
 	/** @private */
-	_selectedPathDel() {
-		if (this._selectedPath) { this._selectedPath.remove(); }
-	}
-
-	/** @private */
-	_update() {
+	_pathUpdate() {
 		this._path.setAttribute('d', SvgPath._calcDAttr(70, this._start, this._end));
+	}
+
+	_arrowUpdate() {
+		svgPositionSet(this._arrow, this._end.position);
+		svgRotate(this._arrow,
+			this._end.dir === 'right'
+				? 180
+				: this._end.dir === 'left'
+					? 0
+					: this._end.dir === 'bottom'
+						? 270
+						: 90);
 	}
 
 	/**

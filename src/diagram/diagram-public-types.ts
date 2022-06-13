@@ -24,7 +24,6 @@ interface DiagramShapeUpdateParam {
 	 * otherwise, the absolute coordinate disregarding the canvas offset
 	 */
 	postionIsIntoCanvas?: boolean;
-	rotate?: number;
 	state?: Set<DiagramShapeState>;
 	/**
 	 * 'root' - key for outer element.

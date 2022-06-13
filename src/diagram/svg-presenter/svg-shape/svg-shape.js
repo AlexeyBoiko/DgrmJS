@@ -1,4 +1,4 @@
-import { svgPositionSet, svgPositionGet, svgRotate, svgTextDraw } from '../../infrastructure/svg-utils.js';
+import { svgPositionSet, svgPositionGet, svgTextDraw } from '../../infrastructure/svg-utils.js';
 import { stateClassSync } from '../svg-presenter-utils.js';
 
 /** @implements {ISvgPresenterShape} */
@@ -50,10 +50,6 @@ export class SvgShape {
 	update(param) {
 		if (param.position) {
 			svgPositionSet(this.svgEl, param.position);
-		}
-
-		if (param.rotate) {
-			svgRotate(this.svgEl, param.rotate);
 		}
 
 		if (param.props) {

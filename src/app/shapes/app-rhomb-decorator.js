@@ -74,6 +74,18 @@ export class AppRhombDecorator extends SvgShapeTextEditorDecorator {
 	_resize(width) {
 		const rhomb = { d: rhombPathCalc(120, 70, width) };
 		const connectors = rhombCalc(120, 70, width + 16);
+		const cons = {
+			left: { cx: connectors.l.x },
+			right: { cx: connectors.r.x },
+			top: { cy: connectors.t.y },
+			bottom: { cy: connectors.b.y }
+		};
+		const consData = {
+			left: { innerPosition: connectors.l },
+			right: { innerPosition: connectors.r },
+			top: { innerPosition: connectors.t },
+			bottom: { innerPosition: connectors.b }
+		};
 		this._diagram.shapeUpdate(this, {
 			// visability
 			props: {
@@ -81,35 +93,28 @@ export class AppRhombDecorator extends SvgShapeTextEditorDecorator {
 				outer: { d: rhombPathCalc(120, 70, width + 80) },
 				border: rhomb,
 				// out connectors
-				outleft: { cx: connectors.l.x },
-				outright: { cx: connectors.r.x },
-				outtop: { cy: connectors.t.y },
-				outbottom: { cy: connectors.b.y },
+				outleft: cons.left,
+				outright: cons.right,
+				outtop: cons.top,
+				outbottom: cons.bottom,
 				// in connectors
-				'inleft-empty': { cx: connectors.l.x },
-				'inleft-not-empty': { x: connectors.l.x },
-
-				'inright-empty': { cx: connectors.r.x },
-				'inright-not-empty': { x: -1 * connectors.r.x },
-
-				'intop-empty': { cy: connectors.t.y },
-				'intop-not-empty': { x: connectors.t.y },
-
-				'inbottom-empty': { cy: connectors.b.y },
-				'inbottom-not-empty': { x: -1 * connectors.b.y }
+				inleft: cons.left,
+				inright: cons.right,
+				intop: cons.top,
+				inbottom: cons.bottom
 			},
 			// connectors data
 			connectors: {
 				// out
-				outleft: { innerPosition: connectors.l },
-				outright: { innerPosition: connectors.r },
-				outtop: { innerPosition: connectors.t },
-				outbottom: { innerPosition: connectors.b },
+				outleft: consData.left,
+				outright: consData.right,
+				outtop: consData.top,
+				outbottom: consData.bottom,
 				// in
-				inleft: { innerPosition: connectors.l },
-				inright: { innerPosition: connectors.r },
-				intop: { innerPosition: connectors.t },
-				inbottom: { innerPosition: connectors.b }
+				inleft: consData.left,
+				inright: consData.right,
+				intop: consData.top,
+				inbottom: consData.bottom
 			}
 		});
 	}

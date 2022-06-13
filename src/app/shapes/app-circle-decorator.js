@@ -65,38 +65,46 @@ export class AppCircleDecorator extends SvgShapeTextEditorDecorator {
 	 */
 	_resize(mainRadius) {
 		const radNegative = -1 * mainRadius;
+		const cons = {
+			right: { cx: mainRadius },
+			left: { cx: radNegative },
+			bottom: { cy: mainRadius },
+			top: { cy: radNegative }
+		};
+		const consData = {
+			right: { innerPosition: { x: mainRadius, y: 0 } },
+			left: { innerPosition: { x: radNegative, y: 0 } },
+			bottom: { innerPosition: { x: 0, y: mainRadius } },
+			top: { innerPosition: { x: 0, y: radNegative } }
+		};
 		this._diagram.shapeUpdate(this, {
 			// visability
 			props: {
 				main: { r: mainRadius },
 				outer: { r: mainRadius + 20 },
 				// out connectors
-				outright: { cx: mainRadius },
-				outleft: { cx: radNegative },
-				outbottom: { cy: mainRadius },
-				outtop: { cy: radNegative },
+				outright: cons.right,
+				outleft: cons.left,
+				outbottom: cons.bottom,
+				outtop: cons.top,
 				// in connectors
-				'inright-empty': { cx: mainRadius },
-				'inright-not-empty': { x: radNegative },
-				'inleft-empty': { cx: radNegative },
-				'inleft-not-empty': { x: radNegative },
-				'inbottom-empty': { cy: mainRadius },
-				'inbottom-not-empty': { x: radNegative },
-				'intop-empty': { cy: radNegative },
-				'intop-not-empty': { x: radNegative }
+				inright: cons.right,
+				inleft: cons.left,
+				inbottom: cons.bottom,
+				intop: cons.top
 			},
 			// connectors data
 			connectors: {
 				// out
-				outright: { innerPosition: { x: mainRadius, y: 0 } },
-				outleft: { innerPosition: { x: radNegative, y: 0 } },
-				outbottom: { innerPosition: { x: 0, y: mainRadius } },
-				outtop: { innerPosition: { x: 0, y: radNegative } },
+				outright: consData.right,
+				outleft: consData.left,
+				outbottom: consData.bottom,
+				outtop: consData.top,
 				// in
-				inright: { innerPosition: { x: mainRadius, y: 0 } },
-				inleft: { innerPosition: { x: radNegative, y: 0 } },
-				inbottom: { innerPosition: { x: 0, y: mainRadius } },
-				intop: { innerPosition: { x: 0, y: radNegative } }
+				inright: consData.right,
+				inleft: consData.left,
+				inbottom: consData.bottom,
+				intop: consData.top
 			}
 		});
 	}
