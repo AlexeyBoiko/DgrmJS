@@ -109,6 +109,8 @@ export class AppDiagramSerializable extends EventTarget {
 	 */
 	shapeSetMoving(shape, offsetPoint) { this._diagram.shapeSetMoving(shape, offsetPoint); }
 
+	movedClean() { this._diagram.movedClean(); }
+
 	/** @returns {void} */
 	clear() {
 		for (const shapeData of this._shapeData) {

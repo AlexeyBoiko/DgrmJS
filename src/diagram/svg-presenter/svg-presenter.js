@@ -1,3 +1,4 @@
+import { first } from '../infrastructure/iterable-utils.js';
 import { pathCreate } from './svg-path/svg-path-factory.js';
 import { SvgShape } from './svg-shape/svg-shape.js';
 
@@ -26,11 +27,15 @@ export class SvgPresenter extends EventTarget {
 		 */
 		this._svgElemToPresenterObj = new WeakMap();
 
-		/** @type {SVGGElement}
+		/**
+		 * @type {SVGGElement}
 		 * @private
 		 */
 		this._canvasSvgEl = svg.querySelector('[data-key="canvas"]');
-		this._svgElemToPresenterObj.set(this._canvasSvgEl, new SvgShape({ svgEl: this._canvasSvgEl, type: 'canvas' }));
+
+		/** @type {IPresenterShape} */
+		this.canvas = new SvgShape({ svgEl: this._canvasSvgEl, type: 'canvas' });
+		this._svgElemToPresenterObj.set(this._canvasSvgEl, this.canvas);
 	}
 
 	/**
@@ -49,6 +54,7 @@ export class SvgPresenter extends EventTarget {
 			case 'path':
 				return pathCreate({
 					svgCanvas: this._canvasSvgEl,
+					svgElemToPresenterObj: this._svgElemToPresenterObj,
 					createParams: /** @type {PresenterPathAppendParam} */(param)
 				});
 		}
@@ -89,7 +95,12 @@ export class SvgPresenter extends EventTarget {
 				this._dispatchEvent(
 					evt,
 					evt.type,
-					/** @type {SVGGraphicsElement} */(elems[0].hasAttribute('data-no-click') ? elems[1] : elems[0]));
+					/** @type {SVGGraphicsElement} */(
+						first(elems, el => el.hasAttribute('data-evt-z-index')) ??
+						(elems[0].hasAttribute('data-evt-no-click')
+							? elems[1]
+							: elems[0])
+					));
 				break;
 			}
 		}

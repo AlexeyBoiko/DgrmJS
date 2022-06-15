@@ -23,6 +23,7 @@ export class SvgPath {
 		 * @private
 		 */
 		this._path = svgEl.querySelector('[data-key="path"]');
+		this._outer = svgEl.querySelector('[data-key="outer"]');
 
 		/**
 		 * @type {SVGGraphicsElement}
@@ -36,14 +37,24 @@ export class SvgPath {
 		 */
 		this._state = new Set();
 
-		this.start = startConnector;
-		this.end = endConnector;
+		/**
+		 * @type {PresenterPathEnd}
+		 * @private
+		 */
+		this._start = {};
 
-		this._start = start;
-		this._end = end;
+		/**
+		 * @type {PresenterPathEnd}
+		 * @private
+		 */
+		this._end = {};
 
-		this._pathUpdate();
-		this._arrowUpdate();
+		this.update({
+			start,
+			end,
+			startConnector,
+			endConnector
+		});
 	}
 
 	/**
@@ -72,15 +83,20 @@ export class SvgPath {
 		if (param.state) {
 			this._state = param.state;
 
-			stateClassSync(this._state, this.svgEl, 'selected');
+			for (const state of ['selected', 'disabled']) {
+				stateClassSync(this._state, this.svgEl, /** @type {DiagramShapeState} */(state));
+			}
+
 			if (param.state.has('selected')) {
-				this._selectedPath = /** @type {SVGPathElement} */(this._path.cloneNode());
-				this._selectedPath.classList.add('selected');
-				this.svgEl.append(this._selectedPath);
+				if (!this._selectedPath) {
+					this._selectedPath = /** @type {SVGPathElement} */(this._path.cloneNode());
+					this._selectedPath.classList.add('selected');
+					this.svgEl.append(this._selectedPath);
+				}
 
 				shapeStateAdd(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
 			} else {
-				if (this._selectedPath) { this._selectedPath.remove(); }
+				if (this._selectedPath) { this._selectedPath.remove(); this._selectedPath = null; }
 				shapeStateDel(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
 			}
 		}
@@ -88,7 +104,9 @@ export class SvgPath {
 
 	/** @private */
 	_pathUpdate() {
-		this._path.setAttribute('d', SvgPath._calcDAttr(70, this._start, this._end));
+		const dAttr = SvgPath._calcDAttr(70, this._start, this._end);
+		this._path.setAttribute('d', dAttr);
+		this._outer.setAttribute('d', dAttr);
 	}
 
 	_arrowUpdate() {
@@ -101,6 +119,12 @@ export class SvgPath {
 					: this._end.dir === 'bottom'
 						? 270
 						: 90);
+	}
+
+	dispose() {
+		this._outer = null;
+		this._path = null;
+		this._arrow = null;
 	}
 
 	/**

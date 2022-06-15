@@ -104,6 +104,7 @@ export class Menu extends HTMLElement {
 				this._isNativePointerleaveTriggered = false;
 				this._isShapeDragOutDispatched = false;
 				this._pressedShape = null;
+				this._menuLogic.pointerUpMobile();
 				break;
 			case 'pointermove':
 				this._emulatePointerleave(evt);
@@ -250,5 +251,11 @@ class MenuLogic {
 					y: evt.clientY - this._addingShapeCenter.y - this._shapeAddingCanvasPositionForMobile.y
 				}
 			});
+	}
+
+	pointerUpMobile() {
+		if (this._addingShape) {
+			this._diagram.movedClean();
+		}
 	}
 }

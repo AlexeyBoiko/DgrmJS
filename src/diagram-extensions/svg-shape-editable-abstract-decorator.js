@@ -55,7 +55,7 @@ export class SvgShapeEditableAbstractDecorator {
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	handleEvent(evt) {
-		if (evt.target.hasAttribute('data-no-click') ||
+		if (evt.target.hasAttribute('data-evt-no-click') ||
 			document.elementFromPoint(evt.clientX, evt.clientY) !== evt.target) { return; }
 
 		if (evt.type === 'click') {

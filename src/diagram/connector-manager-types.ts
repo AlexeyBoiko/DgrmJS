@@ -11,5 +11,5 @@ interface IConnectorManager {
 	updatePosition(shape: IPresenterShape): void;
 
 	/** delete shape and related to shape connectors */
-	del(shapeOrPath: IConnetorShape | IPresenterPath): void;
+	del(shapeOrPath: IPresenterShape | IPresenterPath): void;
 }

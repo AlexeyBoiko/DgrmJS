@@ -4,6 +4,7 @@ interface IDiagram {
 	del(element: IDiagramElement): void;
 	shapeUpdate(shape: IDiagramShape, param: DiagramShapeUpdateParam): void;
 	shapeSetMoving(shape: IDiagramShape, offsetPoint: Point): void;
+	movedClean(): void;
 }
 
 

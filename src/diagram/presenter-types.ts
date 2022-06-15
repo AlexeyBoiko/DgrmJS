@@ -2,6 +2,7 @@ interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
 	append(type: DiagramChildAddType, param: DiagramShapeAddParam | PresenterPathAppendParam): IPresenterShape | IPresenterPath;
 	delete(elem: IPresenterElement): void;
+	get canvas(): IPresenterShape;
 }
 
 
@@ -65,7 +66,7 @@ interface IPresenterPath extends IPresenterElement, IPresenterStatable {
 }
 
 interface PresenterPathEnd {
-	position: Point,
+	position?: Point,
 	dir?: DiagramPathEndDirection
 }
 
