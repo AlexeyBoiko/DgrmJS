@@ -77,7 +77,11 @@ export class SvgPath {
 			this._pathUpdate();
 		}
 
-		if (param.endConnector) { this.end = param.endConnector; }
+		if (param.endConnector && this.end !== param.endConnector) {
+			if (this.end) { shapeStateDel(this.end, 'selected'); }
+			this.end = param.endConnector;
+		}
+
 		if (param.startConnector) { this.start = param.startConnector; }
 
 		if (param.state) {
