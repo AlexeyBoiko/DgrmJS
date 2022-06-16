@@ -1,8 +1,8 @@
 import { svgTextIsOut } from '../../diagram-extensions/infrastructure/svg-text-is-out.js';
-import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
+import { AppShapeEditorDecorator } from './app-editor-decorator.js';
 import { resizeAlg } from './infrastructure/resize-utils.js';
 
-export class AppRhombDecorator extends SvgShapeTextEditorDecorator {
+export class AppRhombDecorator extends AppShapeEditorDecorator {
 	/**
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape

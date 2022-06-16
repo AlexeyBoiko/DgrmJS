@@ -1,7 +1,7 @@
-import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
+import { AppShapeEditorDecorator } from './app-editor-decorator.js';
 import { ceil } from './infrastructure/resize-utils.js';
 
-export class AppRectDecorator extends SvgShapeTextEditorDecorator {
+export class AppRectDecorator extends AppShapeEditorDecorator {
 	/**
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape

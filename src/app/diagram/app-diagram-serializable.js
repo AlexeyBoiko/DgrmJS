@@ -1,6 +1,6 @@
-import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
 import { map } from '../../diagram/infrastructure/iterable-utils.js';
 import { setFilter } from '../infrastructure/iterable-utils.js';
+import { AppShapeEditorDecorator } from '../shapes/app-editor-decorator.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
 
 /**
@@ -42,8 +42,8 @@ export class AppDiagramSerializable extends EventTarget {
 	handleEvent(evt) {
 		switch (evt.type) {
 			case 'add':
-				if (evt.detail.target instanceof SvgShapeTextEditorDecorator) {
-					/** @type {IShapeTextEditorDecorator} */(evt.detail.target)
+				if (evt.detail.target instanceof AppShapeEditorDecorator) {
+					/** @type {IAppShapeEditorDecorator} */(evt.detail.target)
 						.on('txtUpd', this)
 						.on('del', this);
 				}
