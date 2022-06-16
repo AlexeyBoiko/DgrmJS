@@ -1,6 +1,7 @@
 import { ConnectorManager } from '../connector/connector-manager.js';
 import { Diagram } from '../diagram.js';
 import { svgPositionGet } from '../infrastructure/svg-utils.js';
+import { pathCreate } from './svg-path/svg-path-factory.js';
 import { SvgPresenter } from './svg-presenter.js';
 import { connectorsInit, shapeCreate } from './svg-shape/svg-shape-factory.js';
 
@@ -11,26 +12,40 @@ import { connectorsInit, shapeCreate } from './svg-shape/svg-shape-factory.js';
  */
 export function svgDiagramCreate(svg, shapeFactory) {
 	/**
-	 * @param {ISvgPresenterShapeFactoryParam} param
-	 * @returns {ISvgPresenterShape}
+	 * @param {DiagramChildAddType} type
+	 * @param {ISvgPresenterShapeFactoryParam | ISvgPresenterPathFactoryParam} param
+	 * @returns {ISvgPresenterShape | IPresenterPath}
 	 */
-	function _shapeFactory(param) {
-		if (!param.createParams.postionIsIntoCanvas) {
-			const canvasPosition = svgPositionGet(param.svgCanvas);
-			param.createParams.position.x -= canvasPosition.x;
-			param.createParams.position.y -= canvasPosition.y;
+	function _shapeFactory(type, param) {
+		switch (type) {
+			case 'shape': return shapeFact(param, shapeFactory);
+			case 'path': return shapeFactory ? shapeFactory('path', param) : pathCreate(param);
 		}
-
-		/** @type {ISvgPresenterShape} */
-		const shape = shapeFactory ? shapeFactory(param) : shapeCreate(param.svgCanvas, param.createParams);
-
-		param.svgElemToPresenterObj.set(shape.svgEl, shape);
-		connectorsInit(param.svgElemToPresenterObj, shape);
-		shape.update(param.createParams);
-
-		return shape;
 	}
 
 	const presenter = new SvgPresenter(svg, _shapeFactory);
 	return new Diagram(presenter, new ConnectorManager(presenter));
+}
+
+/**
+ * @param {ISvgPresenterShapeFactoryParam} param
+ * @param {ISvgPresenterShapeFactory?=} shapeFactory
+ * @returns {ISvgPresenterShape}
+ */
+function shapeFact(param, shapeFactory) {
+	if (!param.createParams.postionIsIntoCanvas) {
+		const canvasPosition = svgPositionGet(param.svgCanvas);
+		param.createParams.position.x -= canvasPosition.x;
+		param.createParams.position.y -= canvasPosition.y;
+	}
+
+	const shape = shapeFactory
+		? /** @type {ISvgPresenterShape} */(shapeFactory('shape', param))
+		: shapeCreate(param.svgCanvas, param.createParams);
+
+	param.svgElemToPresenterObj.set(shape.svgEl, shape);
+	connectorsInit(param.svgElemToPresenterObj, shape);
+	shape.update(param.createParams);
+
+	return shape;
 }

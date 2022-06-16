@@ -1,5 +1,4 @@
 import { first } from '../infrastructure/iterable-utils.js';
-import { pathCreate } from './svg-path/svg-path-factory.js';
 import { SvgShape } from './svg-shape/svg-shape.js';
 
 /** @implements {IPresenter} */
@@ -44,20 +43,13 @@ export class SvgPresenter extends EventTarget {
 	 * @returns {IPresenterShape | IPresenterPath}
 	 */
 	append(type, param) {
-		switch (type) {
-			case 'shape':
-				return this._shapeFactory({
-					svgCanvas: this._canvasSvgEl,
-					svgElemToPresenterObj: this._svgElemToPresenterObj,
-					createParams: /** @type {DiagramShapeAddParam} */(param)
-				});
-			case 'path':
-				return pathCreate({
-					svgCanvas: this._canvasSvgEl,
-					svgElemToPresenterObj: this._svgElemToPresenterObj,
-					createParams: /** @type {PresenterPathAppendParam} */(param)
-				});
-		}
+		return this._shapeFactory(
+			type,
+			{
+				svgCanvas: this._canvasSvgEl,
+				svgElemToPresenterObj: this._svgElemToPresenterObj,
+				createParams: param
+			});
 	}
 
 	/**

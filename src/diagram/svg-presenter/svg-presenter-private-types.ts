@@ -14,6 +14,12 @@ interface ISvgPresenterShapeFactoryParam {
 	createParams: DiagramShapeAddParam
 }
 
+interface ISvgPresenterPathFactoryParam { 
+	svgCanvas: SVGGElement,
+	svgElemToPresenterObj: WeakMap<SVGGraphicsElement, IPresenterElement>,
+	createParams: PresenterPathAppendParam
+}
+
 interface ISvgPresenterShapeFactory {
-	(param: ISvgPresenterShapeFactoryParam) : ISvgPresenterShape
+	(type: DiagramChildAddType, param: ISvgPresenterShapeFactoryParam | ISvgPresenterPathFactoryParam) : ISvgPresenterShape | IPresenterPath
 }
