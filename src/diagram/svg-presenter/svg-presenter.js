@@ -91,16 +91,10 @@ export class SvgPresenter extends EventTarget {
 			}
 			case 'pointerdown':
 			case 'pointerup': {
-				const elems = document.elementsFromPoint(evt.clientX, evt.clientY);
 				this._dispatchEvent(
 					evt,
 					evt.type,
-					/** @type {SVGGraphicsElement} */(
-						first(elems, el => el.hasAttribute('data-evt-z-index')) ??
-						(elems[0].hasAttribute('data-evt-no-click')
-							? elems[1]
-							: elems[0])
-					));
+					SvgPresenter._getPointElem(evt, true));
 				break;
 			}
 		}
@@ -110,7 +104,7 @@ export class SvgPresenter extends EventTarget {
 	 * @param {PointerEvent & { currentTarget: SVGGraphicsElement }} evt
 	 */
 	_dispatchEnterLeave(evt) {
-		const pointElem = /** @type {SVGGraphicsElement} */(document.elementFromPoint(evt.clientX, evt.clientY));
+		const pointElem = SvgPresenter._getPointElem(evt, false);
 		if (pointElem === this._pointElem) {
 			return;
 		}
@@ -128,6 +122,28 @@ export class SvgPresenter extends EventTarget {
 		 * @private
 		 */
 		this._pointElem = pointElem;
+	}
+
+	/**
+	 * @private
+	 * @param {PointerEvent} evt
+	 * @param {Boolean} considerNoClickAttr
+	 * @return {SVGGraphicsElement}
+	 */
+	static _getPointElem(evt, considerNoClickAttr) {
+		const elems = document.elementsFromPoint(evt.clientX, evt.clientY);
+		if (considerNoClickAttr) {
+			return /** @type {SVGGraphicsElement} */(
+				first(elems, el => el.hasAttribute('data-evt-z-index') && !el.hasAttribute('data-evt-no-click')) ??
+				(elems[0].hasAttribute('data-evt-no-click')
+					? elems[1]
+					: elems[0])
+			);
+		}
+
+		return /** @type {SVGGraphicsElement} */(
+			first(elems, el => el.hasAttribute('data-evt-z-index')) ?? elems[0]
+		);
 	}
 
 	/**
