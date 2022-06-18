@@ -1,6 +1,6 @@
 import { stateClassSync } from './svg-presenter-utils.js';
 
-/** @implements {IPresenterConnector} */
+/** @implements {ISvgPresenterConnector} */
 export class SvgConnector {
 	/**
 	 * @param {object} param
@@ -12,8 +12,7 @@ export class SvgConnector {
 	 * @param {DiagramPathEndDirection=} param.dir
 	 */
 	constructor({ svgEl, connectorType, shape, key, innerPosition, dir }) {
-		/** @private */
-		this._svgEl = svgEl;
+		this.svgEl = svgEl;
 
 		/**
 		 * @type {Set<DiagramShapeState>}
@@ -51,7 +50,7 @@ export class SvgConnector {
 	update(param) {
 		this._state = param.state;
 		for (const state of ['connected', 'hovered', 'selected']) {
-			stateClassSync(this._state, this._svgEl, /** @type{DiagramShapeState} */(state));
+			stateClassSync(this._state, this.svgEl, /** @type {DiagramShapeState} */(state));
 		}
 	}
 }

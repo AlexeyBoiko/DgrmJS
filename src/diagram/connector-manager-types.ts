@@ -2,7 +2,7 @@ interface IConnectorManager {
 	add(connectorStart: IPresenterConnector, connectorEnd: IPresenterConnector): IPresenterPath;
 
 	/** reconect to new connector */
-	replaceEnd(connectorOld: IPresenterConnector, connectorNew: IPresenterConnector): void;
+	replaceEnd(path: IConnectorPath, connectorNew: IPresenterConnector): void;
 
 	/** get start connector element by the end connector element */
 	pathGetByEnd(connectorEnd: IPresenterConnector): IPresenterPath;
@@ -11,5 +11,5 @@ interface IConnectorManager {
 	updatePosition(shape: IPresenterShape): void;
 
 	/** delete shape and related to shape connectors */
-	del(shapeOrPath: IConnetorShape | IPresenterPath): void;
+	del(shapeOrPath: IPresenterShape | IPresenterPath): void;
 }

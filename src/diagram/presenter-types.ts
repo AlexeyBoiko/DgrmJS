@@ -2,24 +2,7 @@ interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
 	append(type: DiagramChildAddType, param: DiagramShapeAddParam | PresenterPathAppendParam): IPresenterShape | IPresenterPath;
 	delete(elem: IPresenterElement): void;
-}
-
-
-//
-// create/update ui elements params
-
-interface IPresenterStatable extends IDiagramElement {
-	stateHas(state: DiagramShapeState): boolean;
-	stateGet(): Set<DiagramShapeState>;
-	update(param: { state: Set<DiagramShapeState> }): void;
-}
-
-interface PresenterPathUpdateParam {
-	start?: PresenterPathEnd;
-	end?: PresenterPathEnd;
-}
-interface PresenterPathAppendParam extends PresenterPathUpdateParam {
-	templateKey: string;
+	get canvas(): IPresenterShape;
 }
 
 
@@ -40,6 +23,12 @@ interface IPresenterEventDetail {
 
 interface IPresenterElement extends IDisposable {
 	type: DiagramElementType;
+}
+
+interface IPresenterStatable extends IDiagramElement {
+	stateHas(state: DiagramShapeState): boolean;
+	stateGet(): Set<DiagramShapeState>;
+	update(param: { state?: Set<DiagramShapeState> }): void;
 }
 
 interface IPresenterShape extends IPresenterElement, IPresenterStatable {
@@ -66,17 +55,25 @@ interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
 	dir: DiagramPathEndDirection;
 }
 
+interface IPresenterPath extends IPresenterElement, IPresenterStatable {
+	get start(): IPresenterConnector;
+	get end(): IPresenterConnector;
+	update(param: PresenterPathUpdateParam): void;
+}
+
 interface PresenterPathEnd {
-	position: Point,
+	position?: Point,
 	dir?: DiagramPathEndDirection
 }
-interface IPresenterPath extends IPresenterElement {
-	start?: IPresenterConnector;
-	end?: IPresenterConnector;
-	/**
-	 * update path
-	 * @param endType end or start of path that change position
-	 * @param {PresenterPathEnd} param new position and direction
-	 */
-	update(param: PresenterPathUpdateParam): void;
+
+interface PresenterPathUpdateParam {
+	start?: PresenterPathEnd;
+	end?: PresenterPathEnd;
+	startConnector?: IPresenterConnector;
+	endConnector?: IPresenterConnector;
+	state?: Set<DiagramShapeState>;
+}
+
+interface PresenterPathAppendParam extends PresenterPathUpdateParam {
+	templateKey: string;
 }

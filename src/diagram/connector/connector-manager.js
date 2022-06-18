@@ -27,11 +27,11 @@ export class ConnectorManager {
 				end: {
 					position: ConnectorManager._pathPoint(connectorEnd),
 					dir: connectorEnd.dir ? connectorEnd.dir : ConnectorManager._dirRevers(connectorStart.dir)
-				}
+				},
+				startConnector: connectorStart,
+				endConnector: connectorEnd
 			}));
 
-		path.start = connectorStart;
-		path.end = connectorEnd;
 		shapeStateAdd(connectorEnd, 'connected');
 
 		ConnectorManager._pathAdd(connectorStart.shape, path);
@@ -40,23 +40,32 @@ export class ConnectorManager {
 		return path;
 	}
 
+	// /**
+	//  * reconect to new connector
+	//  * if connectorOld has many connectors - take last
+	//  * @param {IConnectorConnector} connectorOld
+	//  * @param {IConnectorConnector} connectorNew
+	//  * @returns {void}
+	//  */
+	// replaceEnd(connectorOld, connectorNew) {
 	/**
 	 * reconect to new connector
 	 * if connectorOld has many connectors - take last
-	 * @param {IConnectorConnector} connectorOld
+	 * @param {IConnectorPath} path
 	 * @param {IConnectorConnector} connectorNew
 	 * @returns {void}
 	 */
-	replaceEnd(connectorOld, connectorNew) {
-		const path = last(connectorOld.shape.connectedPaths, pp => pp.end === connectorOld);
+	replaceEnd(path, connectorNew) {
+		// const path = last(connectorOld.shape.connectedPaths, pp => pp.end === connectorOld);
+		const connectorOld = path.end;
 		path.update({
 			end: {
 				position: ConnectorManager._pathPoint(connectorNew),
-				dir: connectorNew.dir ? connectorNew.dir : connectorOld.dir
-			}
+				dir: connectorNew.dir ? connectorNew.dir : path.end.dir
+			},
+			endConnector: connectorNew
 		});
 
-		path.end = connectorNew;
 		if (connectorOld.shape !== connectorNew.shape) {
 			if (path.start.shape !== connectorOld.shape) {
 				connectorOld.shape.connectedPaths.delete(path);

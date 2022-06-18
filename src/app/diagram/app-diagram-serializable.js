@@ -1,5 +1,6 @@
 import { map } from '../../diagram/infrastructure/iterable-utils.js';
 import { setFilter } from '../infrastructure/iterable-utils.js';
+import { AppPathEditiorDecorator, AppShapeEditorDecorator } from '../shapes/app-editor-decorator.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
 
 /**
@@ -36,29 +37,32 @@ export class AppDiagramSerializable extends EventTarget {
 	}
 
 	/**
-	 * @param {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail> & CustomEvent<IDiagramEventDetail>} evt
+	 * @param {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail> | CustomEvent<IDiagramEventDetail<IDiagramElement>>} evt
 	 */
 	handleEvent(evt) {
 		switch (evt.type) {
 			case 'add':
-				if (evt.detail.target.type === 'shape') {
-					/** @type {IShapeTextEditorDecorator} */(evt.detail.target)
+				if (evt.detail.target instanceof AppShapeEditorDecorator) {
+					/** @type {IAppShapeEditorDecorator} */(evt.detail.target)
 						.on('txtUpd', this)
+						.on('del', this);
+				} else if (evt.detail.target instanceof AppPathEditiorDecorator) {
+					/** @type {IAppPathEditorDecorator} */(evt.detail.target)
 						.on('del', this);
 				}
 				break;
 			case 'txtUpd':
-				this._shapeData.get(evt.detail.target).detail =
-					/** @type {string} */ (evt.detail.props.text.textContent);
+				this._shapeData.get(/** @type {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail>} */(evt).detail.target).detail =
+					/** @type {string} */ (/** @type {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail>} */(evt).detail.props.text.textContent);
 				break;
 			case 'del':
-				this._shapeDel(evt.detail.target);
+				this._shapeDel(/** @type {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail>} */(evt).detail.target);
 				break;
 			case 'connect':
-				this._paths.add(evt.detail.target);
+				this._paths.add(/** @type {CustomEvent<IDiagramEventDetail<IDiagramPath>>} */(evt).detail.target);
 				break;
 			case 'disconnect':
-				this._paths.delete(evt.detail.target);
+				this._paths.delete(/** @type {CustomEvent<IDiagramEventDetail<IDiagramPath>>} */(evt).detail.target);
 				break;
 		}
 	}
@@ -108,6 +112,8 @@ export class AppDiagramSerializable extends EventTarget {
 	 * @returns {void}
 	 */
 	shapeSetMoving(shape, offsetPoint) { this._diagram.shapeSetMoving(shape, offsetPoint); }
+
+	movedClean() { this._diagram.movedClean(); }
 
 	/** @returns {void} */
 	clear() {

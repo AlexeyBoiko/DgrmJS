@@ -1,42 +1,25 @@
 /**
- * Base decorator for editable shapes
- * - call 'onEdit' when shape enter in edit mode - on second click on a shape
- * - call 'onEditLeave' when shape leave edit mode
+ * Base decorator for editable elements
+ * - call 'onEdit' when element enter in edit mode - on second click on a shape
+ * - call 'onEditLeave' when element leave edit mode
  * - inheritors must override 'onEdit', 'onEditLeave' methods
- * @implements {ISvgPresenterShape}
  */
-export class SvgShapeEditableAbstractDecorator {
+export class SvgElementEditableAbstract {
 	/**
-	 * @param {ISvgPresenterShape} svgShape
+	 * @param {IPresenterStatable & ISvgPresenterElement} svgElement
 	 */
-	constructor(svgShape) {
-		/**
-		 * @type {ISvgPresenterShape}
-		 * @private
-		 */
-		this._svgShape = svgShape;
+	constructor(svgElement) {
+		this.svgElement = svgElement;
+		this.type = svgElement.type;
+		this.svgEl = this.svgElement.svgEl;
 
-		this._svgShape.svgEl.addEventListener('pointerdown', this);
-		this._svgShape.svgEl.addEventListener('pointerup', this);
-		this._svgShape.svgEl.addEventListener('click', this);
-
-		// ISvgPresenterShape
-		this.svgEl = this._svgShape.svgEl;
-		this.type = this._svgShape.type;
-		this.connectable = this._svgShape.connectable;
-		this.defaultInConnector = this._svgShape.defaultInConnector;
-		this.connectors = this._svgShape.connectors;
+		this.svgElement.svgEl.addEventListener('pointerdown', this);
+		this.svgElement.svgEl.addEventListener('pointerup', this);
+		this.svgElement.svgEl.addEventListener('click', this);
 	}
 
 	/**
-	 * @param {DiagramShapeState} state
-	 */
-	stateHas(state) { return this._svgShape.stateHas(state); }
-	stateGet() { return this._svgShape.stateGet(); }
-	positionGet() { return this._svgShape.positionGet(); }
-
-	/**
-	 * @param {DiagramShapeUpdateParam} param
+	 * @param {{ state?: Set<DiagramShapeState> }} param
 	 */
 	update(param) {
 		if (param.state && this._isEditState) {
@@ -44,7 +27,7 @@ export class SvgShapeEditableAbstractDecorator {
 			this.onEditLeave();
 		}
 
-		this._svgShape.update(param);
+		this.svgElement.update(param);
 	}
 
 	dispose() {
@@ -55,7 +38,7 @@ export class SvgShapeEditableAbstractDecorator {
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	handleEvent(evt) {
-		if (evt.target.hasAttribute('data-no-click') ||
+		if (evt.target.hasAttribute('data-evt-no-click') ||
 			document.elementFromPoint(evt.clientX, evt.clientY) !== evt.target) { return; }
 
 		if (evt.type === 'click') {
@@ -68,7 +51,7 @@ export class SvgShapeEditableAbstractDecorator {
 		switch (evt.type) {
 			case 'pointerdown':
 				/** @private */
-				this._isSelectedOnDown = this.stateGet().has('selected');
+				this._isSelectedOnDown = this.svgElement.stateGet().has('selected');
 				break;
 			case 'pointerup':
 				if (this._isSelectedOnDown) {
@@ -100,4 +83,44 @@ export class SvgShapeEditableAbstractDecorator {
 	 * @param {boolean} isEditState
 	 */
 	onClick(evt, isEditState) {}
+}
+
+/**
+ * Base decorator for editable shapes
+ * - call 'onEdit' when shape enter in edit mode - on second click on a shape
+ * - call 'onEditLeave' when shape leave edit mode
+ * - inheritors must override 'onEdit', 'onEditLeave' methods
+ * @implements {IPresenterShape}
+ */
+export class SvgShapeEditableAbstractDecorator extends SvgElementEditableAbstract {
+	/**
+	 * @param {ISvgPresenterShape} svgShape
+	 */
+	constructor(svgShape) {
+		super(svgShape);
+
+		// ISvgPresenterShape
+		this.connectable = /** @type {ISvgPresenterShape} */(this.svgElement).connectable;
+		this.defaultInConnector = /** @type {ISvgPresenterShape} */(this.svgElement).defaultInConnector;
+		this.connectors = /** @type {ISvgPresenterShape} */(this.svgElement).connectors;
+	}
+
+	/**
+	 * @param {DiagramShapeState} state
+	 */
+	stateHas(state) { return this.svgElement.stateHas(state); }
+	stateGet() { return this.svgElement.stateGet(); }
+	positionGet() { return /** @type {ISvgPresenterShape} */(this.svgElement).positionGet(); }
+
+	/**
+	 * @param {DiagramShapeUpdateParam} param
+	 */
+	update(param) {
+		if (param.state && this._isEditState) {
+			this._isEditState = false;
+			this.onEditLeave();
+		}
+
+		super.update(param);
+	}
 }

@@ -1,4 +1,4 @@
-import { svgPositionSet, svgPositionGet, svgRotate, svgTextDraw } from '../../infrastructure/svg-utils.js';
+import { svgPositionSet, svgPositionGet, svgTextDraw } from '../../infrastructure/svg-utils.js';
 import { stateClassSync } from '../svg-presenter-utils.js';
 
 /** @implements {ISvgPresenterShape} */
@@ -8,7 +8,7 @@ export class SvgShape {
 	 * @param {SVGGraphicsElement} param.svgEl
 	 * @param {'shape'|'canvas'=} param.type
 	 * @param {boolean=} param.connectable
-	 * @param {IPresenterConnector=} param.defaultInConnector
+	 * @param {ISvgPresenterConnector=} param.defaultInConnector
 	 */
 	constructor({ svgEl, type = null, connectable = null, defaultInConnector = null }) {
 		/**
@@ -24,7 +24,7 @@ export class SvgShape {
 		this.connectable = connectable;
 		this.defaultInConnector = defaultInConnector;
 
-		/** @type {Map<string, IPresenterConnector>} */
+		/** @type {Map<string, ISvgPresenterConnector>} */
 		this.connectors = new Map();
 	}
 
@@ -52,10 +52,6 @@ export class SvgShape {
 			svgPositionSet(this.svgEl, param.position);
 		}
 
-		if (param.rotate) {
-			svgRotate(this.svgEl, param.rotate);
-		}
-
 		if (param.props) {
 			SvgShape._attrsSet(this.svgEl, param.props);
 		}
@@ -72,7 +68,7 @@ export class SvgShape {
 		if (param.state) {
 			this._state = param.state;
 			for (const state of ['selected', 'hovered', 'disabled']) {
-				stateClassSync(this._state, this.svgEl, /** @type{DiagramShapeState} */(state));
+				stateClassSync(this._state, this.svgEl, /** @type {DiagramShapeState} */(state));
 			}
 		}
 	}

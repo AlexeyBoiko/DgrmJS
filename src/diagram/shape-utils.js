@@ -37,21 +37,6 @@ export function connectorEndParams(connector) {
 			x: shapePosition.x + innerPosition.x,
 			y: shapePosition.y + innerPosition.y
 		},
-		postionIsIntoCanvas: true,
-		rotate: connector.connectorType === 'out'
-			? connector.dir === 'right'
-				? 0
-				: connector.dir === 'left'
-					? 180
-					: connector.dir === 'bottom'
-						? 90
-						: 270
-			: connector.dir === 'right'
-				? 180
-				: connector.dir === 'left'
-					? 0
-					: connector.dir === 'bottom'
-						? 270
-						: 90
+		postionIsIntoCanvas: true
 	};
 }

@@ -1,7 +1,7 @@
-import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
+import { AppShapeEditorDecorator } from './app-editor-decorator.js';
 import { ceil } from './infrastructure/resize-utils.js';
 
-export class AppRectDecorator extends SvgShapeTextEditorDecorator {
+export class AppRectDecorator extends AppShapeEditorDecorator {
 	/**
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape
@@ -73,11 +73,17 @@ export class AppRectDecorator extends SvgShapeTextEditorDecorator {
 	 */
 	_resize(width, height) {
 		const rect = rectCalc(this._minWidth, this._minHeight, width, height);
-		const connectors = {
+		const cons = {
 			r: { cx: width + rect.x, cy: height / 2 + rect.y },
 			l: { cx: rect.x, cy: height / 2 + rect.y },
 			b: { cx: width / 2 + rect.x, cy: height + rect.y },
 			t: { cx: width / 2 + rect.x, cy: rect.y }
+		};
+		const consData = {
+			right: { innerPosition: { x: cons.r.cx, y: cons.r.cy } },
+			left: { innerPosition: { x: cons.l.cx, y: cons.l.cy } },
+			bottom: { innerPosition: { x: cons.b.cx, y: cons.b.cy } },
+			top: { innerPosition: { x: cons.t.cx, y: cons.t.cy } }
 		};
 		this._diagram.shapeUpdate(this, {
 			// visability
@@ -85,32 +91,28 @@ export class AppRectDecorator extends SvgShapeTextEditorDecorator {
 				main: rect,
 				outer: rectCalc(this._minWidth, this._minHeight, width + 40, height + 40),
 				// out connectors
-				outright: connectors.r,
-				outleft: connectors.l,
-				outbottom: connectors.b,
-				outtop: connectors.t,
+				outright: cons.r,
+				outleft: cons.l,
+				outbottom: cons.b,
+				outtop: cons.t,
 				// in connectors
-				'inright-empty': connectors.r,
-				'inright-not-empty': { x: -1 * connectors.r.cx, y: -1 * connectors.r.cy },
-				'inleft-empty': connectors.l,
-				'inleft-not-empty': { x: connectors.l.cx, y: connectors.r.cy },
-				'inbottom-empty': connectors.b,
-				'inbottom-not-empty': { x: -1 * connectors.b.cy, y: connectors.b.cx },
-				'intop-empty': connectors.t,
-				'intop-not-empty': { x: connectors.t.cy, y: -1 * connectors.t.cx }
+				inright: cons.r,
+				inleft: cons.l,
+				inbottom: cons.b,
+				intop: cons.t
 			},
 			// connectors data
 			connectors: {
 				// out
-				outright: { innerPosition: { x: connectors.r.cx, y: connectors.r.cy } },
-				outleft: { innerPosition: { x: connectors.l.cx, y: connectors.l.cy } },
-				outbottom: { innerPosition: { x: connectors.b.cx, y: connectors.b.cy } },
-				outtop: { innerPosition: { x: connectors.t.cx, y: connectors.t.cy } },
+				outright: consData.right,
+				outleft: consData.left,
+				outbottom: consData.bottom,
+				outtop: consData.top,
 				// in
-				inright: { innerPosition: { x: connectors.r.cx, y: connectors.r.cy } },
-				inleft: { innerPosition: { x: connectors.l.cx, y: connectors.l.cy } },
-				inbottom: { innerPosition: { x: connectors.b.cx, y: connectors.b.cy } },
-				intop: { innerPosition: { x: connectors.t.cx, y: connectors.t.cy } }
+				inright: consData.right,
+				inleft: consData.left,
+				inbottom: consData.bottom,
+				intop: consData.top
 			}
 		});
 	}

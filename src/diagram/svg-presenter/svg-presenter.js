@@ -1,4 +1,4 @@
-import { pathCreate } from './svg-path/svg-path-factory.js';
+import { first } from '../infrastructure/iterable-utils.js';
 import { SvgShape } from './svg-shape/svg-shape.js';
 
 /** @implements {IPresenter} */
@@ -26,11 +26,15 @@ export class SvgPresenter extends EventTarget {
 		 */
 		this._svgElemToPresenterObj = new WeakMap();
 
-		/** @type {SVGGElement}
+		/**
+		 * @type {SVGGElement}
 		 * @private
 		 */
 		this._canvasSvgEl = svg.querySelector('[data-key="canvas"]');
-		this._svgElemToPresenterObj.set(this._canvasSvgEl, new SvgShape({ svgEl: this._canvasSvgEl, type: 'canvas' }));
+
+		/** @type {IPresenterShape} */
+		this.canvas = new SvgShape({ svgEl: this._canvasSvgEl, type: 'canvas' });
+		this._svgElemToPresenterObj.set(this._canvasSvgEl, this.canvas);
 	}
 
 	/**
@@ -39,19 +43,13 @@ export class SvgPresenter extends EventTarget {
 	 * @returns {IPresenterShape | IPresenterPath}
 	 */
 	append(type, param) {
-		switch (type) {
-			case 'shape':
-				return this._shapeFactory({
-					svgCanvas: this._canvasSvgEl,
-					svgElemToPresenterObj: this._svgElemToPresenterObj,
-					createParams: /** @type {DiagramShapeAddParam} */(param)
-				});
-			case 'path':
-				return pathCreate({
-					svgCanvas: this._canvasSvgEl,
-					createParams: /** @type {PresenterPathAppendParam} */(param)
-				});
-		}
+		return this._shapeFactory(
+			type,
+			{
+				svgCanvas: this._canvasSvgEl,
+				svgElemToPresenterObj: this._svgElemToPresenterObj,
+				createParams: param
+			});
 	}
 
 	/**
@@ -60,6 +58,16 @@ export class SvgPresenter extends EventTarget {
 	delete(elem) {
 		if (elem.dispose) { elem.dispose(); }
 		this._svgElemToPresenterObj.delete(elem.svgEl);
+
+		if (elem.type === 'shape') {
+			for (const connector of /** @type {ISvgPresenterShape} */(elem).connectors) {
+				this._svgElemToPresenterObj.delete(connector[1].svgEl);
+			}
+			if (/** @type {ISvgPresenterShape} */(elem).defaultInConnector) {
+				this._svgElemToPresenterObj.delete(/** @type {ISvgPresenterShape} */(elem).defaultInConnector.svgEl);
+			}
+		}
+
 		elem.svgEl.remove();
 	}
 
@@ -85,11 +93,10 @@ export class SvgPresenter extends EventTarget {
 			}
 			case 'pointerdown':
 			case 'pointerup': {
-				const elems = document.elementsFromPoint(evt.clientX, evt.clientY);
 				this._dispatchEvent(
 					evt,
 					evt.type,
-					/** @type {SVGGraphicsElement} */(elems[0].hasAttribute('data-no-click') ? elems[1] : elems[0]));
+					SvgPresenter._getPointElem(evt, true));
 				break;
 			}
 		}
@@ -99,7 +106,7 @@ export class SvgPresenter extends EventTarget {
 	 * @param {PointerEvent & { currentTarget: SVGGraphicsElement }} evt
 	 */
 	_dispatchEnterLeave(evt) {
-		const pointElem = /** @type {SVGGraphicsElement} */(document.elementFromPoint(evt.clientX, evt.clientY));
+		const pointElem = SvgPresenter._getPointElem(evt, false);
 		if (pointElem === this._pointElem) {
 			return;
 		}
@@ -117,6 +124,28 @@ export class SvgPresenter extends EventTarget {
 		 * @private
 		 */
 		this._pointElem = pointElem;
+	}
+
+	/**
+	 * @private
+	 * @param {PointerEvent} evt
+	 * @param {Boolean} considerNoClickAttr
+	 * @return {SVGGraphicsElement}
+	 */
+	static _getPointElem(evt, considerNoClickAttr) {
+		const elems = document.elementsFromPoint(evt.clientX, evt.clientY);
+		if (considerNoClickAttr) {
+			return /** @type {SVGGraphicsElement} */(
+				first(elems, el => el.hasAttribute('data-evt-z-index') && !el.hasAttribute('data-evt-no-click')) ??
+				(elems[0].hasAttribute('data-evt-no-click')
+					? elems[1]
+					: elems[0])
+			);
+		}
+
+		return /** @type {SVGGraphicsElement} */(
+			first(elems, el => el.hasAttribute('data-evt-z-index')) ?? elems[0]
+		);
 	}
 
 	/**

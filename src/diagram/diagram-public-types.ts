@@ -4,6 +4,7 @@ interface IDiagram {
 	del(element: IDiagramElement): void;
 	shapeUpdate(shape: IDiagramShape, param: DiagramShapeUpdateParam): void;
 	shapeSetMoving(shape: IDiagramShape, offsetPoint: Point): void;
+	movedClean(): void;
 }
 
 
@@ -24,7 +25,6 @@ interface DiagramShapeUpdateParam {
 	 * otherwise, the absolute coordinate disregarding the canvas offset
 	 */
 	postionIsIntoCanvas?: boolean;
-	rotate?: number;
 	state?: Set<DiagramShapeState>;
 	/**
 	 * 'root' - key for outer element.

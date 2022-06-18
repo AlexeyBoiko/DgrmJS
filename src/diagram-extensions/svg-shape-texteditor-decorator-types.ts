@@ -3,7 +3,7 @@ interface ShapeTextEditorDecoratorEventUpdateDetail {
 	props?: DiagramShapeProps;
 }
 
-type ShapeTextEditorEventType = 'txtUpd' | 'del';
+type ShapeTextEditorEventType = 'txtUpd';
 interface IShapeTextEditorDecorator extends ISvgPresenterShape {
 	on(evtType: ShapeTextEditorEventType, listener: EventListenerOrEventListenerObject): IShapeTextEditorDecorator;
 }
