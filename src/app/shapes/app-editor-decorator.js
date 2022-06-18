@@ -86,7 +86,6 @@ export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	onEdit(evt) {
-		console.log(evt);
 		/** @private */
 		this._panel = panelCreate();
 		this._panel.style.top = `${evt.clientY - 55}px`;
