@@ -80,6 +80,7 @@ export class SvgPath {
 		if (param.endConnector && this.end !== param.endConnector) {
 			if (this.end) { shapeStateDel(this.end, 'selected'); }
 			this.end = param.endConnector;
+			this.svgEl.parentNode.appendChild(this.svgEl);
 		}
 
 		if (param.startConnector) { this.start = param.startConnector; }
