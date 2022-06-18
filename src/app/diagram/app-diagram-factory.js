@@ -5,6 +5,7 @@ import { AppCircleDecorator } from '../shapes/app-circle-decorator.js';
 import { AppRectDecorator } from '../shapes/app-rect-decorator.js';
 import { AppRhombDecorator } from '../shapes/app-rhomb-decorator.js';
 import { pathCreate } from '../../diagram/svg-presenter/svg-path/svg-path-factory.js';
+import { AppPathEditiorDecorator } from '../shapes/app-editor-decorator.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -28,7 +29,7 @@ export function appDiagramFactory(svg) {
 					break;
 				}
 				case 'path': {
-					return pathCreate(param);
+					return new AppPathEditiorDecorator(pathCreate(param));
 				}
 			}
 		}

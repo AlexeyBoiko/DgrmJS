@@ -12,14 +12,11 @@ export function pathCreate(param) {
 	// TODO: to reduce DOM changes (for performance) 'new SvgPath' must go before 'svg.appendChild'
 	param.svgCanvas.append(pathSvgEl);
 
-	const path = new SvgPath({
+	return new SvgPath({
 		svgEl: pathSvgEl,
 		start: param.createParams.start,
 		end: param.createParams.end,
 		startConnector: param.createParams.startConnector,
 		endConnector: param.createParams.endConnector
 	});
-
-	param.svgElemToPresenterObj.set(pathSvgEl, path);
-	return path;
 }

@@ -28,7 +28,7 @@ interface IPresenterElement extends IDisposable {
 interface IPresenterStatable extends IDiagramElement {
 	stateHas(state: DiagramShapeState): boolean;
 	stateGet(): Set<DiagramShapeState>;
-	update(param: { state: Set<DiagramShapeState> }): void;
+	update(param: { state?: Set<DiagramShapeState> }): void;
 }
 
 interface IPresenterShape extends IPresenterElement, IPresenterStatable {
@@ -56,12 +56,8 @@ interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
 }
 
 interface IPresenterPath extends IPresenterElement, IPresenterStatable {
-	start?: IPresenterConnector;
-	end?: IPresenterConnector;
-	/**
-	 * update path
-	 * @param {PresenterPathEnd} param new position and direction
-	 */
+	get start(): IPresenterConnector;
+	get end(): IPresenterConnector;
 	update(param: PresenterPathUpdateParam): void;
 }
 

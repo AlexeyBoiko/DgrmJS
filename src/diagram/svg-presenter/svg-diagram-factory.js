@@ -14,12 +14,18 @@ export function svgDiagramCreate(svg, shapeFactory) {
 	/**
 	 * @param {DiagramChildAddType} type
 	 * @param {ISvgPresenterShapeFactoryParam | ISvgPresenterPathFactoryParam} param
-	 * @returns {ISvgPresenterShape | IPresenterPath}
+	 * @returns {ISvgPresenterShape | ISvgPresenterPath}
 	 */
 	function _shapeFactory(type, param) {
 		switch (type) {
 			case 'shape': return shapeFact(param, shapeFactory);
-			case 'path': return shapeFactory ? shapeFactory('path', param) : pathCreate(param);
+			case 'path': {
+				const path = shapeFactory
+					? /** @type {ISvgPresenterPath} */(shapeFactory('path', param))
+					: pathCreate(param);
+				param.svgElemToPresenterObj.set(path.svgEl, path);
+				return path;
+			}
 		}
 	}
 

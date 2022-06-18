@@ -2,7 +2,7 @@ import { svgPositionSet, svgRotate } from '../../infrastructure/svg-utils.js';
 import { shapeStateAdd, shapeStateDel } from '../../shape-utils.js';
 import { stateClassSync } from '../svg-presenter-utils.js';
 
-/** @implements {IPresenterPath} */
+/** @implements {ISvgPresenterPath} */
 export class SvgPath {
 	/**
 	 * @param {object} param

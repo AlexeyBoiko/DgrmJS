@@ -5,7 +5,11 @@ interface ISvgPresenterElement extends IPresenterElement {
 
 // shape
 
+interface ISvgPresenterConnector extends IPresenterConnector, ISvgPresenterElement { }
+
 interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape { 
+	connectors: Map<string, ISvgPresenterConnector>;
+	defaultInConnector?: ISvgPresenterConnector;
 }
 
 interface ISvgPresenterShapeFactoryParam { 
@@ -13,6 +17,11 @@ interface ISvgPresenterShapeFactoryParam {
 	svgElemToPresenterObj: WeakMap<SVGGraphicsElement, IPresenterElement>,
 	createParams: DiagramShapeAddParam
 }
+
+
+// path
+
+interface ISvgPresenterPath extends IPresenterPath, ISvgPresenterElement {}
 
 interface ISvgPresenterPathFactoryParam { 
 	svgCanvas: SVGGElement,

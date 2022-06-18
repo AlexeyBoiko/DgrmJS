@@ -8,7 +8,7 @@ export class SvgShape {
 	 * @param {SVGGraphicsElement} param.svgEl
 	 * @param {'shape'|'canvas'=} param.type
 	 * @param {boolean=} param.connectable
-	 * @param {IPresenterConnector=} param.defaultInConnector
+	 * @param {ISvgPresenterConnector=} param.defaultInConnector
 	 */
 	constructor({ svgEl, type = null, connectable = null, defaultInConnector = null }) {
 		/**
@@ -24,7 +24,7 @@ export class SvgShape {
 		this.connectable = connectable;
 		this.defaultInConnector = defaultInConnector;
 
-		/** @type {Map<string, IPresenterConnector>} */
+		/** @type {Map<string, ISvgPresenterConnector>} */
 		this.connectors = new Map();
 	}
 

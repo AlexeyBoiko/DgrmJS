@@ -58,6 +58,16 @@ export class SvgPresenter extends EventTarget {
 	delete(elem) {
 		if (elem.dispose) { elem.dispose(); }
 		this._svgElemToPresenterObj.delete(elem.svgEl);
+
+		if (elem.type === 'shape') {
+			for (const connector of /** @type {ISvgPresenterShape} */(elem).connectors) {
+				this._svgElemToPresenterObj.delete(connector[1].svgEl);
+			}
+			if (/** @type {ISvgPresenterShape} */(elem).defaultInConnector) {
+				this._svgElemToPresenterObj.delete(/** @type {ISvgPresenterShape} */(elem).defaultInConnector.svgEl);
+			}
+		}
+
 		elem.svgEl.remove();
 	}
 

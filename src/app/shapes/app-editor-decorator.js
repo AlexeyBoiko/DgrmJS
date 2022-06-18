@@ -1,3 +1,4 @@
+import { SvgElementEditableAbstract } from '../../diagram-extensions/svg-shape-editable-abstract-decorator.js';
 import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
 
 /** @implements {IAppShapeEditorDecorator} */
@@ -19,15 +20,12 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 	onEditLeave() {
 		super.onEditLeave();
 		this.svgEl.classList.remove('edit');
-		// this._textEditorDel();
 		this._panelDel();
 	}
 
 	/** @private */
 	_panelShow() {
 		if (this._panel) { return; }
-
-		// const position = this.svgEl.getBoundingClientRect();
 
 		const panelDiv = document.createElement('div');
 		panelDiv.classList.add('pop-set');
@@ -73,5 +71,46 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 		if (!this._panel) { return; }
 		this._panel.remove();
 		this._panel = null;
+	}
+}
+
+/** @implements {IAppPathEditorDecorator} */
+export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
+	// @ts-ignore
+	get end() {	return /** @type {IConnectorPath} */(this.svgElement).end; }
+	// @ts-ignore
+	get start() { return /** @type {IConnectorPath} */(this.svgElement).start; }
+
+	/**
+	 * @param {DiagramShapeState} state
+	 */
+	stateHas(state) { return this.svgElement.stateHas(state); }
+	stateGet() { return this.svgElement.stateGet(); }
+
+	/**
+	 * @param {AppPathEditorEventType} type
+	 * @param {EventListenerOrEventListenerObject} listener
+	 * @returns {IAppPathEditorDecorator}
+	 */
+	on(type, listener) {
+		this.svgElement.svgEl.addEventListener(type, listener);
+		return this;
+	}
+
+	/**
+	 * when shape enter edit mode
+	 * override this method
+	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
+	 */
+	onEdit(evt) {
+		console.log('onEdit');
+	}
+
+	/**
+	 * when shape leave edit mode
+	 * override this method
+	 */
+	onEditLeave() {
+		console.log('onEditLeave');
 	}
 }
