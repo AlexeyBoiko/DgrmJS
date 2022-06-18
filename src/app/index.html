@@ -146,9 +146,13 @@
 				pointer-events: none;
 			}
 
-			path.selected {
+			[data-templ="path"] [data-key="selected"] {
 				stroke-width: 10px !important;
 				stroke: rgb(108 187 247 / 30%);
+				display: none;
+			}
+			[data-templ="path"].selected [data-key="selected"] {
+				display: unset;
 			}
 
 			@media (pointer: coarse) {
@@ -168,6 +172,8 @@
 			<g data-templ="path">
 				<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
 				<path data-key="path" d="M0 0" stroke="#333" stroke-width="1.8" fill="none"
+					style="pointer-events: none;" />
+				<path data-key="selected" d="M0 0" stroke="#333" stroke-width="1.8" fill="none"
 					style="pointer-events: none;" />
 				<g data-key="arrow">
 					<circle r="10" stroke-width="0" fill="transparent" stroke="transparent" />

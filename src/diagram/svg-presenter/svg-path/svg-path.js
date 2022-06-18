@@ -24,6 +24,7 @@ export class SvgPath {
 		 */
 		this._path = svgEl.querySelector('[data-key="path"]');
 		this._outer = svgEl.querySelector('[data-key="outer"]');
+		this._selected = svgEl.querySelector('[data-key="selected"]');
 
 		/**
 		 * @type {SVGGraphicsElement}
@@ -93,15 +94,8 @@ export class SvgPath {
 			}
 
 			if (param.state.has('selected')) {
-				if (!this._selectedPath) {
-					this._selectedPath = /** @type {SVGPathElement} */(this._path.cloneNode());
-					this._selectedPath.classList.add('selected');
-					this.svgEl.append(this._selectedPath);
-				}
-
 				shapeStateAdd(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
 			} else {
-				if (this._selectedPath) { this._selectedPath.remove(); this._selectedPath = null; }
 				shapeStateDel(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
 			}
 		}
@@ -112,6 +106,7 @@ export class SvgPath {
 		const dAttr = SvgPath._calcDAttr(70, this._start, this._end);
 		this._path.setAttribute('d', dAttr);
 		this._outer.setAttribute('d', dAttr);
+		this._selected.setAttribute('d', dAttr);
 	}
 
 	_arrowUpdate() {
@@ -127,8 +122,9 @@ export class SvgPath {
 	}
 
 	dispose() {
-		this._outer = null;
 		this._path = null;
+		this._outer = null;
+		this._selected = null;
 		this._arrow = null;
 	}
 
