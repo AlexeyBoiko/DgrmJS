@@ -1,11 +1,10 @@
 import { svgDiagramCreate } from '../../diagram/svg-presenter/svg-diagram-factory.js';
 import { shapeCreate } from '../../diagram/svg-presenter/svg-shape/svg-shape-factory.js';
-import { SvgShapeTextEditorDecorator } from '../../diagram-extensions/svg-shape-texteditor-decorator.js';
 import { AppCircleDecorator } from '../shapes/app-circle-decorator.js';
 import { AppRectDecorator } from '../shapes/app-rect-decorator.js';
 import { AppRhombDecorator } from '../shapes/app-rhomb-decorator.js';
 import { pathCreate } from '../../diagram/svg-presenter/svg-path/svg-path-factory.js';
-import { AppPathEditiorDecorator } from '../shapes/app-editor-decorator.js';
+import { AppPathEditiorDecorator, AppShapeEditorDecorator } from '../shapes/app-editor-decorator.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -24,7 +23,7 @@ export function appDiagramFactory(svg) {
 						case 'rhomb': return new AppRhombDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props);
 						case 'rect': return new AppRectDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props);
 						case 'connect-end': return shape;
-						case 'text': return new SvgShapeTextEditorDecorator(shape, /** @type {DiagramShapeAddParam} */(param.createParams).props);
+						case 'text': return new AppShapeEditorDecorator(shape, /** @type {DiagramShapeAddParam} */(param.createParams).props);
 					}
 					break;
 				}
