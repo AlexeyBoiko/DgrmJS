@@ -25,23 +25,9 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 
 	/** @private */
 	_panelShow() {
-		if (this._panel) { return; }
-
-		const panelDiv = document.createElement('div');
-		panelDiv.classList.add('pop-set');
-		panelDiv.style.position = 'fixed';
-		panelDiv.innerHTML = `
-			<style>
-			.pop-set {
-				position: fixed;
-				padding: 10px;
-				box-shadow: 0px 0px 58px 2px rgb(34 60 80 / 20%);
-				border-radius: 16px;
-				background-color: rgba(255,255,255, .9);
-			}
-			</style>
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17 6h5v2h-2v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8H2V6h5V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3zm1 2H6v12h12V8zm-9 3h2v6H9v-6zm4 0h2v6h-2v-6zM9 4v2h6V4H9z" fill="rgba(52,71,103,1)"/></svg>`;
-		panelDiv.onclick = _ => {
+		/** @private */
+		this._panel = panelCreate();
+		this._panel.onclick = _ => {
 			this._panelDel();
 			this.svgEl.dispatchEvent(new CustomEvent('del', {
 				/** @type {ShapeTextEditorDecoratorEventUpdateDetail} */
@@ -50,12 +36,9 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 				}
 			}));
 		};
-
-		/** @private */
-		this._panel = panelDiv;
 		this.panelUpdPos();
 
-		document.body.append(panelDiv);
+		document.body.append(this._panel);
 	}
 
 	/** update panel position */
@@ -103,7 +86,22 @@ export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	onEdit(evt) {
-		console.log('onEdit');
+		console.log(evt);
+		/** @private */
+		this._panel = panelCreate();
+		this._panel.style.top = `${evt.clientY - 55}px`;
+		this._panel.style.left = `${evt.clientX - 20}px`;
+		this._panel.onclick = _ => {
+			this._panelDel();
+			this.svgEl.dispatchEvent(new CustomEvent('del', {
+				/** @type {IDiagramEventDetail<IAppPathEditorDecorator> } */
+				detail: {
+					target: this
+				}
+			}));
+		};
+
+		document.body.append(this._panel);
 	}
 
 	/**
@@ -111,6 +109,21 @@ export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
 	 * override this method
 	 */
 	onEditLeave() {
-		console.log('onEditLeave');
+		this._panelDel();
 	}
+
+	/** @private */
+	_panelDel() {
+		if (!this._panel) { return; }
+		this._panel.remove();
+		this._panel = null;
+	}
+}
+
+/** @return {HTMLDivElement} */
+function panelCreate() {
+	const panelDiv = document.createElement('div');
+	panelDiv.style.cssText = 'position: fixed; padding: 10px;	box-shadow: 0px 0px 58px 2px rgb(34 60 80 / 20%); border-radius: 16px; background-color: rgba(255,255,255, .9);';
+	panelDiv.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17 6h5v2h-2v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8H2V6h5V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3zm1 2H6v12h12V8zm-9 3h2v6H9v-6zm4 0h2v6h-2v-6zM9 4v2h6V4H9z" fill="rgba(52,71,103,1)"/></svg>';
+	return panelDiv;
 }
