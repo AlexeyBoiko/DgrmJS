@@ -24,9 +24,10 @@ export class SvgElementEditableAbstract {
 	update(param) {
 		if (param.state && this._isEditState) {
 			this._isEditState = false;
-			this._isSelectedOnDown = false;
 			this.onEditLeave();
 		}
+
+		if (param.state) { this._isSelectedOnDown = false; }
 
 		this.svgElement.update(param);
 	}
