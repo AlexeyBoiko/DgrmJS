@@ -56,7 +56,7 @@ export class AppDiagramSerializable extends EventTarget {
 					/** @type {string} */ (/** @type {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail>} */(evt).detail.props.text.textContent);
 				break;
 			case 'del':
-				this._shapeDel(/** @type {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail>} */(evt).detail.target);
+				this._elementDel(/** @type {CustomEvent<IDiagramEventDetail<IDiagramElement>>} */(evt).detail.target);
 				break;
 			case 'connect':
 				this._paths.add(/** @type {CustomEvent<IDiagramEventDetail<IDiagramPath>>} */(evt).detail.target);
@@ -68,13 +68,15 @@ export class AppDiagramSerializable extends EventTarget {
 	}
 
 	/**
-	 * @param {IDiagramShape} shape
+	 * @param {IDiagramElement} element
 	 * @private
 	 */
-	_shapeDel(shape) {
-		this._diagram.del(shape);
-		this._shapeData.delete(shape);
-		setFilter(this._paths, el => el.start.shape !== shape && el.end.shape !== shape);
+	_elementDel(element) {
+		this._diagram.del(element);
+		if (element.type === 'shape') {
+			this._shapeData.delete(/** @type {IDiagramShape} */(element));
+			setFilter(this._paths, el => el.start.shape !== element && el.end.shape !== element);
+		}
 	}
 
 	/**
@@ -118,7 +120,7 @@ export class AppDiagramSerializable extends EventTarget {
 	/** @returns {void} */
 	clear() {
 		for (const shapeData of this._shapeData) {
-			this._shapeDel(shapeData[0]);
+			this._elementDel(shapeData[0]);
 		}
 	}
 
