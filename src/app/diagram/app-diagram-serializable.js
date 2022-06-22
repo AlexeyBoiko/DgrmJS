@@ -73,9 +73,14 @@ export class AppDiagramSerializable extends EventTarget {
 	 */
 	_elementDel(element) {
 		this._diagram.del(element);
-		if (element.type === 'shape') {
-			this._shapeData.delete(/** @type {IDiagramShape} */(element));
-			setFilter(this._paths, el => el.start.shape !== element && el.end.shape !== element);
+		switch (element.type) {
+			case 'shape':
+				this._shapeData.delete(/** @type {IDiagramShape} */(element));
+				setFilter(this._paths, el => el.start.shape !== element && el.end.shape !== element);
+				break;
+			case 'path':
+				this._paths.delete(/** @type {IDiagramPath} */(element));
+				break;
 		}
 	}
 
