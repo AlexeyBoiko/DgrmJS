@@ -1,6 +1,9 @@
 import { first } from '../infrastructure/iterable-utils.js';
 import { SvgShape } from './svg-shape/svg-shape.js';
 
+// set to 10 to have a magnet effect
+export const MAGNET_EFFECT = 0
+
 /** @implements {IPresenter} */
 export class SvgPresenter extends EventTarget {
 	/**
@@ -173,8 +176,8 @@ export class SvgPresenter extends EventTarget {
 			/** @type {IPresenterEventDetail} */
 			detail: {
 				target: targetPresenterObj,
-				clientX: parentEvt.clientX,
-				clientY: parentEvt.clientY
+				clientX: Math.round(parentEvt.clientX / MAGNET_EFFECT) * MAGNET_EFFECT,
+				clientY: Math.round(parentEvt.clientY / MAGNET_EFFECT) * MAGNET_EFFECT
 			}
 		}));
 	}
