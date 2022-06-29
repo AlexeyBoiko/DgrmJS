@@ -2,7 +2,7 @@ import { first } from '../infrastructure/iterable-utils.js';
 import { SvgShape } from './svg-shape/svg-shape.js';
 
 // set to 10 to have a magnet effect
-export const MAGNET_EFFECT = 0
+export const MAGNET_EFFECT = 1
 
 /** @implements {IPresenter} */
 export class SvgPresenter extends EventTarget {
