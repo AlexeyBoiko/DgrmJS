@@ -1,4 +1,5 @@
 import { fileOpen, fileSave } from '../../../diagram-extensions/infrastructure/file-utils.js';
+import { storeSave } from './store.js';
 
 /** @implements {IFileOptions} */
 export class FileOptions extends HTMLElement {
@@ -103,7 +104,7 @@ export class FileOptions extends HTMLElement {
 				if (!diagramData) { alert('Diagram is empty'); return; }
 
 				const url = new URL(window.location.href);
-				url.hash = encodeURIComponent(JSON.stringify(diagramData));
+				url.hash = await storeSave(diagramData); // encodeURIComponent(JSON.stringify(diagramData));
 				await navigator.clipboard.writeText(url.toString());
 				alert('Link to diagram copied to clipboard');
 				break;

@@ -4,6 +4,7 @@ import { AppDiagramSerializable } from './diagram/app-diagram-serializable.js';
 // elements
 import './elements/menu-shape/menu-shape.js';
 import './elements/file-options/file-options.js';
+import { storeGet } from './elements/file-options/store.js';
 
 const svg = document.getElementById('diagram');
 
@@ -19,6 +20,7 @@ const diagram = new AppDiagramSerializable(svg, appDiagramFactory(svg))
 (document.getElementById('menu-shape')).init(diagram);
 
 if (window.location.hash) {
-	diagram.dataSet(JSON.parse(decodeURIComponent(window.location.hash.substring(1))));
+	// diagram.dataSet(JSON.parse(decodeURIComponent(window.location.hash.substring(1))));
+	storeGet(window.location.hash.substring(1)).then(appData => diagram.dataSet(appData));
 	history.replaceState(null, null, ' ');
 }
