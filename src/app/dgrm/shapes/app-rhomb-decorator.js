@@ -1,4 +1,4 @@
-import { svgTextIsOut } from '../../diagram-extensions/infrastructure/svg-text-is-out.js';
+import { svgTextIsOut } from '../../../diagram-extensions/infrastructure/svg-text-is-out.js';
 import { AppShapeEditorDecorator } from './app-editor-decorator.js';
 import { resizeAlg } from './infrastructure/resize-utils.js';
 

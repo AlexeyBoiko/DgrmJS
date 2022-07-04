@@ -1,9 +1,9 @@
-import { svgDiagramCreate } from '../../diagram/svg-presenter/svg-diagram-factory.js';
-import { shapeCreate } from '../../diagram/svg-presenter/svg-shape/svg-shape-factory.js';
+import { svgDiagramCreate } from '../../../diagram/svg-presenter/svg-diagram-factory.js';
+import { shapeCreate } from '../../../diagram/svg-presenter/svg-shape/svg-shape-factory.js';
 import { AppCircleDecorator } from '../shapes/app-circle-decorator.js';
 import { AppRectDecorator } from '../shapes/app-rect-decorator.js';
 import { AppRhombDecorator } from '../shapes/app-rhomb-decorator.js';
-import { pathCreate } from '../../diagram/svg-presenter/svg-path/svg-path-factory.js';
+import { pathCreate } from '../../../diagram/svg-presenter/svg-path/svg-path-factory.js';
 import { AppPathEditiorDecorator, AppShapeEditorDecorator } from '../shapes/app-editor-decorator.js';
 
 /**

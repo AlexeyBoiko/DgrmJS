@@ -1,9 +1,9 @@
-import { appDiagramFactory } from './diagram/app-diagram-factory.js';
-import { AppDiagramSerializable } from './diagram/app-diagram-serializable.js';
+import { appDiagramFactory } from './dgrm/diagram/app-diagram-factory.js';
+import { AppDiagramSerializable } from './dgrm/diagram/app-diagram-serializable.js';
 
 // elements
-import './elements/menu-shape/menu-shape.js';
-import './elements/file-options/file-options.js';
+import './ui/elements/menu-shape/menu-shape.js';
+import './ui/elements/file-options/file-options.js';
 
 const svg = document.getElementById('diagram');
 
