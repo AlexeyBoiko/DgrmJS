@@ -1,10 +1,10 @@
-import { appDiagramFactory } from './diagram/app-diagram-factory.js';
-import { AppDiagramSerializable } from './diagram/app-diagram-serializable.js';
+import { appDiagramFactory } from './dgrm/diagram/app-diagram-factory.js';
+import { AppDiagramSerializable } from './dgrm/diagram/app-diagram-serializable.js';
+import { storeGet } from './ui/elements/file-options/store.js';
 
 // elements
-import './elements/menu-shape/menu-shape.js';
-import './elements/file-options/file-options.js';
-import { storeGet } from './elements/file-options/store.js';
+import './ui/elements/menu-shape/menu-shape.js';
+import './ui/elements/file-options/file-options.js';
 
 const svg = document.getElementById('diagram');
 

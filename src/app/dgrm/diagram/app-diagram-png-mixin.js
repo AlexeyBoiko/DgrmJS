@@ -1,5 +1,5 @@
-import { pngDgrmChunkGet } from '../../diagram-extensions/png-open.js';
-import { pngCreate } from '../../diagram-extensions/png-create.js';
+import { pngDgrmChunkGet } from '../../../diagram-extensions/png-open.js';
+import { pngCreate } from '../../../diagram-extensions/png-create.js';
 
 /**
  * @type {IAppPngExportable}

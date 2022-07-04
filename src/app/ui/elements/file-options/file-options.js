@@ -1,4 +1,4 @@
-import { fileOpen, fileSave } from '../../../diagram-extensions/infrastructure/file-utils.js';
+import { fileOpen, fileSave } from '../../../../diagram-extensions/infrastructure/file-utils.js';
 import { storeSave } from './store.js';
 
 /** @implements {IFileOptions} */

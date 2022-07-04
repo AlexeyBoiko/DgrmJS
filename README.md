@@ -1,5 +1,5 @@
 # DgrmJS
-[NPM](https://badge.fury.io/js/dgrm) | [Donate](https://www.patreon.com/dgrm)
+[NPM](https://badge.fury.io/js/dgrm)
 
 DgrmJS is a JavaScript library for creating SVG flow diagram editors.  
 The main goal of the library is to set up workflows in BPM (Business Process Management) systems.
@@ -15,8 +15,9 @@ Demo: diagram editor [dgrm.net](https://app.dgrm.net "Diagram builder").
 <img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-sample.png" alt="diagram" width="600"/>
 
 Articles:  
-[JavaScript SVG diagram editor 6.5 times smaller than Bootstrap](https://alexey-boyko.medium.com/javascript-svg-diagram-editor-which-weighs-6-5-less-than-bootstrap-open-source-library-b753feaaf835 "JavaScript SVG diagram editor 6.5 times smaller than Bootstrap").  
-[JavaScript diagram editor that renders diagrams from PNG images (open source)](https://medium.com/codex/javascript-diagram-editor-that-renders-diagrams-from-png-images-open-source-d1de0f053088 "JavaScript diagram editor that renders diagrams from PNG images (open source)").
+[JavaScript SVG diagram editor 6.5 times smaller than Bootstrap](https://alexey-boyko.medium.com/javascript-svg-diagram-editor-which-weighs-6-5-less-than-bootstrap-open-source-library-b753feaaf835 "JavaScript SVG diagram editor 6.5 times smaller than Bootstrap")  
+[JavaScript diagram editor that renders diagrams from PNG images (open source)](https://medium.com/codex/javascript-diagram-editor-that-renders-diagrams-from-png-images-open-source-d1de0f053088 "JavaScript diagram editor that renders diagrams from PNG images (open source)")  
+[JavaScript text editor for SVG](https://alexey-boyko.medium.com/javascript-text-editor-for-svg-6881f670d432)
 
 ## Main idea
 - Allow developers to use standard SVG objects and features to declaratively create shapes that will be used in the diagram.  
@@ -212,3 +213,10 @@ Source code in ``src/diagram`` folder is under the MIT License.
 Source code in ``src/diagram-extensions`` folder is under the Commercial License.  
 Contact with [me](https://github.com/AlexeyBoiko) for details.
 
+### App (``src/app`` folder)
+**Commercial License**
+ 
+``src/app`` folder contains diagram builder [dgrm.net](https://app.dgrm.net "Diagram builder").
+ 
+Source code in ``src/app`` folder is under the Commercial License.  
+Contact with [me](https://github.com/AlexeyBoiko) for details.

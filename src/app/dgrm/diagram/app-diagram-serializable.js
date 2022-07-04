@@ -1,5 +1,5 @@
-import { map } from '../../diagram/infrastructure/iterable-utils.js';
-import { setFilter } from '../infrastructure/iterable-utils.js';
+import { map } from '../../../diagram/infrastructure/iterable-utils.js';
+import { setFilter } from './infrastructure/iterable-utils.js';
 import { AppPathEditiorDecorator, AppShapeEditorDecorator } from '../shapes/app-editor-decorator.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
 
