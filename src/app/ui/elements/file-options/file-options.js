@@ -1,4 +1,5 @@
 import { fileOpen, fileSave } from '../../../../diagram-extensions/infrastructure/file-utils.js';
+import { uiDisable } from '../ui.js';
 import { storeSave } from './store.js';
 
 /** @implements {IFileOptions} */
@@ -35,6 +36,16 @@ export class FileOptions extends HTMLElement {
 				text-decoration: none;
 			}
 			.options div svg, .options a svg { margin-right: 10px; }
+
+			.load svg { animation: rot 1.2s linear infinite; }
+			@keyframes rot {
+				0% {
+				  transform: rotate(0deg);
+				}
+				100% {
+				  transform: rotate(360deg);
+				}
+			}
 			</style>
 			 <svg data-cmd="menu" class="menu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" fill="rgba(52,71,103,1)"/></svg>
 			 <div class="options" style="visibility: hidden;">
@@ -82,8 +93,6 @@ export class FileOptions extends HTMLElement {
 
 	/** @param {PointerEvent & { currentTarget: Element }} evt */
 	async handleEvent(evt) {
-		this._toggle();
-
 		switch (evt.currentTarget.getAttribute('data-cmd')) {
 			case 'new':
 				this._diagram.clear();
@@ -103,12 +112,28 @@ export class FileOptions extends HTMLElement {
 				const diagramData = this._diagram.dataGet();
 				if (!diagramData) { alert('Diagram is empty'); return; }
 
+				this._load(evt.currentTarget, true);
 				const url = new URL(window.location.href);
 				url.hash = await storeSave(diagramData); // encodeURIComponent(JSON.stringify(diagramData));
 				await navigator.clipboard.writeText(url.toString());
+				this._load(evt.currentTarget, true);
 				alert('Link to diagram copied to clipboard');
 				break;
 			}
+		}
+		this._toggle();
+	}
+
+	/**
+	 * @param {Element} elem
+	 * @param {boolean} isLoad
+	 */
+	_load(elem, isLoad) {
+		uiDisable(isLoad);
+		if (isLoad) {
+			elem.classList.add('load');
+		} else {
+			elem.classList.remove('load');
 		}
 	}
 
