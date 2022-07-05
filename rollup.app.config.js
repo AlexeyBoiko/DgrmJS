@@ -1,5 +1,6 @@
 import { terser } from 'rollup-plugin-terser';
 import minifyHTML from 'rollup-plugin-minify-html-literals';
+import replace from '@rollup/plugin-replace';
 
 export default {
 	input: 'src/app/index.js',
@@ -31,6 +32,7 @@ export default {
 					);
 				}
 			}
-		})
+		}),
+		replace({ 'https://localhost:7156/api': 'https://dgrm.boyko.tech/api' })
 	]
 };

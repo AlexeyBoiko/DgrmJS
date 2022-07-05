@@ -4,13 +4,14 @@
   "description": "",
   "scripts": {
     "lint": "eslint src/**/*.js",
-	"tscheck": "./node_modules/.bin/tsc --noEmit -p ./jsconfig.json",
+    "tscheck": "./node_modules/.bin/tsc --noEmit -p ./jsconfig.json",
     "build": "rollup -c rollup.app.config.js",
     "build-dgrm-npm": "rollup -c rollup.diagram-npm-package.config.js"
   },
   "author": "Alexey Boyko",
   "license": "ISC",
   "devDependencies": {
+    "@rollup/plugin-replace": "^4.0.0",
     "eslint": "^8.12.0",
     "eslint-config-standard": "^17.0.0-1",
     "eslint-plugin-import": "^2.25.4",
