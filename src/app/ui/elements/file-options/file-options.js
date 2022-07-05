@@ -1,6 +1,6 @@
 import { fileOpen, fileSave } from '../../../../diagram-extensions/infrastructure/file-utils.js';
-import { uiDisable } from '../ui.js';
-import { storeSave } from './store.js';
+import { uiDisable } from '../../ui.js';
+import { storeSave } from '../../store.js';
 
 /** @implements {IFileOptions} */
 export class FileOptions extends HTMLElement {
@@ -112,11 +112,14 @@ export class FileOptions extends HTMLElement {
 				const diagramData = this._diagram.dataGet();
 				if (!diagramData) { alert('Diagram is empty'); return; }
 
-				this._load(evt.currentTarget, true);
+				const currentTarget = evt.currentTarget;
+				this._load(currentTarget, true);
+
 				const url = new URL(window.location.href);
-				url.hash = await storeSave(diagramData); // encodeURIComponent(JSON.stringify(diagramData));
+				url.searchParams.set('k', await storeSave(diagramData));
 				await navigator.clipboard.writeText(url.toString());
-				this._load(evt.currentTarget, true);
+
+				this._load(currentTarget, false);
 				alert('Link to diagram copied to clipboard');
 				break;
 			}
