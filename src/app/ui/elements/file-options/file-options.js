@@ -1,6 +1,6 @@
 import { fileOpen, fileSave } from '../../../../diagram-extensions/infrastructure/file-utils.js';
 import { uiDisable } from '../../ui.js';
-import { storeSave } from '../../store.js';
+import { generateKey, storeSave } from '../../store.js';
 
 /** @implements {IFileOptions} */
 export class FileOptions extends HTMLElement {
@@ -115,9 +115,13 @@ export class FileOptions extends HTMLElement {
 				const currentTarget = evt.currentTarget;
 				this._load(currentTarget, true);
 
+				const key = generateKey();
 				const url = new URL(window.location.href);
-				url.searchParams.set('k', await storeSave(diagramData));
+				url.searchParams.set('k', key);
+				// use clipboard befoure server call - to fix 'Document is not focused'
 				await navigator.clipboard.writeText(url.toString());
+
+				await storeSave(key, diagramData);
 
 				this._load(currentTarget, false);
 				alert('Link to diagram copied to clipboard');
