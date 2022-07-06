@@ -68,6 +68,7 @@ interface IDiagramElement {
 /** type = 'shape'  */
 interface IDiagramShape extends IDiagramElement {
 	positionGet(): Point;
+	connectedPaths?: Set<IDiagramPath>;
 }
 
 /** type = 'connector' */
