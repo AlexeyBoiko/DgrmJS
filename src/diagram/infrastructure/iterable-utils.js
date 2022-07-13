@@ -46,21 +46,6 @@ export function any(iterable, filter) {
 	return false;
 }
 
-// /**
-//  * @template T
-//  * @template TRes
-//  * @param {Iterable<T>} iterable
-//  * @param {(el:T) => TRes} mapFn
-//  * @returns {Array<TRes>}
-//  */
-// export function map(iterable, mapFn) {
-// 	const res = [];
-// 	for (const el of iterable) {
-// 		res.push(mapFn(el));
-// 	}
-// 	return res;
-// }
-
 /**
  * @template T
  * @param {Set<T>} set
