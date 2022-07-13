@@ -1,13 +1,13 @@
 import { svgPositionGet, svgPositionSet } from '../diagram/infrastructure/svg-utils.js';
 import { getBoundingRect, svgToPng } from './infrastructure/svg-to-png-utils.js';
-import { pngChunkSet } from './infrastructure/png-chunk-utils.js';
+import { pngChunkGet, pngChunkSet } from './infrastructure/png-chunk-utils.js';
 
 /**
  * @param {SVGSVGElement} svg
  * @param {BlobCallback} callBack
  * @param {string?=} dgrmChunkVal
  */
-export function pngCreate(svg, callBack, dgrmChunkVal) {
+export function pngDgrmCreate(svg, callBack, dgrmChunkVal) {
 	/** @type {SVGSVGElement} */
 	// @ts-ignore
 	const svgCopy = svg.cloneNode(true);
@@ -36,4 +36,14 @@ export function pngCreate(svg, callBack, dgrmChunkVal) {
 				callBack(await pngChunkSet(blob, 'dgRm', new TextEncoder().encode(dgrmChunkVal)));
 			}
 	);
+}
+
+/**
+ * @param {Blob} png
+ * @returns {Promise<string|null>}
+ */
+export async function pngDgrmChunkGet(png) {
+	const dgrmChunkVal = await pngChunkGet(png, 'dgRm');
+	if (!dgrmChunkVal) { return null; }
+	return new TextDecoder().decode(dgrmChunkVal);
 }

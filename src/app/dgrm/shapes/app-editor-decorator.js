@@ -1,5 +1,5 @@
-import { SvgElementEditableAbstract } from '../../../diagram-extensions/svg-shape-editable-abstract-decorator.js';
-import { SvgShapeTextEditorDecorator } from '../../../diagram-extensions/svg-shape-texteditor-decorator.js';
+import { SvgElementEditableAbstract } from '../../../diagram-extensions/shapes/svg-shape-editable-abstract-decorator.js';
+import { SvgShapeTextEditorDecorator } from '../../../diagram-extensions/shapes/svg-shape-texteditor-decorator.js';
 
 /** @implements {IAppShapeEditorDecorator} */
 export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {

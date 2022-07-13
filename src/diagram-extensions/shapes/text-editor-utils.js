@@ -1,5 +1,5 @@
-import { textParamsParse } from '../diagram/svg-presenter/svg-shape/svg-shape.js';
-import { textareaCreate } from './infrastructure/svg-textarea.js';
+import { textParamsParse } from '../../diagram/svg-presenter/svg-shape/svg-shape.js';
+import { textareaCreate } from '../infrastructure/svg-textarea.js';
 
 // utils encapsulate work with texteditor attributes and class names
 

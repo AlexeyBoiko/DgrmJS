@@ -1,5 +1,4 @@
-import { pngDgrmChunkGet } from '../../../diagram-extensions/png-open.js';
-import { pngCreate } from '../../../diagram-extensions/png-create.js';
+import { pngDgrmCreate, pngDgrmChunkGet } from '../../../diagram-extensions/png.js';
 
 /**
  * @type {IAppPngExportable}
@@ -13,7 +12,7 @@ export const AppDiagramPngMixin = {
 	pngCreate(callBack) {
 		const diagramData = this.dataGet();
 		if (!diagramData) { callBack(null); return; }
-		pngCreate(this.svg, callBack, JSON.stringify(diagramData));
+		pngDgrmCreate(this.svg, callBack, JSON.stringify(diagramData));
 	},
 
 	/**
