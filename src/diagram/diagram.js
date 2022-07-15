@@ -1,7 +1,3 @@
-/**
- * SVG diagram
- */
-
 import { connectorEndParams, shapeStateAdd, shapeStateDel } from './shape-utils.js';
 
 /** @implements {IDiagram} */
