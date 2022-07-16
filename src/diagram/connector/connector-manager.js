@@ -40,14 +40,6 @@ export class ConnectorManager {
 		return path;
 	}
 
-	// /**
-	//  * reconect to new connector
-	//  * if connectorOld has many connectors - take last
-	//  * @param {IConnectorConnector} connectorOld
-	//  * @param {IConnectorConnector} connectorNew
-	//  * @returns {void}
-	//  */
-	// replaceEnd(connectorOld, connectorNew) {
 	/**
 	 * reconect to new connector
 	 * if connectorOld has many connectors - take last
@@ -56,7 +48,6 @@ export class ConnectorManager {
 	 * @returns {void}
 	 */
 	replaceEnd(path, connectorNew) {
-		// const path = last(connectorOld.shape.connectedPaths, pp => pp.end === connectorOld);
 		const connectorOld = path.end;
 		path.update({
 			end: {
