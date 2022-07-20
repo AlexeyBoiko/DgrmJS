@@ -1,10 +1,11 @@
 import { ConnectorManager } from '../connector/connector-manager.js';
 import { Diagram } from '../diagram.js';
-import { ShapeEvtProc } from '../event-processors/shape-evt-proc.js';
 import { svgPositionGet } from '../infrastructure/svg-utils.js';
 import { pathCreate } from './svg-path/svg-path-factory.js';
 import { SvgPresenter } from './svg-presenter.js';
 import { connectorsInit, shapeCreate } from './svg-shape/svg-shape-factory.js';
+import { ConnectorEvtProc } from '../event-processors/connector-evt-proc.js';
+import { ShapeEvtProc } from '../event-processors/shape-evt-proc.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -35,8 +36,9 @@ export function svgDiagramCreate(svg, shapeFactory) {
 		dgrm => {
 			const shapeEvtProc = new ShapeEvtProc(dgrm);
 			return new Map([
-				[/** @type {DiagramElementType} */('shape'), shapeEvtProc],
-				[/** @type {DiagramElementType} */('canvas'), shapeEvtProc]
+				[/** @type {DiagramElementType} */('shape'), /** @type {IDiagramPrivateEventProcessor} */(shapeEvtProc)],
+				['canvas', shapeEvtProc],
+				['connector', new ConnectorEvtProc(dgrm)]
 			]);
 		});
 }

@@ -1,3 +1,4 @@
+import { first } from '../infrastructure/iterable-utils.js';
 import { shapeStateAdd, shapeStateDel } from '../shape-utils.js';
 
 /** delta between shape and cursor when shape start dragging {Point} */
@@ -108,5 +109,5 @@ function disable(shape, isDisable) {
  * @returns {IPresenterStatable}
  */
 function shapeOrPath(shape) {
-	return shape.connectable ? shape.connectedPaths[0] : shape;
+	return shape.connectable ? first(shape.connectedPaths) : shape;
 }
