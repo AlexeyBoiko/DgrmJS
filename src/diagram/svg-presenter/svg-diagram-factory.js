@@ -1,5 +1,6 @@
 import { ConnectorManager } from '../connector/connector-manager.js';
 import { Diagram } from '../diagram.js';
+import { ShapeEvtProc } from '../event-processors/shape-evt-proc.js';
 import { svgPositionGet } from '../infrastructure/svg-utils.js';
 import { pathCreate } from './svg-path/svg-path-factory.js';
 import { SvgPresenter } from './svg-presenter.js';
@@ -30,7 +31,14 @@ export function svgDiagramCreate(svg, shapeFactory) {
 	}
 
 	const presenter = new SvgPresenter(svg, _shapeFactory);
-	return new Diagram(presenter, new ConnectorManager(presenter));
+	return new Diagram(presenter, new ConnectorManager(presenter),
+		dgrm => {
+			const shapeEvtProc = new ShapeEvtProc(dgrm);
+			return new Map([
+				[/** @type {DiagramElementType} */('shape'), shapeEvtProc],
+				[/** @type {DiagramElementType} */('canvas'), shapeEvtProc]
+			]);
+		});
 }
 
 /**

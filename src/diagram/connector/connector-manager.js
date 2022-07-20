@@ -1,4 +1,4 @@
-import { any, last } from '../infrastructure/iterable-utils.js';
+import { any /*, last */ } from '../infrastructure/iterable-utils.js';
 import { shapeStateAdd, shapeStateDel } from '../shape-utils.js';
 
 /** @implements {IConnectorManager} */
@@ -137,13 +137,13 @@ export class ConnectorManager {
 		}
 	}
 
-	/**
-	 * @param {IConnectorConnector} endConnector
-	 * @returns {IConnectorPath}
-	 */
-	pathGetByEnd(endConnector) {
-		return last(endConnector.shape.connectedPaths, pp => pp.end === endConnector);
-	}
+	// /**
+	//  * @param {IConnectorConnector} endConnector
+	//  * @returns {IConnectorPath}
+	//  */
+	// pathGetByEnd(endConnector) {
+	// 	return last(endConnector.shape.connectedPaths, pp => pp.end === endConnector);
+	// }
 
 	/**
 	 * @param {IConnetorShape} shape

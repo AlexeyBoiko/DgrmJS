@@ -21,7 +21,7 @@ export class SvgPresenter extends EventTarget {
 
 		/**
 		 * store presenter objects
-		 * @type {WeakMap<SVGGraphicsElement, IPresenterElement>}
+		 * @type {WeakMap<SVGGraphicsElement, IDiagramElement>}
 		 * @private
 		 */
 		this._svgElemToPresenterObj = new WeakMap();

@@ -1,4 +1,4 @@
-interface ISvgPresenterElement extends IPresenterElement {
+interface ISvgPresenterElement extends IDiagramElement {
 	get svgEl() : SVGGraphicsElement;
 }
 
@@ -14,7 +14,7 @@ interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape {
 
 interface ISvgPresenterShapeFactoryParam { 
 	svgCanvas: SVGGElement,
-	svgElemToPresenterObj: WeakMap<SVGGraphicsElement, IPresenterElement>,
+	svgElemToPresenterObj: WeakMap<SVGGraphicsElement, IDiagramElement>,
 	createParams: DiagramShapeAddParam
 }
 
@@ -25,7 +25,7 @@ interface ISvgPresenterPath extends IPresenterPath, ISvgPresenterElement {}
 
 interface ISvgPresenterPathFactoryParam { 
 	svgCanvas: SVGGElement,
-	svgElemToPresenterObj: WeakMap<SVGGraphicsElement, IPresenterElement>,
+	svgElemToPresenterObj: WeakMap<SVGGraphicsElement, IDiagramElement>,
 	createParams: PresenterPathAppendParam
 }
 

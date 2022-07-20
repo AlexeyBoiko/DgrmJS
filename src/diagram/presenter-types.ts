@@ -1,7 +1,7 @@
 interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
 	append(type: DiagramChildAddType, param: DiagramShapeAddParam | PresenterPathAppendParam): IPresenterShape | IPresenterPath;
-	delete(elem: IPresenterElement): void;
+	delete(elem: IDiagramElement): void;
 	get canvas(): IPresenterShape;
 }
 
@@ -12,7 +12,7 @@ interface IPresenter {
 type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointerenter' | 'pointerleave';
 interface IPresenterEventDetail {
 	/**	null for pointermove */
-	target?: IPresenterElement;
+	target?: IDiagramElement;
 	clientX: number;
 	clientY: number;
 }
@@ -21,9 +21,9 @@ interface IPresenterEventDetail {
 //
 // ui elements
 
-interface IPresenterElement extends IDisposable {
-	type: DiagramElementType;
-}
+// interface IPresenterElement extends IDisposable {
+// 	type: DiagramElementType;
+// }
 
 interface IPresenterStatable extends IDiagramElement {
 	stateHas(state: DiagramShapeState): boolean;
@@ -31,7 +31,7 @@ interface IPresenterStatable extends IDiagramElement {
 	update(param: { state?: Set<DiagramShapeState> }): void;
 }
 
-interface IPresenterShape extends IPresenterElement, IPresenterStatable {
+interface IPresenterShape extends IDiagramShape, IPresenterStatable {
 
 	/** can be used as connector end  */
 	connectable?: boolean;
@@ -40,12 +40,12 @@ interface IPresenterShape extends IPresenterElement, IPresenterStatable {
 	/** should be readonly */
 	connectors: Map<string, IPresenterConnector>;
 
-	positionGet(): Point;
 	update(param: DiagramShapeUpdateParam): void;
+	connectedPaths?: Set<IPresenterPath>;
 }
 
 type PresenterConnectorType = 'in' | 'out';
-interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
+interface IPresenterConnector extends IDiagramElement, IPresenterStatable {
 	connectorType: PresenterConnectorType;
 	shape: IPresenterShape;
 	/** unique id into shape */
@@ -55,7 +55,7 @@ interface IPresenterConnector extends IPresenterElement, IPresenterStatable {
 	dir: DiagramPathEndDirection;
 }
 
-interface IPresenterPath extends IPresenterElement, IPresenterStatable {
+interface IPresenterPath extends IDiagramElement, IPresenterStatable {
 	get start(): IPresenterConnector;
 	get end(): IPresenterConnector;
 	update(param: PresenterPathUpdateParam): void;

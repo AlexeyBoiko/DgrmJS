@@ -17,7 +17,7 @@ export function shapeCreate(svgCanvas, createParams) {
 }
 
 /**
- * @param {WeakMap<SVGGraphicsElement, IPresenterElement>} svgElemToPresenterObj
+ * @param {WeakMap<SVGGraphicsElement, IDiagramElement>} svgElemToPresenterObj
  * @param {ISvgPresenterShape} shape
  */
 export function connectorsInit(svgElemToPresenterObj, shape) {

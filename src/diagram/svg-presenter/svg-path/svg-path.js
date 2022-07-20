@@ -80,6 +80,7 @@ export class SvgPath {
 
 		if (param.endConnector && this.end !== param.endConnector) {
 			if (this.end) { shapeStateDel(this.end, 'selected'); }
+			/** @type {IPresenterConnector} */
 			this.end = param.endConnector;
 			this.svgEl.parentNode.appendChild(this.svgEl);
 		}
@@ -89,15 +90,21 @@ export class SvgPath {
 		if (param.state) {
 			this._state = param.state;
 
-			for (const state of ['selected', 'disabled']) {
-				stateClassSync(this._state, this.svgEl, /** @type {DiagramShapeState} */(state));
+			for (const state of /** @type {DiagramShapeState[]} */(['selected', 'disabled'])) {
+				stateClassSync(this._state, this.svgEl, state);
+
+				if (param.state.has(state)) {
+					shapeStateAdd(this.end.shape.connectable ? this.end.shape : this.end, state);
+				} else {
+					shapeStateDel(this.end.shape.connectable ? this.end.shape : this.end, state);
+				}
 			}
 
-			if (param.state.has('selected')) {
-				shapeStateAdd(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
-			} else {
-				shapeStateDel(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
-			}
+			// if (param.state.has('selected')) {
+			// 	shapeStateAdd(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
+			// } else {
+			// 	shapeStateDel(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
+			// }
 		}
 	}
 

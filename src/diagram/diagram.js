@@ -1,12 +1,13 @@
 import { connectorEndParams, shapeStateAdd, shapeStateDel } from './shape-utils.js';
 
-/** @implements {IDiagram} */
+/** @implements {IDiagramPrivate} */
 export class Diagram extends EventTarget {
 	/**
 	 * @param {IPresenter} pesenter
 	 * @param {IConnectorManager} connectorManager
+	 * @param {(diagram: IDiagramPrivate) => Map<DiagramElementType, IDiagramPrivateEventProcessor>} evtProcessors
 	 */
-	constructor(pesenter, connectorManager) {
+	constructor(pesenter, connectorManager, evtProcessors) {
 		super();
 
 		/** @private */
@@ -19,6 +20,12 @@ export class Diagram extends EventTarget {
 
 		/** @private */
 		this._connectorManager = connectorManager;
+
+		/**
+		 * @type {Map<DiagramElementType, IDiagramPrivateEventProcessor>}
+		 * @private
+		 */
+		this._evtProcessors = evtProcessors(this);
 	}
 
 	/**
@@ -50,7 +57,7 @@ export class Diagram extends EventTarget {
 				break;
 		}
 
-		this._dispatchEvent('add', element);
+		this.dispatch('add', element);
 		return element;
 	}
 
@@ -77,59 +84,96 @@ export class Diagram extends EventTarget {
 	handleEvent(evt) {
 		switch (evt.type) {
 			case 'pointermove':
-				if (this._downElement) {
-					const clientPoint = { x: evt.detail.clientX, y: evt.detail.clientY };
-					if (this._downElement.type === 'connector') {
-						this._connectorStartMove(/** @type {IPresenterConnector} */(this._downElement), clientPoint);
-					} else {
-						this.shapeSetMoving(
-							this._downElement.type === 'shape' ? /** @type {IPresenterShape} */(this._downElement) : this._presenter.canvas,
-							clientPoint);
-					}
-					this._downElement = null;
-				}
+				this._evtProcess(evt);
 
-				if (this._movedShape) {
-					this._movedShape.update({
-						position: {
-							x: this._movedDelta.x + evt.detail.clientX,
-							y: this._movedDelta.y + evt.detail.clientY
-						}
-					});
-					this._connectorManager.updatePosition(this._movedShape);
-				}
+				// if (this._downElement) {
+				// 	const clientPoint = { x: evt.detail.clientX, y: evt.detail.clientY };
+				// 	if (this._downElement.type === 'connector') {
+				// 		this._connectorStartMove(/** @type {IPresenterConnector} */(this._downElement), clientPoint);
+				// 	} else {
+				// 		this.shapeSetMoving(
+				// 			this._downElement.type === 'shape' ? /** @type {IPresenterShape} */(this._downElement) : this._presenter.canvas,
+				// 			clientPoint);
+				// 	}
+				// 	this._downElement = null;
+				// }
+
+				// if (this._movedShape) {
+				// 	this._movedShape.update({
+				// 		position: {
+				// 			x: this._movedDelta.x + evt.detail.clientX,
+				// 			y: this._movedDelta.y + evt.detail.clientY
+				// 		}
+				// 	});
+				// 	this._connectorManager.updatePosition(this._movedShape);
+				// }
 				break;
 			case 'pointerdown':
+				// /**
+				//  * @private
+				//  * @type {IDiagramElement}
+				//  */
+				// this._downElement = evt.detail.target;
+
+				this._evtProcess(evt);
+
 				/**
 				 * @private
-				 * @type {IPresenterElement}
+				 * @type {IDiagramElement}
 				 */
-				this._downElement = evt.detail.target;
+				this._activeElement = evt.detail.target;
 				break;
 			case 'pointerup':
-				if (evt.detail.target.type === 'connector') {
-					this._connectorOnUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
-				} else if (this._downElement) {
-					// if click on shape without move
-					this._selectedSet(/** @type {IPresenterShape} */(this._downElement).connectable
-						? this._connectorManager.pathGetByEnd(/** @type {IPresenterShape} */(this._downElement).defaultInConnector)
-						: /** @type {IPresenterShape} */(this._downElement));
-				}
+				this._evtProcess(evt);
+				// this._activeElement = null;
 
-				this._downElement = null;
-				this.movedClean();
-				this._hoveredClean();
+				// if (evt.detail.target.type === 'connector') {
+				// 	this._connectorOnUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
+				// } else if (this._downElement) {
+				// 	// if click on shape without move
+				// 	this._selectedSet(/** @type {IPresenterShape} */(this._downElement).connectable
+				// 		? this._connectorManager.pathGetByEnd(/** @type {IPresenterShape} */(this._downElement).defaultInConnector)
+				// 		: /** @type {IPresenterShape} */(this._downElement));
+				// }
+
+				// this._downElement = null;
+				// this.movedClean();
+				// this._hoveredClean();
 				break;
-			case 'pointerenter':
-				if (this._movedShape && this._movedShape.connectable &&
-					(evt.detail.target.type === 'connector' || evt.detail.target.type === 'shape')) {
-					this._hoveredSet(/** @type {IPresenterStatable & IPresenterElement} */(evt.detail.target));
-				}
-				break;
-			case 'pointerleave':
-				this._hoveredClean();
-				break;
+			// case 'pointerenter':
+			// 	if (this._movedShape && this._movedShape.connectable &&
+			// 		(evt.detail.target.type === 'connector' || evt.detail.target.type === 'shape')) {
+			// 		this._hoveredSet(/** @type {IPresenterStatable & IDiagramElement} */(evt.detail.target));
+			// 	}
+			// 	break;
+			// case 'pointerleave':
+			// 	this._hoveredClean();
+			// 	break;
 		}
+	}
+
+	/**
+	 * @param {CustomEvent<IPresenterEventDetail>} evt
+	 * @private
+	 */
+	_evtProcess(evt) {
+		if (this._activeElement) {
+			// notify prev activeElement
+			this._evtProcessorCall(this._activeElement, evt);
+		}
+
+		if (this._activeElement !== evt.detail.target && evt.detail.target) {
+			this._evtProcessorCall(evt.detail.target, evt);
+		}
+	}
+
+	/**
+	 * @param {IDiagramElement} elem
+	 * @param {CustomEvent<IPresenterEventDetail>} evt
+	 * @private
+	 */
+	_evtProcessorCall(elem, evt) {
+		this._evtProcessors.get(elem.type).process(elem, evt);
 	}
 
 	/**
@@ -160,7 +204,7 @@ export class Diagram extends EventTarget {
 						? /** @type {IPresenterPath} */(this._selectedShape)
 						: this._connectorManager.pathGetByEnd(connector);
 
-					if (!this._dispatchEvent('disconnect', path)) {
+					if (!this.dispatch('disconnect', path)) {
 						return;
 					}
 
@@ -189,7 +233,7 @@ export class Diagram extends EventTarget {
 		// connect connector
 
 		const path = this._connectorManager.pathGetByEnd(this._movedShape.defaultInConnector);
-		if (!this._dispatchEvent('connect', path)) { return; }
+		if (!this.dispatch('connect', path)) { return; }
 
 		shapeStateDel(path, 'disabled');
 		this._connectorManager.replaceEnd(path, evt.detail.target);
@@ -202,7 +246,7 @@ export class Diagram extends EventTarget {
 	 */
 	_selectedSet(shape) {
 		if (shape !== this._selectedShape) {
-			this._dispatchEvent('select', shape);
+			this.dispatch('select', shape);
 
 			if (this._selectedShape) {
 				shapeStateDel(this._selectedShape, 'selected');
@@ -225,19 +269,28 @@ export class Diagram extends EventTarget {
 	 * @param {Point} clientPoint
 	 */
 	shapeSetMoving(shape, clientPoint) {
-		/** @private */
-		this._movedShape = shape;
+		// /** @private */
+		// this._movedShape = shape;
 
-		this._disable(this._movedShape, true);
+		// this._disable(this._movedShape, true);
 
-		const shapePosition = this._movedShape.positionGet();
-		/** @private */
-		this._movedDelta = {
-			x: shapePosition.x - clientPoint.x,
-			y: shapePosition.y - clientPoint.y
-		};
+		// const shapePosition = this._movedShape.positionGet();
+		// /** @private */
+		// this._movedDelta = {
+		// 	x: shapePosition.x - clientPoint.x,
+		// 	y: shapePosition.y - clientPoint.y
+		// };
 
-		this._selectedSet();
+		// this._selectedSet();
+		this._evtProcess(new CustomEvent('pointerdown', {
+			/** @type {IPresenterEventDetail} */
+			detail: {
+				target: shape,
+				clientX: clientPoint.x,
+				clientY: clientPoint.y
+			}
+		}));
+		this._activeElement = shape;
 	}
 
 	movedClean() {
@@ -269,7 +322,7 @@ export class Diagram extends EventTarget {
 	}
 
 	/**
-	 * @param {IPresenterStatable & IPresenterElement} shape
+	 * @param {IPresenterStatable & IDiagramElement} shape
 	 * @private
 	 */
 	_hoveredSet(shape) {
@@ -300,9 +353,8 @@ export class Diagram extends EventTarget {
 	 * @param {DiagramEventType} type
 	 * @param {IDiagramElement} target
 	 * @returns {boolean}
-	 * @private
 	 */
-	_dispatchEvent(type, target) {
+	dispatch(type, target) {
 		return this.dispatchEvent(new CustomEvent(type, {
 			cancelable: true,
 			detail: { target }

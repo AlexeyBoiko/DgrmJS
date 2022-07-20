@@ -61,7 +61,7 @@ interface DiagramPathAddParam {
 
 type DiagramElementType = 'shape' | 'path' | 'canvas' | 'connector';
 
-interface IDiagramElement {
+interface IDiagramElement extends IDisposable {
 	type: DiagramElementType
 }
 
