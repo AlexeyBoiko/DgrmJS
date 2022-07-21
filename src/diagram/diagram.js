@@ -1,13 +1,13 @@
-import { connectorEndParams, shapeStateAdd, shapeStateDel } from './shape-utils.js';
+import { shapeStateAdd, shapeStateDel } from './shape-utils.js';
 
 /** @implements {IDiagramPrivate} */
 export class Diagram extends EventTarget {
 	/**
 	 * @param {IPresenter} pesenter
 	 * @param {IConnectorManager} connectorManager
-	 * @param {(diagram: IDiagramPrivate) => Map<DiagramElementType, IDiagramPrivateEventProcessor>} evtProcessors
+	 * @param {(diagram: IDiagramPrivate) => Map<DiagramElementType, IDiagramPrivateEventProcessor>} evtProcessorsFactory
 	 */
-	constructor(pesenter, connectorManager, evtProcessors) {
+	constructor(pesenter, connectorManager, evtProcessorsFactory) {
 		super();
 
 		/** @private */
@@ -25,7 +25,7 @@ export class Diagram extends EventTarget {
 		 * @type {Map<DiagramElementType, IDiagramPrivateEventProcessor>}
 		 * @private
 		 */
-		this._evtProcessors = evtProcessors(this);
+		this._evtProcessors = evtProcessorsFactory(this);
 	}
 
 	/**
@@ -121,7 +121,7 @@ export class Diagram extends EventTarget {
 				 * @private
 				 * @type {IDiagramElement}
 				 */
-				this._activeElement = evt.detail.target;
+				this.activeElement = evt.detail.target;
 				break;
 			case 'pointerup':
 				this._evtProcess(evt);
@@ -140,15 +140,19 @@ export class Diagram extends EventTarget {
 				// this.movedClean();
 				// this._hoveredClean();
 				break;
-			// case 'pointerenter':
-			// 	if (this._movedShape && this._movedShape.connectable &&
-			// 		(evt.detail.target.type === 'connector' || evt.detail.target.type === 'shape')) {
-			// 		this._hoveredSet(/** @type {IPresenterStatable & IDiagramElement} */(evt.detail.target));
-			// 	}
-			// 	break;
-			// case 'pointerleave':
-			// 	this._hoveredClean();
-			// 	break;
+			case 'pointerenter':
+				this._evtProcess(evt);
+
+				// 	if (this._movedShape && this._movedShape.connectable &&
+				// 		(evt.detail.target.type === 'connector' || evt.detail.target.type === 'shape')) {
+				// 		this._hoveredSet(/** @type {IPresenterStatable & IDiagramElement} */(evt.detail.target));
+				// 	}
+				break;
+			case 'pointerleave':
+				this._evtProcess(evt);
+
+				// 	this._hoveredClean();
+				break;
 		}
 	}
 
@@ -157,12 +161,12 @@ export class Diagram extends EventTarget {
 	 * @private
 	 */
 	_evtProcess(evt) {
-		if (this._activeElement) {
+		if (this.activeElement) {
 			// notify prev activeElement
-			this._evtProcessorCall(this._activeElement, evt);
+			this._evtProcessorCall(this.activeElement, evt);
 		}
 
-		if (this._activeElement !== evt.detail.target && evt.detail.target) {
+		if (this.activeElement !== evt.detail.target && evt.detail.target) {
 			this._evtProcessorCall(evt.detail.target, evt);
 		}
 	}
@@ -268,7 +272,7 @@ export class Diagram extends EventTarget {
 	 * @param {IPresenterShape} shape
 	 * @param {Point} clientPoint
 	 */
-	shapeSetMoving(shape, clientPoint) {
+	shapeSetMoving(shape /*, clientPoint*/) {
 		// /** @private */
 		// this._movedShape = shape;
 
@@ -282,24 +286,28 @@ export class Diagram extends EventTarget {
 		// };
 
 		// this._selectedSet();
+
 		this._evtProcess(new CustomEvent('pointerdown', {
 			/** @type {IPresenterEventDetail} */
 			detail: {
 				target: shape,
-				clientX: clientPoint.x,
-				clientY: clientPoint.y
+				// TODO
+				clientX: 0,
+				clientY: 0
 			}
 		}));
-		this._activeElement = shape;
+		this.activeElement = shape;
 	}
 
 	movedClean() {
-		if (this._movedShape) {
-			this._disable(this._movedShape, false);
-		}
+		// TODO: FOR MOBILE
 
-		this._movedDelta = null;
-		this._movedShape = null;
+		// if (this._movedShape) {
+		// 	this._disable(this._movedShape, false);
+		// }
+
+		// this._movedDelta = null;
+		// this._movedShape = null;
 	}
 
 	/**

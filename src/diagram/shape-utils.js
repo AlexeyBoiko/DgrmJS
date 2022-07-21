@@ -23,20 +23,10 @@ export function shapeStateDel(shape, state) {
 }
 
 /**
- * create param for connectorEnd shape
- * @param {IPresenterConnector} connector
- * @returns {DiagramShapeAddParam}
- * @private
+ * @param {IPresenterStatable} shape
+ * @param {DiagramShapeState} state
+ * @param {boolean} isSet
  */
-export function connectorEndParams(connector) {
-	const shapePosition = connector.shape.positionGet();
-	const innerPosition = connector.innerPosition;
-	return {
-		templateKey: 'connect-end',
-		position: {
-			x: shapePosition.x + innerPosition.x,
-			y: shapePosition.y + innerPosition.y
-		},
-		postionIsIntoCanvas: true
-	};
+export function shapeStateSet(shape, state, isSet) {
+	(isSet ? shapeStateAdd : shapeStateDel)(shape, state);
 }

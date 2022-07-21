@@ -1,5 +1,5 @@
 import { first } from '../infrastructure/iterable-utils.js';
-import { shapeStateAdd, shapeStateDel } from '../shape-utils.js';
+import { shapeStateAdd, shapeStateDel, shapeStateSet } from '../shape-utils.js';
 
 /** delta between shape and cursor when shape start dragging {Point} */
 const movedDelta = Symbol(0);
@@ -45,9 +45,10 @@ export class ShapeEvtProc {
 				});
 				break;
 
-			case 'pointerdown': // when: 'pointerdown' on {shape}, or 'pointerdown' on another and {shape} was activeSahpe
+			// when: 'pointerdown' on {shape}, or 'pointerdown' on another element and {shape} was activeSahpe
+			case 'pointerdown':
 				if (shape !== evt.detail.target) {
-					// UNActive
+					// Clear = 'pointerdown' on another element
 
 					this._select(shape, false);
 					delete shape[isUp];
@@ -60,19 +61,29 @@ export class ShapeEvtProc {
 				shape[isDown] = true;
 				break;
 
-			// when: 'pointerup' on {shape}, or 'pointerup' on another and {shape} was activeSahpe
+			// when evt on {shape}, or on another element and {shape} is activeSahpe
 			case 'pointerup':
 				if (shape[movedDelta]) {
 					// move end
 					disable(shape, false);
 				} else if (shape[isDown]) {
-					// select ('pointerdown' and 'pointerup' on {shape} and {shape} don't move)
+					// select = 'pointerdown' and 'pointerup' on {shape} and {shape} don't move
 					this._select(shape, true);
 				}
 
 				delete shape[isDown];
 				delete shape[movedDelta];
 				shape[isUp] = true;
+				break;
+
+			// when evt on {shape}, or on another element and {shape} is activeSahpe
+			case 'pointerenter':
+				if (/** @type {IPresenterShape} */(this._diagram?.activeElement)?.connectable) {
+					shapeStateAdd(shape, 'hovered');
+				}
+				break;
+			case 'pointerleave':
+				shapeStateDel(shape, 'hovered');
 				break;
 		}
 	}
@@ -100,8 +111,7 @@ export class ShapeEvtProc {
  * @returns {void}
  */
 function disable(shape, isDisable) {
-	const stateSetter = isDisable ? shapeStateAdd : shapeStateDel;
-	stateSetter(shapeOrPath(shape), 'disabled');
+	shapeStateSet(shapeOrPath(shape), 'disabled', isDisable);
 }
 
 /**

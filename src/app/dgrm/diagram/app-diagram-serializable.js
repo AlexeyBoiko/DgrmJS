@@ -56,6 +56,8 @@ export class AppDiagramSerializable extends EventTarget {
 	 * @private
 	 */
 	_elementDel(element) {
+		// TODO: unsubscribe
+
 		this._diagram.del(element);
 
 		if (element.type === 'shape') {
@@ -94,10 +96,9 @@ export class AppDiagramSerializable extends EventTarget {
 
 	/**
 	 * @param {IDiagramShape} shape
-	 * @param {Point} offsetPoint
 	 * @returns {void}
 	 */
-	shapeSetMoving(shape, offsetPoint) { this._diagram.shapeSetMoving(shape, offsetPoint); }
+	shapeSetMoving(shape) { this._diagram.shapeSetMoving(shape); }
 
 	movedClean() { this._diagram.movedClean(); }
 

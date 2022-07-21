@@ -216,10 +216,7 @@ class MenuLogic {
 			}
 		});
 
-		this._diagram.shapeSetMoving(
-			this._addingShape,
-			// cursorPosition
-			{ x: evt.clientX, y: evt.clientY });
+		this._diagram.shapeSetMoving(this._addingShape);
 
 		//
 		// remember canvas position for mobile

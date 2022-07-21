@@ -1,8 +1,4 @@
-import { connectorEndParams } from '../shape-utils.js';
-
-const isUp = Symbol(0);
-
-/** @typedef {IPresenterConnector & { [isUp]?: Boolean }} IEvtProcShape */
+import { shapeStateSet } from '../shape-utils.js';
 
 /** @implements {IDiagramPrivateEventProcessor} */
 export class ConnectorEvtProc {
@@ -18,17 +14,17 @@ export class ConnectorEvtProc {
 	process(connector, evt) {
 		switch (evt.type) {
 			case 'pointermove':
-				if (connector[isUp]) { return; }
+				this._diagram.shapeSetMoving(this._createConnectorEnd(connector));
+				break;
 
-				this._diagram.shapeSetMoving(
-					this._createConnectorEnd(connector),
-					{ x: evt.detail.clientX, y: evt.detail.clientY });
-				break;
+			// when evt on {connector}, or on another and {connector} was activeSahpe
 			case 'pointerdown':
-				delete connector[isUp];
+				shapeStateSet(connector, 'selected', connector === evt.detail.target);
 				break;
+
+			// when evt on {connector}, or on another and {connector} is activeSahpe
 			case 'pointerup':
-				connector[isUp] = true;
+				this._diagram.shapeSetMoving(null);
 				break;
 		}
 	}
@@ -71,4 +67,23 @@ export class ConnectorEvtProc {
 		}
 		return null;
 	}
+}
+
+/**
+ * create param for connectorEnd shape
+ * @param {IPresenterConnector} connector
+ * @returns {DiagramShapeAddParam}
+ * @private
+ */
+function connectorEndParams(connector) {
+	const shapePosition = connector.shape.positionGet();
+	const innerPosition = connector.innerPosition;
+	return {
+		templateKey: 'connect-end',
+		position: {
+			x: shapePosition.x + innerPosition.x,
+			y: shapePosition.y + innerPosition.y
+		},
+		postionIsIntoCanvas: true
+	};
 }

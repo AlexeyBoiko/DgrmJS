@@ -3,7 +3,7 @@ interface IDiagram {
 	add(type: DiagramChildAddType, param: DiagramShapeAddParam | DiagramPathAddParam): IDiagramElement;
 	del(element: IDiagramElement): void;
 	shapeUpdate(shape: IDiagramShape, param: DiagramShapeUpdateParam): void;
-	shapeSetMoving(shape: IDiagramShape, offsetPoint: Point): void;
+	shapeSetMoving(shape: IDiagramShape): void;
 	movedClean(): void;
 }
 
