@@ -12,8 +12,21 @@ interface DiagramPrivateShapeConnectParam extends DiagramPathAddParam {
 interface IDiagramPrivate extends IDiagram {
 	dispatch(type: DiagramEventType, target: IDiagramElement): boolean;
 	get activeElement(): IDiagramElement;
+	set selected(elem: IDiagramElement);
+}
+
+
+interface IDiagramPrivateEventDetail extends IPresenterEventDetail {
+	/** filled for 'pointerleave' evt */
+	enterTo?: IDiagramElement;
+}
+
+type DiagramPrivateEventType = 'unselect' | PresenterEventType;
+interface IDiagramPrivateEvent {
+	type: DiagramPrivateEventType;
+	detail?: IDiagramPrivateEventDetail;
 }
 
 interface IDiagramPrivateEventProcessor {
-	process(elem: IDiagramElement, evt: CustomEvent<IPresenterEventDetail>): void;
+	process(elem: IDiagramElement, evt: IDiagramPrivateEvent): void;
 }

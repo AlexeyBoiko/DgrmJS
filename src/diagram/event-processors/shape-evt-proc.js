@@ -3,33 +3,37 @@ import { shapeStateAdd, shapeStateDel, shapeStateSet } from '../shape-utils.js';
 
 /** delta between shape and cursor when shape start dragging {Point} */
 const movedDelta = Symbol(0);
-const isDown = Symbol(0);
-const isUp = Symbol(0);
 
-/** @typedef {IPresenterShape & { [movedDelta]?: Point, [isDown]?: Boolean, [isUp]?: Boolean }} IEvtProcShape */
+/** @typedef {IPresenterShape & { [movedDelta]?: Point }} IEvtProcShape */
 
 /** @implements {IDiagramPrivateEventProcessor} */
 export class ShapeEvtProc {
-	/** @param {IDiagramPrivate} diagram */
-	constructor(diagram) {
+	/**
+	 * @param {IDiagramPrivate} diagram
+	 * @param {IConnectorManager} connectorManager
+	 */
+	constructor(diagram, connectorManager) {
+		/** @private */
 		this._diagram = diagram;
+
+		/** @private */
+		this._connectorManager = connectorManager;
 	}
 
 	/**
 	 * @param {IEvtProcShape} shape
-	 * @param {CustomEvent<IPresenterEventDetail>} evt
-	 * */
+	 * @param {IDiagramPrivateEvent} evt
+	 */
 	process(shape, evt) {
 		switch (evt.type) {
 			case 'pointermove':
-				if (shape[isUp]) { return; }
-
 				if (!shape[movedDelta]) {
+					//
 					// move start
 
-					this._select(shape, false);
-					disable(shape, true);
+					this._diagram.selected = null;
 
+					disable(shape, true);
 					const shapePosition = shape.positionGet();
 					shape[movedDelta] = {
 						x: shapePosition.x - evt.detail.clientX,
@@ -45,62 +49,65 @@ export class ShapeEvtProc {
 				});
 				break;
 
-			// when: 'pointerdown' on {shape}, or 'pointerdown' on another element and {shape} was activeSahpe
-			case 'pointerdown':
-				if (shape !== evt.detail.target) {
-					// Clear = 'pointerdown' on another element
+			case 'pointerup':
+				if (!shape[movedDelta]) {
+					//
+					// select
 
-					this._select(shape, false);
-					delete shape[isUp];
-					delete shape[isDown];
-					delete shape[movedDelta];
+					const elem = shapeOrPath(shape);
+					if (!elem.stateHas('selected')) {
+						this._diagram.selected = elem;
+						shapeStateAdd(elem, 'selected');
+					}
+
 					return;
 				}
 
-				delete shape[isUp];
-				shape[isDown] = true;
-				break;
+				//
+				// move end
 
-			// when evt on {shape}, or on another element and {shape} is activeSahpe
-			case 'pointerup':
-				if (shape[movedDelta]) {
-					// move end
-					disable(shape, false);
-				} else if (shape[isDown]) {
-					// select = 'pointerdown' and 'pointerup' on {shape} and {shape} don't move
-					this._select(shape, true);
-				}
-
-				delete shape[isDown];
 				delete shape[movedDelta];
-				shape[isUp] = true;
+				disable(shape, false);
+
+				if (shape.connectable && /** @type {IPresenterConnector} */(evt.detail.target).connectorType === 'in') {
+					//
+					// connect
+
+					const path = first(shape.connectedPaths);
+					if (!this._diagram.dispatch('connect', path)) { return; }
+					this._connectorManager.replaceEnd(path, /** @type {IPresenterConnector} */(evt.detail.target));
+					this._diagram.del(shape);
+
+					shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered');
+				}
 				break;
 
-			// when evt on {shape}, or on another element and {shape} is activeSahpe
+			case 'unselect':
+				shapeStateDel(shapeOrPath(shape), 'selected');
+				break;
+
 			case 'pointerenter':
-				if (/** @type {IPresenterShape} */(this._diagram?.activeElement)?.connectable) {
-					shapeStateAdd(shape, 'hovered');
+				if (shape.connectable && ['connector', 'shape'].includes(evt.detail.target.type)) {
+					shapeStateAdd(/** @type {IPresenterStatable} */(evt.detail.target), 'hovered');
 				}
 				break;
 			case 'pointerleave':
-				shapeStateDel(shape, 'hovered');
+				if (!shape.connectable) { return; }
+				switch (evt.detail.target.type) {
+					case 'shape':
+						if (/** @type {IPresenterConnector} */(evt.detail.enterTo)?.shape !== evt.detail.target) {
+							shapeStateDel(/** @type {IPresenterStatable} */(evt.detail.target), 'hovered');
+						}
+						break;
+					case 'connector':
+						if (/** @type {IPresenterConnector} */(evt.detail.target)?.shape !== evt.detail.enterTo) {
+							shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered');
+						} else {
+							shapeStateDel(/** @type {IPresenterStatable} */(evt.detail.target), 'hovered');
+						}
+						break;
+				}
 				break;
-		}
-	}
-
-	/**
-	 * @param {IPresenterShape} shape
-	 * @param {boolean} isSelect
-	 */
-	_select(shape, isSelect) {
-		const elem = shapeOrPath(shape);
-		if (elem.stateHas('selected') === isSelect) { return; }
-
-		if (isSelect) {
-			this._diagram.dispatch('select', elem);
-			shapeStateAdd(elem, 'selected');
-		} else {
-			shapeStateDel(elem, 'selected');
 		}
 	}
 }

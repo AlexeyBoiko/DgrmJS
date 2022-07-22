@@ -1,37 +1,37 @@
-import { shapeStateSet } from '../shape-utils.js';
+import { last } from '../infrastructure/iterable-utils.js';
 
 /** @implements {IDiagramPrivateEventProcessor} */
 export class ConnectorEvtProc {
-	/** @param {IDiagramPrivate} diagram */
-	constructor(diagram) {
+	/**
+	 * @param {IDiagramPrivate} diagram
+	 * @param {IConnectorManager} connectorManager
+	 */
+	constructor(diagram, connectorManager) {
+		/** @private */
 		this._diagram = diagram;
+
+		/** @private */
+		this._connectorManager = connectorManager;
 	}
 
 	/**
 	 * @param {IPresenterConnector} connector
-	 * @param {CustomEvent<IPresenterEventDetail>} evt
+	 * @param {IDiagramPrivateEvent} evt
 	 * */
 	process(connector, evt) {
 		switch (evt.type) {
-			case 'pointermove':
-				this._diagram.shapeSetMoving(this._createConnectorEnd(connector));
+			case 'pointermove':{
+				const end = this._createConnectorEnd(connector);
+				if (end) { this._diagram.shapeSetMoving(end); }
 				break;
-
-			// when evt on {connector}, or on another and {connector} was activeSahpe
-			case 'pointerdown':
-				shapeStateSet(connector, 'selected', connector === evt.detail.target);
-				break;
-
-			// when evt on {connector}, or on another and {connector} is activeSahpe
-			case 'pointerup':
-				this._diagram.shapeSetMoving(null);
-				break;
+			}
 		}
 	}
 
 	/**
 	 * @param {IPresenterConnector} connector
 	 * @returns {IPresenterShape}
+	 * @private
 	 */
 	_createConnectorEnd(connector) {
 		switch (connector.connectorType) {
@@ -46,26 +46,20 @@ export class ConnectorEvtProc {
 				});
 				return connectorEnd;
 			}
-			// case 'in':
-			// 	if (connector.stateGet().has('connected')) {
-			// 		//
-			// 		// disconnect
+			case 'in': {
+				// disconnect
 
-			// 		const path = (this._selectedShape?.type === 'path' && /** @type {IPresenterPath} */(this._selectedShape).end === connector)
-			// 			? /** @type {IPresenterPath} */(this._selectedShape)
-			// 			: this._connectorManager.pathGetByEnd(connector);
+				const path = (this._diagram.selected?.type === 'path' && /** @type {IPresenterPath} */(this._diagram.selected).end === connector)
+					? /** @type {IPresenterPath} */(this._diagram.selected)
+					: last(connector.shape.connectedPaths, pp => pp.end === connector);
 
-			// 		if (!this.dispatch('disconnect', path)) {
-			// 			return;
-			// 		}
+				if (!this._diagram.dispatch('disconnect', path)) { return null; }
 
-			// 		const connectorEnd = /** @type {IPresenterShape} */(this.add('shape', connectorEndParams(connector)));
-			// 		this._connectorManager.replaceEnd(path, connectorEnd.defaultInConnector);
-			// 		this._diagram.shapeSetMoving(connectorEnd, clientPoint);
-			// 	}
-			// 	break;
+				const connectorEnd = /** @type {IPresenterShape} */(this._diagram.add('shape', connectorEndParams(connector)));
+				this._connectorManager.replaceEnd(path, connectorEnd.defaultInConnector);
+				return connectorEnd;
+			}
 		}
-		return null;
 	}
 }
 
@@ -73,7 +67,6 @@ export class ConnectorEvtProc {
  * create param for connectorEnd shape
  * @param {IPresenterConnector} connector
  * @returns {DiagramShapeAddParam}
- * @private
  */
 function connectorEndParams(connector) {
 	const shapePosition = connector.shape.positionGet();

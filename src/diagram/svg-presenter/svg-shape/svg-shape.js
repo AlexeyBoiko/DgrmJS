@@ -1,4 +1,5 @@
 import { svgPositionSet, svgPositionGet, svgTextDraw } from '../../infrastructure/svg-utils.js';
+import { shapeStateDel } from '../../shape-utils.js';
 import { stateClassSync } from '../svg-presenter-utils.js';
 
 /** @implements {ISvgPresenterShape} */
@@ -70,6 +71,12 @@ export class SvgShape {
 			for (const state of ['selected', 'hovered', 'disabled']) {
 				stateClassSync(this._state, this.svgEl, /** @type {DiagramShapeState} */(state));
 			}
+
+			this.connectors?.forEach(cc => {
+				if (!param.state.has('hovered')) {
+					shapeStateDel(cc, 'hovered');
+				}
+			});
 		}
 	}
 

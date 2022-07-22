@@ -99,12 +99,6 @@ export class SvgPath {
 					shapeStateDel(this.end.shape.connectable ? this.end.shape : this.end, state);
 				}
 			}
-
-			// if (param.state.has('selected')) {
-			// 	shapeStateAdd(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
-			// } else {
-			// 	shapeStateDel(this.end.shape.connectable ? this.end.shape : this.end, 'selected');
-			// }
 		}
 	}
 

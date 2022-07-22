@@ -80,11 +80,12 @@ export class Diagram extends EventTarget {
 		this._connectorManager.del(/** @type { IPresenterShape | IPresenterPath} */(shape));
 	}
 
-	/** @param { CustomEvent<IPresenterEventDetail> } evt */
+	/** @param { IDiagramPrivateEvent } evt */
 	handleEvent(evt) {
 		switch (evt.type) {
 			case 'pointermove':
-				this._evtProcess(evt);
+				if (this.activeElement) { this._evtProcessorCall(this.activeElement, evt); }
+				// this._evtProcess(evt);
 
 				// if (this._downElement) {
 				// 	const clientPoint = { x: evt.detail.clientX, y: evt.detail.clientY };
@@ -115,17 +116,19 @@ export class Diagram extends EventTarget {
 				//  */
 				// this._downElement = evt.detail.target;
 
-				this._evtProcess(evt);
+				// this._evtProcess(evt);
 
 				/**
 				 * @private
 				 * @type {IDiagramElement}
 				 */
 				this.activeElement = evt.detail.target;
+				this._evtProcessorCall(this.activeElement, evt);
 				break;
 			case 'pointerup':
-				this._evtProcess(evt);
-				// this._activeElement = null;
+				// this._evtProcess(evt);
+				if (this.activeElement) { this._evtProcessorCall(this.activeElement, evt); }
+				this.activeElement = null;
 
 				// if (evt.detail.target.type === 'connector') {
 				// 	this._connectorOnUp(/** @type { CustomEvent<IPresenterEventDetail & { target: IPresenterConnector }>} */(evt));
@@ -141,43 +144,100 @@ export class Diagram extends EventTarget {
 				// this._hoveredClean();
 				break;
 			case 'pointerenter':
-				this._evtProcess(evt);
+				if (this.activeElement) {
+					if (this._hovered) {
+						this._evtProcessorCall(
+							this.activeElement,
+							{ type: 'pointerleave', detail: { target: this._hovered, enterTo: evt.detail.target } });
+					}
 
+					this._evtProcessorCall(this.activeElement, evt);
+				}
+
+				/** @private */
+				this._hovered = evt.detail.target;
+				// this._evtProcessorCall(this._hovered, evt);
+
+				// OLD
 				// 	if (this._movedShape && this._movedShape.connectable &&
 				// 		(evt.detail.target.type === 'connector' || evt.detail.target.type === 'shape')) {
 				// 		this._hoveredSet(/** @type {IPresenterStatable & IDiagramElement} */(evt.detail.target));
 				// 	}
 				break;
-			case 'pointerleave':
-				this._evtProcess(evt);
+			// case 'pointerleave':
+			// 	if (this.activeElement) { this._evtProcessorCall(this.activeElement, evt); }
 
-				// 	this._hoveredClean();
-				break;
-		}
-	}
-
-	/**
-	 * @param {CustomEvent<IPresenterEventDetail>} evt
-	 * @private
-	 */
-	_evtProcess(evt) {
-		if (this.activeElement) {
-			// notify prev activeElement
-			this._evtProcessorCall(this.activeElement, evt);
-		}
-
-		if (this.activeElement !== evt.detail.target && evt.detail.target) {
-			this._evtProcessorCall(evt.detail.target, evt);
+			// 	// 	// 	this._hoveredClean();
+			// 	break;
 		}
 	}
 
 	/**
 	 * @param {IDiagramElement} elem
-	 * @param {CustomEvent<IPresenterEventDetail>} evt
+	 * @param {IDiagramPrivateEvent} evt
 	 * @private
 	 */
 	_evtProcessorCall(elem, evt) {
 		this._evtProcessors.get(elem.type).process(elem, evt);
+	}
+
+	/**
+	 * @param {IPresenterShape} shape
+	 */
+	shapeSetMoving(shape) {
+	// /** @private */
+	// this._movedShape = shape;
+
+		// this._disable(this._movedShape, true);
+
+		// const shapePosition = this._movedShape.positionGet();
+		// /** @private */
+		// this._movedDelta = {
+		// 	x: shapePosition.x - clientPoint.x,
+		// 	y: shapePosition.y - clientPoint.y
+		// };
+
+		// this._selectedSet();
+
+		/// ///////////// 1
+		// this._evtProcess(new CustomEvent('pointerdown', {
+		// /** @type {IPresenterEventDetail} */
+		// 	detail: {
+		// 		target: shape,
+		// 		// TODO
+		// 		clientX: 0,
+		// 		clientY: 0
+		// 	}
+		// }));
+		// this.activeElement = shape;
+
+		/// ///////////// 2
+		this.activeElement = shape;
+	}
+
+	movedClean() {
+		// TODO: FOR MOBILE
+
+		// if (this._movedShape) {
+		// 	this._disable(this._movedShape, false);
+		// }
+
+		// this._movedDelta = null;
+		// this._movedShape = null;
+	}
+
+	/** @param {IDiagramElement} elem */
+	// eslint-disable-next-line accessor-pairs
+	set selected(elem) {
+		if (this._selected) {
+			this._evtProcessorCall(this._selected, { type: 'unselect' });
+		}
+
+		/** @private */
+		this._selected = elem;
+		if (elem) {
+			this.dispatch('select', elem);
+		}
 	}
 
 	/**
@@ -266,48 +326,6 @@ export class Diagram extends EventTarget {
 			 */
 			this._selectedShape = shape;
 		}
-	}
-
-	/**
-	 * @param {IPresenterShape} shape
-	 * @param {Point} clientPoint
-	 */
-	shapeSetMoving(shape /*, clientPoint*/) {
-		// /** @private */
-		// this._movedShape = shape;
-
-		// this._disable(this._movedShape, true);
-
-		// const shapePosition = this._movedShape.positionGet();
-		// /** @private */
-		// this._movedDelta = {
-		// 	x: shapePosition.x - clientPoint.x,
-		// 	y: shapePosition.y - clientPoint.y
-		// };
-
-		// this._selectedSet();
-
-		this._evtProcess(new CustomEvent('pointerdown', {
-			/** @type {IPresenterEventDetail} */
-			detail: {
-				target: shape,
-				// TODO
-				clientX: 0,
-				clientY: 0
-			}
-		}));
-		this.activeElement = shape;
-	}
-
-	movedClean() {
-		// TODO: FOR MOBILE
-
-		// if (this._movedShape) {
-		// 	this._disable(this._movedShape, false);
-		// }
-
-		// this._movedDelta = null;
-		// this._movedShape = null;
 	}
 
 	/**

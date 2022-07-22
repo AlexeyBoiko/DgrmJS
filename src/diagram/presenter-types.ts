@@ -13,8 +13,8 @@ type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointer
 interface IPresenterEventDetail {
 	/**	null for pointermove */
 	target?: IDiagramElement;
-	clientX: number;
-	clientY: number;
+	clientX?: number;
+	clientY?: number;
 }
 
 

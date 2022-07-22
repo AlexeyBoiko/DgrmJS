@@ -1,3 +1,4 @@
+import { shapeStateAdd } from '../shape-utils.js';
 import { stateClassSync } from './svg-presenter-utils.js';
 
 /** @implements {ISvgPresenterConnector} */
@@ -51,6 +52,10 @@ export class SvgConnector {
 		this._state = param.state;
 		for (const state of ['connected', 'hovered', 'selected']) {
 			stateClassSync(this._state, this.svgEl, /** @type {DiagramShapeState} */(state));
+		}
+
+		if (param.state.has('hovered')) {
+			shapeStateAdd(this.shape, 'hovered');
 		}
 	}
 }

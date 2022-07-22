@@ -32,13 +32,14 @@ export function svgDiagramCreate(svg, shapeFactory) {
 	}
 
 	const presenter = new SvgPresenter(svg, _shapeFactory);
-	return new Diagram(presenter, new ConnectorManager(presenter),
+	const connectorManager = new ConnectorManager(presenter);
+	return new Diagram(presenter, connectorManager,
 		dgrm => {
-			const shapeEvtProc = new ShapeEvtProc(dgrm);
+			const shapeEvtProc = new ShapeEvtProc(dgrm, connectorManager);
 			return new Map([
 				[/** @type {DiagramElementType} */('shape'), /** @type {IDiagramPrivateEventProcessor} */(shapeEvtProc)],
 				['canvas', shapeEvtProc],
-				['connector', new ConnectorEvtProc(dgrm)]
+				['connector', new ConnectorEvtProc(dgrm, connectorManager)]
 			]);
 		});
 }
