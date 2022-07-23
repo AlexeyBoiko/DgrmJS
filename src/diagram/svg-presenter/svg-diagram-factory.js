@@ -6,6 +6,7 @@ import { SvgPresenter } from './svg-presenter.js';
 import { connectorsInit, shapeCreate } from './svg-shape/svg-shape-factory.js';
 import { ConnectorEvtProc } from '../event-processors/connector-evt-proc.js';
 import { ShapeEvtProc } from '../event-processors/shape-evt-proc.js';
+import { PathEvtProc } from '../event-processors/path-evt-proc.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -39,7 +40,8 @@ export function svgDiagramCreate(svg, shapeFactory) {
 			return new Map([
 				[/** @type {DiagramElementType} */('shape'), /** @type {IDiagramPrivateEventProcessor} */(shapeEvtProc)],
 				['canvas', shapeEvtProc],
-				['connector', new ConnectorEvtProc(dgrm, connectorManager)]
+				['connector', new ConnectorEvtProc(dgrm, connectorManager)],
+				['path', new PathEvtProc(dgrm)]
 			]);
 		});
 }

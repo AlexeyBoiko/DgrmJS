@@ -34,6 +34,7 @@ export class SvgElementEditableAbstract {
 
 	dispose() {
 		if (this._isEditState) { this.onEditLeave(); }
+		if (this.svgElement.dispose) { this.svgElement.dispose(); }
 	}
 
 	/**

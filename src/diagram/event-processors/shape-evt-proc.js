@@ -54,12 +54,7 @@ export class ShapeEvtProc {
 					//
 					// select
 
-					const elem = shapeOrPath(shape);
-					if (!elem.stateHas('selected')) {
-						this._diagram.selected = elem;
-						shapeStateAdd(elem, 'selected');
-					}
-
+					this._diagram.selected = shapeOrPath(shape);
 					return;
 				}
 

@@ -226,9 +226,10 @@ export class Diagram extends EventTarget {
 		// this._movedShape = null;
 	}
 
-	/** @param {IDiagramElement} elem */
-	// eslint-disable-next-line accessor-pairs
+	/** @param {IPresenterStatable} elem */
 	set selected(elem) {
+		if (elem === this._selected) { return; }
+
 		if (this._selected) {
 			this._evtProcessorCall(this._selected, { type: 'unselect' });
 		}
@@ -237,8 +238,11 @@ export class Diagram extends EventTarget {
 		this._selected = elem;
 		if (elem) {
 			this.dispatch('select', elem);
+			shapeStateAdd(elem, 'selected');
 		}
 	}
+
+	get selected() { return this._selected; }
 
 	/**
 	 * @param {IPresenterConnector} connector
