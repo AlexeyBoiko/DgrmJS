@@ -137,14 +137,6 @@ export class ConnectorManager {
 		}
 	}
 
-	// /**
-	//  * @param {IConnectorConnector} endConnector
-	//  * @returns {IConnectorPath}
-	//  */
-	// pathGetByEnd(endConnector) {
-	// 	return last(endConnector.shape.connectedPaths, pp => pp.end === endConnector);
-	// }
-
 	/**
 	 * @param {IConnetorShape} shape
 	 * @param {IConnectorPath} path

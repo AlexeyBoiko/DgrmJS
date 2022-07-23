@@ -31,7 +31,7 @@ export class ConnectorEvtProc {
 							start: connector,
 							end: connectorEnd.defaultInConnector
 						});
-						this._diagram.shapeSetMoving(connectorEnd);
+						this._diagram.activeElement = connectorEnd;
 						break;
 					}
 					case 'in': {
@@ -46,7 +46,7 @@ export class ConnectorEvtProc {
 
 						const connectorEnd = /** @type {IPresenterShape} */(this._diagram.add('shape', connectorEndParams(connector)));
 						this._connectorManager.replaceEnd(path, connectorEnd.defaultInConnector);
-						this._diagram.shapeSetMoving(connectorEnd);
+						this._diagram.activeElement = connectorEnd;
 					}
 				}
 				break;

@@ -95,12 +95,12 @@ export class AppDiagramSerializable extends EventTarget {
 	shapeUpdate(shape, param) { this._diagram.shapeUpdate(shape, param); }
 
 	/**
-	 * @param {IDiagramShape} shape
-	 * @returns {void}
+	 * @param {IDiagramElement} elem
 	 */
-	shapeSetMoving(shape) { this._diagram.shapeSetMoving(shape); }
-
-	movedClean() { this._diagram.movedClean(); }
+	// eslint-disable-next-line accessor-pairs
+	set activeElement(elem) {
+		this._diagram.activeElement = elem;
+	}
 
 	/** @returns {void} */
 	clear() {

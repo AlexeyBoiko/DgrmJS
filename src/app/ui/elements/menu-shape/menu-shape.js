@@ -216,7 +216,7 @@ class MenuLogic {
 			}
 		});
 
-		this._diagram.shapeSetMoving(this._addingShape);
+		this._diagram.activeElement = this._addingShape;
 
 		//
 		// remember canvas position for mobile
@@ -252,7 +252,7 @@ class MenuLogic {
 
 	pointerUpMobile() {
 		if (this._addingShape) {
-			this._diagram.movedClean();
+			this._diagram.activeElement = null;
 		}
 	}
 }

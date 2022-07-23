@@ -4,9 +4,6 @@ interface IConnectorManager {
 	/** reconect to new connector */
 	replaceEnd(path: IConnectorPath, connectorNew: IPresenterConnector): void;
 
-	// /** get path by the end connector element */
-	// pathGetByEnd(connectorEnd: IPresenterConnector): IPresenterPath;
-
 	/** update connectors of the shape */
 	updatePosition(shape: IPresenterShape): void;
 
