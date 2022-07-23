@@ -77,6 +77,7 @@ export class Diagram extends EventTarget {
 	 * @returns {void}
 	 */
 	del(shape) {
+		this.selected = null;
 		this._connectorManager.del(/** @type { IPresenterShape | IPresenterPath} */(shape));
 	}
 
