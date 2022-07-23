@@ -111,9 +111,10 @@ export class SvgPresenter extends EventTarget {
 			return;
 		}
 
-		if (this._pointElem) {
-			this._dispatchEvent(evt, 'pointerleave', this._pointElem);
-		}
+		// currently don't used
+		// if (this._pointElem) {
+		// 	this._dispatchEvent(evt, 'pointerleave', this._pointElem);
+		// }
 
 		if (pointElem) {
 			this._dispatchEvent(evt, 'pointerenter', pointElem);
