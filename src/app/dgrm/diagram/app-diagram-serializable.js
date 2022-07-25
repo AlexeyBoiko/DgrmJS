@@ -56,10 +56,7 @@ export class AppDiagramSerializable extends EventTarget {
 	 * @private
 	 */
 	_elementDel(element) {
-		// TODO: unsubscribe
-
 		this._diagram.del(element);
-
 		if (element.type === 'shape') {
 			this._shapeData.delete(/** @type {IDiagramShape} */(element));
 		}

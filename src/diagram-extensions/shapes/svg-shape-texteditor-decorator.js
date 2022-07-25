@@ -23,8 +23,21 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * @returns {SvgShapeTextEditorDecorator}
 	 */
 	on(type, listener) {
+		if (!this._listeners) {
+			/**
+			 * @type {{t:AppPathEditorEventType, l:EventListenerOrEventListenerObject }[]}
+			 * @private
+			 */
+			this._listeners = [];
+		}
+		this._listeners.push({ t: type, l: listener });
 		this.svgEl.addEventListener(type, listener);
 		return this;
+	}
+
+	dispose() {
+		this._listeners?.forEach(ll => this.svgElement.svgEl.removeEventListener(ll.t, ll.l));
+		super.dispose();
 	}
 
 	/**
