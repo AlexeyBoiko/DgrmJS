@@ -28,7 +28,6 @@ export class ShapeEvtProc {
 		switch (evt.type) {
 			case 'pointermove':
 				if (!shape[movedDelta]) {
-					console.log('MOVE', shapeOrPath(shape));
 					//
 					// move start
 
