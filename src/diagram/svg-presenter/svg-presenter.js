@@ -86,19 +86,19 @@ export class SvgPresenter extends EventTarget {
 	 */
 	handleEvent(evt) {
 		switch (evt.type) {
-			case 'pointermove': {
-				this._dispatchEnterLeave(evt);
-				this._dispatchEvent(evt, 'pointermove', null);
+			case 'pointermove':
+				if (evt.movementX !== 0 || evt.movementY !== 0) {
+					this._dispatchEnterLeave(evt);
+					this._dispatchEvent(evt, 'pointermove', null);
+				}
 				break;
-			}
 			case 'pointerdown':
-			case 'pointerup': {
+			case 'pointerup':
 				this._dispatchEvent(
 					evt,
 					evt.type,
 					SvgPresenter._getPointElem(evt, true));
 				break;
-			}
 		}
 	}
 
