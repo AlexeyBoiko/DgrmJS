@@ -25,7 +25,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	on(type, listener) {
 		if (!this._listeners) {
 			/**
-			 * @type {{t:AppPathEditorEventType, l:EventListenerOrEventListenerObject }[]}
+			 * @type {{t:ShapeTextEditorEventType, l:EventListenerOrEventListenerObject }[]}
 			 * @private
 			 */
 			this._listeners = [];
