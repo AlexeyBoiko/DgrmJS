@@ -73,17 +73,13 @@ export class ShapeEvtProc {
 						shapeStateDel(path, 'disabled');
 						shape = null;
 					}
-
-					switch (evt.detail.target.type) {
-						case 'shape': shapeStateDel(/** @type {IPresenterShape} */(evt.detail.target), 'hovered'); break;
-						case 'connector': shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered'); break;
-					}
 				}
 
 				if (shape) {
 					disable(shape, false);
 					delete shape[movedDelta];
 				}
+				this._hoveredSet(null);
 				break;
 
 			case 'unselect':
@@ -93,6 +89,10 @@ export class ShapeEvtProc {
 			case 'pointerenter':
 				if (shape.connectable && ['connector', 'shape'].includes(evt.detail.target.type)) {
 					shapeStateAdd(/** @type {IPresenterStatable} */(evt.detail.target), 'hovered');
+
+					this._hoveredSet((evt.detail.target.type === 'shape')
+						? /** @type {IPresenterShape} */(evt.detail.target)
+						: /** @type {IPresenterConnector} */(evt.detail.target).shape);
 				}
 				break;
 			case 'pointerleave':
@@ -100,12 +100,12 @@ export class ShapeEvtProc {
 				switch (evt.detail.target.type) {
 					case 'shape':
 						if (/** @type {IPresenterConnector} */(evt.detail.enterTo)?.shape !== evt.detail.target) {
-							shapeStateDel(/** @type {IPresenterStatable} */(evt.detail.target), 'hovered');
+							this._hoveredSet(null);
 						}
 						break;
 					case 'connector':
 						if (/** @type {IPresenterConnector} */(evt.detail.target)?.shape !== evt.detail.enterTo) {
-							shapeStateDel(/** @type {IPresenterConnector} */(evt.detail.target).shape, 'hovered');
+							this._hoveredSet(/** @type {IPresenterConnector} */(evt.detail.target).shape);
 						} else {
 							shapeStateDel(/** @type {IPresenterStatable} */(evt.detail.target), 'hovered');
 						}
@@ -113,6 +113,18 @@ export class ShapeEvtProc {
 				}
 				break;
 		}
+	}
+
+	/**
+	 * @param {IDiagramShape} shape
+	 * @private
+	 */
+	_hoveredSet(shape) {
+		if (this._hovered && this._hovered !== shape) { shapeStateDel(this._hovered, 'hovered'); }
+		/**
+		 * @private
+		 */
+		this._hovered = shape;
 	}
 }
 
