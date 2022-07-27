@@ -123,6 +123,7 @@ export class ShapeEvtProc {
 			delete shape[movedDelta];
 		}
 		this._hoveredSet(null);
+		this._diagram.activeElement = null;
 	}
 
 	/**
