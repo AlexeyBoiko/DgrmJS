@@ -15,8 +15,9 @@ export class Diagram extends EventTarget {
 			.on('pointermove', this)
 			.on('pointerdown', this)
 			.on('pointerup', this)
-			.on('pointerenter', this);
-		// .on('pointerleave', this);
+			.on('pointerenter', this)
+			// .on('pointerleave', this);
+			.on('canvasleave', this);
 
 		/** @private */
 		this._connectorManager = connectorManager;
@@ -84,6 +85,7 @@ export class Diagram extends EventTarget {
 	/** @param { CustomEvent<IDiagramPrivateEventDetail> & IDiagramPrivateEvent } evt */
 	handleEvent(evt) {
 		switch (evt.type) {
+			case 'canvasleave':
 			case 'pointermove':
 				if (this._activeElement) { this._evtProcessorCall(this._activeElement, evt); }
 				break;

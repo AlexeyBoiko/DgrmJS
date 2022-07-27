@@ -9,7 +9,7 @@ interface IPresenter {
 //
 // events
 
-type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointerenter' | 'pointerleave';
+type PresenterEventType = 'pointermove' | 'pointerdown' | 'pointerup' | 'pointerenter' | 'pointerleave' | 'canvasleave';
 interface IPresenterEventDetail {
 	/**	null for pointermove */
 	target?: IDiagramElement;

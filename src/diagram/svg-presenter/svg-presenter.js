@@ -18,6 +18,7 @@ export class SvgPresenter extends EventTarget {
 		this._svg.addEventListener('pointermove', this);
 		this._svg.addEventListener('pointerdown', this);
 		this._svg.addEventListener('pointerup', this);
+		this._svg.addEventListener('pointerleave', this);
 
 		/**
 		 * store presenter objects
@@ -99,6 +100,8 @@ export class SvgPresenter extends EventTarget {
 					evt.type,
 					SvgPresenter._getPointElem(evt, true));
 				break;
+			case 'pointerleave':
+				this.dispatchEvent(new CustomEvent('canvasleave'));
 		}
 	}
 

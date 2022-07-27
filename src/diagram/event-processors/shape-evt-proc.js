@@ -61,29 +61,27 @@ export class ShapeEvtProc {
 				//
 				// move end
 
-				if (shape.connectable) {
-					if (/** @type {IPresenterConnector} */(evt.detail.target).connectorType === 'in') {
-						//
-						// connect
+				if (shape.connectable && /** @type {IPresenterConnector} */(evt.detail.target).connectorType === 'in') {
+					//
+					// connect
 
-						const path = first(shape.connectedPaths);
-						if (!this._diagram.dispatch('connect', path)) { return; }
-						this._connectorManager.replaceEnd(path, /** @type {IPresenterConnector} */(evt.detail.target));
-						this._diagram.del(shape);
-						shapeStateDel(path, 'disabled');
-						shape = null;
-					}
+					const path = first(shape.connectedPaths);
+					if (!this._diagram.dispatch('connect', path)) { return; }
+					this._connectorManager.replaceEnd(path, /** @type {IPresenterConnector} */(evt.detail.target));
+					this._diagram.del(shape);
+					shapeStateDel(path, 'disabled');
+					shape = null;
 				}
 
-				if (shape) {
-					disable(shape, false);
-					delete shape[movedDelta];
-				}
-				this._hoveredSet(null);
+				this._clean(shape);
 				break;
 
 			case 'unselect':
 				shapeStateDel(shapeOrPath(shape), 'selected');
+				break;
+
+			case 'canvasleave':
+				this._clean(shape);
 				break;
 
 			case 'pointerenter':
@@ -116,7 +114,19 @@ export class ShapeEvtProc {
 	}
 
 	/**
-	 * @param {IDiagramShape} shape
+	 * @param {IPresenterShape} shape
+	 * @private
+	 */
+	_clean(shape) {
+		if (shape) {
+			disable(shape, false);
+			delete shape[movedDelta];
+		}
+		this._hoveredSet(null);
+	}
+
+	/**
+	 * @param {IPresenterShape} shape
 	 * @private
 	 */
 	_hoveredSet(shape) {
