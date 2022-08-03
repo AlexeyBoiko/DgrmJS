@@ -24,6 +24,7 @@ import { AppPathEditiorDecorator, AppShapeEditorDecorator } from '../shapes/app-
 import { ShapeEvtProc } from '../../../diagram/event-processors/shape-evt-proc.js';
 import { ConnectorEvtProc } from '../../../diagram/event-processors/connector-evt-proc.js';
 import { PathEvtProc } from '../../../diagram/event-processors/path-evt-proc.js';
+import { CanvasSelecEvtProc } from '../../../diagram-extensions/event-processors/canvas-selec-evt-proc.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -71,10 +72,9 @@ export function appDiagramFactory(svg) {
 	const connectorManager = new ConnectorManager(presenter);
 	diagram = new Diagram(presenter, connectorManager,
 		dgrm => {
-			const shapeEvtProc = new ShapeEvtProc(dgrm, connectorManager);
 			return new Map([
-				[/** @type {DiagramElementType} */('shape'), /** @type {IDiagramPrivateEventProcessor} */(shapeEvtProc)],
-				['canvas', shapeEvtProc],
+				[/** @type {DiagramElementType} */('shape'), /** @type {IDiagramPrivateEventProcessor} */(new ShapeEvtProc(dgrm, connectorManager))],
+				['canvas', new CanvasSelecEvtProc(dgrm, svg)],
 				['connector', new ConnectorEvtProc(dgrm, connectorManager)],
 				['path', new PathEvtProc(dgrm)]
 			]);

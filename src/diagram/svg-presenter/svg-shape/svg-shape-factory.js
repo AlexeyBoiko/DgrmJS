@@ -1,4 +1,5 @@
 import { SvgConnector } from '../svg-connector.js';
+import { elemCreateByTemplate } from '../svg-presenter-utils.js';
 import { SvgShape } from './svg-shape.js';
 
 /**
@@ -7,13 +8,8 @@ import { SvgShape } from './svg-shape.js';
  * @returns {SvgShape}
  */
 export function shapeCreate(svgCanvas, createParams) {
-	const shapeSvgEl = /** @type {SVGGElement} */ (svgCanvas.ownerSVGElement.getElementsByTagName('defs')[0]
-		.querySelector(`[data-templ='${createParams.templateKey}']`)
-		.cloneNode(true));
-
 	// TODO: to reduce DOM changes (for performance) 'shape.update' must go before 'svg.append'
-	svgCanvas.append(shapeSvgEl);
-	return new SvgShape({ svgEl: shapeSvgEl });
+	return new SvgShape({ svgEl: elemCreateByTemplate(svgCanvas, createParams.templateKey) });
 }
 
 /**

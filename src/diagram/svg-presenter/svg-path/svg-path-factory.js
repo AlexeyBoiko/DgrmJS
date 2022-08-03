@@ -1,19 +1,14 @@
 import { SvgPath } from './svg-path.js';
+import { elemCreateByTemplate } from '../svg-presenter-utils.js';
 
 /**
  * @param {ISvgPresenterPathFactoryParam} param
  * @returns {SvgPath}
  */
 export function pathCreate(param) {
-	const pathSvgEl = /** @type {SVGPathElement} */ (param.svgCanvas.ownerSVGElement.getElementsByTagName('defs')[0]
-		.querySelector(`[data-templ='${param.createParams.templateKey}']`)
-		.cloneNode(true));
-
 	// TODO: to reduce DOM changes (for performance) 'new SvgPath' must go before 'svg.appendChild'
-	param.svgCanvas.append(pathSvgEl);
-
 	return new SvgPath({
-		svgEl: pathSvgEl,
+		svgEl: elemCreateByTemplate(param.svgCanvas, param.createParams.templateKey),
 		start: param.createParams.start,
 		end: param.createParams.end,
 		startConnector: param.createParams.startConnector,

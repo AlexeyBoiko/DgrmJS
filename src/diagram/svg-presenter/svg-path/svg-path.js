@@ -6,7 +6,7 @@ import { stateClassSync } from '../svg-presenter-utils.js';
 export class SvgPath {
 	/**
 	 * @param {object} param
-	 * @param {SVGPathElement} param.svgEl
+	 * @param {SVGGElement} param.svgEl
 	 * @param {PresenterPathEnd} param.start
 	 * @param {PresenterPathEnd} param.end
 	 * @param {IPresenterConnector} param.startConnector

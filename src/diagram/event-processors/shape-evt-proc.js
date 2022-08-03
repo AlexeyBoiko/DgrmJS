@@ -1,11 +1,6 @@
 import { first } from '../infrastructure/iterable-utils.js';
 import { shapeStateAdd, shapeStateDel, shapeStateSet } from '../shape-utils.js';
 
-/** delta between shape and cursor when shape start dragging {Point} */
-const movedDelta = Symbol(0);
-
-/** @typedef {IPresenterShape & { [movedDelta]?: Point }} IEvtProcShape */
-
 /** @implements {IDiagramPrivateEventProcessor} */
 export class ShapeEvtProc {
 	/**
@@ -21,32 +16,13 @@ export class ShapeEvtProc {
 	}
 
 	/**
-	 * @param {IEvtProcShape} shape
+	 * @param {IPresenterShape} shape
 	 * @param {IDiagramPrivateEvent} evt
 	 */
 	process(shape, evt) {
 		switch (evt.type) {
 			case 'pointermove':
-				if (!shape[movedDelta]) {
-					//
-					// move start
-
-					this._diagram.selected = null;
-
-					disable(shape, true);
-					const shapePosition = shape.positionGet();
-					shape[movedDelta] = {
-						x: shapePosition.x - evt.detail.clientX,
-						y: shapePosition.y - evt.detail.clientY
-					};
-				}
-
-				this._diagram.shapeUpdate(shape, {
-					position: {
-						x: shape[movedDelta].x + evt.detail.clientX,
-						y: shape[movedDelta].y + evt.detail.clientY
-					}
-				});
+				shapeMove(this._diagram, shape, evt);
 				break;
 
 			case 'pointerup':
@@ -118,10 +94,7 @@ export class ShapeEvtProc {
 	 * @private
 	 */
 	_clean(shape) {
-		if (shape) {
-			disable(shape, false);
-			delete shape[movedDelta];
-		}
+		if (shape) { shapeMoveEnd(shape); }
 		this._hoveredSet(null);
 		this._diagram.activeElement = null;
 	}
@@ -137,6 +110,53 @@ export class ShapeEvtProc {
 		 */
 		this._hovered = shape;
 	}
+}
+
+/** delta between shape and cursor when shape start dragging {Point} */
+const movedDelta = Symbol(0);
+
+/** @typedef {IPresenterShape & { [movedDelta]?: Point }} IEvtProcShape */
+
+/**
+ * @param {IDiagramPrivate} diagram
+ * @param {IEvtProcShape} shape
+ * @param {IDiagramPrivateEvent} evt
+ */
+export function shapeMove(diagram, shape, evt) {
+	if (!shape[movedDelta]) {
+		//
+		// move start
+
+		diagram.selected = null;
+
+		disable(shape, true);
+		const shapePosition = shape.positionGet();
+		shape[movedDelta] = {
+			x: shapePosition.x - evt.detail.clientX,
+			y: shapePosition.y - evt.detail.clientY
+		};
+	}
+
+	diagram.shapeUpdate(shape, {
+		position: {
+			x: shape[movedDelta].x + evt.detail.clientX,
+			y: shape[movedDelta].y + evt.detail.clientY
+		}
+	});
+
+	console.log(shape);
+	console.log({
+		x: shape[movedDelta].x + evt.detail.clientX,
+		y: shape[movedDelta].y + evt.detail.clientY
+	});
+}
+
+/**
+ * @param {IEvtProcShape} shape
+ */
+export function shapeMoveEnd(shape) {
+	disable(shape, false);
+	delete shape[movedDelta];
 }
 
 /**

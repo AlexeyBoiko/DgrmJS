@@ -1,3 +1,6 @@
+import { parseCenterAttr } from '../../../../diagram-extensions/svg-utils.js';
+import { templateGet } from '../../../../diagram/svg-presenter/svg-presenter-utils.js';
+
 /** @implements {Menu} */
 export class Menu extends HTMLElement {
 	connectedCallback() {
@@ -194,12 +197,11 @@ class MenuLogic {
 	 * @param {IMenuShapeDragOutEventDetail} evt
 	 */
 	shapeDragOut(evt) {
-		const point = this._diagram.svg.querySelector(`[data-templ='${evt.shape}']`).getAttribute('data-center').split(',');
 		/**
 		 * @type {Point}
 		 * @private
 		 */
-		this._addingShapeCenter = { x: parseFloat(point[0]), y: parseFloat(point[1]) };
+		this._addingShapeCenter = parseCenterAttr(templateGet(this._diagram.svg, evt.shape)); // { x: parseFloat(point[0]), y: parseFloat(point[1]) };
 
 		/**
 		 * @type {IDiagramShape}
