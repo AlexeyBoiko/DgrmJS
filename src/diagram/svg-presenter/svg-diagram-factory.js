@@ -9,30 +9,39 @@ import { ShapeEvtProc } from '../event-processors/shape-evt-proc.js';
 import { PathEvtProc } from '../event-processors/path-evt-proc.js';
 
 /**
+ * Defaut diagram factory
+ * if you want to use custom shapeFactories, custom events proccesors - create your diagram factory
  * @param {SVGSVGElement} svg
- * @param {ISvgPresenterShapeFactory?=} shapeFactory
  * @returns {IDiagram}
  */
-export function svgDiagramCreate(svg, shapeFactory) {
-	/**
-	 * @param {DiagramChildAddType} type
-	 * @param {ISvgPresenterShapeFactoryParam | ISvgPresenterPathFactoryParam} param
-	 * @returns {ISvgPresenterShape | ISvgPresenterPath}
-	 */
-	function _shapeFactory(type, param) {
-		switch (type) {
-			case 'shape': return shapeFact(param, shapeFactory);
-			case 'path': {
-				const path = shapeFactory
-					? /** @type {ISvgPresenterPath} */(shapeFactory('path', param))
-					: pathCreate(param);
-				param.svgElemToPresenterObj.set(path.svgEl, path);
-				return path;
-			}
-		}
-	}
+export function svgDiagramCreate(svg) {
+	const presenter = new SvgPresenter(svg,
+		// shape factrory
+		(type, param) => {
+			switch (type) {
+				case 'shape': {
+				// eslint-disable-next-line space-unary-ops
+					if (!/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.postionIsIntoCanvas) {
+						const canvasPosition = svgPositionGet(param.svgCanvas);
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x -= canvasPosition.x;
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y -= canvasPosition.y;
+					}
 
-	const presenter = new SvgPresenter(svg, _shapeFactory);
+					const shape = shapeCreate(param.svgCanvas, param.createParams);
+					param.svgElemToPresenterObj.set(shape.svgEl, shape);
+					connectorsInit(param.svgElemToPresenterObj, shape);
+					shape.update(param.createParams);
+
+					return shape;
+				}
+				case 'path': {
+					const path = pathCreate(param);
+					param.svgElemToPresenterObj.set(path.svgEl, path);
+					return path;
+				}
+			}
+		});
+
 	const connectorManager = new ConnectorManager(presenter);
 	return new Diagram(presenter, connectorManager,
 		dgrm => {
@@ -44,27 +53,4 @@ export function svgDiagramCreate(svg, shapeFactory) {
 				['path', new PathEvtProc(dgrm)]
 			]);
 		});
-}
-
-/**
- * @param {ISvgPresenterShapeFactoryParam} param
- * @param {ISvgPresenterShapeFactory?=} shapeFactory
- * @returns {ISvgPresenterShape}
- */
-function shapeFact(param, shapeFactory) {
-	if (!param.createParams.postionIsIntoCanvas) {
-		const canvasPosition = svgPositionGet(param.svgCanvas);
-		param.createParams.position.x -= canvasPosition.x;
-		param.createParams.position.y -= canvasPosition.y;
-	}
-
-	const shape = shapeFactory
-		? /** @type {ISvgPresenterShape} */(shapeFactory('shape', param))
-		: shapeCreate(param.svgCanvas, param.createParams);
-
-	param.svgElemToPresenterObj.set(shape.svgEl, shape);
-	connectorsInit(param.svgElemToPresenterObj, shape);
-	shape.update(param.createParams);
-
-	return shape;
 }
