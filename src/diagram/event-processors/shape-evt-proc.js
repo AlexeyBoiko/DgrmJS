@@ -143,12 +143,6 @@ export function shapeMove(diagram, shape, evt) {
 			y: shape[movedDelta].y + evt.detail.clientY
 		}
 	});
-
-	console.log(shape);
-	console.log({
-		x: shape[movedDelta].x + evt.detail.clientX,
-		y: shape[movedDelta].y + evt.detail.clientY
-	});
 }
 
 /**

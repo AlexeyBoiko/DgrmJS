@@ -26,19 +26,7 @@ export class CanvasSelecEvtProc {
 				if (this._timer) { clearTimeout(this._timer); }
 
 				if (this._selectRect) {
-					const x = evt.detail.clientX - this._selectRectStartPoint.x;
-					const y = evt.detail.clientY - this._selectRectStartPoint.y;
-
-					this._selectRect.width.baseVal.value = Math.abs(x);
-					if (x < 0) {
-						this._selectRect.x.baseVal.value = evt.detail.clientX;
-					}
-
-					this._selectRect.height.baseVal.value = Math.abs(y);
-					if (y < 0) {
-						this._selectRect.y.baseVal.value = evt.detail.clientY;
-					}
-
+					rectDraw(this._selectRect, evt);
 					return;
 				}
 
@@ -47,7 +35,13 @@ export class CanvasSelecEvtProc {
 
 			case 'pointerdown':
 				/** @private */
-				this._timer = setTimeout(() => this._longTap({ x: evt.detail.clientX, y: evt.detail.clientY }), 500);
+				this._timer = setTimeout(() => {
+					//
+					// long tap
+
+					/** @private */
+					this._selectRect = rectCreate(this._svg, { x: evt.detail.clientX, y: evt.detail.clientY });
+				}, 500);
 				break;
 			case 'canvasleave':
 			case 'pointerup':
@@ -56,7 +50,6 @@ export class CanvasSelecEvtProc {
 				if (this._selectRect) {
 					this._selectRect.remove();
 					this._selectRect = null;
-					this._selectRectStartPoint = null;
 					return;
 				}
 
@@ -64,28 +57,50 @@ export class CanvasSelecEvtProc {
 				break;
 		}
 	}
+}
 
-	/**
-	 * @param {Point} position
-	 * @private
-	 */
-	_longTap(position) {
-		/** @private */
-		this._selectRect = /** @type {SVGRectElement} */(elemCreateByTemplate(this._svg, 'select'));
+/** point where selectRect starts */
+const rectStartPoint = Symbol(0);
 
-		const center = parseCenterAttr(this._selectRect);
+/** @typedef {SVGRectElement & { [rectStartPoint]?: Point }} SelectRect */
 
-		/**
-		 * @type {Point}
-		 * @private
-		 */
-		this._selectRectStartPoint = {
-			x: position.x - center.x,
-			y: position.y - center.y
-		};
+/**
+ * @param {SVGSVGElement} svg
+ * @param {Point} position
+ * @return {SVGRectElement}
+ */
+function rectCreate(svg, position) {
+	const selectRect = /** @type {SelectRect} */(elemCreateByTemplate(svg, 'select'));
 
-		// TODO: check positon if SVG is not full screen
-		this._selectRect.x.baseVal.value = this._selectRectStartPoint.x;
-		this._selectRect.y.baseVal.value = this._selectRectStartPoint.y;
+	const center = parseCenterAttr(selectRect);
+
+	selectRect[rectStartPoint] = {
+		x: position.x - center.x,
+		y: position.y - center.y
+	};
+
+	// TODO: check positon if SVG is not full screen
+	selectRect.x.baseVal.value = selectRect[rectStartPoint].x;
+	selectRect.y.baseVal.value = selectRect[rectStartPoint].y;
+
+	return selectRect;
+}
+
+/**
+ * @param {SelectRect} selectRect
+ * @param {IDiagramPrivateEvent} evt
+ */
+function rectDraw(selectRect, evt) {
+	const x = evt.detail.clientX - selectRect[rectStartPoint].x;
+	const y = evt.detail.clientY - selectRect[rectStartPoint].y;
+
+	selectRect.width.baseVal.value = Math.abs(x);
+	if (x < 0) {
+		selectRect.x.baseVal.value = evt.detail.clientX;
+	}
+
+	selectRect.height.baseVal.value = Math.abs(y);
+	if (y < 0) {
+		selectRect.y.baseVal.value = evt.detail.clientY;
 	}
 }
