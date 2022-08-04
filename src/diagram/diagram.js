@@ -85,8 +85,8 @@ export class Diagram extends EventTarget {
 	/** @param { CustomEvent<IDiagramPrivateEventDetail> & IDiagramPrivateEvent } evt */
 	handleEvent(evt) {
 		switch (evt.type) {
-			case 'canvasleave':
 			case 'pointermove':
+			case 'canvasleave':
 				if (this._activeElement) { this._evtProcessorCall(this._activeElement, evt); }
 				break;
 			case 'pointerdown':

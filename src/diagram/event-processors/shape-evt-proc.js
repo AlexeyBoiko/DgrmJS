@@ -79,7 +79,7 @@ export class ShapeEvtProc {
 						break;
 					case 'connector':
 						if (/** @type {IPresenterConnector} */(evt.detail.target)?.shape !== evt.detail.enterTo) {
-							this._hoveredSet(/** @type {IPresenterConnector} */(evt.detail.target).shape);
+							this._hoveredSet(null);
 						} else {
 							shapeStateDel(/** @type {IPresenterStatable} */(evt.detail.target), 'hovered');
 						}
