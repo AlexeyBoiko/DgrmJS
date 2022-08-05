@@ -64,6 +64,7 @@ export class CanvasSelecEvtProc {
 					// long tap
 
 					// calc shape centers
+					const canvasPosition = canvas.positionGet();
 					this._shapes.forEach(shape => {
 						// TODO: refactor - shapeInnerCenter get one time for shape template key
 
@@ -73,8 +74,8 @@ export class CanvasSelecEvtProc {
 
 						const shapePosition = shape.positionGet();
 						shape[shapeCenter] = {
-							x: shapePosition.x + shape[shapeInnerCenter].x,
-							y: shapePosition.y + shape[shapeInnerCenter].y
+							x: shapePosition.x + shape[shapeInnerCenter].x + canvasPosition.x,
+							y: shapePosition.y + shape[shapeInnerCenter].y + canvasPosition.y
 						};
 					});
 

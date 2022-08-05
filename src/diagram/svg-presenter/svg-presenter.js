@@ -33,9 +33,7 @@ export class SvgPresenter extends EventTarget {
 		 */
 		this._canvasSvgEl = svg.querySelector('[data-key="canvas"]');
 
-		/** @type {IPresenterShape} */
-		this.canvas = new SvgShape({ svgEl: this._canvasSvgEl, type: 'canvas' });
-		this._svgElemToPresenterObj.set(this._canvasSvgEl, this.canvas);
+		this._svgElemToPresenterObj.set(this._canvasSvgEl, new SvgShape({ svgEl: this._canvasSvgEl, type: 'canvas' }));
 	}
 
 	/**

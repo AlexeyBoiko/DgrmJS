@@ -2,7 +2,6 @@ interface IPresenter {
 	on(type: PresenterEventType, listener: EventListenerOrEventListenerObject): IPresenter;
 	append(type: DiagramChildAddType, param: DiagramShapeAddParam | PresenterPathAppendParam): IPresenterShape | IPresenterPath;
 	delete(elem: IDiagramElement): void;
-	get canvas(): IPresenterShape;
 }
 
 
