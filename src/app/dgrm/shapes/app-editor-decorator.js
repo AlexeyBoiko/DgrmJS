@@ -9,7 +9,7 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	onEdit(evt) {
-		this.svgEl.classList.add('edit');
+		this.svgEl.classList.add('highlighted');
 		this._panelShow();
 	}
 
@@ -19,7 +19,7 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 	 */
 	onEditLeave() {
 		super.onEditLeave();
-		this.svgEl.classList.remove('edit');
+		this.svgEl.classList.remove('highlighted');
 		this._panelDel();
 	}
 

@@ -15,7 +15,7 @@ type DiagramChildAddType = 'shape' | 'path';
 
 // shape
 
-type DiagramShapeState = 'selected' | 'disabled' | 'hovered' | 'connected';
+type DiagramShapeState = 'selected' | 'highlighted' | 'disabled' | 'hovered' | 'connected';
 type DiagramPathEndDirection = 'left' | 'right' | 'top' | 'bottom';
 
 interface DiagramShapeUpdateParam {

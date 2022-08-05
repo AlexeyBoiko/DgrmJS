@@ -68,7 +68,7 @@ export class SvgShape {
 
 		if (param.state) {
 			this._state = param.state;
-			for (const state of ['selected', 'hovered', 'disabled']) {
+			for (const state of ['selected', 'hovered', 'disabled', 'highlighted']) {
 				stateClassSync(this._state, this.svgEl, /** @type {DiagramShapeState} */(state));
 			}
 

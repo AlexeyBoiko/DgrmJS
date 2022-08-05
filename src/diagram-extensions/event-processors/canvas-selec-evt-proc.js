@@ -44,7 +44,7 @@ export class CanvasSelecEvtProc {
 				if (this._selectRect) {
 					// highlight selected shapes
 					this._shapes.forEach(shape => {
-						shapeStateSet(shape, 'selected', document.elementFromPoint(shape[shapeCenter].x, shape[shapeCenter].y) === this._selectRect);
+						shapeStateSet(shape, 'highlighted', document.elementFromPoint(shape[shapeCenter].x, shape[shapeCenter].y) === this._selectRect);
 					});
 
 					// draw select rect
