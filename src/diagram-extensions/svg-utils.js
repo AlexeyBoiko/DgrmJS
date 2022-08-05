@@ -1,5 +1,5 @@
 /**
- * @param {SVGGeometryElement} svgEl
+ * @param {SVGGraphicsElement} svgEl
  * @returns {Point}
  */
 export function parseCenterAttr(svgEl) {

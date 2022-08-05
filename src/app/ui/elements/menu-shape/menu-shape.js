@@ -94,21 +94,6 @@ export class Menu extends HTMLElement {
 	/** @param {PointerEvent & { currentTarget: Element }} evt */
 	handleEvent(evt) {
 		switch (evt.type) {
-			case 'pointerdown':
-				this._isNativePointerleaveTriggered = false;
-				this._isShapeDragOutDispatched = false;
-				this._pressedShape = evt.currentTarget.getAttribute('data-cmd-arg');
-
-				// for emulate pointerleave
-				this._parentElem = document.elementFromPoint(evt.clientX, evt.clientY);
-				this._pointElem = this._parentElem;
-				break;
-			case 'pointerup':
-				this._isNativePointerleaveTriggered = false;
-				this._isShapeDragOutDispatched = false;
-				this._pressedShape = null;
-				this._menuLogic.pointerUpMobile();
-				break;
 			case 'pointermove':
 				this._emulatePointerleave(evt);
 
@@ -123,6 +108,21 @@ export class Menu extends HTMLElement {
 			case 'pointerleave':
 				this._isNativePointerleaveTriggered = true;
 				this._leave(evt);
+				break;
+			case 'pointerdown':
+				this._isNativePointerleaveTriggered = false;
+				this._isShapeDragOutDispatched = false;
+				this._pressedShape = evt.currentTarget.getAttribute('data-cmd-arg');
+
+				// for emulate pointerleave
+				this._parentElem = document.elementFromPoint(evt.clientX, evt.clientY);
+				this._pointElem = this._parentElem;
+				break;
+			case 'pointerup':
+				this._isNativePointerleaveTriggered = false;
+				this._isShapeDragOutDispatched = false;
+				this._pressedShape = null;
+				this._menuLogic.pointerUpMobile();
 				break;
 		}
 	}
@@ -201,7 +201,7 @@ class MenuLogic {
 		 * @type {Point}
 		 * @private
 		 */
-		this._addingShapeCenter = parseCenterAttr(templateGet(this._diagram.svg, evt.shape)); // { x: parseFloat(point[0]), y: parseFloat(point[1]) };
+		this._addingShapeCenter = parseCenterAttr(templateGet(this._diagram.svg, evt.shape));
 
 		/**
 		 * @type {IDiagramShape}

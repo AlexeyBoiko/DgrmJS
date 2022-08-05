@@ -86,7 +86,7 @@ interface IDiagramPath extends IDiagramElement {
 
 // event
 
-type DiagramEventType = 'add' | 'select' | 'connect' | 'disconnect';
+type DiagramEventType = 'add' | 'del' | 'select' | 'connect' | 'disconnect';
 
 // TODO: remove IDiagramEventDetail replace with CustomEvent
 interface IDiagramEventDetail<T extends IDiagramElement> {

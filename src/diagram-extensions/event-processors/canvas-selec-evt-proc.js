@@ -1,5 +1,13 @@
 import { shapeMove, shapeMoveEnd } from '../../diagram/event-processors/shape-evt-proc.js';
+import { shapeStateSet } from '../../diagram/shape-utils.js';
 import { elemCreateByTemplate } from '../../diagram/svg-presenter/svg-presenter-utils.js';
+import { parseCenterAttr } from '../svg-utils.js';
+
+/** shape center position */
+const shapeCenter = Symbol(0);
+/** inner shape center  */
+const shapeInnerCenter = Symbol(0);
+/** @typedef {ISvgPresenterShape & { [shapeCenter]?: Point, [shapeInnerCenter]?: Point }} SelecEvtProcShape */
 
 /** @implements {IDiagramPrivateEventProcessor} */
 export class CanvasSelecEvtProc {
@@ -8,8 +16,18 @@ export class CanvasSelecEvtProc {
 	 * @param {SVGSVGElement} svg
 	 */
 	constructor(diagram, svg) {
+		/**
+		 * @type {Set<SelecEvtProcShape>}
+		 * @private
+		 */
+		this._shapes = new Set();
+
 		/** @private */
-		this._diagram = diagram;
+		this._diagram = diagram
+			.on('add', /** @param {CustomEvent<IDiagramEventDetail<ISvgPresenterShape>>} evt */ evt => {
+				if (evt.detail.target.type === 'shape') { this._shapes.add(evt.detail.target); }
+			})
+			.on('del', /** @param {CustomEvent<IDiagramEventDetail<ISvgPresenterShape>>} evt */ evt => this._shapes.delete(evt.detail.target));
 
 		/** @private */
 		this._svg = svg;
@@ -24,6 +42,12 @@ export class CanvasSelecEvtProc {
 			case 'pointermove':
 				if (this._timer) { clearTimeout(this._timer); }
 				if (this._selectRect) {
+					// highlight selected shapes
+					this._shapes.forEach(shape => {
+						shapeStateSet(shape, 'selected', document.elementFromPoint(shape[shapeCenter].x, shape[shapeCenter].y) === this._selectRect);
+					});
+
+					// draw select rect
 					rectDraw(this._selectRect, evt);
 					return;
 				}
@@ -35,10 +59,26 @@ export class CanvasSelecEvtProc {
 				this._diagram.selected = null;
 
 				/** @private */
-				this._timer = setTimeout(() => {
+				this._timer = setTimeout(_ => {
 					//
 					// long tap
 
+					// calc shape centers
+					this._shapes.forEach(shape => {
+						// TODO: refactor - shapeInnerCenter get one time for shape template key
+
+						if (!shape[shapeInnerCenter]) {
+							shape[shapeInnerCenter] = parseCenterAttr(shape.svgEl);
+						}
+
+						const shapePosition = shape.positionGet();
+						shape[shapeCenter] = {
+							x: shapePosition.x + shape[shapeInnerCenter].x,
+							y: shapePosition.y + shape[shapeInnerCenter].y
+						};
+					});
+
+					// draw select rect
 					/** @private */
 					this._selectRect = rectCreate(this._svg, { x: evt.detail.clientX, y: evt.detail.clientY });
 				}, 500);
@@ -60,6 +100,7 @@ export class CanvasSelecEvtProc {
 
 /** point where selectRect starts */
 const rectStartPoint = Symbol(0);
+/** link to svg circle, that was added to show rect start drawing */
 const rectStartElem = Symbol(0);
 
 /** @typedef {SVGRectElement & { [rectStartPoint]?: Point, [rectStartElem]?: SVGCircleElement }} SelectRect */
