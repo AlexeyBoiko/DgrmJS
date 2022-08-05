@@ -87,7 +87,7 @@
 				fill: rgb(108 187 247 / 51%);
 			}
 
-			[data-connect] {
+			[data-connect], [data-templ="select-start"] {
 				opacity: 0.51;
 				stroke: rgb(108 187 247);
 				fill: rgb(108 187 247);
@@ -165,7 +165,7 @@
 					stroke-width: 15px;
 				}
 
-				[data-connect="in"].hovered {
+				[data-connect="in"].hovered, [data-templ="select-start"] {
 					stroke-width: 55px;
 				}
 			}
@@ -288,7 +288,8 @@
 					data-evt-z-index="1" r="10" cx="-10" cy="0" />
 			</g>
 
-			<rect data-templ="select" data-center="5,5" width="10" height="10" rx="15" ry="15" fill="rgb(108 187 247 / 51%)"
+			<circle data-templ="select-start" r="10" />
+			<rect data-templ="select" width="0" height="0" rx="10" ry="10" fill="rgb(108 187 247 / 51%)"
 				stroke="rgb(108 187 247)" stroke-width="1"></rect>
 		</defs>
 		<g data-key="canvas"></g>

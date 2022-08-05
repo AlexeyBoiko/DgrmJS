@@ -1,6 +1,5 @@
 import { shapeMove, shapeMoveEnd } from '../../diagram/event-processors/shape-evt-proc.js';
 import { elemCreateByTemplate } from '../../diagram/svg-presenter/svg-presenter-utils.js';
-import { parseCenterAttr } from '../svg-utils.js';
 
 /** @implements {IDiagramPrivateEventProcessor} */
 export class CanvasSelecEvtProc {
@@ -61,8 +60,9 @@ export class CanvasSelecEvtProc {
 
 /** point where selectRect starts */
 const rectStartPoint = Symbol(0);
+const rectStartElem = Symbol(0);
 
-/** @typedef {SVGRectElement & { [rectStartPoint]?: Point }} SelectRect */
+/** @typedef {SVGRectElement & { [rectStartPoint]?: Point, [rectStartElem]?: SVGCircleElement }} SelectRect */
 
 /**
  * @param {SVGSVGElement} svg
@@ -70,18 +70,17 @@ const rectStartPoint = Symbol(0);
  * @return {SVGRectElement}
  */
 function rectCreate(svg, position) {
-	const selectRect = /** @type {SelectRect} */(elemCreateByTemplate(svg, 'select'));
-
-	const center = parseCenterAttr(selectRect);
-
-	selectRect[rectStartPoint] = {
-		x: position.x - center.x,
-		y: position.y - center.y
-	};
-
 	// TODO: check positon if SVG is not full screen
-	selectRect.x.baseVal.value = selectRect[rectStartPoint].x;
-	selectRect.y.baseVal.value = selectRect[rectStartPoint].y;
+
+	const selectRect = /** @type {SelectRect} */(elemCreateByTemplate(svg, 'select'));
+	selectRect.x.baseVal.value = position.x;
+	selectRect.y.baseVal.value = position.y;
+	selectRect[rectStartPoint] = position;
+
+	// circle to show rect start drawing
+	selectRect[rectStartElem] = /** @type {SVGCircleElement} */(elemCreateByTemplate(svg, 'select-start'));
+	selectRect[rectStartElem].cx.baseVal.value = position.x;
+	selectRect[rectStartElem].cy.baseVal.value = position.y;
 
 	return selectRect;
 }
@@ -91,6 +90,11 @@ function rectCreate(svg, position) {
  * @param {IDiagramPrivateEvent} evt
  */
 function rectDraw(selectRect, evt) {
+	if (selectRect[rectStartElem]) {
+		selectRect[rectStartElem].remove();
+		delete selectRect[rectStartElem];
+	}
+
 	const x = evt.detail.clientX - selectRect[rectStartPoint].x;
 	const y = evt.detail.clientY - selectRect[rectStartPoint].y;
 
