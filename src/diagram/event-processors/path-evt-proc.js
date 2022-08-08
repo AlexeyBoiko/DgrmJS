@@ -11,6 +11,12 @@ export class PathEvtProc {
 	}
 
 	/**
+	 * @param {IDiagramElement} elem
+	 * @return {boolean}
+	 */
+	canProcess(elem) { return elem.type === 'path'; }
+
+	/**
 	 * @param {IPresenterPath} path
 	 * @param {IDiagramPrivateEvent} evt
 	 */

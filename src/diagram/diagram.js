@@ -1,3 +1,4 @@
+import { first } from './infrastructure/iterable-utils.js';
 import { shapeStateAdd } from './shape-utils.js';
 
 /** @implements {IDiagramPrivate} */
@@ -5,7 +6,7 @@ export class Diagram extends EventTarget {
 	/**
 	 * @param {IPresenter} pesenter
 	 * @param {IConnectorManager} connectorManager
-	 * @param {(diagram: IDiagramPrivate) => Map<DiagramElementType, IDiagramPrivateEventProcessor>} evtProcessorsFactory
+	 * @param {(diagram: IDiagramPrivate) => Set<IDiagramPrivateEventProcessor>} evtProcessorsFactory
 	 */
 	constructor(pesenter, connectorManager, evtProcessorsFactory) {
 		super();
@@ -22,8 +23,14 @@ export class Diagram extends EventTarget {
 		/** @private */
 		this._connectorManager = connectorManager;
 
+		// /**
+		//  * @type {Map<DiagramElementType, IDiagramPrivateEventProcessor>}
+		//  * @private
+		//  */
+		// this._evtProcessors = evtProcessorsFactory(this);
+
 		/**
-		 * @type {Map<DiagramElementType, IDiagramPrivateEventProcessor>}
+		 * @type {Set<IDiagramPrivateEventProcessor>}
 		 * @private
 		 */
 		this._evtProcessors = evtProcessorsFactory(this);
@@ -88,7 +95,7 @@ export class Diagram extends EventTarget {
 		switch (evt.type) {
 			case 'pointermove':
 			case 'canvasleave':
-				if (this._activeElement) { this._evtProcessorCall(this._activeElement, evt); }
+				this._evtProcess(evt);
 				break;
 			case 'pointerdown':
 				/**
@@ -96,23 +103,22 @@ export class Diagram extends EventTarget {
 				 * @private
 				 * @type {IDiagramElement}
 				 */
-				this._activeElement = evt.detail.target;
-				this._evtProcessorCall(this._activeElement, evt);
+				this.activeElement = evt.detail.target;
+				this._evtProcess(evt);
 				break;
 			case 'pointerup':
-				if (this._activeElement) { this._evtProcessorCall(this._activeElement, evt); }
-				this._activeElement = null;
+				this._evtProcess(evt);
+				this.activeElement = null;
 				break;
 			case 'pointerenter':
-				if (this._activeElement) {
-					if (this._hovered) {
-						this._evtProcessorCall(
-							this._activeElement,
-							{ type: 'pointerleave', detail: { target: this._hovered, enterTo: evt.detail.target } });
-					}
-
-					this._evtProcessorCall(this._activeElement, evt);
+				if (this._hovered) {
+					this._evtProcess({
+						type: 'pointerleave',
+						detail: { target: this._hovered, enterTo: evt.detail.target }
+					});
 				}
+
+				this._evtProcess(evt);
 
 				/** @private */
 				this._hovered = evt.detail.target;
@@ -122,19 +128,35 @@ export class Diagram extends EventTarget {
 
 	/**
 	 * @param {IDiagramElement} elem
-	 * @param {IDiagramPrivateEvent} evt
 	 * @private
 	 */
-	_evtProcessorCall(elem, evt) {
-		this._evtProcessors.get(elem.type).process(elem, evt);
+	_evtProcGet(elem) {
+		return first(this._evtProcessors, proc => proc.canProcess(elem));
 	}
 
 	/**
+	 * @param { IDiagramPrivateEvent } evt
+	 * @private
+	 */
+	_evtProcess(evt) {
+		this._activeProcessor?.process(this._activeElement, evt);
+	}
+
+	/**
+	 * activeElement track all events
 	 * @param {IDiagramElement} elem
 	 */
 	// eslint-disable-next-line accessor-pairs
 	set activeElement (elem) {
+		/**
+		 * activeElement track all events
+		 * @private
+		 * @type {IDiagramElement}
+		 */
 		this._activeElement = elem;
+		this._activeProcessor = this._activeElement
+			? this._evtProcGet(this._activeElement)
+			: null;
 	}
 
 	/** @param {IPresenterStatable} elem */
@@ -142,7 +164,7 @@ export class Diagram extends EventTarget {
 		if (elem === this._selected) { return; }
 
 		if (this._selected) {
-			this._evtProcessorCall(this._selected, { type: 'unselect' });
+			this._evtProcGet(this._selected).process(this._selected, { type: 'unselect' });
 		}
 
 		/** @private */

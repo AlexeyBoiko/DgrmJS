@@ -44,13 +44,10 @@ export function svgDiagramCreate(svg) {
 
 	const connectorManager = new ConnectorManager(presenter);
 	return new Diagram(presenter, connectorManager,
-		dgrm => {
-			const shapeEvtProc = new ShapeEvtProc(dgrm, connectorManager);
-			return new Map([
-				[/** @type {DiagramElementType} */('shape'), /** @type {IDiagramPrivateEventProcessor} */(shapeEvtProc)],
-				['canvas', shapeEvtProc],
-				['connector', new ConnectorEvtProc(dgrm, connectorManager)],
-				['path', new PathEvtProc(dgrm)]
-			]);
-		});
+		dgrm => new Set([
+			new ShapeEvtProc(dgrm, connectorManager),
+			new ConnectorEvtProc(dgrm, connectorManager),
+			new PathEvtProc(dgrm)
+		])
+	);
 }

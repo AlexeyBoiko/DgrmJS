@@ -15,6 +15,12 @@ export class ConnectorEvtProc {
 	}
 
 	/**
+	 * @param {IDiagramElement} elem
+	 * @return {boolean}
+	 */
+	canProcess(elem) { return elem.type === 'connector'; }
+
+	/**
 	 * @param {IPresenterConnector} connector
 	 * @param {IDiagramPrivateEvent} evt
 	 * */

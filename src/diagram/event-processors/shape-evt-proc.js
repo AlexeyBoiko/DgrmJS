@@ -16,6 +16,12 @@ export class ShapeEvtProc {
 	}
 
 	/**
+	 * @param {IDiagramElement} elem
+	 * @return {boolean}
+	 */
+	canProcess(elem) { return elem.type === 'canvas' || elem.type === 'shape'; }
+
+	/**
 	 * @param {IPresenterShape} shape
 	 * @param {IDiagramPrivateEvent} evt
 	 */

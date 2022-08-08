@@ -27,5 +27,6 @@ interface IDiagramPrivateEvent {
 }
 
 interface IDiagramPrivateEventProcessor {
+	canProcess(elem: IDiagramElement): boolean;
 	process(elem: IDiagramElement, evt: IDiagramPrivateEvent): void;
 }

@@ -71,11 +71,11 @@ export function appDiagramFactory(svg) {
 
 	const connectorManager = new ConnectorManager(presenter);
 	diagram = new Diagram(presenter, connectorManager,
-		dgrm => new Map([
-			[/** @type {DiagramElementType} */('shape'), /** @type {IDiagramPrivateEventProcessor} */(new ShapeEvtProc(dgrm, connectorManager))],
-			['canvas', new CanvasSelecEvtProc(dgrm, svg)],
-			['connector', new ConnectorEvtProc(dgrm, connectorManager)],
-			['path', new PathEvtProc(dgrm)]
+		dgrm => new Set([
+			new CanvasSelecEvtProc(dgrm, svg),
+			new ShapeEvtProc(dgrm, connectorManager),
+			new ConnectorEvtProc(dgrm, connectorManager),
+			new PathEvtProc(dgrm)
 		])
 	);
 	return diagram;

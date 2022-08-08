@@ -34,6 +34,12 @@ export class CanvasSelecEvtProc {
 	}
 
 	/**
+	 * @param {IDiagramElement} elem
+	 * @return {boolean}
+	 */
+	canProcess(elem) { return elem.type === 'canvas'; }
+
+	/**
 	 * @param {IPresenterShape} canvas
 	 * @param {IDiagramPrivateEvent} evt
 	 */
