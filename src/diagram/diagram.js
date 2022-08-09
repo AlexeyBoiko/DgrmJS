@@ -23,12 +23,6 @@ export class Diagram extends EventTarget {
 		/** @private */
 		this._connectorManager = connectorManager;
 
-		// /**
-		//  * @type {Map<DiagramElementType, IDiagramPrivateEventProcessor>}
-		//  * @private
-		//  */
-		// this._evtProcessors = evtProcessorsFactory(this);
-
 		/**
 		 * @type {Set<IDiagramPrivateEventProcessor>}
 		 * @private
@@ -98,11 +92,6 @@ export class Diagram extends EventTarget {
 				this._evtProcess(evt);
 				break;
 			case 'pointerdown':
-				/**
-				 * track all events
-				 * @private
-				 * @type {IDiagramElement}
-				 */
 				this.activeElement = evt.detail.target;
 				this._evtProcess(evt);
 				break;
@@ -150,10 +139,15 @@ export class Diagram extends EventTarget {
 	set activeElement (elem) {
 		/**
 		 * activeElement track all events
-		 * @private
 		 * @type {IDiagramElement}
+		 * @private
 		 */
 		this._activeElement = elem;
+
+		/**
+		 * @type {IDiagramPrivateEventProcessor}
+		 * @private
+		 */
 		this._activeProcessor = this._activeElement
 			? this._evtProcGet(this._activeElement)
 			: null;
