@@ -1,5 +1,5 @@
 import { shapeMove, shapeMoveEnd } from '../../diagram/event-processors/shape-evt-proc.js';
-import { shapeStateSet } from '../../diagram/shape-utils.js';
+import { shapeStateDel, shapeStateSet } from '../../diagram/shape-utils.js';
 import { elemCreateByTemplate } from '../../diagram/svg-presenter/svg-presenter-utils.js';
 import { parseCenterAttr } from '../svg-utils.js';
 
@@ -37,40 +37,68 @@ export class CanvasSelecEvtProc {
 	 * @param {IDiagramElement} elem
 	 * @return {boolean}
 	 */
-	canProcess(elem) { return elem.type === 'canvas'; }
+	canProcess(elem) {
+		const canProcess = elem.type === 'canvas' || this._selectedShapes?.has(/** @type {SelecEvtProcShape} */(elem));
+		if (!canProcess) {
+			// clean selected
+			this._selectedClean();
+		}
+		return canProcess;
+	}
 
 	/**
-	 * @param {IPresenterShape} canvas
+	 * @param {IDiagramElement} elem
 	 * @param {IDiagramPrivateEvent} evt
 	 */
-	process(canvas, evt) {
+	process(elem, evt) {
 		switch (evt.type) {
 			case 'pointermove':
-				if (this._timer) { clearTimeout(this._timer); }
+				this._timerDel();
+				this._downElem = null;
+
+				// select rectangle
 				if (this._selectRect) {
 					// highlight selected shapes
-					this._shapes.forEach(shape => {
-						shapeStateSet(shape, 'highlighted', document.elementFromPoint(shape[shapeCenter].x, shape[shapeCenter].y) === this._selectRect);
-					});
+					this._shapeInRectSelect();
 
 					// draw select rect
 					rectDraw(this._selectRect, evt);
 					return;
 				}
 
-				shapeMove(this._diagram, canvas, evt);
+				// selected shapes move
+				if (this._isDownOnSelectedShape) {
+					this._selectedShapes.forEach(shape => shapeMove(this._diagram, shape, evt));
+					return;
+				}
+
+				// canvas move
+				shapeMove(this._diagram, /** @type {ISvgPresenterShape} */(elem), evt); // only 'canvas' can be here
 				break;
 
 			case 'pointerdown':
 				this._diagram.selected = null;
 
 				/** @private */
+				this._downElem = evt.detail.target;
+
+				/** @private */
+				this._isDownOnSelectedShape = this._selectedShapes?.has(/** @type {SelecEvtProcShape} */(evt.detail.target));
+
+				if (elem.type !== 'canvas') { return; }
+
+				//
+				// long tap on cancas
+
+				/** @private */
 				this._timer = setTimeout(_ => {
-					//
-					// long tap
+					this._timerDel();
+
+					// clean selected
+					this._selectedClean();
 
 					// calc shape centers
-					const canvasPosition = canvas.positionGet();
+					const canvasPosition = /** @type {ISvgPresenterShape} */(elem).positionGet();
 					this._shapes.forEach(shape => {
 						// TODO: refactor - shapeInnerCenter get one time for shape template key
 
@@ -91,17 +119,91 @@ export class CanvasSelecEvtProc {
 				}, 500);
 				break;
 			case 'canvasleave':
-			case 'pointerup':
-				if (this._timer) { clearTimeout(this._timer); }
-				if (this._selectRect) {
-					this._selectRect.remove();
-					this._selectRect = null;
+			case 'pointerup': {
+				this._diagram.activeElement = null; // for 'canvasleave'
+				this._timerDel();
+
+				// click
+				if (this._downElem) {
+					this._downElem = null;
+
+					// click on canvas
+					if (evt.detail.target.type === 'canvas') {
+						this._selectedClean();
+						return;
+					}
+
+					// click on selected shape
+					this.onShapeClick();
 					return;
 				}
 
-				shapeMoveEnd(canvas);
+				// select rectangle
+				if (this._selectRect) {
+					this._selectEnd();
+					return;
+				}
+
+				// selected shapes move end
+				if (this._isDownOnSelectedShape) {
+					this._selectedShapes.forEach(shape => shapeMoveEnd(shape));
+					this._isDownOnSelectedShape = false;
+					return;
+				}
+
+				// canvas move end
+				shapeMoveEnd(/** @type {ISvgPresenterShape} */(elem)); // only 'canvas' can be here
 				break;
+			}
 		}
+	}
+
+	/**
+	 * when click on selected shape
+	 * override this method if you need to process this evt
+	 */
+	onShapeClick() {
+		this._selectedClean();
+	}
+
+	/** @private */
+	_selectedClean() {
+		this._selectedShapes?.forEach(shape => shapeStateDel(shape, 'highlighted'));
+		this._selectedShapes = null;
+	}
+
+	/**
+	 * @param {boolean?=} getShapes
+	 * @returns {Set<SelecEvtProcShape>}
+	 * @private
+	 */
+	_shapeInRectSelect(getShapes) {
+		/** @type {Set<SelecEvtProcShape>} */
+		const shapesInRect = getShapes ? new Set() : null;
+		this._shapes.forEach(shape => {
+			const isInRect = document.elementFromPoint(shape[shapeCenter].x, shape[shapeCenter].y) === this._selectRect;
+			shapeStateSet(shape, 'highlighted', isInRect);
+
+			if (getShapes && isInRect) {
+				shapesInRect.add(shape);
+			}
+		});
+		return shapesInRect?.size > 0 ? shapesInRect : null;
+	}
+
+	/** @private */
+	_selectEnd() {
+		/** @private */
+		this._selectedShapes = this._shapeInRectSelect(true);
+
+		rectDel(this._selectRect);
+		this._selectRect = null;
+	}
+
+	/** @private */
+	_timerDel() {
+		if (this._timer) { clearTimeout(this._timer); }
+		this._timer = null;
 	}
 }
 
@@ -155,4 +257,13 @@ function rectDraw(selectRect, evt) {
 	if (y < 0) {
 		selectRect.y.baseVal.value = evt.detail.clientY;
 	}
+}
+
+/** @param {SelectRect} selectRect */
+function rectDel(selectRect) {
+	if (selectRect[rectStartElem]) {
+		selectRect[rectStartElem].remove();
+		delete selectRect[rectStartElem];
+	}
+	selectRect.remove();
 }
