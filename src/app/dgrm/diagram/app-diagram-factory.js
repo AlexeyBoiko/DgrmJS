@@ -24,7 +24,7 @@ import { AppPathEditiorDecorator, AppShapeEditorDecorator } from '../shapes/app-
 import { ShapeEvtProc } from '../../../diagram/event-processors/shape-evt-proc.js';
 import { ConnectorEvtProc } from '../../../diagram/event-processors/connector-evt-proc.js';
 import { PathEvtProc } from '../../../diagram/event-processors/path-evt-proc.js';
-import { CanvasSelecEvtProc } from '../../../diagram-extensions/event-processors/canvas-selec-evt-proc.js';
+import { CanvasSelecEvtProc } from '../../../diagram-extensions/group-select/canvas-selec-evt-proc.js';
 
 /**
  * @param {SVGSVGElement} svg
