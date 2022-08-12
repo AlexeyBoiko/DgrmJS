@@ -43,18 +43,8 @@ export class AppDiagramSerializable extends EventTarget {
 					/** @type {string} */ (/** @type {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail>} */(evt).detail.props.text.textContent);
 				break;
 			case 'del':
-				this._elementDel(/** @type {CustomEvent<IDiagramEventDetail<IDiagramElement>>} */(evt).detail.target);
+				this._shapeData.delete(/** @type {IDiagramShape} */(evt.detail.target));
 				break;
-		}
-	}
-
-	/**
-	 * @param {IDiagramElement} element
-	 * @private
-	 */
-	_elementDel(element) {
-		if (element.type === 'shape') {
-			this._shapeData.delete(/** @type {IDiagramShape} */(element));
 		}
 	}
 
@@ -98,7 +88,7 @@ export class AppDiagramSerializable extends EventTarget {
 	/** @returns {void} */
 	clear() {
 		for (const shapeData of this._shapeData) {
-			this._elementDel(shapeData[0]);
+			this._diagram.del(shapeData[0]);
 		}
 	}
 
