@@ -1,4 +1,5 @@
 import { shapeMove, shapeMoveEnd } from '../../diagram/event-processors/shape-evt-proc.js';
+import { first } from '../../diagram/infrastructure/iterable-utils.js';
 import { shapeStateDel, shapeStateSet } from '../../diagram/shape-utils.js';
 import { elemCreateByTemplate } from '../../diagram/svg-presenter/svg-presenter-utils.js';
 import { parseCenterAttr } from '../svg-utils.js';
@@ -206,6 +207,12 @@ export class CanvasSelecEvtProc {
 	_selectEnd() {
 		/** @private */
 		this.selectedShapes = this._shapeInRectSelect(true);
+
+		// can't select one shape
+		if (this.selectedShapes?.size === 1) {
+			shapeStateDel(first(this.selectedShapes), 'highlighted');
+			this.selectedShapes = null;
+		}
 
 		rectDel(this._selectRect);
 		this._selectRect = null;
