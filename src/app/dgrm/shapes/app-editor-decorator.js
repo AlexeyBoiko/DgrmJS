@@ -1,8 +1,19 @@
 import { SvgElementEditableAbstract } from '../../../diagram-extensions/text-editor/svg-shape-editable-abstract-decorator.js';
 import { SvgShapeTextEditorDecorator } from '../../../diagram-extensions/text-editor/svg-shape-texteditor-decorator.js';
+import { panelCreate } from '../panel-create.js';
 
 /** @implements {IAppShapeEditorDecorator} */
 export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
+	/**
+	 * @param {IDiagram} diagram
+	 * @param {ISvgPresenterShape} svgShape
+	 * @param {DiagramShapeProps} initProps
+	 */
+	constructor(diagram, svgShape, initProps) {
+		super(svgShape, initProps);
+		this.diagram = diagram;
+	}
+
 	/**
 	 * when shape enter edit mode
 	 * override this method
@@ -26,19 +37,12 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 	/** @private */
 	_panelShow() {
 		/** @private */
-		this._panel = panelCreate();
+		this._panel = panelCreate(0, 0);
 		this._panel.onclick = _ => {
 			this._panelDel();
-			this.svgEl.dispatchEvent(new CustomEvent('del', {
-				/** @type {ShapeTextEditorDecoratorEventUpdateDetail} */
-				detail: {
-					target: this
-				}
-			}));
+			this.diagram.del(this);
 		};
 		this.panelUpdPos();
-
-		document.body.append(this._panel);
 	}
 
 	/** update panel position */
@@ -57,8 +61,17 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 	}
 }
 
-/** @implements {IAppPathEditorDecorator} */
+/** @implements {IConnectorPath} */
 export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
+	/**
+	 * @param {IDiagram} diagram
+	 * @param {ISvgPresenterPath} svgElement
+	 */
+	constructor(diagram, svgElement) {
+		super(svgElement);
+		this.diagram = diagram;
+	}
+
 	// @ts-ignore
 	get end() {	return /** @type {IConnectorPath} */(this.svgElement).end; }
 	// @ts-ignore
@@ -71,49 +84,17 @@ export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
 	stateGet() { return this.svgElement.stateGet(); }
 
 	/**
-	 * @param {AppPathEditorEventType} type
-	 * @param {EventListenerOrEventListenerObject} listener
-	 * @returns {IAppPathEditorDecorator}
-	 */
-	on(type, listener) {
-		if (!this._listeners) {
-			/**
-			 * @type {{t:AppPathEditorEventType, l:EventListenerOrEventListenerObject }[]}
-			 * @private
-			 */
-			this._listeners = [];
-		}
-		this._listeners.push({ t: type, l: listener });
-		this.svgElement.svgEl.addEventListener(type, listener);
-		return this;
-	}
-
-	dispose() {
-		this._listeners?.forEach(ll => this.svgElement.svgEl.removeEventListener(ll.t, ll.l));
-		super.dispose();
-	}
-
-	/**
 	 * when shape enter edit mode
 	 * override this method
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	onEdit(evt) {
 		/** @private */
-		this._panel = panelCreate();
-		this._panel.style.top = `${evt.clientY - 55}px`;
-		this._panel.style.left = `${evt.clientX - 20}px`;
+		this._panel = panelCreate(evt.clientX - 20, evt.clientY - 55);
 		this._panel.onclick = _ => {
 			this._panelDel();
-			this.svgEl.dispatchEvent(new CustomEvent('del', {
-				/** @type {IDiagramEventDetail<IAppPathEditorDecorator> } */
-				detail: {
-					target: this
-				}
-			}));
+			this.diagram.del(this);
 		};
-
-		document.body.append(this._panel);
 	}
 
 	/**
@@ -130,12 +111,4 @@ export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
 		this._panel.remove();
 		this._panel = null;
 	}
-}
-
-/** @return {HTMLDivElement} */
-function panelCreate() {
-	const panelDiv = document.createElement('div');
-	panelDiv.style.cssText = 'position: fixed; padding: 10px;	box-shadow: 0px 0px 58px 2px rgb(34 60 80 / 20%); border-radius: 16px; background-color: rgba(255,255,255, .9);';
-	panelDiv.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17 6h5v2h-2v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8H2V6h5V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3zm1 2H6v12h12V8zm-9 3h2v6H9v-6zm4 0h2v6h-2v-6zM9 4v2h6V4H9z" fill="rgba(52,71,103,1)"/></svg>';
-	return panelDiv;
 }

@@ -9,10 +9,7 @@ export class AppRhombDecorator extends AppShapeEditorDecorator {
 	 * @param {DiagramShapeProps} initProps
 	 */
 	constructor(diagram, svgShape, initProps) {
-		super(svgShape, initProps);
-
-		/** @private */
-		this._diagram = diagram;
+		super(diagram, svgShape, initProps);
 
 		/** @private */
 		this._width = 120;
@@ -86,7 +83,7 @@ export class AppRhombDecorator extends AppShapeEditorDecorator {
 			top: { innerPosition: connectors.t },
 			bottom: { innerPosition: connectors.b }
 		};
-		this._diagram.shapeUpdate(this, {
+		this.diagram.shapeUpdate(this, {
 			// visability
 			props: {
 				main: rhomb,

@@ -11,7 +11,7 @@ export function pngDgrmCreate(svg, callBack, dgrmChunkVal) {
 	/** @type {SVGSVGElement} */
 	// @ts-ignore
 	const svgCopy = svg.cloneNode(true);
-	svgCopy.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+	svgCopy.querySelectorAll('.selected, .highlighted').forEach(el => el.classList.remove('selected', 'highlighted'));
 
 	const rectToShow = getBoundingRect(svg, '[data-key="canvas"]');
 

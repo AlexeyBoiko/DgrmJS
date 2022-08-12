@@ -9,10 +9,7 @@ export class AppCircleDecorator extends AppShapeEditorDecorator {
 	 * @param {DiagramShapeProps} initProps
 	 */
 	constructor(diagram, svgShape, initProps) {
-		super(svgShape, initProps);
-
-		/** @private */
-		this._diagram = diagram;
+		super(diagram, svgShape, initProps);
 
 		/** @private */
 		this._currentRadius = 60;
@@ -77,7 +74,7 @@ export class AppCircleDecorator extends AppShapeEditorDecorator {
 			bottom: { innerPosition: { x: 0, y: mainRadius } },
 			top: { innerPosition: { x: 0, y: radNegative } }
 		};
-		this._diagram.shapeUpdate(this, {
+		this.diagram.shapeUpdate(this, {
 			// visability
 			props: {
 				main: { r: mainRadius },

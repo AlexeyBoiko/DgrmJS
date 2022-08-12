@@ -1,5 +1,5 @@
 import { any } from '../../../diagram/infrastructure/iterable-utils.js';
-import { AppPathEditiorDecorator, AppShapeEditorDecorator } from '../shapes/app-editor-decorator.js';
+import { AppShapeEditorDecorator } from '../shapes/app-editor-decorator.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
 
 /**
@@ -23,7 +23,9 @@ export class AppDiagramSerializable extends EventTarget {
 		this._shapeData = new Map();
 
 		/** @private */
-		this._diagram = diagram.on('add', this);
+		this._diagram = diagram
+			.on('add', this)
+			.on('del', this);
 	}
 
 	/**
@@ -33,12 +35,7 @@ export class AppDiagramSerializable extends EventTarget {
 		switch (evt.type) {
 			case 'add':
 				if (evt.detail.target instanceof AppShapeEditorDecorator) {
-					/** @type {IAppShapeEditorDecorator} */(evt.detail.target)
-						.on('txtUpd', this)
-						.on('del', this);
-				} else if (evt.detail.target instanceof AppPathEditiorDecorator) {
-					/** @type {IAppPathEditorDecorator} */(evt.detail.target)
-						.on('del', this);
+					/** @type {IAppShapeEditorDecorator} */(evt.detail.target).on('txtUpd', this);
 				}
 				break;
 			case 'txtUpd':
@@ -56,7 +53,6 @@ export class AppDiagramSerializable extends EventTarget {
 	 * @private
 	 */
 	_elementDel(element) {
-		this._diagram.del(element);
 		if (element.type === 'shape') {
 			this._shapeData.delete(/** @type {IDiagramShape} */(element));
 		}

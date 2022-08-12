@@ -24,7 +24,7 @@ import { AppPathEditiorDecorator, AppShapeEditorDecorator } from '../shapes/app-
 import { ShapeEvtProc } from '../../../diagram/event-processors/shape-evt-proc.js';
 import { ConnectorEvtProc } from '../../../diagram/event-processors/connector-evt-proc.js';
 import { PathEvtProc } from '../../../diagram/event-processors/path-evt-proc.js';
-import { CanvasSelecEvtProc } from '../../../diagram-extensions/group-select/canvas-selec-evt-proc.js';
+import { AppCanvasSelecEvtProc } from './app-canvas-selec-evt-proc.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -52,7 +52,7 @@ export function appDiagramFactory(svg) {
 						case 'circle': shape = new AppCircleDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
 						case 'rhomb': shape = new AppRhombDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
 						case 'rect': shape = new AppRectDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
-						case 'text': shape = new AppShapeEditorDecorator(shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
+						case 'text': shape = new AppShapeEditorDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
 						case 'connect-end': break;
 					}
 
@@ -62,7 +62,7 @@ export function appDiagramFactory(svg) {
 					return shape;
 				}
 				case 'path': {
-					const path = new AppPathEditiorDecorator(pathCreate(param));
+					const path = new AppPathEditiorDecorator(diagram, pathCreate(param));
 					param.svgElemToPresenterObj.set(path.svgEl, path);
 					return path;
 				}
@@ -72,7 +72,7 @@ export function appDiagramFactory(svg) {
 	const connectorManager = new ConnectorManager(presenter);
 	diagram = new Diagram(presenter, connectorManager,
 		dgrm => new Set([
-			new CanvasSelecEvtProc(dgrm, svg),
+			new AppCanvasSelecEvtProc(dgrm, svg),
 			new ShapeEvtProc(dgrm, connectorManager),
 			new ConnectorEvtProc(dgrm, connectorManager),
 			new PathEvtProc(dgrm)

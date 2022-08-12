@@ -8,10 +8,7 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 	 * @param {DiagramShapeProps} initProps
 	 */
 	constructor(diagram, svgShape, initProps) {
-		super(svgShape, initProps);
-
-		/** @private */
-		this._diagram = diagram;
+		super(diagram, svgShape, initProps);
 
 		/** @private */
 		this._currentWidth = 150;
@@ -85,7 +82,7 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 			bottom: { innerPosition: { x: cons.b.cx, y: cons.b.cy } },
 			top: { innerPosition: { x: cons.t.cx, y: cons.t.cy } }
 		};
-		this._diagram.shapeUpdate(this, {
+		this.diagram.shapeUpdate(this, {
 			// visability
 			props: {
 				main: rect,

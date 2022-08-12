@@ -9,7 +9,11 @@ const shapeCenter = Symbol(0);
 const shapeInnerCenter = Symbol(0);
 /** @typedef {ISvgPresenterShape & { [shapeCenter]?: Point, [shapeInnerCenter]?: Point }} SelecEvtProcShape */
 
-/** @implements {IDiagramPrivateEventProcessor} */
+/**
+ * Allow to select multiple elements.
+ * Long tap to start select
+ * @implements {IDiagramPrivateEventProcessor}
+ */
 export class CanvasSelecEvtProc {
 	/**
 	 * @param {IDiagramPrivate} diagram
@@ -22,12 +26,14 @@ export class CanvasSelecEvtProc {
 		 */
 		this._shapes = new Set();
 
-		/** @private */
-		this._diagram = diagram
+		this.diagram = diagram
 			.on('add', /** @param {CustomEvent<IDiagramEventDetail<ISvgPresenterShape>>} evt */ evt => {
 				if (evt.detail.target.type === 'shape') { this._shapes.add(evt.detail.target); }
 			})
-			.on('del', /** @param {CustomEvent<IDiagramEventDetail<ISvgPresenterShape>>} evt */ evt => this._shapes.delete(evt.detail.target));
+			.on('del', /** @param {CustomEvent<IDiagramEventDetail<ISvgPresenterShape>>} evt */ evt => {
+				this._shapes.delete(evt.detail.target);
+				this.selectedShapes?.delete(evt.detail.target);
+			});
 
 		/** @private */
 		this._svg = svg;
@@ -38,10 +44,10 @@ export class CanvasSelecEvtProc {
 	 * @return {boolean}
 	 */
 	canProcess(elem) {
-		const canProcess = elem.type === 'canvas' || this._selectedShapes?.has(/** @type {SelecEvtProcShape} */(elem));
+		const canProcess = elem.type === 'canvas' || this.selectedShapes?.has(/** @type {SelecEvtProcShape} */(elem));
 		if (!canProcess) {
 			// clean selected
-			this._selectedClean();
+			this.onSelectedClean();
 		}
 		return canProcess;
 	}
@@ -54,6 +60,7 @@ export class CanvasSelecEvtProc {
 		switch (evt.type) {
 			case 'pointermove':
 				this._timerDel();
+				/** @private */
 				this._downElem = null;
 
 				// select rectangle
@@ -68,22 +75,22 @@ export class CanvasSelecEvtProc {
 
 				// selected shapes move
 				if (this._isDownOnSelectedShape) {
-					this._selectedShapes.forEach(shape => shapeMove(this._diagram, shape, evt));
+					this.selectedShapes.forEach(shape => shapeMove(this.diagram, shape, evt));
 					return;
 				}
 
 				// canvas move
-				shapeMove(this._diagram, /** @type {ISvgPresenterShape} */(elem), evt); // only 'canvas' can be here
+				shapeMove(this.diagram, /** @type {ISvgPresenterShape} */(elem), evt); // only 'canvas' can be here
 				break;
 
 			case 'pointerdown':
-				this._diagram.selected = null;
+				this.diagram.selected = null;
 
 				/** @private */
 				this._downElem = evt.detail.target;
 
 				/** @private */
-				this._isDownOnSelectedShape = this._selectedShapes?.has(/** @type {SelecEvtProcShape} */(evt.detail.target));
+				this._isDownOnSelectedShape = this.selectedShapes?.has(/** @type {SelecEvtProcShape} */(evt.detail.target));
 
 				if (elem.type !== 'canvas') { return; }
 
@@ -95,7 +102,7 @@ export class CanvasSelecEvtProc {
 					this._timerDel();
 
 					// clean selected
-					this._selectedClean();
+					this.onSelectedClean();
 
 					// calc shape centers
 					const canvasPosition = /** @type {ISvgPresenterShape} */(elem).positionGet();
@@ -120,7 +127,7 @@ export class CanvasSelecEvtProc {
 				break;
 			case 'canvasleave':
 			case 'pointerup': {
-				this._diagram.activeElement = null; // for 'canvasleave'
+				this.diagram.activeElement = null; // for 'canvasleave'
 				this._timerDel();
 
 				// click
@@ -129,12 +136,12 @@ export class CanvasSelecEvtProc {
 
 					// click on canvas
 					if (evt.detail.target.type === 'canvas') {
-						this._selectedClean();
+						this.onSelectedClean();
 						return;
 					}
 
 					// click on selected shape
-					this.onShapeClick();
+					this.onShapeClick(evt);
 					return;
 				}
 
@@ -146,7 +153,7 @@ export class CanvasSelecEvtProc {
 
 				// selected shapes move end
 				if (this._isDownOnSelectedShape) {
-					this._selectedShapes.forEach(shape => shapeMoveEnd(shape));
+					this.selectedShapes.forEach(shape => shapeMoveEnd(shape));
 					this._isDownOnSelectedShape = false;
 					return;
 				}
@@ -159,17 +166,21 @@ export class CanvasSelecEvtProc {
 	}
 
 	/**
-	 * when click on selected shape
+	 * when click on one of selected shapes
 	 * override this method if you need to process this evt
+	 * @param {IDiagramPrivateEvent} evt
 	 */
-	onShapeClick() {
-		this._selectedClean();
+	onShapeClick(evt) {
+		this.onSelectedClean();
 	}
 
-	/** @private */
-	_selectedClean() {
-		this._selectedShapes?.forEach(shape => shapeStateDel(shape, 'highlighted'));
-		this._selectedShapes = null;
+	/**
+	 * when clean selected
+	 * override this method if you need to process this evt
+	 */
+	onSelectedClean() {
+		this.selectedShapes?.forEach(shape => shapeStateDel(shape, 'highlighted'));
+		this.selectedShapes = null;
 	}
 
 	/**
@@ -194,7 +205,7 @@ export class CanvasSelecEvtProc {
 	/** @private */
 	_selectEnd() {
 		/** @private */
-		this._selectedShapes = this._shapeInRectSelect(true);
+		this.selectedShapes = this._shapeInRectSelect(true);
 
 		rectDel(this._selectRect);
 		this._selectRect = null;
