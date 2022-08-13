@@ -133,16 +133,17 @@ export class CanvasSelecEvtProc {
 
 				// click
 				if (this._downElem) {
-					this._downElem = null;
+					this._selectRectDel();
 
-					// click on canvas
-					if (evt.detail.target.type === 'canvas') {
+					if (this._downElem.type === 'canvas') {
+						// click on canvas
 						this.onSelectedClean();
-						return;
+					} else {
+						// click on selected shape
+						this.onShapeClick(evt);
 					}
 
-					// click on selected shape
-					this.onShapeClick(evt);
+					this._downElem = null;
 					return;
 				}
 
@@ -214,8 +215,15 @@ export class CanvasSelecEvtProc {
 			this.selectedShapes = null;
 		}
 
-		rectDel(this._selectRect);
-		this._selectRect = null;
+		this._selectRectDel();
+	}
+
+	/** @private */
+	_selectRectDel() {
+		if (this._selectRect) {
+			rectDel(this._selectRect);
+			this._selectRect = null;
+		}
 	}
 
 	/** @private */
