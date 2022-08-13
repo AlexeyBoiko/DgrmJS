@@ -86,13 +86,22 @@ export class SvgPresenter extends EventTarget {
 	handleEvent(evt) {
 		switch (evt.type) {
 			case 'pointermove':
-				if (evt.movementX !== 0 || evt.movementY !== 0) { // fix android fire 'pointermove' on 'poinerdown'
+				// fix old android
+				if (!this._moveStart ||
+					Math.abs(this._moveStart.x - evt.clientX) > 15 ||
+					Math.abs(this._moveStart.y - evt.clientY) > 15) {
+					this._moveStart = null;
 					this._dispatchEnterLeave(evt);
 					this._dispatchEvent(evt, 'pointermove', null);
 				}
 				break;
 			case 'pointerdown':
 			case 'pointerup':
+				/**
+				 * @type {Point}
+				 * @private
+				 */
+				this._moveStart = { x: evt.clientX, y: evt.clientY };
 				this._dispatchEvent(
 					evt,
 					evt.type,
