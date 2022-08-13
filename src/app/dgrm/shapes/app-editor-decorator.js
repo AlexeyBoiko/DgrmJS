@@ -1,6 +1,6 @@
 import { SvgElementEditableAbstract } from '../../../diagram-extensions/text-editor/svg-shape-editable-abstract-decorator.js';
 import { SvgShapeTextEditorDecorator } from '../../../diagram-extensions/text-editor/svg-shape-texteditor-decorator.js';
-import { panelCreate } from '../panel-create.js';
+import { delBtnDel, delBtnMove, delBtnShow, delBtnSymbol } from '../panel-create.js';
 
 /** @implements {IAppShapeEditorDecorator} */
 export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
@@ -31,33 +31,23 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 	onEditLeave() {
 		super.onEditLeave();
 		this.svgEl.classList.remove('highlighted');
-		this._panelDel();
+		delBtnDel(this);
 	}
 
 	/** @private */
 	_panelShow() {
-		/** @private */
-		this._panel = panelCreate(0, 0);
-		this._panel.onclick = _ => {
-			this._panelDel();
+		delBtnShow(this, 0, 0, () => {
 			this.diagram.del(this);
-		};
+		});
 		this.panelUpdPos();
 	}
 
 	/** update panel position */
 	panelUpdPos() {
-		if (!this._panel) { return; }
-		const position = this.svgEl.getBoundingClientRect();
-		this._panel.style.top = `${window.scrollY + position.top - 35}px`; // window.scrollY fix IPhone keyboard
-		this._panel.style.left = `${position.left + 10}px`;
-	}
-
-	/** @private */
-	_panelDel() {
-		if (!this._panel) { return; }
-		this._panel.remove();
-		this._panel = null;
+		if (this[delBtnSymbol]) {
+			const position = this.svgEl.getBoundingClientRect();
+			delBtnMove(this, position.left + 10, position.top - 35);
+		}
 	}
 }
 
@@ -89,12 +79,9 @@ export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	onEdit(evt) {
-		/** @private */
-		this._panel = panelCreate(evt.clientX - 20, evt.clientY - 55);
-		this._panel.onclick = _ => {
-			this._panelDel();
+		delBtnShow(this, evt.clientX - 20, evt.clientY - 55, () => {
 			this.diagram.del(this);
-		};
+		});
 	}
 
 	/**
@@ -102,13 +89,6 @@ export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
 	 * override this method
 	 */
 	onEditLeave() {
-		this._panelDel();
-	}
-
-	/** @private */
-	_panelDel() {
-		if (!this._panel) { return; }
-		this._panel.remove();
-		this._panel = null;
+		delBtnDel(this);
 	}
 }
