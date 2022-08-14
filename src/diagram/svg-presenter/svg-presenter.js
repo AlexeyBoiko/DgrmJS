@@ -88,8 +88,8 @@ export class SvgPresenter extends EventTarget {
 			case 'pointermove':
 				// fix old android
 				if (!this._moveStart ||
-					Math.abs(this._moveStart.x - evt.clientX) > 15 ||
-					Math.abs(this._moveStart.y - evt.clientY) > 15) {
+					Math.abs(this._moveStart.x - evt.clientX) > 3 ||
+					Math.abs(this._moveStart.y - evt.clientY) > 3) {
 					this._moveStart = null;
 					this._dispatchEnterLeave(evt);
 					this._dispatchEvent(evt, 'pointermove', null);
