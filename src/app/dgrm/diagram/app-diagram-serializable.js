@@ -85,6 +85,9 @@ export class AppDiagramSerializable extends EventTarget {
 		this._diagram.activeElement = elem;
 	}
 
+	get selected() { return this._diagram.selected; };
+	set selected(elem) { this._diagram.selected = elem; };
+
 	/** @returns {void} */
 	clear() {
 		for (const shapeData of this._shapeData) {

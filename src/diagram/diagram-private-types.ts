@@ -11,7 +11,6 @@ interface DiagramPrivateShapeConnectParam extends DiagramPathAddParam {
 
 interface IDiagramPrivate extends IDiagram {
 	dispatch(type: DiagramEventType, target: IDiagramElement): boolean;
-	selected: IDiagramElement;
 }
 
 

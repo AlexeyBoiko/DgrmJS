@@ -4,6 +4,7 @@ interface IDiagram {
 	del(element: IDiagramElement): void;
 	shapeUpdate(shape: IDiagramShape, param: DiagramShapeUpdateParam): void;
 	set activeElement(elem: IDiagramElement);
+	selected: IDiagramElement;
 }
 
 
@@ -91,4 +92,13 @@ type DiagramEventType = 'add' | 'del' | 'select' | 'connect' | 'disconnect';
 // TODO: remove IDiagramEventDetail replace with CustomEvent
 interface IDiagramEventDetail<T extends IDiagramElement> {
 	target: T;
+}
+
+
+
+// TODO
+
+interface IDiagramPresenterEvent {
+	type: PresenterEventType;
+	detail?: IPresenterEventDetail;
 }

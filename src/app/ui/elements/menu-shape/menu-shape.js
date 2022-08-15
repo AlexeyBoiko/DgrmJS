@@ -242,6 +242,7 @@ class MenuLogic {
 	 * @param {IMenuShapeMoveEventDetail} evt
 	 */
 	shapeMoveMobile(evt) {
+		this._diagram.selected = null;
 		this._diagram.shapeUpdate(
 			this._addingShape,
 			{
@@ -255,6 +256,7 @@ class MenuLogic {
 	pointerUpMobile() {
 		if (this._addingShape) {
 			this._diagram.activeElement = null;
+			this._addingShape = null;
 		}
 	}
 }
