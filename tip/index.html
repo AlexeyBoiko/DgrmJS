@@ -1,0 +1,137 @@
+<!doctype html>
+<html  lang="en">
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<link rel="icon" type="image/png"
+		href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAN5JREFUSEvNlc0RgyAQRtk2xEsqyaQEtYCYyoIFxFpSQg6BczrYDEZn+BdXnAk3D7zHt6wLsIMXHMxn/y+oRiUYwzMANrKpn25FdiWY4dcZ+gHAiyshC/jj3SPA3TmxJyELNNhJsLhequWn5WOzYIIiour4LSyBQbVVTxJYJ0YmfIkN15LsBMFyGBJ9J7KrBamLIrX+sQxJ6KddTZCET0S/LKYoKdgLT95BCXhUUAoeFJSEe4LS8IBAYvx9SHdLbJ/VRdUYE9DgmQno8AzBPvimWUR9u1dHBRVMGtcU2RcViIEZF5cYswAAAABJRU5ErkJggg==">
+	<style>
+		html,
+		body {
+			height: 100%;
+			width: 100%;
+			margin: 0;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Liberation Sans", sans-serif;
+			color: rgb(73, 80, 87);
+			background-color: #fff;
+		}
+
+		h2 {
+			font-size: 28px;
+			font-weight: 400;
+			margin: 0;
+		}
+
+		p { margin: 0;}
+
+		a {
+			color: #0d6efd;
+			text-decoration: underline;
+		}
+
+		video {
+			border-radius: 16px;
+			box-shadow: 0px 0px 58px 2px rgb(34 60 80 / 20%);
+			width: 100%;
+		}
+		video.mob {
+			width: 45%;
+		}
+
+		.wrapper {
+			max-width: 1000px;
+			margin: 0 auto;
+			padding: 30px 10px;;
+		}
+
+		.row {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			width: 100%;
+		}
+
+		.column {
+			display: flex;
+			flex-direction: column;
+			flex-basis: 100%;
+		}
+
+		.double-column {
+			display: flex;
+			flex-direction: column;
+			flex-basis: 100%;
+		}
+		.pb { padding-bottom: 25px;}
+		.pb-s {padding-bottom: 15px;}
+
+		@media only screen and (min-width: 1000px) {
+			.column { flex: 1; }
+			.double-column { flex: 2; }
+
+			.pl { padding-left: 35px; }
+			.pr { padding-right: 35px; }
+			.pb, pb-s { padding-bottom: 0;}
+
+			h2 { margin: 24px 0;}
+			video { height: 530px; width: unset; }
+			video.mob { width: unset;}
+		}		
+	</style>
+	<title>Dgrm - tips</title>
+</head>
+
+<body>
+	<div class='wrapper'>
+		<div class="row" style="padding-bottom: 100px;">
+			<div class='column'>
+				<a href="https://dgrm.net">Dgrm.net</a>
+				<h1 style="font-size: 48px; margin: 0;">Tips and Tricks</h1>
+			</div>
+		</div>
+
+		<div class='row'>
+			<div class='column pr pb'>
+				<div>
+					<h2>Drag and drop diagram image to open.</h2>
+					<p>No need to store the source files, the picture is the source.</p>
+				</div>
+			</div>
+			<div class='double-column'>
+				<div>
+					<video src="drag-image-open.mp4" type="video/mp4" muted autoplay playsinline loop></video>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="row pb" style="padding-top: 80px;">
+			<div class='column'>
+				<h2>To select multiple shapes use long press.</h2>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='double-column pr pb-s'>
+				<div>
+					<video src="multi-select.mp4" type="video/mp4" muted autoplay playsinline loop></video>
+				</div>
+			</div>
+			<div class='column'>
+				<div style="text-align: center;">
+					<video src="mobile-multi-select.mp4" type="video/mp4" muted autoplay playsinline loop class="mob"></video>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" style="padding-top: 130px;">
+			<div class='column'>
+				<div>
+					<a href="https://github.com/AlexeyBoiko/DgrmJS" target="_blank">GitHub</a> | <a href="https://linkedin.com/in/alexey-boyko-tech" target="_blank">LinkedIn</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
