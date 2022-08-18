@@ -9,8 +9,8 @@ export class SvgPath {
 	 * @param {SVGGElement} param.svgEl
 	 * @param {PresenterPathEnd} param.start
 	 * @param {PresenterPathEnd} param.end
-	 * @param {IPresenterConnector} param.startConnector
-	 * @param {IPresenterConnector} param.endConnector
+	 * @param {ISvgPresenterConnector} param.startConnector
+	 * @param {ISvgPresenterConnector} param.endConnector
 	 */
 	constructor({ svgEl, start, end, startConnector, endConnector }) {
 		/** @type {DiagramElementType} */
@@ -68,7 +68,7 @@ export class SvgPath {
 	stateGet() { return new Set(this._state); }
 
 	/**
-	 * @param {PresenterPathUpdateParam} param
+	 * @param {SvgPresenterPathUpdateParam} param
 	 * @returns {void}
 	 */
 	update(param) {
@@ -80,7 +80,7 @@ export class SvgPath {
 
 		if (param.endConnector && this.end !== param.endConnector) {
 			if (this.end) { shapeStateDel(this.end, 'selected'); }
-			/** @type {IPresenterConnector} */
+			/** @type {ISvgPresenterConnector} */
 			this.end = param.endConnector;
 			this.svgEl.parentNode.appendChild(this.svgEl);
 		}

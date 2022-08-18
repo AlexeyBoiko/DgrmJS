@@ -8,7 +8,7 @@ export class SvgConnector {
 	 * @param {SVGGraphicsElement} param.svgEl
 	 * @param {PresenterConnectorType} param.connectorType
 	 * @param {string} param.key
-	 * @param {IPresenterShape} param.shape
+	 * @param {ISvgPresenterShape} param.shape
 	 * @param {Point} param.innerPosition
 	 * @param {DiagramPathEndDirection=} param.dir
 	 */

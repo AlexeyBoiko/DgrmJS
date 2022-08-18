@@ -37,7 +37,7 @@ export function connectorsInit(svgElemToPresenterObj, shape) {
 
 /**
  * @param {SVGGraphicsElement} svgEl
- * @param {IPresenterShape} shape
+ * @param {ISvgPresenterShape} shape
  * @returns {ISvgPresenterConnector}
  */
 function connectorCreate(svgEl, shape) {

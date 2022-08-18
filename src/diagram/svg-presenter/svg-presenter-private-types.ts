@@ -5,7 +5,9 @@ interface ISvgPresenterElement extends IDiagramElement {
 
 // shape
 
-interface ISvgPresenterConnector extends IPresenterConnector, ISvgPresenterElement { }
+interface ISvgPresenterConnector extends IPresenterConnector, ISvgPresenterElement {
+	shape: ISvgPresenterShape;
+}
 
 interface ISvgPresenterShape extends ISvgPresenterElement, IPresenterShape { 
 	connectors: Map<string, ISvgPresenterConnector>;
@@ -21,12 +23,25 @@ interface ISvgPresenterShapeFactoryParam {
 
 // path
 
-interface ISvgPresenterPath extends IPresenterPath, ISvgPresenterElement {}
+interface ISvgPresenterPath extends IPresenterPath, ISvgPresenterElement {
+	get start(): ISvgPresenterConnector;
+	get end(): ISvgPresenterConnector;
+}
 
 interface ISvgPresenterPathFactoryParam { 
 	svgCanvas: SVGGElement,
 	svgElemToPresenterObj: WeakMap<SVGGraphicsElement, IDiagramElement>,
-	createParams: PresenterPathAppendParam
+	createParams: SvgPresenterPathAppendParam
+}
+
+interface SvgPresenterPathAppendParam extends PresenterPathAppendParam {
+	startConnector?: ISvgPresenterConnector;
+	endConnector?: ISvgPresenterConnector;
+}
+
+interface SvgPresenterPathUpdateParam extends PresenterPathUpdateParam {
+	startConnector?: ISvgPresenterConnector;
+	endConnector?: ISvgPresenterConnector;
 }
 
 interface ISvgPresenterShapeFactory {

@@ -31,9 +31,13 @@ export class CanvasSelecEvtProc {
 			.on('add', /** @param {CustomEvent<IDiagramEventDetail<ISvgPresenterShape>>} evt */ evt => {
 				if (evt.detail.target.type === 'shape') { this._shapes.add(evt.detail.target); }
 			})
-			.on('del', /** @param {CustomEvent<IDiagramEventDetail<ISvgPresenterShape>>} evt */ evt => {
-				this._shapes.delete(evt.detail.target);
-				this.selectedShapes?.delete(evt.detail.target);
+			.on('del', /** @param {CustomEvent<IDiagramEventDetail<ISvgPresenterElement>>} evt */ evt => {
+				const shapeToDel = (evt.detail.target.type === 'path' && /** @type {ISvgPresenterPath} */(evt.detail.target).end.shape.connectable)
+					? /** @type {ISvgPresenterPath} */(evt.detail.target).end.shape
+					: /** @type {ISvgPresenterShape} */(evt.detail.target);
+
+				this._shapes.delete(shapeToDel);
+				this.selectedShapes?.delete(shapeToDel);
 			});
 
 		/** @private */
