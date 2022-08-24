@@ -88,175 +88,67 @@ export class Menu extends HTMLElement {
 	 * @param {IAppDiagramSerializable} diagram
 	 */
 	init(diagram) {
-		this._menuLogic = new MenuLogic(diagram);
+		/** @private */
+		this._diagram = diagram;
 	}
 
 	/** @param {PointerEvent & { currentTarget: Element }} evt */
 	handleEvent(evt) {
 		switch (evt.type) {
 			case 'pointermove':
-				this._emulatePointerleave(evt);
+				if (!this._isNativePointerleaveTriggered) {
+					// emulate pointerleave for mobile
 
-				// if native 'pointerleave' don't fire -> mobile
-				if (!this._isNativePointerleaveTriggered && this._isShapeDragOutDispatched) {
-					this._menuLogic.shapeMoveMobile({
-						clientX: evt.clientX,
-						clientY: evt.clientY
-					});
+					const pointElem = document.elementFromPoint(evt.clientX, evt.clientY);
+					if (pointElem === this._pointElem) {
+						return;
+					}
+
+					// pointerleave
+					if (this._parentElem === this._pointElem) {
+						this._diagram.svg.setPointerCapture(evt.pointerId);
+					}
+
+					/**
+					 * @type {Element}
+					 * @private
+					 */
+					this._pointElem = pointElem;
 				}
 				break;
 			case 'pointerleave':
 				this._isNativePointerleaveTriggered = true;
-				this._leave(evt);
+
+				if (this._pressedShapeTemplKey) {
+					// when shape drag put from menu panel
+
+					const addingShapeCenter = parseCenterAttr(templateGet(this._diagram.svg, this._pressedShapeTemplKey));
+					this._diagram.activeElement = this._diagram.shapeAdd({
+						templateKey: this._pressedShapeTemplKey,
+						position: {
+							x: evt.clientX - addingShapeCenter.x,
+							y: evt.clientY - addingShapeCenter.y
+						},
+						props: {
+							text: { textContent: 'Title' }
+						}
+					});
+				}
 				break;
 			case 'pointerdown':
-				this._isNativePointerleaveTriggered = false;
-				this._isShapeDragOutDispatched = false;
-				this._pressedShape = evt.currentTarget.getAttribute('data-cmd-arg');
+				this._pressedShapeTemplKey = evt.currentTarget.getAttribute('data-cmd-arg');
 
 				// for emulate pointerleave
 				this._parentElem = document.elementFromPoint(evt.clientX, evt.clientY);
 				this._pointElem = this._parentElem;
+				this._isNativePointerleaveTriggered = null;
 				break;
 			case 'pointerup':
-				this._isNativePointerleaveTriggered = false;
-				this._isShapeDragOutDispatched = false;
-				this._pressedShape = null;
-				this._menuLogic.pointerUpMobile();
+				this._pressedShapeTemplKey = null;
+				this._parentElem = null;
+				this._pointElem = null;
 				break;
 		}
-	}
-
-	/**
-	 * @param {PointerEvent & { currentTarget: Element }} evt
-	 * @private
-	 */
-	_emulatePointerleave(evt) {
-		// emulate pointerleave for mobile
-
-		// if standart 'pointerleave' works -> this._pressedShape = null
-		// emulation will not trigger event second time
-
-		if (!this._pressedShape) { return; }
-
-		const pointElem = document.elementFromPoint(evt.clientX, evt.clientY);
-		if (pointElem === this._pointElem) {
-			return;
-		}
-
-		// pointerleave
-		if (this._parentElem === this._pointElem) {
-			this._leave(evt);
-		}
-
-		/**
-		 * @type {Element}
-		 * @private
-		 */
-		this._pointElem = pointElem;
-	}
-
-	/**
-	 * @param {PointerEvent & { currentTarget: Element }} evt
-	 * @private
-	 */
-	_leave(evt) {
-		if (!this._pressedShape) { return; }
-
-		this._menuLogic.shapeDragOut({
-			shape: this._pressedShape,
-			clientX: evt.clientX,
-			clientY: evt.clientY
-		});
-
-		this._pressedShape = null;
-		this._isShapeDragOutDispatched = true;
 	}
 }
 customElements.define('ap-menu-shape', Menu);
-
-/**
- * Menu
- * implement UI and provide events
- * - shapeDragOut from shapes panel
- * - shape is moving (only for mobile)
- *
- * MenuLogic
- * implements logic of adding shape to diagram
- */
-class MenuLogic {
-	/**
-	 * @param {IAppDiagramSerializable} diagram
-	 */
-	constructor(diagram) {
-		this._diagram = diagram;
-	}
-
-	/**
-	 * when shape drag put from menu panel
-	 * @param {IMenuShapeDragOutEventDetail} evt
-	 */
-	shapeDragOut(evt) {
-		/**
-		 * @type {Point}
-		 * @private
-		 */
-		this._addingShapeCenter = parseCenterAttr(templateGet(this._diagram.svg, evt.shape));
-
-		/**
-		 * @type {IDiagramShape}
-		 * @private
-		 */
-		this._addingShape = this._diagram.shapeAdd({
-			templateKey: evt.shape,
-			position: {
-				x: evt.clientX - this._addingShapeCenter.x,
-				y: evt.clientY - this._addingShapeCenter.y
-			},
-			props: {
-				text: { textContent: 'Title' }
-			}
-		});
-
-		this._diagram.activeElement = this._addingShape;
-
-		//
-		// remember canvas position for mobile
-
-		const shapePosition = this._addingShape.positionGet();
-
-		/**
-		 * needed only for mobile
-		 * @type {Point}
-		 * @private
-		 */
-		this._shapeAddingCanvasPositionForMobile = {
-			x: evt.clientX - this._addingShapeCenter.x - shapePosition.x,
-			y: evt.clientY - this._addingShapeCenter.y - shapePosition.y
-		};
-	}
-
-	/**
-	 * when shape is moved
-	 * fire only on mobile
-	 * @param {IMenuShapeMoveEventDetail} evt
-	 */
-	shapeMoveMobile(evt) {
-		this._diagram.selected = null;
-		this._diagram.shapeUpdate(
-			this._addingShape,
-			{
-				position: {
-					x: evt.clientX - this._addingShapeCenter.x - this._shapeAddingCanvasPositionForMobile.x,
-					y: evt.clientY - this._addingShapeCenter.y - this._shapeAddingCanvasPositionForMobile.y
-				}
-			});
-	}
-
-	pointerUpMobile() {
-		if (this._addingShape) {
-			this._diagram.activeElement = null;
-			this._addingShape = null;
-		}
-	}
-}
