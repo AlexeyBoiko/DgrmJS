@@ -120,7 +120,7 @@ export class Menu extends HTMLElement {
 				this._isNativePointerleaveTriggered = true;
 
 				if (this._pressedShapeTemplKey) {
-					// when shape drag put from menu panel
+					// when shape drag out from menu panel
 
 					const addingShapeCenter = parseCenterAttr(templateGet(this._diagram.svg, this._pressedShapeTemplKey));
 					this._diagram.activeElement = this._diagram.shapeAdd({
@@ -134,6 +134,7 @@ export class Menu extends HTMLElement {
 						}
 					});
 				}
+				this._clean();
 				break;
 			case 'pointerdown':
 				this._pressedShapeTemplKey = evt.currentTarget.getAttribute('data-cmd-arg');
@@ -144,11 +145,16 @@ export class Menu extends HTMLElement {
 				this._isNativePointerleaveTriggered = null;
 				break;
 			case 'pointerup':
-				this._pressedShapeTemplKey = null;
-				this._parentElem = null;
-				this._pointElem = null;
+				this._clean();
 				break;
 		}
+	}
+
+	/** @private */
+	_clean() {
+		this._pressedShapeTemplKey = null;
+		this._parentElem = null;
+		this._pointElem = null;
 	}
 }
 customElements.define('ap-menu-shape', Menu);
