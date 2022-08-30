@@ -6,7 +6,7 @@ import { first } from '../infrastructure/iterable-utils.js';
  * @param {SVGSVGElement=} svg pass if svgEl not yet in DOM
  * @returns {SVGTransform}
  */
-function ensureTransform(svgEl, transform, svg) {
+export function ensureTransform(svgEl, transform, svg) {
 	let tr = first(svgEl.transform.baseVal, tt => tt.type === transform);
 	if (!tr) {
 		tr = (svgEl.ownerSVGElement || svg).createSVGTransform();

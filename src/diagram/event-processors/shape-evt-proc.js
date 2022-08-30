@@ -140,6 +140,9 @@ export function shapeMove(diagram, shape, evt) {
 		shape[movedDelta] = {
 			x: shapePosition.x - evt.detail.clientX,
 			y: shapePosition.y - evt.detail.clientY
+
+			// x: shapePosition.x * 1.5 - evt.detail.clientX,
+			// y: shapePosition.y * 1.5 - evt.detail.clientY
 		};
 	}
 
@@ -147,6 +150,9 @@ export function shapeMove(diagram, shape, evt) {
 		position: {
 			x: shape[movedDelta].x + evt.detail.clientX,
 			y: shape[movedDelta].y + evt.detail.clientY
+
+			// x: (shape[movedDelta].x + evt.detail.clientX) / 1.5,
+			// y: (shape[movedDelta].y + evt.detail.clientY) / 1.5
 		}
 	});
 }

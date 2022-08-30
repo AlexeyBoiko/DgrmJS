@@ -26,6 +26,11 @@ import { ConnectorEvtProc } from '../../../diagram/event-processors/connector-ev
 import { PathEvtProc } from '../../../diagram/event-processors/path-evt-proc.js';
 import { AppCanvasSelecEvtProc } from './app-canvas-selec-evt-proc.js';
 
+//
+// other diagram features
+
+import { ScaleFeature } from '../../../diagram-extensions/scale-feature.js';
+
 /**
  * @param {SVGSVGElement} svg
  * @returns {IDiagram}
@@ -78,5 +83,8 @@ export function appDiagramFactory(svg) {
 			new PathEvtProc(dgrm)
 		])
 	);
+
+	new ScaleFeature(svg);
+
 	return diagram;
 }
