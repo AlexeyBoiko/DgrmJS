@@ -29,7 +29,7 @@ import { AppCanvasSelecEvtProc } from './app-canvas-selec-evt-proc.js';
 //
 // other diagram features
 
-import { ScaleFeature } from '../../../diagram-extensions/scale-feature.js';
+import { scaleFeature } from '../../../diagram-extensions/scale-feature.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -84,7 +84,7 @@ export function appDiagramFactory(svg) {
 		])
 	);
 
-	new ScaleFeature(svg);
+	scaleFeature(svg);
 
 	return diagram;
 }
