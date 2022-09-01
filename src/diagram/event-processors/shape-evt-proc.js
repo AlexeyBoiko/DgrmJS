@@ -1,3 +1,4 @@
+import { scaleSymbol } from '../features/scale-feature.js';
 import { first } from '../infrastructure/iterable-utils.js';
 import { shapeStateAdd, shapeStateDel, shapeStateSet } from '../shape-utils.js';
 
@@ -124,11 +125,16 @@ const movedDelta = Symbol(0);
 /** @typedef {IPresenterShape & { [movedDelta]?: Point }} IEvtProcShape */
 
 /**
- * @param {IDiagramPrivate} diagram
+ * @param {import('../features/scale-feature.js').DiagramScalable} diagram
  * @param {IEvtProcShape} shape
  * @param {IDiagramPrivateEvent} evt
  */
 export function shapeMove(diagram, shape, evt) {
+	console.log(diagram[scaleSymbol]);
+	const scale = shape.type === 'canvas'
+		? 1
+		: diagram[scaleSymbol] ?? 1;
+
 	if (!shape[movedDelta]) {
 		//
 		// move start
@@ -138,21 +144,21 @@ export function shapeMove(diagram, shape, evt) {
 		disable(shape, true);
 		const shapePosition = shape.positionGet();
 		shape[movedDelta] = {
-			x: shapePosition.x - evt.detail.clientX,
-			y: shapePosition.y - evt.detail.clientY
+			// x: shapePosition.x - evt.detail.clientX,
+			// y: shapePosition.y - evt.detail.clientY
 
-			// x: shapePosition.x * 1.5 - evt.detail.clientX,
-			// y: shapePosition.y * 1.5 - evt.detail.clientY
+			x: shapePosition.x * scale - evt.detail.clientX,
+			y: shapePosition.y * scale - evt.detail.clientY
 		};
 	}
 
 	diagram.shapeUpdate(shape, {
 		position: {
-			x: shape[movedDelta].x + evt.detail.clientX,
-			y: shape[movedDelta].y + evt.detail.clientY
+			// x: shape[movedDelta].x + evt.detail.clientX,
+			// y: shape[movedDelta].y + evt.detail.clientY
 
-			// x: (shape[movedDelta].x + evt.detail.clientX) / 1.5,
-			// y: (shape[movedDelta].y + evt.detail.clientY) / 1.5
+			x: (shape[movedDelta].x + evt.detail.clientX) / scale,
+			y: (shape[movedDelta].y + evt.detail.clientY) / scale
 		}
 	});
 }

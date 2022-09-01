@@ -1,4 +1,4 @@
-import { svgTextDraw } from '../../diagram/infrastructure/svg-utils.js';
+import { svgTextDraw } from '../../diagram/infrastructure/svg-text-draw.js';
 
 /**
  * Create teaxtArea above SVGTextElement 'textEl'

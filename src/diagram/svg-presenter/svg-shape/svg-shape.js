@@ -1,4 +1,5 @@
-import { svgPositionSet, svgPositionGet, svgTextDraw } from '../../infrastructure/svg-utils.js';
+import { svgTextDraw } from '../../infrastructure/svg-text-draw.js';
+import { svgPositionSet, svgPositionGet } from '../../infrastructure/svg-utils.js';
 import { shapeStateDel } from '../../shape-utils.js';
 import { stateClassSync } from '../svg-presenter-utils.js';
 
