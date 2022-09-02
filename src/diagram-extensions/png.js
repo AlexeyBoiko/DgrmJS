@@ -19,7 +19,6 @@ export function pngDgrmCreate(svg, callBack, dgrmChunkVal) {
 	/** @type{SVGGraphicsElement} */
 	const rootSvg = svgCopy.querySelector('[data-key="canvas"]');
 	const rootPosition = svgPositionGet(rootSvg);
-	console.log(rootPosition);
 	svgPositionSet(rootSvg,
 		{
 			x: rectToShow.x * -1 + rootPosition.x + 15, // padding 15px
