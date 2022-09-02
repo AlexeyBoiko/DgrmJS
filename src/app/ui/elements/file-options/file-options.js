@@ -74,8 +74,8 @@ export class FileOptions extends HTMLElement {
 		/** @private */
 		this._diagram = diagram;
 
-		this._diagram.svg.addEventListener('dragover', evt => { evt.preventDefault(); });
-		this._diagram.svg.addEventListener('drop', async evt => {
+		document.body.addEventListener('dragover', evt => { evt.preventDefault(); });
+		document.body.addEventListener('drop', async evt => {
 			evt.preventDefault();
 
 			if (evt.dataTransfer?.items?.length !== 1 ||
