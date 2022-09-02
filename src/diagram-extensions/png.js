@@ -1,6 +1,7 @@
-import { svgPositionGet, svgPositionSet } from '../diagram/infrastructure/svg-utils.js';
+import { svgPositionGet, svgPositionSet, svgScale } from '../diagram/infrastructure/svg-utils.js';
 import { svgToPng } from './infrastructure/svg-to-png-utils.js';
 import { pngChunkGet, pngChunkSet } from './infrastructure/png-chunk-utils.js';
+import { first } from '../diagram/infrastructure/iterable-utils.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -8,25 +9,31 @@ import { pngChunkGet, pngChunkSet } from './infrastructure/png-chunk-utils.js';
  * @param {string?=} dgrmChunkVal
  */
 export function pngDgrmCreate(svg, callBack, dgrmChunkVal) {
-	const rectToShow = svg.querySelector('[data-key="canvas"]').getBoundingClientRect();
+	/** @type{SVGGraphicsElement} */
+	const canvasEl = svg.querySelector('[data-key="canvas"]');
+	const rectToShow = canvasEl.getBoundingClientRect();
+	const scale = first(canvasEl.transform.baseVal, tt => tt.type === SVGTransform.SVG_TRANSFORM_SCALE)?.matrix.a ?? 1;
+
+	// TODO: optimize: svgPositionSet and svgScale both change position
 
 	/** @type {SVGSVGElement} */
 	// @ts-ignore
-	const svgCopy = svg.cloneNode(true);
-	svgCopy.querySelectorAll('.selected, .highlighted').forEach(el => el.classList.remove('selected', 'highlighted'));
+	const svgVirtual = svg.cloneNode(true);
+	svgVirtual.querySelectorAll('.selected, .highlighted').forEach(el => el.classList.remove('selected', 'highlighted'));
 
 	// diagram to left corner
 	/** @type{SVGGraphicsElement} */
-	const rootSvg = svgCopy.querySelector('[data-key="canvas"]');
-	const rootPosition = svgPositionGet(rootSvg);
-	svgPositionSet(rootSvg,
+	const canvasElVirtual = svgVirtual.querySelector('[data-key="canvas"]');
+	const canvasElVirtualPosition = svgPositionGet(canvasElVirtual);
+	svgPositionSet(canvasElVirtual,
 		{
-			x: rectToShow.x * -1 + rootPosition.x + 15, // padding 15px
-			y: rectToShow.y * -1 + rootPosition.y + 15
+			x: canvasElVirtualPosition.x + 15 * scale - rectToShow.x, // padding 15px
+			y: canvasElVirtualPosition.y + 15 * scale - rectToShow.y
 		});
+	svgScale(canvasElVirtual, { x: 0, y: 0 }, scale, 1);
 
-	svgToPng(svgCopy,
-		{ x: 0, y: 0, height: rectToShow.height + 30, width: rectToShow.width + 30 },
+	svgToPng(svgVirtual,
+		{ x: 0, y: 0, height: rectToShow.height / scale + 30, width: rectToShow.width / scale + 30 },
 		// scale
 		3,
 		// callBack
