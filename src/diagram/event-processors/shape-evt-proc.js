@@ -130,7 +130,6 @@ const movedDelta = Symbol(0);
  * @param {IDiagramPrivateEvent} evt
  */
 export function shapeMove(diagram, shape, evt) {
-	console.log(diagram[scaleSymbol]);
 	const scale = shape.type === 'canvas'
 		? 1
 		: diagram[scaleSymbol] ?? 1;
@@ -144,9 +143,6 @@ export function shapeMove(diagram, shape, evt) {
 		disable(shape, true);
 		const shapePosition = shape.positionGet();
 		shape[movedDelta] = {
-			// x: shapePosition.x - evt.detail.clientX,
-			// y: shapePosition.y - evt.detail.clientY
-
 			x: shapePosition.x * scale - evt.detail.clientX,
 			y: shapePosition.y * scale - evt.detail.clientY
 		};
@@ -154,9 +150,6 @@ export function shapeMove(diagram, shape, evt) {
 
 	diagram.shapeUpdate(shape, {
 		position: {
-			// x: shape[movedDelta].x + evt.detail.clientX,
-			// y: shape[movedDelta].y + evt.detail.clientY
-
 			x: (shape[movedDelta].x + evt.detail.clientX) / scale,
 			y: (shape[movedDelta].y + evt.detail.clientY) / scale
 		}

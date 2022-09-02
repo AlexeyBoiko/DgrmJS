@@ -10,6 +10,9 @@ import { Diagram } from '../../../diagram/diagram.js';
 //
 // shape factory
 
+import { parseCenterAttr } from '../../../diagram-extensions/svg-utils.js';
+import { templateGet } from '../../../diagram/svg-presenter/svg-presenter-utils.js';
+
 import { connectorsInit, shapeCreate } from '../../../diagram/svg-presenter/svg-shape/svg-shape-factory.js';
 import { pathCreate } from '../../../diagram/svg-presenter/svg-path/svg-path-factory.js';
 
@@ -29,7 +32,7 @@ import { AppCanvasSelecEvtProc } from './app-canvas-selec-evt-proc.js';
 //
 // other diagram features
 
-import { scaleFeature } from '../../../diagram/features/scale-feature.js';
+import { scaleFeature, scaleSymbol } from '../../../diagram/features/scale-feature.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -44,11 +47,16 @@ export function appDiagramFactory(svg) {
 		(type, param) => {
 			switch (type) {
 				case 'shape': {
+					// if adding shape from menu
 					// eslint-disable-next-line space-unary-ops
 					if (!/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.postionIsIntoCanvas) {
+						const addingShapeCenter = parseCenterAttr(templateGet(svg, param.createParams.templateKey));
 						const canvasPosition = svgPositionGet(param.svgCanvas);
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x -= canvasPosition.x;
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y -= canvasPosition.y;
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x -= (canvasPosition.x + addingShapeCenter.x * diagram[scaleSymbol]);
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y -= (canvasPosition.y + addingShapeCenter.y * diagram[scaleSymbol]);
+
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x /= diagram[scaleSymbol];
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y /= diagram[scaleSymbol];
 					}
 
 					/** @type {ISvgPresenterShape} */

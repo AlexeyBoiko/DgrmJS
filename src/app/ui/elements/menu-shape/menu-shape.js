@@ -1,6 +1,3 @@
-import { parseCenterAttr } from '../../../../diagram-extensions/svg-utils.js';
-import { templateGet } from '../../../../diagram/svg-presenter/svg-presenter-utils.js';
-
 /** @implements {Menu} */
 export class Menu extends HTMLElement {
 	connectedCallback() {
@@ -122,12 +119,11 @@ export class Menu extends HTMLElement {
 				if (this._pressedShapeTemplKey) {
 					// when shape drag out from menu panel
 
-					const addingShapeCenter = parseCenterAttr(templateGet(this._diagram.svg, this._pressedShapeTemplKey));
 					this._diagram.activeElement = this._diagram.shapeAdd({
 						templateKey: this._pressedShapeTemplKey,
 						position: {
-							x: evt.clientX - addingShapeCenter.x,
-							y: evt.clientY - addingShapeCenter.y
+							x: evt.clientX,
+							y: evt.clientY
 						},
 						props: {
 							text: { textContent: 'Title' }

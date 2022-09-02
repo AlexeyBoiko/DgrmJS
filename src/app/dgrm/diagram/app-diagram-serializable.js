@@ -179,9 +179,10 @@ export class AppDiagramSerializable extends EventTarget {
 	 * subscribe to event
 	 * @param {AppDiagramEventType} evtType
 	 * @param {EventListenerOrEventListenerObject} listener
+	 * @param {AddEventListenerOptions?=} options
 	 */
-	on(evtType, listener) {
-		this.addEventListener(evtType, listener);
+	on(evtType, listener, options) {
+		this.addEventListener(evtType, listener, options);
 		return this;
 	}
 }

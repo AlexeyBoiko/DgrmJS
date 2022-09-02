@@ -1,4 +1,5 @@
 import { shapeMove, shapeMoveEnd } from '../../diagram/event-processors/shape-evt-proc.js';
+import { scaleSymbol } from '../../diagram/features/scale-feature.js';
 import { first } from '../../diagram/infrastructure/iterable-utils.js';
 import { shapeStateDel, shapeStateSet } from '../../diagram/shape-utils.js';
 import { elemCreateByTemplate } from '../../diagram/svg-presenter/svg-presenter-utils.js';
@@ -111,6 +112,7 @@ export class CanvasSelecEvtProc {
 
 					// calc shape centers
 					const canvasPosition = /** @type {ISvgPresenterShape} */(elem).positionGet();
+					const scale = this.diagram[scaleSymbol] ?? 1;
 					this._shapes.forEach(shape => {
 						// TODO: refactor - shapeInnerCenter get one time for shape template key
 
@@ -120,8 +122,8 @@ export class CanvasSelecEvtProc {
 
 						const shapePosition = shape.positionGet();
 						shape[shapeCenter] = {
-							x: shapePosition.x + shape[shapeInnerCenter].x + canvasPosition.x,
-							y: shapePosition.y + shape[shapeInnerCenter].y + canvasPosition.y
+							x: shapePosition.x * scale + shape[shapeInnerCenter].x * scale + canvasPosition.x,
+							y: shapePosition.y * scale + shape[shapeInnerCenter].y * scale + canvasPosition.y
 						};
 					});
 

@@ -11,7 +11,7 @@ interface IAppDiagramSerializable {
 	dataGet(): AppSerializeData;
 	dataSet(data:AppSerializeData): void;
 
-	on(evtType: AppDiagramEventType, listener: EventListenerOrEventListenerObject): this;
+	on(evtType: AppDiagramEventType, listener: EventListenerOrEventListenerObject, options: AddEventListenerOptions): this;
 }
 
 type AppDiagramEventType = 'shapeAdd';

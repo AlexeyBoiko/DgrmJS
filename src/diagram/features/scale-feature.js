@@ -15,6 +15,8 @@ export function scaleFeature(diagram, svg) {
 	const canvasSvgEl = svg.querySelector('[data-key="canvas"]');
 
 	svg.addEventListener('wheel', /** @param {WheelEvent} evt */ evt => {
+		diagram.selected = null;
+
 		const nextScale = diagram[scaleSymbol] + (evt.deltaY < 0 ? scaleStep : -scaleStep);
 		if (nextScale < scaleStep || nextScale > 4) { return; }
 

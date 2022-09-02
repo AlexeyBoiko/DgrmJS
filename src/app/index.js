@@ -12,7 +12,12 @@ const svg = document.getElementById('diagram');
 /** @type {IAppDiagramSerializable & IAppPngExportable} */
 // @ts-ignore
 const diagram = new AppDiagramSerializable(svg, appDiagramFactory(svg))
-	.on('shapeAdd', function() { document.getElementById('tip')?.remove(); });
+	.on('shapeAdd',
+		function() {
+			document.getElementById('tip').remove();
+			svg.style.removeProperty('pointer-events');
+		},
+		{ once: true });
 
 /** @type {IFileOptions} */
 (document.getElementById('file-options')).init(diagram);
