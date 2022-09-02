@@ -1,5 +1,5 @@
 import { svgPositionGet, svgPositionSet } from '../diagram/infrastructure/svg-utils.js';
-import { getBoundingRect, svgToPng } from './infrastructure/svg-to-png-utils.js';
+import { svgToPng } from './infrastructure/svg-to-png-utils.js';
 import { pngChunkGet, pngChunkSet } from './infrastructure/png-chunk-utils.js';
 
 /**
@@ -8,17 +8,18 @@ import { pngChunkGet, pngChunkSet } from './infrastructure/png-chunk-utils.js';
  * @param {string?=} dgrmChunkVal
  */
 export function pngDgrmCreate(svg, callBack, dgrmChunkVal) {
+	const rectToShow = svg.querySelector('[data-key="canvas"]').getBoundingClientRect();
+
 	/** @type {SVGSVGElement} */
 	// @ts-ignore
 	const svgCopy = svg.cloneNode(true);
 	svgCopy.querySelectorAll('.selected, .highlighted').forEach(el => el.classList.remove('selected', 'highlighted'));
 
-	const rectToShow = getBoundingRect(svg, '[data-key="canvas"]');
-
 	// diagram to left corner
 	/** @type{SVGGraphicsElement} */
 	const rootSvg = svgCopy.querySelector('[data-key="canvas"]');
 	const rootPosition = svgPositionGet(rootSvg);
+	console.log(rootPosition);
 	svgPositionSet(rootSvg,
 		{
 			x: rectToShow.x * -1 + rootPosition.x + 15, // padding 15px
