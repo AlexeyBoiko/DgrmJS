@@ -72,7 +72,7 @@ export function appDiagramFactory(svg) {
 
 					param.svgElemToPresenterObj.set(shape.svgEl, shape);
 					connectorsInit(param.svgElemToPresenterObj, shape);
-					shape.update(param.createParams);
+					diagram.shapeUpdate(shape, param.createParams);
 					return shape;
 				}
 				case 'path': {
