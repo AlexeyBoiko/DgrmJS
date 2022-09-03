@@ -20,8 +20,10 @@ export function svgDiagramCreate(svg) {
 		(type, param) => {
 			switch (type) {
 				case 'shape': {
-				// eslint-disable-next-line space-unary-ops
+					// eslint-disable-next-line space-unary-ops
 					if (!/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.postionIsIntoCanvas) {
+						// TODO: applay scale
+
 						const canvasPosition = svgPositionGet(param.svgCanvas);
 						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x -= canvasPosition.x;
 						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y -= canvasPosition.y;
