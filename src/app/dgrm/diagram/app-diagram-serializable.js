@@ -160,7 +160,8 @@ export class AppDiagramSerializable extends EventTarget {
 				position: shapeJson.position,
 				props: {
 					text: { textContent: shapeJson.detail }
-				}
+				},
+				postionIsIntoCanvas: true
 			});
 			shapes.push(shape);
 		}
