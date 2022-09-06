@@ -30,6 +30,13 @@ export class Diagram extends EventTarget {
 		this._evtProcessors = evtProcessorsFactory(this);
 	}
 
+	get scale() { return this._presenter.scale; }
+	/**
+	 * @param {number} scale
+	 * @param {Point} fixedPoint this point will not chage position while scale
+	 */
+	scaleSet(scale, fixedPoint) { this._presenter.scaleSet(scale, fixedPoint); }
+
 	/**
 	 * subscribe to event
 	 * @param {DiagramEventType} evtType

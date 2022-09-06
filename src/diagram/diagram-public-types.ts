@@ -1,10 +1,15 @@
 interface IDiagram {
 	on(evtType: DiagramEventType, listener: EventListenerOrEventListenerObject): this;
+
 	add(type: DiagramChildAddType, param: DiagramShapeAddParam | DiagramPathAddParam): IDiagramElement;
 	del(element: IDiagramElement): void;
 	shapeUpdate(shape: IDiagramShape, param: DiagramShapeUpdateParam): void;
+
 	set activeElement(elem: IDiagramElement);
 	selected: IDiagramElement;
+
+	get scale(): number;
+	scaleSet(scale: number, fixedPoint: Point): void;
 }
 
 

@@ -32,7 +32,7 @@ import { AppCanvasSelecEvtProc } from './app-canvas-selec-evt-proc.js';
 //
 // other diagram features
 
-import { scaleFeature, scaleSymbol } from '../../../diagram/features/scale-feature.js';
+import { scaleFeature } from '../../../diagram/features/scale-feature.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -52,12 +52,11 @@ export function appDiagramFactory(svg) {
 					if (!/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.postionIsIntoCanvas) {
 						const addingShapeCenter = parseCenterAttr(templateGet(svg, param.createParams.templateKey));
 						const canvasPosition = svgPositionGet(param.svgCanvas);
-						const scale = diagram[scaleSymbol] ?? 1;
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x -= (canvasPosition.x + addingShapeCenter.x * scale);
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y -= (canvasPosition.y + addingShapeCenter.y * scale);
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x -= (canvasPosition.x + addingShapeCenter.x * diagram.scale);
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y -= (canvasPosition.y + addingShapeCenter.y * diagram.scale);
 
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x /= scale;
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y /= scale;
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x /= diagram.scale;
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y /= diagram.scale;
 					}
 
 					/** @type {ISvgPresenterShape} */

@@ -1,4 +1,3 @@
-import { scaleSymbol } from '../features/scale-feature.js';
 import { first } from '../infrastructure/iterable-utils.js';
 import { shapeStateAdd, shapeStateDel, shapeStateSet } from '../shape-utils.js';
 
@@ -125,14 +124,14 @@ const movedDelta = Symbol(0);
 /** @typedef {IPresenterShape & { [movedDelta]?: Point }} IEvtProcShape */
 
 /**
- * @param {import('../features/scale-feature.js').DiagramScalable} diagram
+ * @param {IDiagram} diagram
  * @param {IEvtProcShape} shape
  * @param {IDiagramPrivateEvent} evt
  */
 export function shapeMove(diagram, shape, evt) {
 	const scale = shape.type === 'canvas'
 		? 1
-		: diagram[scaleSymbol] ?? 1;
+		: diagram.scale;
 
 	if (!shape[movedDelta]) {
 		//

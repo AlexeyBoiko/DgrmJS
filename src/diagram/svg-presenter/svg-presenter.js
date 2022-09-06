@@ -1,4 +1,5 @@
 import { first } from '../infrastructure/iterable-utils.js';
+import { svgScale } from '../infrastructure/svg-utils.js';
 import { SvgShape } from './svg-shape/svg-shape.js';
 
 /** @implements {IPresenter} */
@@ -34,6 +35,27 @@ export class SvgPresenter extends EventTarget {
 		this._canvasSvgEl = svg.querySelector('[data-key="canvas"]');
 
 		this._svgElemToPresenterObj.set(this._canvasSvgEl, new SvgShape({ svgEl: this._canvasSvgEl, type: 'canvas' }));
+
+		/** to set use scaleSet(...) */
+		this.scale = 1;
+	}
+
+	/**
+	 * @param {number} scale
+	 * @param {Point} fixedPoint this point will not chage position while scale
+	 */
+	scaleSet(scale, fixedPoint) {
+		svgScale(
+			// svgEl
+			this._canvasSvgEl,
+			// fixedPoint
+			fixedPoint,
+			// scale
+			this.scale,
+			// nextScale
+			scale);
+
+		this.scale = scale;
 	}
 
 	/**
