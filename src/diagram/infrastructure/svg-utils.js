@@ -30,11 +30,8 @@ export function svgPositionSet(svgEl, position, svg) {
  * @returns { {x: number, y: number} }
  */
 export function svgPositionGet(svgEl) {
-	const mtx = ensureTransform(svgEl, SVGTransform.SVG_TRANSFORM_TRANSLATE).matrix;
-	return {
-		x: mtx.e,
-		y: mtx.f
-	};
+	const tr = first(svgEl.transform.baseVal, tt => tt.type === SVGTransform.SVG_TRANSFORM_TRANSLATE);
+	return tr ? { x: tr.matrix.e, y: tr.matrix.f } : { x: 0, y: 0 };
 }
 
 /**
