@@ -3,6 +3,15 @@ import { delBtnDel, delBtnShow } from '../panel-create.js';
 
 export class AppCanvasSelecEvtProc extends CanvasSelecEvtProc {
 	/**
+	 * @param {IDiagramPrivate} diagram
+	 * @param {SVGSVGElement} svg
+	 */
+	constructor(diagram, svg) {
+		super(diagram, svg);
+		diagram.on('scale', _ => delBtnDel(this));
+	}
+
+	/**
 	 * when click on one of selected shapes
 	 * @param {IDiagramPrivateEvent} evt
 	 */

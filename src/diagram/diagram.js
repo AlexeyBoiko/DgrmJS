@@ -30,26 +30,25 @@ export class Diagram extends EventTarget {
 		this._evtProcessors = evtProcessorsFactory(this);
 	}
 
+	//
+	// scale, canvas position
+
 	get scale() { return this._presenter.scale; }
 	/**
 	 * @param {number} scale
 	 * @param {Point} fixedPoint this point will not chage position while scale
 	 */
-	scaleSet(scale, fixedPoint) { this._presenter.scaleSet(scale, fixedPoint); }
+	scaleSet(scale, fixedPoint) {
+		this.dispatch('scale');
+		this._presenter.scaleSet(scale, fixedPoint);
+	}
 
 	/**	@param {Point} val */
 	// eslint-disable-next-line accessor-pairs
 	set canvasPosition(val) { this._presenter.canvasPosition = val; }
 
-	/**
-	 * subscribe to event
-	 * @param {DiagramEventType} evtType
-	 * @param {EventListenerOrEventListenerObject} listener
-	 */
-	on(evtType, listener) {
-		this.addEventListener(evtType, listener);
-		return this;
-	}
+	//
+	// shapes add/update/remove
 
 	/**
 	 * @param {DiagramChildAddType} type
@@ -94,6 +93,9 @@ export class Diagram extends EventTarget {
 		this.selected = null;
 		this._connectorManager.del(/** @type { IPresenterShape | IPresenterPath} */(shape));
 	}
+
+	//
+	// pointer events, shape drag/click
 
 	/** @param { CustomEvent<IDiagramPrivateEventDetail> & IDiagramPrivateEvent } evt */
 	handleEvent(evt) {
@@ -182,9 +184,22 @@ export class Diagram extends EventTarget {
 
 	get selected() { return this._selected; }
 
+	//
+	// subscribe, disaptch
+
+	/**
+	 * subscribe to event
+	 * @param {DiagramEventType} evtType
+	 * @param {EventListenerOrEventListenerObject} listener
+	 */
+	on(evtType, listener) {
+		this.addEventListener(evtType, listener);
+		return this;
+	}
+
 	/**
 	 * @param {DiagramEventType} type
-	 * @param {IDiagramElement} target
+	 * @param {IDiagramElement?=} target
 	 * @returns {boolean}
 	 */
 	dispatch(type, target) {
