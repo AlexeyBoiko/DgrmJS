@@ -1,5 +1,5 @@
 import { first } from '../infrastructure/iterable-utils.js';
-import { svgScale } from '../infrastructure/svg-utils.js';
+import { svgPositionSet, svgScale } from '../infrastructure/svg-utils.js';
 import { SvgShape } from './svg-shape/svg-shape.js';
 
 /** @implements {IPresenter} */
@@ -42,7 +42,7 @@ export class SvgPresenter extends EventTarget {
 
 	/**
 	 * @param {number} scale
-	 * @param {Point} fixedPoint this point will not chage position while scale
+	 * @param {Point?=} fixedPoint this point will not chage position while scale
 	 */
 	scaleSet(scale, fixedPoint) {
 		svgScale(
@@ -57,6 +57,10 @@ export class SvgPresenter extends EventTarget {
 
 		this.scale = scale;
 	}
+
+	/**	@param {Point} val */
+	// eslint-disable-next-line accessor-pairs
+	set canvasPosition(val) { svgPositionSet(this._canvasSvgEl, val); }
 
 	/**
 	 * @param {DiagramChildAddType} type

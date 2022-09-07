@@ -93,6 +93,8 @@ export class AppDiagramSerializable extends EventTarget {
 		for (const shapeData of this._shapeData) {
 			this._diagram.del(shapeData[0]);
 		}
+		this._diagram.canvasPosition = { x: 0, y: 0 };
+		this._diagram.scaleSet(1, { x: 0, y: 0 });
 	}
 
 	/** @returns {AppSerializeData} */

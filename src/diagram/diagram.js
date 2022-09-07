@@ -37,6 +37,10 @@ export class Diagram extends EventTarget {
 	 */
 	scaleSet(scale, fixedPoint) { this._presenter.scaleSet(scale, fixedPoint); }
 
+	/**	@param {Point} val */
+	// eslint-disable-next-line accessor-pairs
+	set canvasPosition(val) { this._presenter.canvasPosition = val; }
+
 	/**
 	 * subscribe to event
 	 * @param {DiagramEventType} evtType
