@@ -7,8 +7,6 @@ export function scaleFeature(diagram, svg) {
 	svg.addEventListener('wheel', /** @param {WheelEvent} evt */ evt => {
 		diagram.selected = null;
 
-		// TODO: clean group select
-
 		const nextScale = diagram.scale + (evt.deltaY < 0 ? scaleStep : -scaleStep);
 		if (nextScale < scaleStep || nextScale > 4) { return; }
 
