@@ -40,6 +40,9 @@ export class SvgPresenter extends EventTarget {
 		this.scale = 1;
 	}
 
+	//
+	// scale, canvas position
+
 	/**
 	 * @param {number} scale
 	 * @param {Point?=} fixedPoint this point will not chage position while scale
@@ -61,6 +64,9 @@ export class SvgPresenter extends EventTarget {
 	/**	@param {Point} val */
 	// eslint-disable-next-line accessor-pairs
 	set canvasPosition(val) { svgPositionSet(this._canvasSvgEl, val); }
+
+	//
+	// shapes add/update/remove
 
 	/**
 	 * @param {DiagramChildAddType} type
@@ -96,15 +102,8 @@ export class SvgPresenter extends EventTarget {
 		elem.svgEl.remove();
 	}
 
-	/**
-	 * @param {PresenterEventType} type
-	 * @param {EventListenerOrEventListenerObject} listener
-	 * @returns {this}
-	 */
-	on(type, listener) {
-		this.addEventListener(type, listener);
-		return this;
-	}
+	//
+	// pointer events
 
 	/**
 	 * @param {PointerEvent & { currentTarget: SVGGraphicsElement, target: SVGGraphicsElement }} evt
@@ -183,6 +182,19 @@ export class SvgPresenter extends EventTarget {
 		return /** @type {SVGGraphicsElement} */(
 			first(elems, el => el.hasAttribute('data-evt-z-index')) ?? elems[0]
 		);
+	}
+
+	//
+	// subscribe, disaptch
+
+	/**
+	 * @param {PresenterEventType} type
+	 * @param {EventListenerOrEventListenerObject} listener
+	 * @returns {this}
+	 */
+	on(type, listener) {
+		this.addEventListener(type, listener);
+		return this;
 	}
 
 	/**
