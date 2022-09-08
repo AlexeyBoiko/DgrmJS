@@ -1,5 +1,5 @@
 import { svgPositionSet, svgRotate } from '../../infrastructure/svg-utils.js';
-import { shapeStateAdd, shapeStateDel } from '../../shape-utils.js';
+import { shapeStateAdd, shapeStateDel } from '../../utils/shape-utils.js';
 import { stateClassSync } from '../svg-presenter-utils.js';
 
 /** @implements {ISvgPresenterPath} */

@@ -1,4 +1,4 @@
-import { shapeStateDel } from '../shape-utils.js';
+import { shapeStateDel } from '../utils/shape-utils.js';
 
 /** @implements {IDiagramPrivateEventProcessor} */
 export class PathEvtProc {

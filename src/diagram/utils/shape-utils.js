@@ -1,4 +1,4 @@
-import { setDel } from './infrastructure/iterable-utils.js';
+import { setDel } from '../infrastructure/iterable-utils.js';
 
 /**
  * @param {IPresenterStatable} shape

@@ -1,8 +1,9 @@
 import { shapeMove, shapeMoveEnd } from '../../diagram/event-processors/shape-evt-proc.js';
 import { first } from '../../diagram/infrastructure/iterable-utils.js';
-import { shapeStateDel, shapeStateSet } from '../../diagram/shape-utils.js';
+import { shapeStateDel, shapeStateSet } from '../../diagram/utils/shape-utils.js';
 import { elemCreateByTemplate } from '../../diagram/svg-presenter/svg-presenter-utils.js';
 import { parseCenterAttr } from '../svg-utils.js';
+import { pointCanvasToView } from '../../diagram/utils/point-convert-utils.js';
 
 /** shape center position */
 const shapeCenter = Symbol(0);
@@ -119,10 +120,16 @@ export class CanvasSelecEvtProc {
 						}
 
 						const shapePosition = shape.positionGet();
-						shape[shapeCenter] = {
-							x: shapePosition.x * this.diagram.scale + shape[shapeInnerCenter].x * this.diagram.scale + canvasPosition.x,
-							y: shapePosition.y * this.diagram.scale + shape[shapeInnerCenter].y * this.diagram.scale + canvasPosition.y
-						};
+						shape[shapeCenter] = pointCanvasToView(
+							// canvasPosition
+							canvasPosition,
+							// scale
+							this.diagram.scale,
+							// point
+							{
+								x: shapePosition.x + shape[shapeInnerCenter].x,
+								y: shapePosition.y + shape[shapeInnerCenter].y
+							});
 					});
 
 					// draw select rect

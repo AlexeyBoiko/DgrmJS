@@ -1,5 +1,5 @@
 import { first } from '../infrastructure/iterable-utils.js';
-import { shapeStateAdd, shapeStateDel, shapeStateSet } from '../shape-utils.js';
+import { shapeStateAdd, shapeStateDel, shapeStateSet } from '../utils/shape-utils.js';
 
 /** @implements {IDiagramPrivateEventProcessor} */
 export class ShapeEvtProc {

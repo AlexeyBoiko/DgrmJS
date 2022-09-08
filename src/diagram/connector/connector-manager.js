@@ -1,5 +1,5 @@
 import { any /*, last */ } from '../infrastructure/iterable-utils.js';
-import { shapeStateAdd, shapeStateDel } from '../shape-utils.js';
+import { shapeStateAdd, shapeStateDel } from '../utils/shape-utils.js';
 
 /** @implements {IConnectorManager} */
 export class ConnectorManager {

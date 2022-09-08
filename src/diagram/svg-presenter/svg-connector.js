@@ -1,4 +1,4 @@
-import { shapeStateAdd } from '../shape-utils.js';
+import { shapeStateAdd } from '../utils/shape-utils.js';
 import { stateClassSync } from './svg-presenter-utils.js';
 
 /** @implements {ISvgPresenterConnector} */

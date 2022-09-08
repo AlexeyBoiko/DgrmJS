@@ -33,6 +33,7 @@ import { AppCanvasSelecEvtProc } from './app-canvas-selec-evt-proc.js';
 // other diagram features
 
 import { scaleFeature } from '../../../diagram/features/scale-feature.js';
+import { pointViewToCanvas } from '../../../diagram/utils/point-convert-utils.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -50,13 +51,17 @@ export function appDiagramFactory(svg) {
 					// if adding shape from menu
 					// eslint-disable-next-line space-unary-ops
 					if (!/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.postionIsIntoCanvas) {
-						const addingShapeCenter = parseCenterAttr(templateGet(svg, param.createParams.templateKey));
-						const canvasPosition = svgPositionGet(param.svgCanvas);
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x -= (canvasPosition.x + addingShapeCenter.x * diagram.scale);
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y -= (canvasPosition.y + addingShapeCenter.y * diagram.scale);
+						const pointInCanvas = pointViewToCanvas(
+							// canvasPosition
+							svgPositionGet(param.svgCanvas),
+							// canvasScale
+							diagram.scale,
+							// point
+							/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position);
 
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x /= diagram.scale;
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y /= diagram.scale;
+						const addingShapeCenter = parseCenterAttr(templateGet(svg, param.createParams.templateKey));
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x = pointInCanvas.x - addingShapeCenter.x;
+						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y = pointInCanvas.y - addingShapeCenter.y;
 					}
 
 					/** @type {ISvgPresenterShape} */

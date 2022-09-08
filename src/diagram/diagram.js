@@ -1,5 +1,5 @@
 import { first } from './infrastructure/iterable-utils.js';
-import { shapeStateAdd } from './shape-utils.js';
+import { shapeStateAdd } from './utils/shape-utils.js';
 
 /** @implements {IDiagramPrivate} */
 export class Diagram extends EventTarget {

@@ -1,6 +1,6 @@
 import { svgTextDraw } from '../../infrastructure/svg-text-draw.js';
 import { svgPositionSet, svgPositionGet } from '../../infrastructure/svg-utils.js';
-import { shapeStateDel } from '../../shape-utils.js';
+import { shapeStateDel } from '../../utils/shape-utils.js';
 import { stateClassSync } from '../svg-presenter-utils.js';
 
 /** @implements {ISvgPresenterShape} */
@@ -43,7 +43,13 @@ export class SvgShape {
 		return new Set(this._state);
 	}
 
-	/** @returns {Point} */
+	/**
+	 * If type === 'canvas' -> return canvas postiotion in view (in SVG)
+	 *
+	 * if type === shape' -> return posiotion in canvas.
+	 * This position don't relay on canvas postion and canvas scale
+	 * @returns {Point}
+	 */
 	positionGet() {
 		return svgPositionGet(this.svgEl);
 	}
