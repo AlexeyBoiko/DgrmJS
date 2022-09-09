@@ -78,7 +78,6 @@ function connectorEndParams(connector) {
 		position: {
 			x: shapePosition.x + innerPosition.x,
 			y: shapePosition.y + innerPosition.y
-		},
-		postionIsIntoCanvas: true
+		}
 	};
 }

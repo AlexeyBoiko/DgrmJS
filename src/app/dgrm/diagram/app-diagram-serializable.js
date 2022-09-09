@@ -1,4 +1,7 @@
+import { parseCenterAttr } from '../../../diagram-extensions/svg-utils.js';
 import { any } from '../../../diagram/infrastructure/iterable-utils.js';
+import { templateGet } from '../../../diagram/svg-presenter/svg-presenter-utils.js';
+import { pointViewToCanvas } from '../../../diagram/utils/point-convert-utils.js';
 import { AppShapeEditorDecorator } from '../shapes/app-editor-decorator.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
 
@@ -49,6 +52,26 @@ export class AppDiagramSerializable extends EventTarget {
 	}
 
 	/**
+	 * Add shape and make it active (bind to pointer)
+	 * @param {DiagramShapeAddParam} param
+	 */
+	shapeActiveAdd(param) {
+		// calc shape position
+		const pointInCanvas = pointViewToCanvas(
+			// canvasPosition
+			this._diagram.canvasPosition,
+			// canvasScale
+			this._diagram.scale,
+			// point
+			param.position);
+		const addingShapeCenter = parseCenterAttr(templateGet(this.svg, param.templateKey));
+		param.position.x = pointInCanvas.x - addingShapeCenter.x;
+		param.position.y = pointInCanvas.y - addingShapeCenter.y;
+
+		this._diagram.activeElement = this.shapeAdd(param);
+	}
+
+	/**
 	 * @param {DiagramShapeAddParam} param
 	 * @returns {IDiagramShape}
 	 */
@@ -68,14 +91,6 @@ export class AppDiagramSerializable extends EventTarget {
 		}));
 
 		return shape;
-	}
-
-	/**
-	 * @param {IDiagramElement} elem
-	 */
-	// eslint-disable-next-line accessor-pairs
-	set activeElement(elem) {
-		this._diagram.activeElement = elem;
 	}
 
 	/** @returns {void} */
@@ -152,8 +167,7 @@ export class AppDiagramSerializable extends EventTarget {
 				position: shapeJson.position,
 				props: {
 					text: { textContent: shapeJson.detail }
-				},
-				postionIsIntoCanvas: true
+				}
 			});
 			shapes.push(shape);
 		}

@@ -119,7 +119,7 @@ export class Menu extends HTMLElement {
 				if (this._pressedShapeTemplKey) {
 					// when shape drag out from menu panel
 
-					this._diagram.activeElement = this._diagram.shapeAdd({
+					this._diagram.shapeActiveAdd({
 						templateKey: this._pressedShapeTemplKey,
 						position: {
 							x: evt.clientX,

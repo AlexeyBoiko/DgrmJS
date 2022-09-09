@@ -11,6 +11,7 @@ interface IDiagram {
 	get scale(): number;
 	scaleSet(scale: number, fixedPoint: Point): void;
 	set canvasPosition(val: Point);
+	get canvasPosition(): Point;
 }
 
 
@@ -27,10 +28,6 @@ type DiagramPathEndDirection = 'left' | 'right' | 'top' | 'bottom';
 
 interface DiagramShapeUpdateParam {
 	position?: Point;
-	/** position inside canvas, 
-	 * otherwise, the absolute coordinate disregarding the canvas offset
-	 */
-	postionIsIntoCanvas?: boolean;
 	state?: Set<DiagramShapeState>;
 	/**
 	 * 'root' - key for outer element.

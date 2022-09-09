@@ -1,6 +1,5 @@
 import { ConnectorManager } from '../connector/connector-manager.js';
 import { Diagram } from '../diagram.js';
-import { svgPositionGet } from '../infrastructure/svg-utils.js';
 import { pathCreate } from './svg-path/svg-path-factory.js';
 import { SvgPresenter } from './svg-presenter.js';
 import { connectorsInit, shapeCreate } from './svg-shape/svg-shape-factory.js';
@@ -20,15 +19,6 @@ export function svgDiagramCreate(svg) {
 		(type, param) => {
 			switch (type) {
 				case 'shape': {
-					// eslint-disable-next-line space-unary-ops
-					if (!/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.postionIsIntoCanvas) {
-						// TODO: applay scale
-
-						const canvasPosition = svgPositionGet(param.svgCanvas);
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.x -= canvasPosition.x;
-						/** @type {ISvgPresenterShapeFactoryParam} */(param).createParams.position.y -= canvasPosition.y;
-					}
-
 					const shape = shapeCreate(param.svgCanvas, param.createParams);
 					param.svgElemToPresenterObj.set(shape.svgEl, shape);
 					connectorsInit(param.svgElemToPresenterObj, shape);

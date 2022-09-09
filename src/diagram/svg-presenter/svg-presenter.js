@@ -1,5 +1,5 @@
 import { first } from '../infrastructure/iterable-utils.js';
-import { svgPositionSet, svgScale } from '../infrastructure/svg-utils.js';
+import { svgPositionGet, svgPositionSet, svgScale } from '../infrastructure/svg-utils.js';
 import { SvgShape } from './svg-shape/svg-shape.js';
 
 /** @implements {IPresenter} */
@@ -62,8 +62,9 @@ export class SvgPresenter extends EventTarget {
 	}
 
 	/**	@param {Point} val */
-	// eslint-disable-next-line accessor-pairs
 	set canvasPosition(val) { svgPositionSet(this._canvasSvgEl, val); }
+	/** NOTE: Position is always calculated, take once and save to local variable */
+	get canvasPosition() { return svgPositionGet(this._canvasSvgEl); }
 
 	//
 	// shapes add/update/remove

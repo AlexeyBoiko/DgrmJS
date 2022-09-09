@@ -44,8 +44,8 @@ export class Diagram extends EventTarget {
 	}
 
 	/**	@param {Point} val */
-	// eslint-disable-next-line accessor-pairs
 	set canvasPosition(val) { this._presenter.canvasPosition = val; }
+	get canvasPosition() { return this._presenter.canvasPosition; }
 
 	//
 	// shapes add/update/remove

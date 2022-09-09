@@ -6,6 +6,7 @@ interface IPresenter {
 	get scale(): number;
 	scaleSet(scale: number, fixedPoint: Point): void;
 	set canvasPosition(val: Point);
+	get canvasPosition(): Point;
 }
 
 

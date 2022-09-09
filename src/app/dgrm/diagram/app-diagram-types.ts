@@ -2,9 +2,11 @@
 
 interface IAppDiagramSerializable {
 	svg: SVGSVGElement;
-	shapeAdd(param: DiagramShapeAddParam): IDiagramShape;
+
+	/** Add shape and make it active (bind to pointer) */
+ 	shapeActiveAdd(param: DiagramShapeAddParam): void;
+
 	clear(): void;
-	set activeElement(elem: IDiagramElement);
 
 	dataGet(): AppSerializeData;
 	dataSet(data:AppSerializeData): void;
