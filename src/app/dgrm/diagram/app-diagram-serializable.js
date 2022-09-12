@@ -68,14 +68,15 @@ export class AppDiagramSerializable extends EventTarget {
 		param.position.x = pointInCanvas.x - addingShapeCenter.x;
 		param.position.y = pointInCanvas.y - addingShapeCenter.y;
 
-		this._diagram.activeElement = this.shapeAdd(param);
+		this._diagram.activeElement = this._shapeAdd(param);
 	}
 
 	/**
+	 * @private
 	 * @param {DiagramShapeAddParam} param
 	 * @returns {IDiagramShape}
 	 */
-	shapeAdd(param) {
+	_shapeAdd(param) {
 		const shape = /** @type {IDiagramShape} */(this._diagram.add('shape', param));
 
 		this._shapeData.set(
@@ -162,7 +163,7 @@ export class AppDiagramSerializable extends EventTarget {
 		const shapes = [];
 
 		for (const shapeJson of data.s) {
-			const shape = this.shapeAdd({
+			const shape = this._shapeAdd({
 				templateKey: shapeJson.templateKey,
 				position: shapeJson.position,
 				props: {
