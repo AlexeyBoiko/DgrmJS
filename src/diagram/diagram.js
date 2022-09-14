@@ -185,7 +185,7 @@ export class Diagram extends EventTarget {
 	get selected() { return this._selected; }
 
 	//
-	// subscribe, disaptch
+	// subscribe, dispatch
 
 	/**
 	 * subscribe to event
