@@ -24,6 +24,10 @@ Articles:
 To create shape, developers should add special data- attributes to standard SVG markup. So any svg images can be used as a shape in a diagram.
 - DgrmJS dispatch events, like ‘shape is selected’ or ‘shape is connecting to another shape’.  
 Developers can use these events to implement their own logic, for example, make a JSON description of the workflow.
+
+## MIT license
+Free for any type of use. Including commercial projects.
+
 ## How to use
 See a minimalistic example - [GitHub repository: DgrmJS Example](https://github.com/AlexeyBoiko/DgrmJS-Example).
 ### Install
@@ -184,14 +188,9 @@ In this example:
 ```
 <img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/dgrmjs-update-on-select.gif" alt="draggable shape" width="500" />
 
-## Documentation
-Soon
-
-## License
+## Project structure
 
 ### Diagram Engine (``src/diagram`` folder)
-**MIT License**
- 
 ``src/diagram`` folder contains a diagram engine that can be used independently of other project files.  
 This diagram engine contains all main features (all you need to implement diagram editor in your project):
 - creating shapes with svg templates
@@ -202,21 +201,16 @@ This diagram engine contains all main features (all you need to implement diagra
 Source code in ``src/diagram`` folder is under the MIT License.
 
 ### Diagram Extensions (``src/diagram-extensions`` folder)
-**Commercial License**
  
 ``src/diagram-extensions`` folder contains additional features, like:
 - export/import to/from png/svg
 - text editor
 - shape editor panel
 - and other
- 
-Source code in ``src/diagram-extensions`` folder is under the Commercial License.  
-Contact with [me](https://github.com/AlexeyBoiko) for details.
 
 ### App (``src/app`` folder)
-**Commercial License**
  
 ``src/app`` folder contains diagram builder [dgrm.net](https://app.dgrm.net "Diagram builder").
  
-Source code in ``src/app`` folder is under the Commercial License.  
-Contact with [me](https://github.com/AlexeyBoiko) for details.
+## Documentation
+Soon
