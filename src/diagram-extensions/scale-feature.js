@@ -24,8 +24,8 @@ export function scaleFeature(diagram, svg) {
  * @param {SVGSVGElement} svg
  */
 function scaleTouchScreen(diagram, svg) {
-	/** @type {Point} */
-	let mainPointerPos;
+	/** @type { {id:number, pos?:Point} } */
+	let firstPointer;
 
 	/** @type { {id:number, pos?:Point} } */
 	let secondPointer;
@@ -36,27 +36,24 @@ function scaleTouchScreen(diagram, svg) {
 	/** @type {Point} */
 	let center;
 
-	const cancel = function() {
-		secondPointer = null;
-		mainPointerPos = null;
+	const cancel = function(evt) {
 		distance = null;
 		center = null;
+		if (firstPointer?.id === evt.pointerId) { firstPointer = null; }
+		if (secondPointer?.id === evt.pointerId) { secondPointer = null; }
 	};
 
 	svg.addEventListener('pointerdown', evt => {
-		if (evt.isPrimary) {
-			mainPointerPos = evtPos(evt);
-		} else if (!secondPointer) {
-			secondPointer = { id: evt.pointerId, pos: evtPos(evt) };
-		}
+		if (!firstPointer) { firstPointer = evtPointer(evt); return; }
+		if (!secondPointer) { secondPointer = evtPointer(evt); }
 	});
 	svg.addEventListener('pointermove', /** @type {PointerEvent} */ evt => {
-		if (!secondPointer || !(evt.isPrimary || secondPointer.id === evt.pointerId)) { return; }
+		if (secondPointer?.id !== evt.pointerId && firstPointer?.id !== evt.pointerId) { return; }
 
-		const distanceNew = Math.hypot(mainPointerPos.x - secondPointer.pos.x, mainPointerPos.y - secondPointer.pos.y);
+		const distanceNew = Math.hypot(firstPointer.pos.x - secondPointer.pos.x, firstPointer.pos.y - secondPointer.pos.y);
 		const centerNew = {
-			x: (mainPointerPos.x + secondPointer.pos.x) / 2,
-			y: (mainPointerPos.y + secondPointer.pos.y) / 2
+			x: (firstPointer.pos.x + secondPointer.pos.x) / 2,
+			y: (firstPointer.pos.y + secondPointer.pos.y) / 2
 		};
 
 		// not first move
@@ -76,11 +73,8 @@ function scaleTouchScreen(diagram, svg) {
 		distance = distanceNew;
 		center = centerNew;
 
-		if (evt.isPrimary) {
-			mainPointerPos = evtPos(evt);
-		} else {
-			secondPointer.pos = evtPos(evt);
-		}
+		if (firstPointer.id === evt.pointerId) { firstPointer.pos = evtPos(evt); }
+		if (secondPointer.id === evt.pointerId) { secondPointer.pos = evtPos(evt); }
 	});
 	svg.addEventListener('pointerleave', cancel);
 	svg.addEventListener('pointerout', cancel);
@@ -98,6 +92,17 @@ function scale(diagram, scaleDelta, fixedPoint) {
 	if (scale < 0.25 || scale > 4) { return; }
 	diagram.selected = null;
 	diagram.scaleSet(scale, fixedPoint);
+}
+
+/**
+ * @param { {pointerId: number, clientX:number, clientY:number} } evt
+ * @return { {id:number, pos?:Point} }
+ */
+function evtPointer(evt) {
+	return {
+		id: evt.pointerId,
+		pos: evtPos(evt)
+	};
 }
 
 /**
