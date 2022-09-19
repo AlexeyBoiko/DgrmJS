@@ -110,6 +110,7 @@ export class SvgPresenter extends EventTarget {
 	 * @param {PointerEvent & { currentTarget: SVGGraphicsElement, target: SVGGraphicsElement }} evt
 	 */
 	handleEvent(evt) {
+		if (!evt.isPrimary) { return; }
 		switch (evt.type) {
 			case 'pointermove':
 				// fix old android
