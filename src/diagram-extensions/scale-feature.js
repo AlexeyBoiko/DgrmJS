@@ -48,7 +48,7 @@ function scaleTouchScreen(diagram, svg) {
 		if (!secondPointer) { secondPointer = evtPointer(evt); }
 	});
 	svg.addEventListener('pointermove', /** @type {PointerEvent} */ evt => {
-		if (secondPointer?.id !== evt.pointerId && firstPointer?.id !== evt.pointerId) { return; }
+		if (!secondPointer || !firstPointer || (secondPointer?.id !== evt.pointerId && firstPointer?.id !== evt.pointerId)) { return; }
 
 		const distanceNew = Math.hypot(firstPointer.pos.x - secondPointer.pos.x, firstPointer.pos.y - secondPointer.pos.y);
 		const centerNew = {
@@ -91,6 +91,7 @@ function scale(diagram, scaleDelta, fixedPoint) {
 	const scale = diagram.scale + scaleDelta;
 	if (scale < 0.25 || scale > 4) { return; }
 	diagram.selected = null;
+	diagram.activeElement = null;
 	diagram.scaleSet(scale, fixedPoint);
 }
 
