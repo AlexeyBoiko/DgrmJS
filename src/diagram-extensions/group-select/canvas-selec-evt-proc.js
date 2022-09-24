@@ -137,45 +137,57 @@ export class CanvasSelecEvtProc {
 					this._selectRect = rectCreate(this._svg, { x: evt.detail.clientX, y: evt.detail.clientY });
 				}, 500);
 				break;
-			case 'canvasleave':
-			case 'pointerup': {
-				this.diagram.activeElement = null; // for 'canvasleave'
-				this._timerDel();
-
-				// click
-				if (this._downElem) {
-					this._selectRectDel();
-
-					if (this._downElem.type === 'canvas') {
-						// click on canvas
-						this.onSelectedClean();
-					} else {
-						// click on selected shape
-						this.onShapeClick(evt);
-					}
-
-					this._downElem = null;
-					return;
-				}
-
-				// select rectangle
-				if (this._selectRect) {
-					this._selectEnd();
-					return;
-				}
-
-				// selected shapes move end
-				if (this._isDownOnSelectedShape) {
-					this.selectedShapes.forEach(shape => shapeMoveEnd(shape));
-					this._isDownOnSelectedShape = false;
-					return;
-				}
-
-				// canvas move end
-				shapeMoveEnd(/** @type {ISvgPresenterShape} */(elem)); // only 'canvas' can be here
+			case 'pointerup':
+				this._actionEnd(elem, evt);
 				break;
-			}
+			case 'unactive':
+			case 'canvasleave':
+				this.diagram.activeElement(null); // for 'canvasleave'
+				this._downElem = null;
+				this._actionEnd(elem, evt);
+				break;
 		}
+	}
+
+	/**
+	 * @param {IDiagramElement} elem
+	 * @param {IDiagramPrivateEvent} evt
+	 * @private
+	 */
+	_actionEnd(elem, evt) {
+		this._timerDel();
+
+		// click
+		if (this._downElem) {
+			this._selectRectDel();
+
+			if (this._downElem.type === 'canvas') {
+				// click on canvas
+				this.onSelectedClean();
+			} else {
+				// click on selected shape
+				this.onShapeClick(evt);
+			}
+
+			this._downElem = null;
+			return;
+		}
+
+		// select rectangle
+		if (this._selectRect) {
+			this._selectEnd();
+			return;
+		}
+
+		// selected shapes move end
+		if (this._isDownOnSelectedShape) {
+			this.selectedShapes.forEach(shape => shapeMoveEnd(shape));
+			this._isDownOnSelectedShape = false;
+			return;
+		}
+
+		// canvas move end
+		shapeMoveEnd(/** @type {ISvgPresenterShape} */(elem)); // only 'canvas' can be here
 	}
 
 	/**

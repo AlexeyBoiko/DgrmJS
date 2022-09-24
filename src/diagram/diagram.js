@@ -105,12 +105,12 @@ export class Diagram extends EventTarget {
 				this._evtProcess(evt);
 				break;
 			case 'pointerdown':
-				this.activeElement = evt.detail.target;
+				this.activeElement(evt.detail.target);
 				this._evtProcess(evt);
 				break;
 			case 'pointerup':
 				this._evtProcess(evt);
-				this.activeElement = null;
+				this.activeElement(null);
 				break;
 			case 'pointerenter':
 				if (this._hovered) {
@@ -147,9 +147,11 @@ export class Diagram extends EventTarget {
 	/**
 	 * activeElement track all events
 	 * @param {IDiagramElement} elem
+	 * @param {boolean?=} fireUnactive
 	 */
-	// eslint-disable-next-line accessor-pairs
-	set activeElement (elem) {
+	activeElement(elem, fireUnactive) {
+		if (fireUnactive) { this._evtProcess({ type: 'unactive' }); }
+
 		/**
 		 * activeElement track all events
 		 * @type {IDiagramElement}

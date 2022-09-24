@@ -5,7 +5,7 @@ interface IDiagram {
 	del(element: IDiagramElement): void;
 	shapeUpdate(shape: IDiagramShape, param: DiagramShapeUpdateParam): void;
 
-	set activeElement(elem: IDiagramElement);
+	activeElement(elem: IDiagramElement, fireUnactive?: boolean);
 	selected: IDiagramElement;
 
 	get scale(): number;

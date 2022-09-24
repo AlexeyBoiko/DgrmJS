@@ -68,7 +68,7 @@ export class AppDiagramSerializable extends EventTarget {
 		param.position.x = pointInCanvas.x - addingShapeCenter.x;
 		param.position.y = pointInCanvas.y - addingShapeCenter.y;
 
-		this._diagram.activeElement = this._shapeAdd(param);
+		this._diagram.activeElement(this._shapeAdd(param));
 	}
 
 	/**

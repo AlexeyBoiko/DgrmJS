@@ -19,7 +19,7 @@ interface IDiagramPrivateEventDetail extends IPresenterEventDetail {
 	enterTo?: IDiagramElement;
 }
 
-type DiagramPrivateEventType = 'unselect' | PresenterEventType;
+type DiagramPrivateEventType = 'unselect' | 'unactive' | PresenterEventType;
 interface IDiagramPrivateEvent {
 	type: DiagramPrivateEventType;
 	detail?: IDiagramPrivateEventDetail;

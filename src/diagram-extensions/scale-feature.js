@@ -91,7 +91,7 @@ function scale(diagram, scaleDelta, fixedPoint) {
 	const scale = diagram.scale + scaleDelta;
 	if (scale < 0.25 || scale > 4) { return; }
 	diagram.selected = null;
-	diagram.activeElement = null;
+	diagram.activeElement(null, true);
 	diagram.scaleSet(scale, fixedPoint);
 }
 

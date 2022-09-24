@@ -57,15 +57,9 @@ export class ShapeEvtProc {
 
 				this._clean(shape);
 				break;
-
 			case 'unselect':
 				shapeStateDel(shapeOrPath(shape), 'selected');
 				break;
-
-			case 'canvasleave':
-				this._clean(shape);
-				break;
-
 			case 'pointerenter':
 				if (shape.connectable && ['connector', 'shape'].includes(evt.detail.target.type)) {
 					shapeStateAdd(/** @type {IPresenterStatable} */(evt.detail.target), 'hovered');
@@ -92,6 +86,10 @@ export class ShapeEvtProc {
 						break;
 				}
 				break;
+			case 'canvasleave':
+			case 'unactive':
+				this._clean(shape);
+				break;
 		}
 	}
 
@@ -102,7 +100,7 @@ export class ShapeEvtProc {
 	_clean(shape) {
 		if (shape) { shapeMoveEnd(shape); }
 		this._hoveredSet(null);
-		this._diagram.activeElement = null;
+		this._diagram.activeElement(null);
 	}
 
 	/**
