@@ -6,19 +6,29 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape
 	 * @param {DiagramShapeProps} initProps
+	 * @param { {width:number, height:number, resizeFromCenter:boolean}?= } rectProps
 	 */
-	constructor(diagram, svgShape, initProps) {
+	constructor(diagram, svgShape, initProps, rectProps) {
 		super(diagram, svgShape, initProps);
 
 		/** @private */
-		this._currentWidth = 150;
-		/** @private */
-		this._minWidth = 150;
+		this._minWidth = this._currentWidth = rectProps?.width ?? 150;
+		// /** @private */
+		// this._minWidth = rectProps?.Width ?? 150;
 
 		/** @private */
-		this._currentHeight = 50;
+		this._minHeight = this._currentHeight = rectProps?.height ?? 50;
+		// /** @private */
+		// this._minHeight = 50;
+
+		/**
+		 * outer svg elem position
+		 * @private
+		 */
+		this._outerPost = { x: -20, y: -30 };
+
 		/** @private */
-		this._minHeight = 50;
+		this._resizeFromCenter = rectProps?.resizeFromCenter ?? true;
 	}
 
 	/**
@@ -52,8 +62,10 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 			if (width > maxWidth) { maxWidth = width; }
 		}
 		const newWidth = ceil(this._minWidth, 40, maxWidth);
-
-		const newHeight = ceil(this._minHeight, 20, textEl.getBBox().height + 4); // 2 padding
+		const newHeight = ceil(
+			this._minHeight,
+			20,
+			textEl.getBBox().height + 4 + (this._resizeFromCenter ? 0 : 20)); // 2 padding
 
 		if (newWidth !== this._currentWidth || newHeight !== this._currentHeight) {
 			this._currentWidth = newWidth;
@@ -69,7 +81,8 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 	 * @param {number} height
 	 */
 	_resize(width, height) {
-		const rect = rectCalc(this._minWidth, this._minHeight, width, height);
+		const rect = this._rectCalc(width, height, { x: 0, y: 0 });
+
 		const cons = {
 			r: { cx: width + rect.x, cy: height / 2 + rect.y },
 			l: { cx: rect.x, cy: height / 2 + rect.y },
@@ -86,7 +99,7 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 			// visability
 			props: {
 				main: rect,
-				outer: rectCalc(this._minWidth, this._minHeight, width + 40, height + 40),
+				outer: this._rectCalc(width + 40, height + 40, this._outerPost),
 				// out connectors
 				outright: cons.r,
 				outleft: cons.l,
@@ -113,8 +126,28 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 			}
 		});
 	}
+
+	/**
+	 * @private
+	 * @param {number} width
+	 * @param {number} height
+	 * @param {Point} currentPosition
+	 * @returns {{x:number, y:number, width:number, height:number}}
+	 */
+	_rectCalc(width, height, currentPosition) {
+		return this._resizeFromCenter
+			? rectCalc(this._minWidth, this._minHeight, width, height)
+			: { x: currentPosition.x, y: currentPosition.y, width, height };
+	}
 }
 
+/**
+ * @param {number} baseWidth
+ * @param {number} baseHeight
+ * @param {number} width
+ * @param {number} height
+ * @returns {{x:number, y:number, width:number, height:number}}
+ */
 function rectCalc(baseWidth, baseHeight, width, height) {
 	return {
 		y: (baseHeight - height) / 2,

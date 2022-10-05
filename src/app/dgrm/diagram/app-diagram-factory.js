@@ -48,7 +48,9 @@ export function appDiagramFactory(svg) {
 						case 'circle': shape = new AppCircleDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
 						case 'rhomb': shape = new AppRhombDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
 						case 'rect': shape = new AppRectDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
-						case 'text': shape = new AppShapeEditorDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
+						case 'text': shape = new AppRectDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props,
+							{ width: 120, height: 50, resizeFromCenter: false });
+							break;
 						case 'connect-end': break;
 					}
 
