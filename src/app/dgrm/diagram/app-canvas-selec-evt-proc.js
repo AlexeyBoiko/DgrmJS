@@ -1,5 +1,5 @@
 import { CanvasSelecEvtProc } from '../../../diagram-extensions/group-select/canvas-selec-evt-proc.js';
-import { delBtnDel, delBtnShow } from '../panel-create.js';
+import { pnlDel, pnlDelShow } from '../panel-create.js';
 
 export class AppCanvasSelecEvtProc extends CanvasSelecEvtProc {
 	/**
@@ -8,7 +8,7 @@ export class AppCanvasSelecEvtProc extends CanvasSelecEvtProc {
 	 */
 	constructor(diagram, svg) {
 		super(diagram, svg);
-		diagram.on('scale', _ => delBtnDel(this));
+		diagram.on('scale', _ => pnlDel(this));
 	}
 
 	/**
@@ -16,7 +16,7 @@ export class AppCanvasSelecEvtProc extends CanvasSelecEvtProc {
 	 * @param {IDiagramPrivateEvent} evt
 	 */
 	onShapeClick(evt) {
-		delBtnShow(this, evt.detail.clientX - 20, evt.detail.clientY - 55, () => {
+		pnlDelShow(this, evt.detail.clientX - 20, evt.detail.clientY - 55, () => {
 			for (const shape of this.selectedShapes) {
 				this.diagram.del(shape);
 			}
@@ -24,7 +24,7 @@ export class AppCanvasSelecEvtProc extends CanvasSelecEvtProc {
 	}
 
 	onSelectedClean() {
-		delBtnDel(this);
+		pnlDel(this);
 		super.onSelectedClean();
 	}
 
@@ -33,7 +33,7 @@ export class AppCanvasSelecEvtProc extends CanvasSelecEvtProc {
 	 * @param {IDiagramPrivateEvent} evt
 	 */
 	process(elem, evt) {
-		delBtnDel(this);
+		pnlDel(this);
 		super.process(elem, evt);
 	}
 }

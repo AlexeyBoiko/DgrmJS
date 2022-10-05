@@ -1,6 +1,6 @@
 import { SvgElementEditableAbstract } from '../../../diagram-extensions/text-editor/svg-shape-editable-abstract-decorator.js';
 import { SvgShapeTextEditorDecorator } from '../../../diagram-extensions/text-editor/svg-shape-texteditor-decorator.js';
-import { delBtnDel, delBtnMove, delBtnShow, delBtnSymbol } from '../panel-create.js';
+import { pnlDel, pnlMove, pnlDelShow, pnlSymbol, pnlColorShow } from '../panel-create.js';
 
 /** @implements {IAppShapeEditorDecorator} */
 export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
@@ -31,22 +31,30 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 	onEditLeave() {
 		super.onEditLeave();
 		this.svgEl.classList.remove('highlighted');
-		delBtnDel(this);
+		pnlDel(this);
 	}
 
 	/** @private */
 	_panelShow() {
-		delBtnShow(this, 0, 0, () => {
-			this.diagram.del(this);
+		// this.svgEl.querySelector('[data-key="main"]').getAttribute('fill')
+		pnlColorShow(this, 0, 0, 'red', (cmd, arg) => {
+			switch (cmd) {
+				case 'del': this.diagram.del(this); break;
+				case 'color':
+					this.diagram.shapeUpdate(this, {
+						props: { main: { fill: arg, stroke: arg } }
+					});
+					break;
+			}
 		});
 		this.panelUpdPos();
 	}
 
 	/** update panel position */
 	panelUpdPos() {
-		if (this[delBtnSymbol]) {
+		if (this[pnlSymbol]) {
 			const position = this.svgEl.getBoundingClientRect();
-			delBtnMove(this, position.left + 10, position.top - 35);
+			pnlMove(this, position.left + 10, position.top - 35);
 		}
 	}
 }
@@ -79,7 +87,7 @@ export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
 	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
 	 */
 	onEdit(evt) {
-		delBtnShow(this, evt.clientX - 20, evt.clientY - 55, () => {
+		pnlDelShow(this, evt.clientX - 20, evt.clientY - 55, () => {
 			this.diagram.del(this);
 		});
 	}
@@ -89,6 +97,6 @@ export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
 	 * override this method
 	 */
 	onEditLeave() {
-		delBtnDel(this);
+		pnlDel(this);
 	}
 }
