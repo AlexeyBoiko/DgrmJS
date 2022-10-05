@@ -14,7 +14,7 @@ import { pathCreate } from '../../../diagram/svg-presenter/svg-path/svg-path-fac
 import { AppCircleDecorator } from '../shapes/app-circle-decorator.js';
 import { AppRectDecorator } from '../shapes/app-rect-decorator.js';
 import { AppRhombDecorator } from '../shapes/app-rhomb-decorator.js';
-import { AppPathEditiorDecorator, AppShapeEditorDecorator } from '../shapes/app-editor-decorator.js';
+import { AppPathEditiorDecorator } from '../shapes/app-editor-decorator.js';
 
 //
 // event processors
@@ -49,7 +49,7 @@ export function appDiagramFactory(svg) {
 						case 'rhomb': shape = new AppRhombDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
 						case 'rect': shape = new AppRectDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
 						case 'text': shape = new AppRectDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props,
-							{ width: 120, height: 50, resizeFromCenter: false });
+							{ resizeFromCenter: false });
 							break;
 						case 'connect-end': break;
 					}

@@ -6,20 +6,16 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape
 	 * @param {DiagramShapeProps} initProps
-	 * @param { {width:number, height:number, resizeFromCenter:boolean}?= } rectProps
+	 * @param { {resizeFromCenter:boolean}?= } rectProps
 	 */
 	constructor(diagram, svgShape, initProps, rectProps) {
 		super(diagram, svgShape, initProps);
 
 		/** @private */
-		this._minWidth = this._currentWidth = rectProps?.width ?? 150;
-		// /** @private */
-		// this._minWidth = rectProps?.Width ?? 150;
+		this._minWidth = this._currentWidth = 120;
 
 		/** @private */
-		this._minHeight = this._currentHeight = rectProps?.height ?? 50;
-		// /** @private */
-		// this._minHeight = 50;
+		this._minHeight = this._currentHeight = 50;
 
 		/**
 		 * outer svg elem position
@@ -58,7 +54,7 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 	_onTextChange(textEl) {
 		let maxWidth = 0;
 		for (const span of textEl.getElementsByTagName('tspan')) {
-			const width = span.getBBox().width + 4; // 2 padding
+			const width = span.getBBox().width + 4 + (this._resizeFromCenter ? 0 : 25); // 2 padding
 			if (width > maxWidth) { maxWidth = width; }
 		}
 		const newWidth = ceil(this._minWidth, 40, maxWidth);
