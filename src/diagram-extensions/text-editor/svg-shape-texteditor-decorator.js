@@ -1,7 +1,6 @@
 import { SvgShapeEditableAbstractDecorator } from './svg-shape-editable-abstract-decorator.js';
 import { textEditorHighlightEmpty, textEditorShow } from './text-editor-utils.js';
 
-/** @implements {IShapeTextEditorDecorator} */
 export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorator {
 	/**
 	 * @param {ISvgPresenterShape} svgShape
@@ -10,34 +9,8 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	constructor(svgShape, initProps) {
 		super(svgShape);
 
-		/**
-		 * @type {DiagramShapeProps}
-		 * @private
-		 */
-		this._props = Object.assign({}, initProps); // TODO: save only 'textContent' props
-	}
-
-	/**
-	 * @param {ShapeTextEditorEventType} type
-	 * @param {EventListenerOrEventListenerObject} listener
-	 * @returns {SvgShapeTextEditorDecorator}
-	 */
-	on(type, listener) {
-		if (!this._listeners) {
-			/**
-			 * @type {{t:ShapeTextEditorEventType, l:EventListenerOrEventListenerObject }[]}
-			 * @private
-			 */
-			this._listeners = [];
-		}
-		this._listeners.push({ t: type, l: listener });
-		this.svgEl.addEventListener(type, listener);
-		return this;
-	}
-
-	dispose() {
-		this._listeners?.forEach(ll => this.svgElement.svgEl.removeEventListener(ll.t, ll.l));
-		super.dispose();
+		/** @type {DiagramShapeProps} */
+		this.props = Object.assign({}, initProps); // TODO: save only 'textContent' props
 	}
 
 	/**
@@ -45,11 +18,11 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 */
 	update(param) {
 		if (param.props) {
-			Object.assign(this._props, param.props); // TODO: save only 'textContent' props
+			Object.assign(this.props, param.props); // TODO: save only 'textContent' props
 		}
 
 		if (param.state && param.state.has('selected') && !this.stateGet().has('selected')) {
-			textEditorHighlightEmpty(this.svgEl, this._props);
+			textEditorHighlightEmpty(this.svgEl, this.props);
 		}
 
 		super.update(param);
@@ -81,10 +54,10 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 		if (this._textEditor) { return; }
 
 		/** @private */
-		this._textEditor = textEditorShow(this.svgEl, this._props, evt.target,
+		this._textEditor = textEditorShow(this.svgEl, this.props, evt.target,
 			// onchange
 			(textEl, updatedProp) => {
-				Object.assign(this._props, updatedProp);
+				Object.assign(this.props, updatedProp);
 				this.onTextChange(textEl, updatedProp);
 			},
 			// onblur
@@ -98,15 +71,7 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 * @param {SVGTextElement} textEl
 	 * @param {DiagramShapeProps} updatedProp
 	 */
-	onTextChange(textEl, updatedProp) {
-		this.svgEl.dispatchEvent(new CustomEvent('txtUpd', {
-			/** @type {ShapeTextEditorDecoratorEventUpdateDetail} */
-			detail: {
-				target: this,
-				props: updatedProp
-			}
-		}));
-	}
+	onTextChange(textEl, updatedProp) {	}
 
 	/** @private */
 	_textEditorDel() {

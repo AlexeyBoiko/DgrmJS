@@ -2,15 +2,17 @@ import { SvgElementEditableAbstract } from '../../../diagram-extensions/text-edi
 import { SvgShapeTextEditorDecorator } from '../../../diagram-extensions/text-editor/svg-shape-texteditor-decorator.js';
 import { delBtnDel, delBtnMove, delBtnShow, delBtnSymbol } from '../panel-create.js';
 
-/** @implements {IAppShapeEditorDecorator} */
+/** @implements {IAppShape} */
 export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 	/**
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape
-	 * @param {DiagramShapeProps} initProps
+	 * @param {DiagramShapeAddParam} addParam
 	 */
-	constructor(diagram, svgShape, initProps) {
-		super(svgShape, initProps);
+	constructor(diagram, svgShape, addParam) {
+		super(svgShape, addParam.props);
+		/** @private */
+		this._templateKey = addParam.templateKey;
 		this.diagram = diagram;
 	}
 
@@ -48,6 +50,19 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 			const position = this.svgEl.getBoundingClientRect();
 			delBtnMove(this, position.left + 10, position.top - 35);
 		}
+	}
+
+	/** @return {IAppSerializeShape} */
+	toJson() {
+		const position = this.positionGet();
+		position.x = Math.trunc(position.x);
+		position.y = Math.trunc(position.y);
+
+		return {
+			templateKey: this._templateKey,
+			position,
+			detail: /** @type {string} */(this.props.text?.textContent)
+		};
 	}
 }
 

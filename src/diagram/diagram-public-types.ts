@@ -1,11 +1,11 @@
 interface IDiagram {
-	on(evtType: DiagramEventType, listener: EventListenerOrEventListenerObject): this;
+	on(evtType: DiagramEventType, listener: EventListenerOrEventListenerObject, options?: AddEventListenerOptions): this;
 
 	add(type: DiagramChildAddType, param: DiagramShapeAddParam | DiagramPathAddParam): IDiagramElement;
 	del(element: IDiagramElement): void;
 	shapeUpdate(shape: IDiagramShape, param: DiagramShapeUpdateParam): void;
 
-	activeElement(elem: IDiagramElement, fireUnactive?: boolean);
+	activeElement(elem: IDiagramElement, fireUnactive?: boolean): void;
 	selected: IDiagramElement;
 
 	get scale(): number;

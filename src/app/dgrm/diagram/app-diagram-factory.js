@@ -45,10 +45,10 @@ export function appDiagramFactory(svg) {
 					/** @type {ISvgPresenterShape} */
 					let shape = shapeCreate(param.svgCanvas, param.createParams);
 					switch (param.createParams.templateKey) {
-						case 'circle': shape = new AppCircleDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
-						case 'rhomb': shape = new AppRhombDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
-						case 'rect': shape = new AppRectDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
-						case 'text': shape = new AppRectDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props,
+						case 'circle': shape = new AppCircleDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams)); break;
+						case 'rhomb': shape = new AppRhombDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams)); break;
+						case 'rect': shape = new AppRectDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams)); break;
+						case 'text': shape = new AppRectDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams),
 							{ resizeFromCenter: false });
 							break;
 						case 'connect-end': break;

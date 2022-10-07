@@ -6,10 +6,10 @@ export class AppCircleDecorator extends AppShapeEditorDecorator {
 	/**
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape
-	 * @param {DiagramShapeProps} initProps
+	 * @param {DiagramShapeAddParam} addParam
 	 */
-	constructor(diagram, svgShape, initProps) {
-		super(diagram, svgShape, initProps);
+	constructor(diagram, svgShape, addParam) {
+		super(diagram, svgShape, addParam);
 
 		/** @private */
 		this._currentRadius = 60;

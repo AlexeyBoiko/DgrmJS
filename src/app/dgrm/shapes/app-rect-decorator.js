@@ -5,11 +5,11 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 	/**
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape
-	 * @param {DiagramShapeProps} initProps
+	 * @param {DiagramShapeAddParam} addParam
 	 * @param { {resizeFromCenter:boolean}?= } rectProps
 	 */
-	constructor(diagram, svgShape, initProps, rectProps) {
-		super(diagram, svgShape, initProps);
+	constructor(diagram, svgShape, addParam, rectProps) {
+		super(diagram, svgShape, addParam);
 
 		/** @private */
 		this._minWidth = this._currentWidth = 120;
