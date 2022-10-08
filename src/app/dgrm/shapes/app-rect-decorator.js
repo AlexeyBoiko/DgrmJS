@@ -5,7 +5,7 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 	/**
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape
-	 * @param {DiagramShapeAddParam} addParam
+	 * @param {IAppShapeData} addParam
 	 * @param { {resizeFromCenter:boolean}?= } rectProps
 	 */
 	constructor(diagram, svgShape, addParam, rectProps) {
@@ -28,30 +28,11 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 	}
 
 	/**
-	 * @param {DiagramShapeUpdateParam} param
-	 */
-	update(param) {
-		super.update(param);
-		if (param.props?.text?.textContent !== undefined) {
-			this._onTextChange(/** @type {SVGTextElement} */ (this.svgEl.querySelector('[data-key="text"]')));
-		}
-	}
-
-	/**
 	 * @param {SVGTextElement} textEl
 	 * @param {DiagramShapeProps} updatedProp
+	 * private
 	 */
 	onTextChange(textEl, updatedProp) {
-		super.onTextChange(textEl, updatedProp);
-		this._onTextChange(textEl);
-	}
-
-	/**
-	 * @private
-	 * @param {SVGTextElement} textEl
-	 * @returns {void}
-	 */
-	_onTextChange(textEl) {
 		let maxWidth = 0;
 		for (const span of textEl.getElementsByTagName('tspan')) {
 			const width = span.getBBox().width + 4 + (this._resizeFromCenter ? 0 : 25); // 2 padding

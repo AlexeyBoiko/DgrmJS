@@ -4,12 +4,12 @@ import { SvgShape } from './svg-shape.js';
 
 /**
  * @param {SVGGElement} svgCanvas
- * @param {DiagramShapeAddParam} createParams
+ * @param {string} templateKey
  * @returns {SvgShape}
  */
-export function shapeCreate(svgCanvas, createParams) {
+export function shapeCreate(svgCanvas, templateKey) {
 	// TODO: to reduce DOM changes (for performance) 'shape.update' must go before 'svg.append'
-	return new SvgShape({ svgEl: elemCreateByTemplate(svgCanvas, createParams.templateKey) });
+	return new SvgShape({ svgEl: elemCreateByTemplate(svgCanvas, templateKey) });
 }
 
 /**

@@ -15,17 +15,17 @@ interface IAppDiagramSerializable {
 }
 
 interface IAppShape extends IDiagramShape {
-	toJson(): IAppSerializeShape;
+	toJson(): IAppShapeData;
 }
 
 interface AppSerializeData {
 	/** shapes */
-	s: IAppSerializeShape[],
+	s: IAppShapeData[],
 	/** connector info */
 	c?: AppSerializeConnector[]
 }
 
-interface IAppSerializeShape {
+interface IAppShapeData {
 	templateKey: string;
 	detail: string;
 	position: Point;

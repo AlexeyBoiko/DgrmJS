@@ -8,6 +8,12 @@ import { textareaCreate } from '../infrastructure/svg-textarea.js';
  * set 'props' with text from texteditor
  *
  * function encapsulate parsing text editor attributes
+ *
+ * Markup example:
+ * <rect data-text-for="text" ... />
+ * <text data-key="text" data-line-height="20" data-vertical-middle="35" text-anchor="middle"
+ * 	alignment-baseline="central" ...>&nbsp;</text>
+ *
  * @param {SVGGraphicsElement} svgShapeEl
  * @param {DiagramShapeProps} props
  * @param {SVGGraphicsElement} targetEl

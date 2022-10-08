@@ -6,7 +6,7 @@ export class AppRhombDecorator extends AppShapeEditorDecorator {
 	/**
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape
-	 * @param {DiagramShapeAddParam} addParam
+	 * @param {IAppShapeData} addParam
 	 */
 	constructor(diagram, svgShape, addParam) {
 		super(diagram, svgShape, addParam);
@@ -16,30 +16,11 @@ export class AppRhombDecorator extends AppShapeEditorDecorator {
 	}
 
 	/**
-	 * @param {DiagramShapeUpdateParam} param
-	 */
-	update(param) {
-		super.update(param);
-		if (param.props?.text?.textContent !== undefined) {
-			this._onTextChange(/** @type {SVGTextElement} */ (this.svgEl.querySelector('[data-key="text"]')));
-		}
-	}
-
-	/**
 	 * @param {SVGTextElement} textEl
 	 * @param {DiagramShapeProps} updatedProp
+	 * private
 	 */
 	onTextChange(textEl, updatedProp) {
-		super.onTextChange(textEl, updatedProp);
-		this._onTextChange(textEl);
-	}
-
-	/**
-	 * @private
-	 * @param {SVGTextElement} textEl
-	 * @returns {void}
-	 */
-	_onTextChange(textEl) {
 		if (!this._testPath) {
 			/** @private */
 			this._testPath = /** @type {SVGPathElement}} */(cloneUnshiftTransparent(this.svgEl, 'main'));

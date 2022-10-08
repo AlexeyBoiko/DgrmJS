@@ -4,13 +4,17 @@ import { textEditorHighlightEmpty, textEditorShow } from './text-editor-utils.js
 export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorator {
 	/**
 	 * @param {ISvgPresenterShape} svgShape
-	 * @param {DiagramShapeProps} initProps
+	 * @param {DiagramShapeProps} txtProps
+	 * Describes text-editors.
+	 * Example: { text: { textContent: 'Title' } }
+	 * <text data-key="text" ...> will get texteditor functionality and filled with 'Title'
+	 * See textEditorShow function
 	 */
-	constructor(svgShape, initProps) {
+	constructor(svgShape, txtProps) {
 		super(svgShape);
 
 		/** @type {DiagramShapeProps} */
-		this.props = Object.assign({}, initProps); // TODO: save only 'textContent' props
+		this.txtProps = Object.assign({}, txtProps); // TODO: save only 'textContent' props
 	}
 
 	/**
@@ -18,11 +22,11 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 	 */
 	update(param) {
 		if (param.props) {
-			Object.assign(this.props, param.props); // TODO: save only 'textContent' props
+			Object.assign(this.txtProps, param.props); // TODO: save only 'textContent' props
 		}
 
 		if (param.state && param.state.has('selected') && !this.stateGet().has('selected')) {
-			textEditorHighlightEmpty(this.svgEl, this.props);
+			textEditorHighlightEmpty(this.svgEl, this.txtProps);
 		}
 
 		super.update(param);
@@ -54,10 +58,10 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 		if (this._textEditor) { return; }
 
 		/** @private */
-		this._textEditor = textEditorShow(this.svgEl, this.props, evt.target,
+		this._textEditor = textEditorShow(this.svgEl, this.txtProps, evt.target,
 			// onchange
 			(textEl, updatedProp) => {
-				Object.assign(this.props, updatedProp);
+				Object.assign(this.txtProps, updatedProp);
 				this.onTextChange(textEl, updatedProp);
 			},
 			// onblur

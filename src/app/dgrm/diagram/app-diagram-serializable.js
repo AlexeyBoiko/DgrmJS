@@ -124,14 +124,7 @@ export class AppDiagramSerializable {
 		const shapes = [];
 
 		for (const shapeJson of data.s) {
-			const shape = this._shapeAdd({
-				templateKey: shapeJson.templateKey,
-				position: shapeJson.position,
-				props: {
-					text: { textContent: shapeJson.detail }
-				}
-			});
-			shapes.push(shape);
+			shapes.push(this._shapeAdd(shapeJson));
 		}
 
 		if (data.c && data.c.length > 0) {
