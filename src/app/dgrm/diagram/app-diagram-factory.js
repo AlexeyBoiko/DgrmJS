@@ -14,7 +14,7 @@ import { pathCreate } from '../../../diagram/svg-presenter/svg-path/svg-path-fac
 import { AppCircleDecorator } from '../shapes/app-circle-decorator.js';
 import { AppRectDecorator } from '../shapes/app-rect-decorator.js';
 import { AppRhombDecorator } from '../shapes/app-rhomb-decorator.js';
-import { AppPathEditiorDecorator, AppShapeEditorDecorator } from '../shapes/app-editor-decorator.js';
+import { AppPathEditiorDecorator } from '../shapes/app-editor-decorator.js';
 
 //
 // event processors
@@ -43,12 +43,14 @@ export function appDiagramFactory(svg) {
 			switch (type) {
 				case 'shape': {
 					/** @type {ISvgPresenterShape} */
-					let shape = shapeCreate(param.svgCanvas, param.createParams);
+					let shape = shapeCreate(param.svgCanvas, param.createParams.templateKey);
 					switch (param.createParams.templateKey) {
-						case 'circle': shape = new AppCircleDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
-						case 'rhomb': shape = new AppRhombDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
-						case 'rect': shape = new AppRectDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
-						case 'text': shape = new AppShapeEditorDecorator(diagram, shape, /** @type {DiagramShapeAddParam} */(param.createParams).props); break;
+						// About cast to IAppShapeData:
+						// It is app-layer. AppCircleDecorator (and other shapes) is also app-layer. So it's ok to know about IAppShapeData here.
+						case 'circle': shape = new AppCircleDecorator(diagram, shape, /** @type {IAppShapeData} */(param.createParams)); break;
+						case 'rhomb': shape = new AppRhombDecorator(diagram, shape, /** @type {IAppShapeData} */(param.createParams)); break;
+						case 'rect': shape = new AppRectDecorator(diagram, shape, /** @type {IAppShapeData} */(param.createParams)); break;
+						case 'text': shape = new AppRectDecorator(diagram, shape, /** @type {IAppShapeData} */(param.createParams), { resizeFromCenter: false }); break;
 						case 'connect-end': break;
 					}
 

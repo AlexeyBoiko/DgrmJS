@@ -19,7 +19,7 @@ export function svgDiagramCreate(svg) {
 		(type, param) => {
 			switch (type) {
 				case 'shape': {
-					const shape = shapeCreate(param.svgCanvas, param.createParams);
+					const shape = shapeCreate(param.svgCanvas, param.createParams.templateKey);
 					param.svgElemToPresenterObj.set(shape.svgEl, shape);
 					connectorsInit(param.svgElemToPresenterObj, shape);
 					shape.update(param.createParams);

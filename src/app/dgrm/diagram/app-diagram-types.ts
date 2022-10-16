@@ -11,22 +11,21 @@ interface IAppDiagramSerializable {
 	dataGet(): AppSerializeData;
 	dataSet(data:AppSerializeData): void;
 
-	on(evtType: AppDiagramEventType, listener: EventListenerOrEventListenerObject, options: AddEventListenerOptions): this;
+	on(evtType: DiagramEventType, listener: EventListenerOrEventListenerObject): this;
 }
 
-type AppDiagramEventType = 'shapeAdd';
-interface IAppDiagramDetail<T extends IDiagramShape> {
-	target: T;
+interface IAppShape extends IDiagramShape {
+	toJson(): IAppShapeData;
 }
 
 interface AppSerializeData {
 	/** shapes */
-	s: AppSerializeShape[],
+	s: IAppShapeData[],
 	/** connector info */
 	c?: AppSerializeConnector[]
 }
 
-interface AppSerializeShape {
+interface IAppShapeData {
 	templateKey: string;
 	detail: string;
 	position: Point;

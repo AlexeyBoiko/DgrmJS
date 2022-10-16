@@ -6,40 +6,21 @@ export class AppCircleDecorator extends AppShapeEditorDecorator {
 	/**
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape
-	 * @param {DiagramShapeProps} initProps
+	 * @param {IAppShapeData} addParam
 	 */
-	constructor(diagram, svgShape, initProps) {
-		super(diagram, svgShape, initProps);
+	constructor(diagram, svgShape, addParam) {
+		super(diagram, svgShape, addParam);
 
 		/** @private */
 		this._currentRadius = 60;
 	}
 
 	/**
-	 * @param {DiagramShapeUpdateParam} param
-	 */
-	update(param) {
-		super.update(param);
-		if (param.props?.text?.textContent !== undefined) {
-			this._onTextChange(/** @type {SVGTextElement} */ (this.svgEl.querySelector('[data-key="text"]')));
-		}
-	}
-
-	/**
 	 * @param {SVGTextElement} textEl
 	 * @param {DiagramShapeProps} updatedProp
+	 * private
 	 */
 	onTextChange(textEl, updatedProp) {
-		super.onTextChange(textEl, updatedProp);
-		this._onTextChange(textEl);
-	}
-
-	/**
-	 * @private
-	 * @param {SVGTextElement} textEl
-	 * @returns {void}
-	 */
-	_onTextChange(textEl) {
 		let maxRadiusQrt = 0;
 		for (const span of textEl.getElementsByTagName('tspan')) {
 			for (const point of boxPoints(span.getBBox())) {

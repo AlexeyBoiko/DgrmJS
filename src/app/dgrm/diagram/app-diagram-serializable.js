@@ -2,53 +2,31 @@ import { parseCenterAttr } from '../../../diagram-extensions/svg-utils.js';
 import { any } from '../../../diagram/infrastructure/iterable-utils.js';
 import { templateGet } from '../../../diagram/svg-presenter/svg-presenter-utils.js';
 import { pointViewToCanvas } from '../../../diagram/utils/point-convert-utils.js';
-import { AppShapeEditorDecorator } from '../shapes/app-editor-decorator.js';
 import { AppDiagramPngMixin } from './app-diagram-png-mixin.js';
 
 /**
  * @implements {IAppDiagramSerializable}
  * @mixes AppDiagramPngMixin
  */
-export class AppDiagramSerializable extends EventTarget {
+export class AppDiagramSerializable {
 	/**
 	 * @param {SVGSVGElement} svg
 	 * @param {IDiagram} diagram
 	 */
 	constructor(svg, diagram) {
-		super();
-
 		this.svg = svg;
 
 		/**
-		 * @type {Map<IDiagramShape, {templateKey:string, detail:string}>}}
+		 * @type {Set<IAppShape>}
 		 * @private
 		 */
-		this._shapeData = new Map();
+		this._shapes = new Set();
 
 		/** @private */
 		this._diagram = diagram
-			.on('add', this)
-			.on('del', this);
-	}
-
-	/**
-	 * @param {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail> | CustomEvent<IDiagramEventDetail<IDiagramElement>>} evt
-	 */
-	handleEvent(evt) {
-		switch (evt.type) {
-			case 'add':
-				if (evt.detail.target instanceof AppShapeEditorDecorator) {
-					/** @type {IAppShapeEditorDecorator} */(evt.detail.target).on('txtUpd', this);
-				}
-				break;
-			case 'txtUpd':
-				this._shapeData.get(/** @type {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail>} */(evt).detail.target).detail =
-					/** @type {string} */ (/** @type {CustomEvent<ShapeTextEditorDecoratorEventUpdateDetail>} */(evt).detail.props.text.textContent);
-				break;
-			case 'del':
-				this._shapeData.delete(/** @type {IDiagramShape} */(evt.detail.target));
-				break;
-		}
+			.on('del',
+				/** @param {CustomEvent<IDiagramEventDetail<IDiagramElement>>} evt */
+				evt => this._shapes.delete(/** @type {IAppShape} */(evt.detail.target)));
 	}
 
 	/**
@@ -77,27 +55,15 @@ export class AppDiagramSerializable extends EventTarget {
 	 * @returns {IDiagramShape}
 	 */
 	_shapeAdd(param) {
-		const shape = /** @type {IDiagramShape} */(this._diagram.add('shape', param));
-
-		this._shapeData.set(
-			shape,
-			{
-				templateKey: param.templateKey,
-				detail: /** @type {string} */(param.props.text?.textContent)
-			});
-
-		this.dispatchEvent(new CustomEvent('shapeAdd', {
-			cancelable: true,
-			detail: shape
-		}));
-
+		const shape = /** @type {IAppShape} */(this._diagram.add('shape', param));
+		this._shapes.add(shape);
 		return shape;
 	}
 
 	/** @returns {void} */
 	clear() {
-		for (const shapeData of this._shapeData) {
-			this._diagram.del(shapeData[0]);
+		for (const shape of this._shapes) {
+			this._diagram.del(shape);
 		}
 		this._diagram.canvasPosition = { x: 0, y: 0 };
 		this._diagram.scaleSet(1, { x: 0, y: 0 });
@@ -105,7 +71,7 @@ export class AppDiagramSerializable extends EventTarget {
 
 	/** @returns {AppSerializeData} */
 	dataGet() {
-		if (!any(this._shapeData)) {
+		if (!any(this._shapes)) {
 			return null;
 		}
 
@@ -118,20 +84,15 @@ export class AppDiagramSerializable extends EventTarget {
 		/** @type {Map<IDiagramShape, number>} */
 		const shapeIndex = new Map();
 
-		for (const shape of this._shapeData) {
-			const position = shape[0].positionGet();
-			position.x = Math.trunc(position.x);
-			position.y = Math.trunc(position.y);
-
-			/** @type {AppSerializeShape} */(shape[1]).position = position;
-			shapeIndex.set(shape[0], serializeData.s.push(/** @type {AppSerializeShape} */(shape[1])) - 1);
+		for (const shape of this._shapes) {
+			shapeIndex.set(shape, serializeData.s.push(shape.toJson()) - 1);
 		}
 
 		/** @type {Set<IDiagramPath>} */
 		const pathsAdded = new Set();
-		for (const shape of this._shapeData) {
-			if (any(shape[0].connectedPaths)) {
-				for (const path of shape[0].connectedPaths) {
+		for (const shape of this._shapes) {
+			if (any(shape.connectedPaths)) {
+				for (const path of shape.connectedPaths) {
 					if (!pathsAdded.has(path) && path.end.key) {
 						pathsAdded.add(path);
 
@@ -163,14 +124,7 @@ export class AppDiagramSerializable extends EventTarget {
 		const shapes = [];
 
 		for (const shapeJson of data.s) {
-			const shape = this._shapeAdd({
-				templateKey: shapeJson.templateKey,
-				position: shapeJson.position,
-				props: {
-					text: { textContent: shapeJson.detail }
-				}
-			});
-			shapes.push(shape);
+			shapes.push(this._shapeAdd(shapeJson));
 		}
 
 		if (data.c && data.c.length > 0) {
@@ -185,12 +139,12 @@ export class AppDiagramSerializable extends EventTarget {
 
 	/**
 	 * subscribe to event
-	 * @param {AppDiagramEventType} evtType
+	 * @param {DiagramEventType} evtType
 	 * @param {EventListenerOrEventListenerObject} listener
 	 * @param {AddEventListenerOptions?=} options
 	 */
 	on(evtType, listener, options) {
-		this.addEventListener(evtType, listener, options);
+		this._diagram.on(evtType, listener, options);
 		return this;
 	}
 }

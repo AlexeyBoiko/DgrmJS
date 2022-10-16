@@ -2,16 +2,45 @@ import { SvgElementEditableAbstract } from '../../../diagram-extensions/text-edi
 import { SvgShapeTextEditorDecorator } from '../../../diagram-extensions/text-editor/svg-shape-texteditor-decorator.js';
 import { pnlDel, pnlMove, pnlDelShow, pnlSymbol, pnlColorShow } from '../panel-create.js';
 
-/** @implements {IAppShapeEditorDecorator} */
+/** @implements {IAppShape} */
 export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 	/**
 	 * @param {IDiagram} diagram
 	 * @param {ISvgPresenterShape} svgShape
-	 * @param {DiagramShapeProps} initProps
+	 * @param {IAppShapeData} addParam
 	 */
-	constructor(diagram, svgShape, initProps) {
-		super(svgShape, initProps);
+	constructor(diagram, svgShape, addParam) {
+		super(
+			svgShape,
+
+			// SvgShapeTextEditorDecorator is common class. It use universal description for texteditors
+			// { text: { textContent: addParam.detail } }
+
+			// TODO: here pass null, because shapefactory call update() right after creation of the shape.
+			// don't remeber why shapefactory do so
+			null);
+
+		/** @private */
+		this._templateKey = addParam.templateKey;
 		this.diagram = diagram;
+	}
+
+	/**
+	 * @param {IAppShapeData & DiagramShapeUpdateParam} param
+	 */
+	update(param) {
+		if (param.detail) {
+			if (!param.props) { param.props = {}; }
+			Object.assign(param.props, { text: { textContent: param.detail } });
+		}
+		const oldText = this.txtProps.text?.textContent;
+		super.update(param);
+
+		if (oldText !== this.txtProps.text?.textContent) {
+			// notify inheritors
+			// TODO: maybe move this to SvgShapeTextEditorDecorator
+			this.onTextChange(this.svgEl.querySelector('[data-key="text"]'), null);
+		}
 	}
 
 	/**
@@ -56,6 +85,19 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 			const position = this.svgEl.getBoundingClientRect();
 			pnlMove(this, position.left + 10, position.top - 35);
 		}
+	}
+
+	/** @return {IAppShapeData} */
+	toJson() {
+		const position = this.positionGet();
+		position.x = Math.trunc(position.x);
+		position.y = Math.trunc(position.y);
+
+		return {
+			templateKey: this._templateKey,
+			position,
+			detail: /** @type {string} */(this.txtProps.text?.textContent)
+		};
 	}
 }
 
