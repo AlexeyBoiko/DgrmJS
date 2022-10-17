@@ -1,4 +1,4 @@
-import { AppShapeEditorDecorator } from './app-editor-decorator.js';
+import { AppShapeEditorDecorator } from './app-shape-editor-decorator.js';
 import { ceil } from './infrastructure/resize-utils.js';
 
 export class AppRectDecorator extends AppShapeEditorDecorator {

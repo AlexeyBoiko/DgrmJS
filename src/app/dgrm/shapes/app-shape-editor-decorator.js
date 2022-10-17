@@ -1,6 +1,6 @@
-import { SvgElementEditableAbstract } from '../../../diagram-extensions/text-editor/svg-shape-editable-abstract-decorator.js';
 import { SvgShapeTextEditorDecorator } from '../../../diagram-extensions/text-editor/svg-shape-texteditor-decorator.js';
-import { pnlDel, pnlMove, pnlDelShow, pnlSymbol, pnlColorShow } from '../panel-create.js';
+import { ShapeSettings } from '../elements/shape-settigns.js';
+import { pnlCreate, pnlDel, pnlMove, pnlSymbol } from '../panel-create.js';
 
 /** @implements {IAppShape} */
 export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
@@ -65,17 +65,22 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 
 	/** @private */
 	_panelShow() {
-		// this.svgEl.querySelector('[data-key="main"]').getAttribute('fill')
-		pnlColorShow(this, 0, 0, 'red', (cmd, arg) => {
-			switch (cmd) {
-				case 'del': this.diagram.del(this); break;
-				case 'color':
-					this.diagram.shapeUpdate(this, {
-						props: { main: { fill: arg, stroke: arg } }
-					});
+		const shapeSettings = new ShapeSettings();
+		shapeSettings.addEventListener('cmd', /** @param {CustomEvent} evt */ evt => {
+			switch (evt.detail.cmd) {
+				case 'del':
+					pnlDel(this);
+					this.diagram.del(this);
 					break;
+				// case 'color':
+				// 	this.diagram.shapeUpdate(this, {
+				// 		props: { main: { fill: arg, stroke: arg } }
+				// 	});
+				//	break;
 			}
 		});
+
+		pnlCreate(this, 0, 0, shapeSettings);
 		this.panelUpdPos();
 	}
 
@@ -83,7 +88,7 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 	panelUpdPos() {
 		if (this[pnlSymbol]) {
 			const position = this.svgEl.getBoundingClientRect();
-			pnlMove(this, position.left + 10, position.top - 35);
+			pnlMove(this, position.left + 10, position.top + 10);
 		}
 	}
 
@@ -98,47 +103,5 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 			position,
 			detail: /** @type {string} */(this.txtProps.text?.textContent)
 		};
-	}
-}
-
-/** @implements {IConnectorPath} */
-export class AppPathEditiorDecorator extends SvgElementEditableAbstract {
-	/**
-	 * @param {IDiagram} diagram
-	 * @param {ISvgPresenterPath} svgElement
-	 */
-	constructor(diagram, svgElement) {
-		super(svgElement);
-		this.diagram = diagram;
-	}
-
-	// @ts-ignore
-	get end() {	return /** @type {IConnectorPath} */(this.svgElement).end; }
-	// @ts-ignore
-	get start() { return /** @type {IConnectorPath} */(this.svgElement).start; }
-
-	/**
-	 * @param {DiagramShapeState} state
-	 */
-	stateHas(state) { return this.svgElement.stateHas(state); }
-	stateGet() { return this.svgElement.stateGet(); }
-
-	/**
-	 * when shape enter edit mode
-	 * override this method
-	 * @param {PointerEvent & { target: SVGGraphicsElement }} evt
-	 */
-	onEdit(evt) {
-		pnlDelShow(this, evt.clientX - 20, evt.clientY - 55, () => {
-			this.diagram.del(this);
-		});
-	}
-
-	/**
-	 * when shape leave edit mode
-	 * override this method
-	 */
-	onEditLeave() {
-		pnlDel(this);
 	}
 }

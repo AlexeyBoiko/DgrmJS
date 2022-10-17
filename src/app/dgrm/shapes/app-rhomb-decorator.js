@@ -1,5 +1,5 @@
 import { svgTextIsOut } from '../../../diagram-extensions/infrastructure/svg-text-is-out.js';
-import { AppShapeEditorDecorator } from './app-editor-decorator.js';
+import { AppShapeEditorDecorator } from './app-shape-editor-decorator.js';
 import { resizeAlg } from './infrastructure/resize-utils.js';
 
 export class AppRhombDecorator extends AppShapeEditorDecorator {
