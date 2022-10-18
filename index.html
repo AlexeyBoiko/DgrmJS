@@ -81,6 +81,7 @@
 
 			[data-templ="text"] textarea {
 				text-align: left;
+				border-color: rgb(108 187 247 / 51%);
 			}
 
 			[data-templ] [data-text-for] {
@@ -141,9 +142,8 @@
 				stroke: rgb(108 187 247 / 51%);
 			}
 
-			[data-templ="text"].highlighted .main, [data-templ="text"].selected .main, [data-templ="text"].hovered .main {
-				stroke-width: 2px;
-				stroke: rgb(108 187 247 / 51%);
+			[data-templ="text"].highlighted text {
+				fill: rgb(108 187 247);
 			}
 
 			[data-templ].hovered [data-connect="in"] {
@@ -178,45 +178,6 @@
 					stroke-width: 55px;
 				}
 			}
-
-
-			/* shape settings styles */
-
-			[data-templ="circle"].cl-red [data-key="main"],
-			[data-templ="rect"].cl-red [data-key="main"],
-			[data-templ="rhomb"].cl-red [data-key="main"] { fill: #E74C3C; }
-			[data-templ="rhomb"].cl-red [data-key="main"] { stroke: #E74C3C;}
-			[data-templ="text"].cl-red text { fill: #E74C3C;}
-
-			[data-templ="circle"].cl-orange [data-key="main"],
-			[data-templ="rect"].cl-orange [data-key="main"],
-			[data-templ="rhomb"].cl-orange [data-key="main"] { fill: #ff6600; }
-			[data-templ="rhomb"].cl-orange [data-key="main"] { stroke: #ff6600;}
-			[data-templ="text"].cl-orange text { fill: #ff6600;}
-
-			[data-templ="circle"].cl-green [data-key="main"],
-			[data-templ="rect"].cl-green [data-key="main"],
-			[data-templ="rhomb"].cl-green [data-key="main"] { fill: #19bc9b; }
-			[data-templ="rhomb"].cl-green [data-key="main"] { stroke: #19bc9b;}
-			[data-templ="text"].cl-green text { fill: #19bc9b;}
-
-			[data-templ="circle"].cl-blue [data-key="main"],
-			[data-templ="rect"].cl-blue [data-key="main"],
-			[data-templ="rhomb"].cl-blue [data-key="main"] { fill: #1aaee5; }
-			[data-templ="rhomb"].cl-blue [data-key="main"] { stroke: #1aaee5;}
-			[data-templ="text"].cl-blue text { fill: #1aaee5;}
-
-			[data-templ="circle"].cl-dblue [data-key="main"],
-			[data-templ="rect"].cl-dblue [data-key="main"],
-			[data-templ="rhomb"].cl-dblue [data-key="main"] { fill: #1D809F; }
-			[data-templ="rhomb"].cl-dblue [data-key="main"] { stroke: #1D809F;}
-			[data-templ="text"].cl-dblue text { fill: #1D809F;}
-
-			[data-templ="circle"].cl-dgray [data-key="main"],
-			[data-templ="rect"].cl-dgray [data-key="main"],
-			[data-templ="rhomb"].cl-dgray [data-key="main"] { fill: #495057; }
-			[data-templ="rhomb"].cl-dgray [data-key="main"] { stroke: #495057;}
-			[data-templ="text"].cl-dgray text { fill: #495057;}
 		</style>
 		<defs>
 			<g data-templ="path">
@@ -263,62 +224,33 @@
 					data-evt-z-index="1" r="10" cx="0" cy="-60" />
 			</g>
 
-			<g data-templ="rect" data-center="60,25">
-				<rect data-key="outer" data-evt-no-click="" data-evt-z-index="1" width="160" height="110" rx="15"
+			<g data-templ="rect" data-center="75,25">
+				<rect data-key="outer" data-evt-no-click="" data-evt-z-index="1" width="190" height="110" rx="15"
 					ry="15" x="-20" y="-30" fill="transparent" stroke="transparent" stroke-width="1"></rect>
-				<rect data-key="main" width="120" height="50" rx="15" ry="15" fill="#1aaee5" stroke="#fff"
+				<rect data-key="main" width="150" height="50" rx="15" ry="15" fill="#1aaee5" stroke="#fff"
 					stroke-width="1" class="main"></rect>
 
-				<rect data-text-for="text" x="15" y="5" rx="15" ry="15" width="90" height="40" />
-				<text data-key="text" data-line-height="20" data-vertical-middle="35" x="60" y="25" text-anchor="middle"
+				<rect data-text-for="text" x="30" y="5" rx="15" ry="15" width="90" height="40" />
+				<text data-key="text" data-line-height="20" data-vertical-middle="35" x="75" y="25" text-anchor="middle"
 					alignment-baseline="central" fill="#fff">&nbsp;</text>
 
-				<circle data-key="outright" data-connect="out" data-connect-point="120,25" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="120" cy="25" />
+				<circle data-key="outright" data-connect="out" data-connect-point="150,25" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="150" cy="25" />
 				<circle data-key="outleft" data-connect="out" data-connect-point="0,25" data-connect-dir="left"
 					data-evt-z-index="1" r="10" cx="0" cy="25" />
-				<circle data-key="outtop" data-connect="out" data-connect-point="60,0" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="60" cy="0" />
-				<circle data-key="outbottom" data-connect="out" data-connect-point="60,50" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="60" cy="50" />
+				<circle data-key="outtop" data-connect="out" data-connect-point="75,0" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="75" cy="0" />
+				<circle data-key="outbottom" data-connect="out" data-connect-point="75,50" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="75" cy="50" />
 
-				<circle data-key="inright" data-connect="in" data-connect-point="120,25" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="120" cy="25" />
+				<circle data-key="inright" data-connect="in" data-connect-point="150,25" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="150" cy="25" />
 				<circle data-key="inleft" data-connect="in" data-connect-point="0,25" data-connect-dir="left"
 					data-evt-z-index="1" r="10" cx="0" cy="25" />
-				<circle data-key="intop" data-connect="in" data-connect-point="60,0" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="60" cy="0" />
-				<circle data-key="inbottom" data-connect="in" data-connect-point="60,50" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="60" cy="50" />
-			</g>
-
-			<g data-templ="text" data-center="60,25">
-				<rect data-key="outer" data-evt-no-click="" data-evt-z-index="1" width="160" height="110" rx="15"
-					ry="15" x="-20" y="-30" fill="transparent" stroke="transparent" stroke-width="1"></rect>
-				<rect data-key="main" width="120" height="50" rx="15" ry="15" fill="transparent" stroke="transparent"
-					stroke-width="1" class="main"></rect>
-
-				<rect data-text-for="text" x="15" y="5" rx="15" ry="15" width="90" height="40" />
-				<text data-key="text" data-line-height="20" x="15" y="25"
-					alignment-baseline="central" fill="#495057">&nbsp;</text>
-
-				<circle data-key="outright" data-connect="out" data-connect-point="120,25" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="120" cy="25" />
-				<circle data-key="outleft" data-connect="out" data-connect-point="0,25" data-connect-dir="left"
-					data-evt-z-index="1" r="10" cx="0" cy="25" />
-				<circle data-key="outtop" data-connect="out" data-connect-point="60,0" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="60" cy="0" />
-				<circle data-key="outbottom" data-connect="out" data-connect-point="60,50" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="60" cy="50" />
-
-				<circle data-key="inright" data-connect="in" data-connect-point="120,25" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="120" cy="25" />
-				<circle data-key="inleft" data-connect="in" data-connect-point="0,25" data-connect-dir="left"
-					data-evt-z-index="1" r="10" cx="0" cy="25" />
-				<circle data-key="intop" data-connect="in" data-connect-point="60,0" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="60" cy="0" />
-				<circle data-key="inbottom" data-connect="in" data-connect-point="60,50" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="60" cy="50" />
+				<circle data-key="intop" data-connect="in" data-connect-point="75,0" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="75" cy="0" />
+				<circle data-key="inbottom" data-connect="in" data-connect-point="75,50" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="75" cy="50" />
 			</g>
 
 			<g data-templ="rhomb" data-center="60,35">
@@ -352,13 +284,26 @@
 					data-evt-z-index="1" r="10" cx="60" cy="78" />
 			</g>
 
+			<g data-templ="text" data-center="15,0">
+				<circle data-evt-no-click="" r="40" fill="transparent" stroke="transparent" stroke-width="1" />
+
+				<rect data-text-for="text" x="-14" y="-14" rx="15" ry="15" width="90" height="40" />
+				<text data-key="text" data-line-height="20" x="0" y="0" fill="rgb(73, 80, 87)"
+					alignment-baseline="central">&nbsp;</text>
+
+				<circle data-key="outleft" data-connect="out" data-connect-point="-10,0" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="-10" cy="0" />
+				<circle data-key="inleft" data-connect="in" data-connect-point="-10,0" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="-10" cy="0" />
+			</g>
+
 			<circle data-templ="select-start" r="10" />
 			<rect data-templ="select" width="0" height="0" rx="10" ry="10" fill="rgb(108 187 247 / 20%)"
 				stroke="rgb(108 187 247)" stroke-width="1"></rect>
 		</defs>
 		<g data-key="canvas"></g>
 	</svg>
-	<script src="index.js?v=20221018" type="module"></script>
+	<script src="index.js?v=20220924" type="module"></script>
 </body>
 
 </html>
