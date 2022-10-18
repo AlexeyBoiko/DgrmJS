@@ -29,6 +29,7 @@ interface IAppShapeData {
 	templateKey: string;
 	detail: string;
 	position: Point;
+	styles?: string[];
 }
 
 interface AppSerializeConnectorEnd {

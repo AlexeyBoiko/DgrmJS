@@ -26,24 +26,24 @@ export class ShapeSettings extends HTMLElement {
 		</style>
 		<div class="props" style="display: none;">
 			<div class="ln">
-				<div data-cmd="color">
+				<div data-cmd="style" data-cmd-arg="cl-red">
+					<div class="crcl" style="background: #E74C3C">&nbsp;</div>
+				</div>
+				<div data-cmd="style" data-cmd-arg="cl-orange">
 					<div class="crcl" style="background: #ff6600">&nbsp;</div>
 				</div>
-				<div data-cmd="color">
-					<div class="crcl" style="background: #FFBA00">&nbsp;</div>
-				</div>
-				<div data-cmd="color">
+				<div data-cmd="style" data-cmd-arg="cl-green">
 					<div class="crcl" style="background: #19bc9b">&nbsp;</div>
 				</div>
 			</div>
 			<div class="ln">
-				<div data-cmd="color">
+				<div data-cmd="style" data-cmd-arg="cl-blue">
 					<div class="crcl" style="background: #1aaee5">&nbsp;</div>
 				</div>
-				<div data-cmd="color">
+				<div data-cmd="style" data-cmd-arg="cl-dblue">
 					<div class="crcl" style="background: #1D809F">&nbsp;</div>
 				</div>
-				<div data-cmd="color">
+				<div data-cmd="style" data-cmd-arg="cl-dgray">
 					<div class="crcl" style="background: #495057">&nbsp;</div>
 				</div>
 			</div>

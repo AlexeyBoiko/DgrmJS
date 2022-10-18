@@ -1,5 +1,5 @@
 import { SvgShapeTextEditorDecorator } from '../../../diagram-extensions/text-editor/svg-shape-texteditor-decorator.js';
-import { ShapeSettings } from '../elements/shape-settigns.js';
+import { ShapeSettings } from './shape-settigns.js';
 import { pnlCreate, pnlDel, pnlMove, pnlSymbol } from '../panel-create.js';
 
 /** @implements {IAppShape} */
@@ -20,9 +20,14 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 			// don't remeber why shapefactory do so
 			null);
 
+		this.diagram = diagram;
+
 		/** @private */
 		this._templateKey = addParam.templateKey;
-		this.diagram = diagram;
+
+		if (addParam.styles?.length > 0) {
+			this._styleSet(addParam.styles[0]);
+		}
 	}
 
 	/**
@@ -72,16 +77,29 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 					pnlDel(this);
 					this.diagram.del(this);
 					break;
-				// case 'color':
-				// 	this.diagram.shapeUpdate(this, {
-				// 		props: { main: { fill: arg, stroke: arg } }
-				// 	});
-				//	break;
+				case 'style':
+					this._styleSet(evt.detail.arg);
+					break;
 			}
 		});
 
 		pnlCreate(this, 0, 0, shapeSettings);
 		this.panelUpdPos();
+	}
+
+	/**
+	 * @param {string} style
+	 * @private
+	 */
+	_styleSet(style) {
+		this.svgEl.classList.remove(this._style);
+
+		/**
+		 * @type {string}
+		 * @private
+		 */
+		this._style = style;
+		this.svgEl.classList.add(this._style);
 	}
 
 	/** update panel position */
@@ -101,7 +119,8 @@ export class AppShapeEditorDecorator extends SvgShapeTextEditorDecorator {
 		return {
 			templateKey: this._templateKey,
 			position,
-			detail: /** @type {string} */(this.txtProps.text?.textContent)
+			detail: /** @type {string} */(this.txtProps.text?.textContent),
+			styles: this._style ? [this._style] : null
 		};
 	}
 }
