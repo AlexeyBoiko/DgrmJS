@@ -1,4 +1,5 @@
 import { first } from '../infrastructure/iterable-utils.js';
+import { pointViewToCanvas } from '../utils/point-convert-utils.js';
 import { shapeStateAdd, shapeStateDel, shapeStateSet } from '../utils/shape-utils.js';
 
 /** @implements {IDiagramPrivateEventProcessor} */
@@ -127,6 +128,31 @@ const movedDelta = Symbol(0);
  * @param {IDiagramPrivateEvent} evt
  */
 export function shapeMove(diagram, shape, evt) {
+	//
+	// drag connector -> bind connector center to pointer
+
+	if (shape.connectable) {
+		if (!shape[movedDelta]) {
+			//
+			// move start
+
+			diagram.selected = null;
+			disable(shape, true);
+			shape[movedDelta] = { x: 0, y: 0 }; // movedDelta used just to mark we start draging
+		}
+
+		diagram.shapeUpdate(shape, {
+			position: pointViewToCanvas(
+				diagram.canvasPosition,
+				diagram.scale,
+				{ x: evt.detail.clientX, y: evt.detail.clientY }) // connectable shape is circle so bind to center
+		});
+		return;
+	}
+
+	//
+	// drag shape or canvas -> remember point in shape we take and bind to pointer
+
 	const scale = shape.type === 'canvas'
 		? 1
 		: diagram.scale;
