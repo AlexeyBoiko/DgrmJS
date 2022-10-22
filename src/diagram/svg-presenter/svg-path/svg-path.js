@@ -104,7 +104,12 @@ export class SvgPath {
 
 	/** @private */
 	_pathUpdate() {
-		const dAttr = SvgPath._calcDAttr(70, this._start, this._end);
+		const coef = distance(this._start.position, this._end.position) * 0.5;
+		const dAttr = SvgPath._calcDAttr(
+			coef > 70
+				? 70
+				: coef < 15 ? 15 : coef,
+			this._start, this._end);
 		this._path.setAttribute('d', dAttr);
 		this._outer.setAttribute('d', dAttr);
 		this._selected.setAttribute('d', dAttr);
@@ -166,4 +171,15 @@ export class SvgPath {
 			? y
 			: dir === 'bottom' ? y + coef : y - coef;
 	}
+}
+
+/**
+ * @param {Point} a
+ * @param {Point} b
+ * @return {number}
+ */
+function distance(a, b) {
+	const x = a.x - b.x;
+	const y = a.y - b.y;
+	return Math.sqrt(x * x + y * y);
 }
