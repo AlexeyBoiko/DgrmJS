@@ -198,19 +198,20 @@ This diagram engine contains all main features (all you need to implement diagra
 - connection of shapes
 - diagram events
 
-Source code in ``src/diagram`` folder is under the MIT License.
-
 ### Diagram Extensions (``src/diagram-extensions`` folder)
  
 ``src/diagram-extensions`` folder contains additional features, like:
-- export/import to/from png/svg
+- export/import to/from png
 - text editor
-- shape editor panel
+- editable shape base class
 - and other
 
 ### App (``src/app`` folder)
  
 ``src/app`` folder contains diagram builder [dgrm.net](https://app.dgrm.net "Diagram builder").
- 
+- app`s shapes templates and styles
+- json serialization
+- ui elements
+
 ## Documentation
 Soon
