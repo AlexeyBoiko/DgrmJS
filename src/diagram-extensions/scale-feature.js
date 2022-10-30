@@ -11,7 +11,10 @@ export function scaleFeature(diagram, svg) {
 		const scaleStep = Math.abs(delta) < 50
 			? 0.05 // trackpad pitch
 			: 0.25; // mouse wheel
-		scale(diagram, (delta < 0 ? scaleStep : -scaleStep), evtPos(evt));
+		scale(
+			diagram,
+			diagram.scale + (delta < 0 ? scaleStep : -scaleStep),
+			evtPos(evt));
 	});
 
 	// multi touch screen
@@ -22,7 +25,7 @@ export function scaleFeature(diagram, svg) {
  * Scale for multi touch screen
  * @param {IDiagram} diagram
  * @param {SVGSVGElement} svg
- */
+*/
 function scaleTouchScreen(diagram, svg) {
 	/** @type { {id:number, pos?:Point} } */
 	let firstPointer;
@@ -66,7 +69,7 @@ function scaleTouchScreen(diagram, svg) {
 
 			scale(
 				diagram,
-				(distanceNew - distance) * 0.01,
+				diagram.scale / distance * distanceNew,
 				centerNew);
 		}
 
@@ -84,11 +87,10 @@ function scaleTouchScreen(diagram, svg) {
 
 /**
  * @param {IDiagram} diagram
- * @param {number} scaleDelta
+ * @param {number} scale
  * @param {Point} fixedPoint
  */
-function scale(diagram, scaleDelta, fixedPoint) {
-	const scale = diagram.scale + scaleDelta;
+function scale(diagram, scale, fixedPoint) {
 	if (scale < 0.25 || scale > 4) { return; }
 	diagram.selected = null;
 	diagram.activeElement(null, true);
