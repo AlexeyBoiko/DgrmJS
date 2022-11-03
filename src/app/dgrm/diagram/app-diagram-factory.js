@@ -28,6 +28,7 @@ import { AppCanvasSelecEvtProc } from './app-canvas-selec-evt-proc.js';
 // other diagram features
 
 import { scaleFeature } from '../../../diagram-extensions/scale-feature.js';
+import { gridFeature } from '../../../diagram-extensions/grid-feature.js';
 
 /**
  * @param {SVGSVGElement} svg
@@ -81,6 +82,7 @@ export function appDiagramFactory(svg) {
 	// features
 
 	scaleFeature(diagram, svg);
+	gridFeature(diagram, svg);
 
 	return diagram;
 }
