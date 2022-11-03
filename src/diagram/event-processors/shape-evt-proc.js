@@ -1,5 +1,5 @@
 import { first } from '../infrastructure/iterable-utils.js';
-import { pointViewToCanvas } from '../utils/point-convert-utils.js';
+import { pointCanvasToView, pointViewToCanvas } from '../utils/point-convert-utils.js';
 import { shapeStateAdd, shapeStateDel, shapeStateSet } from '../utils/shape-utils.js';
 
 /** @implements {IDiagramPrivateEventProcessor} */
@@ -20,7 +20,7 @@ export class ShapeEvtProc {
 	 * @param {IDiagramElement} elem
 	 * @return {boolean}
 	 */
-	canProcess(elem) { return elem.type === 'canvas' || elem.type === 'shape'; }
+	canProcess(elem) { return elem.type === 'shape'; }
 
 	/**
 	 * @param {IPresenterShape} shape
@@ -31,7 +31,6 @@ export class ShapeEvtProc {
 			case 'pointermove':
 				shapeMove(this._diagram, shape, evt);
 				break;
-
 			case 'pointerup':
 				if (!shape[movedDelta]) {
 					//
@@ -128,54 +127,40 @@ const movedDelta = Symbol(0);
  * @param {IDiagramPrivateEvent} evt
  */
 export function shapeMove(diagram, shape, evt) {
-	//
-	// drag connector -> bind connector center to pointer
-
-	if (shape.connectable) {
-		if (!shape[movedDelta]) {
-			//
-			// move start
-
-			diagram.selected = null;
-			disable(shape, true);
-			shape[movedDelta] = { x: 0, y: 0 }; // movedDelta used just to mark we start draging
-		}
-
-		diagram.shapeUpdate(shape, {
-			position: pointViewToCanvas(
-				diagram.canvasPosition,
-				diagram.scale,
-				{ x: evt.detail.clientX, y: evt.detail.clientY }) // connectable shape is circle so bind to center
-		});
-		return;
-	}
-
-	//
-	// drag shape or canvas -> remember point in shape we take and bind to pointer
-
-	const scale = shape.type === 'canvas'
-		? 1
-		: diagram.scale;
-
 	if (!shape[movedDelta]) {
 		//
 		// move start
 
 		diagram.selected = null;
-
 		disable(shape, true);
-		const shapePosition = shape.positionGet();
-		shape[movedDelta] = {
-			x: shapePosition.x * scale - evt.detail.clientX,
-			y: shapePosition.y * scale - evt.detail.clientY
-		};
+
+		if (shape.connectable) {
+			// bind connector center to pointer
+			// connectable shape is circle so bind to center
+			shape[movedDelta] = { x: 0, y: 0 };
+		} else {
+			// remember point in shape we take and bind to pointer
+
+			const shapePositionInView = pointCanvasToView(
+				diagram.canvasPosition,
+				diagram.scale,
+				shape.positionGet());
+
+			shape[movedDelta] = {
+				x: shapePositionInView.x - evt.detail.clientX,
+				y: shapePositionInView.y - evt.detail.clientY
+			};
+		}
 	}
 
 	diagram.shapeUpdate(shape, {
-		position: {
-			x: (shape[movedDelta].x + evt.detail.clientX) / scale,
-			y: (shape[movedDelta].y + evt.detail.clientY) / scale
-		}
+		position: pointViewToCanvas(
+			diagram.canvasPosition,
+			diagram.scale,
+			{
+				x: shape[movedDelta].x + evt.detail.clientX,
+				y: shape[movedDelta].y + evt.detail.clientY
+			})
 	});
 }
 

@@ -4,6 +4,7 @@ import { shapeStateDel, shapeStateSet } from '../../diagram/utils/shape-utils.js
 import { elemCreateByTemplate } from '../../diagram/svg-presenter/svg-presenter-utils.js';
 import { parseCenterAttr } from '../svg-utils.js';
 import { pointCanvasToView } from '../../diagram/utils/point-convert-utils.js';
+import { canvasMove, canvasMoveEnd } from '../../diagram/event-processors/canvas-evt-proc.js';
 
 /** shape center position */
 const shapeCenter = Symbol(0);
@@ -86,7 +87,7 @@ export class CanvasSelecEvtProc {
 				}
 
 				// canvas move
-				shapeMove(this.diagram, /** @type {ISvgPresenterShape} */(elem), evt); // only 'canvas' can be here
+				canvasMove(this.diagram, evt);
 				break;
 
 			case 'pointerdown':
@@ -187,7 +188,7 @@ export class CanvasSelecEvtProc {
 		}
 
 		// canvas move end
-		shapeMoveEnd(/** @type {ISvgPresenterShape} */(elem)); // only 'canvas' can be here
+		canvasMoveEnd(this.diagram);
 	}
 
 	/**

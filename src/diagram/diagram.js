@@ -39,12 +39,16 @@ export class Diagram extends EventTarget {
 	 * @param {Point} fixedPoint this point will not chage position while scale
 	 */
 	scaleSet(scale, fixedPoint) {
-		this.dispatch('scale');
 		this._presenter.scaleSet(scale, fixedPoint);
+		this.dispatch('scale');
 	}
 
 	/**	@param {Point} val */
-	set canvasPosition(val) { this._presenter.canvasPosition = val; }
+	set canvasPosition(val) {
+		this.dispatch('canvmove');
+		this._presenter.canvasPosition = val;
+	}
+
 	get canvasPosition() { return this._presenter.canvasPosition; }
 
 	//
