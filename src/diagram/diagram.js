@@ -44,7 +44,11 @@ export class Diagram extends EventTarget {
 	}
 
 	/**	@param {Point} val */
-	set canvasPosition(val) { this._presenter.canvasPosition = val; }
+	set canvasPosition(val) {
+		this.dispatch('canvmove');
+		this._presenter.canvasPosition = val;
+	}
+
 	get canvasPosition() { return this._presenter.canvasPosition; }
 
 	//
