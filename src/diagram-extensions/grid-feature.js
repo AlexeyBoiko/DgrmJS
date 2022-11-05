@@ -29,4 +29,5 @@ export function gridFeature(diagram, svg) {
 			svg.style.backgroundSize = `${size}px ${size}px`;
 			svg.style.backgroundPosition = `${pos.x}px ${pos.y}px`;
 		});
+		// .on('moveend', evt => console.log(evt));
 }

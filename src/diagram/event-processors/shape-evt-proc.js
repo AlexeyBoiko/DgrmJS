@@ -98,7 +98,7 @@ export class ShapeEvtProc {
 	 * @private
 	 */
 	_clean(shape) {
-		if (shape) { shapeMoveEnd(shape); }
+		if (shape) { shapeMoveEnd(this._diagram, shape); }
 		this._hoveredSet(null);
 		this._diagram.activeElement(null);
 	}
@@ -165,11 +165,13 @@ export function shapeMove(diagram, shape, evt) {
 }
 
 /**
+ * @param {IDiagramPrivate} diagram
  * @param {IEvtProcShape} shape
  */
-export function shapeMoveEnd(shape) {
+export function shapeMoveEnd(diagram, shape) {
 	disable(shape, false);
 	delete shape[movedDelta];
+	diagram.dispatch('moveend', shape);
 }
 
 /**

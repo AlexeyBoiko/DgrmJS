@@ -182,7 +182,7 @@ export class CanvasSelecEvtProc {
 
 		// selected shapes move end
 		if (this._isDownOnSelectedShape) {
-			this.selectedShapes.forEach(shape => shapeMoveEnd(shape));
+			this.selectedShapes.forEach(shape => shapeMoveEnd(this.diagram, shape));
 			this._isDownOnSelectedShape = false;
 			return;
 		}
