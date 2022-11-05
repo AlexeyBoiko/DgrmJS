@@ -29,7 +29,7 @@ export class ShapeEvtProc {
 	process(shape, evt) {
 		switch (evt.type) {
 			case 'pointermove':
-				shapeMove(this._diagram, shape, evt);
+				shapeMove(this._diagram, shape, evt, shape.connectable);
 				break;
 			case 'pointerup':
 				if (!shape[movedDelta]) {
@@ -125,8 +125,9 @@ const movedDelta = Symbol(0);
  * @param {IDiagram} diagram
  * @param {IEvtProcShape} shape
  * @param {IDiagramPrivateEvent} evt
+ * @param {boolean} bindConnectorToPointer TODO: refactor remove this
  */
-export function shapeMove(diagram, shape, evt) {
+export function shapeMove(diagram, shape, evt, bindConnectorToPointer = false) {
 	if (!shape[movedDelta]) {
 		//
 		// move start
@@ -134,7 +135,12 @@ export function shapeMove(diagram, shape, evt) {
 		diagram.selected = null;
 		disable(shape, true);
 
-		if (shape.connectable) {
+		// TODO
+		//		remove bindConnectorToPointer.
+		//		when move one connector bindConnectorToPointer = true - bing center of connector to pointer
+		//		when move many shapes bindConnectorToPointer = false
+
+		if (bindConnectorToPointer) {
 			// bind connector center to pointer
 			// connectable shape is circle so bind to center
 			shape[movedDelta] = { x: 0, y: 0 };
