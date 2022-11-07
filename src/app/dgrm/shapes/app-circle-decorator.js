@@ -12,7 +12,7 @@ export class AppCircleDecorator extends AppShapeEditorDecorator {
 		super(diagram, svgShape, addParam);
 
 		/** @private */
-		this._currentRadius = 60;
+		this._currentRadius = 48;
 	}
 
 	/**
@@ -28,7 +28,7 @@ export class AppCircleDecorator extends AppShapeEditorDecorator {
 				if (r > maxRadiusQrt) { maxRadiusQrt = r; }
 			}
 		}
-		const newRadius = ceil(60, 20, Math.sqrt(maxRadiusQrt));
+		const newRadius = ceil(48, 24, Math.sqrt(maxRadiusQrt));
 
 		if (newRadius !== this._currentRadius) {
 			this._currentRadius = newRadius;
@@ -59,7 +59,7 @@ export class AppCircleDecorator extends AppShapeEditorDecorator {
 			// visability
 			props: {
 				main: { r: mainRadius },
-				outer: { r: mainRadius + 20 },
+				outer: { r: mainRadius + 24 },
 				// out connectors
 				outright: cons.right,
 				outleft: cons.left,

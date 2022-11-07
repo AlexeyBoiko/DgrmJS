@@ -12,16 +12,16 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 		super(diagram, svgShape, addParam);
 
 		/** @private */
-		this._minWidth = this._currentWidth = 120;
+		this._minWidth = this._currentWidth = 96;
 
 		/** @private */
-		this._minHeight = this._currentHeight = 50;
+		this._minHeight = this._currentHeight = 48;
 
 		/**
 		 * outer svg elem position
 		 * @private
 		 */
-		this._outerPost = { x: -20, y: -30 };
+		this._outerPost = { x: -24, y: -24 };
 
 		/** @private */
 		this._resizeFromCenter = rectProps?.resizeFromCenter ?? true;
@@ -35,14 +35,15 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 	onTextChange(textEl, updatedProp) {
 		let maxWidth = 0;
 		for (const span of textEl.getElementsByTagName('tspan')) {
-			const width = span.getBBox().width + 4 + (this._resizeFromCenter ? 0 : 25); // 2 padding
+			const width = span.getBBox().width + 4 + // 2 padding
+				(this._resizeFromCenter ? 0 : 6); // 6 left margin for textinput
 			if (width > maxWidth) { maxWidth = width; }
 		}
-		const newWidth = ceil(this._minWidth, 40, maxWidth);
+		const newWidth = ceil(this._minWidth, 48, maxWidth);
 		const newHeight = ceil(
 			this._minHeight,
-			20,
-			textEl.getBBox().height + 4 + (this._resizeFromCenter ? 0 : 20)); // 2 padding
+			48,
+			textEl.getBBox().height + 4); // + (this._resizeFromCenter ? 0 : 20)); // 2 padding
 
 		if (newWidth !== this._currentWidth || newHeight !== this._currentHeight) {
 			this._currentWidth = newWidth;
@@ -76,7 +77,7 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 			// visability
 			props: {
 				main: rect,
-				outer: this._rectCalc(width + 40, height + 40, this._outerPost),
+				outer: this._rectCalc(width + 48, height + 48, this._outerPost),
 				// out connectors
 				outright: cons.r,
 				outleft: cons.l,
@@ -114,7 +115,7 @@ export class AppRectDecorator extends AppShapeEditorDecorator {
 	_rectCalc(width, height, currentPosition) {
 		return this._resizeFromCenter
 			? rectCalc(this._minWidth, this._minHeight, width, height)
-			: { x: currentPosition.x, y: currentPosition.y, width, height };
+			: { x: currentPosition.x, y: (this._minHeight - height) / 2, width, height };
 	}
 }
 

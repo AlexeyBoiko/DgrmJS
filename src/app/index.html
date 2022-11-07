@@ -83,13 +83,13 @@
 				text-align: left;
 			}
 
-			[data-templ] [data-text-for] {
+			/**[data-templ] [data-text-for] {
 				fill: transparent;
 			}
 
 			[data-templ].selected [data-text-for].empty {
 				fill: rgb(108 187 247 / 51%);
-			}
+			} */
 
 			[data-connect], [data-templ="select-start"] {
 				opacity: 0.51;
@@ -236,120 +236,130 @@
 			</g>
 
 			<g data-templ="circle" data-center="0,0">
-				<circle data-key="outer" data-evt-no-click="" data-evt-z-index="1" r="80" fill="transparent"
+				<circle data-key="outer" data-evt-no-click="" data-evt-z-index="1" r="72" fill="transparent"
 					stroke="transparent" stroke-width="1" />
-				<circle data-key="main" r="60" fill="#ff6600" stroke="#fff" stroke-width="1" class="main" />
+				<circle data-key="main" r="48" fill="#ff6600" stroke="#fff" stroke-width="1" class="main" data-text-for="text" />
 
-				<rect data-text-for="text" x="-45" y="-20" rx="15" ry="15" width="90" height="40" />
+				<!-- <rect data-text-for="text" x="-45" y="-20" rx="15" ry="15" width="90" height="40" /> -->
 				<text data-key="text" data-line-height="20" data-vertical-middle="10" x="0" y="0" text-anchor="middle"
 					alignment-baseline="central" fill="#fff">&nbsp;</text>
 
-				<circle data-key="outright" data-connect="out" data-connect-point="60,0" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="60" cy="0" />
-				<circle data-key="outleft" data-connect="out" data-connect-point="-60,0" data-connect-dir="left"
-					data-evt-z-index="1" r="10" cx="-60" cy="0" />
-				<circle data-key="outbottom" data-connect="out" data-connect-point="0,60" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="0" cy="60" />
-				<circle data-key="outtop" data-connect="out" data-connect-point="0,-60" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="0" cy="-60" />
+				<circle data-key="outright" data-connect="out" data-connect-point="48,0" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="48" cy="0" />
+				<circle data-key="outleft" data-connect="out" data-connect-point="-48,0" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="-48" cy="0" />
+				<circle data-key="outbottom" data-connect="out" data-connect-point="0,48" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="0" cy="48" />
+				<circle data-key="outtop" data-connect="out" data-connect-point="0,-48" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="0" cy="-48" />
 
-				<circle data-key="inright" data-connect="in" data-connect-point="60,0" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="60" cy="0" />
-				<circle data-key="inleft" data-connect="in" data-connect-point="-60,0" data-connect-dir="left"
-					data-evt-z-index="1" r="10" cx="-60" cy="0" />
-				<circle data-key="inbottom" data-connect="in" data-connect-point="0,60" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="0" cy="60" />
-				<circle data-key="intop" data-connect="in" data-connect-point="0,-60" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="0" cy="-60" />
+				<circle data-key="inright" data-connect="in" data-connect-point="48,0" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="48" cy="0" />
+				<circle data-key="inleft" data-connect="in" data-connect-point="-48,0" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="-48" cy="0" />
+				<circle data-key="inbottom" data-connect="in" data-connect-point="0,48" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="0" cy="48" />
+				<circle data-key="intop" data-connect="in" data-connect-point="0,-48" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="0" cy="-48" />
 			</g>
 
-			<g data-templ="rect" data-center="60,25">
-				<rect data-key="outer" data-evt-no-click="" data-evt-z-index="1" width="160" height="110" rx="15"
-					ry="15" x="-20" y="-30" fill="transparent" stroke="transparent" stroke-width="1"></rect>
-				<rect data-key="main" width="120" height="50" rx="15" ry="15" fill="#1aaee5" stroke="#fff"
-					stroke-width="1" class="main"></rect>
+			<g data-templ="rect" data-center="48,24">
+				<rect data-key="outer" data-evt-no-click="" data-evt-z-index="1" width="144" height="96" rx="15"
+					ry="15" x="-24" y="-24" fill="transparent" stroke="transparent" stroke-width="1"></rect>
+				<rect data-key="main" width="96" height="48" rx="15" ry="15" fill="#1aaee5" stroke="#fff"
+					stroke-width="1" class="main" data-text-for="text"></rect>
 
-				<rect data-text-for="text" x="15" y="5" rx="15" ry="15" width="90" height="40" />
-				<text data-key="text" data-line-height="20" data-vertical-middle="35" x="60" y="25" text-anchor="middle"
+				<!-- <rect data-text-for="text" x="4" y="4" rx="15" ry="15" width="92" height="40" fill="transparent" /> -->
+				<text data-key="text" data-line-height="20" data-vertical-middle="34" x="48" y="24" text-anchor="middle"
 					alignment-baseline="central" fill="#fff">&nbsp;</text>
 
-				<circle data-key="outright" data-connect="out" data-connect-point="120,25" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="120" cy="25" />
-				<circle data-key="outleft" data-connect="out" data-connect-point="0,25" data-connect-dir="left"
-					data-evt-z-index="1" r="10" cx="0" cy="25" />
-				<circle data-key="outtop" data-connect="out" data-connect-point="60,0" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="60" cy="0" />
-				<circle data-key="outbottom" data-connect="out" data-connect-point="60,50" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="60" cy="50" />
+				<circle data-key="outright" data-connect="out" data-connect-point="96,24" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="96" cy="24" />
+				<circle data-key="outleft" data-connect="out" data-connect-point="0,24" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="0" cy="24" />
+				<circle data-key="outtop" data-connect="out" data-connect-point="48,0" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="48" cy="0" />
+				<circle data-key="outbottom" data-connect="out" data-connect-point="48,48" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="48" cy="48" />
 
-				<circle data-key="inright" data-connect="in" data-connect-point="120,25" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="120" cy="25" />
-				<circle data-key="inleft" data-connect="in" data-connect-point="0,25" data-connect-dir="left"
-					data-evt-z-index="1" r="10" cx="0" cy="25" />
-				<circle data-key="intop" data-connect="in" data-connect-point="60,0" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="60" cy="0" />
-				<circle data-key="inbottom" data-connect="in" data-connect-point="60,50" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="60" cy="50" />
+				<circle data-key="inright" data-connect="in" data-connect-point="94,24" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="96" cy="24" />
+				<circle data-key="inleft" data-connect="in" data-connect-point="0,24" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="0" cy="24" />
+				<circle data-key="intop" data-connect="in" data-connect-point="48,0" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="48" cy="0" />
+				<circle data-key="inbottom" data-connect="in" data-connect-point="48,48" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="48" cy="48" />
 			</g>
 
-			<g data-templ="text" data-center="60,25">
-				<rect data-key="outer" data-evt-no-click="" data-evt-z-index="1" width="160" height="110" rx="15"
-					ry="15" x="-20" y="-30" fill="transparent" stroke="transparent" stroke-width="1"></rect>
-				<rect data-key="main" width="120" height="50" rx="15" ry="15" fill="transparent" stroke="transparent"
-					stroke-width="1" class="main"></rect>
+			<g data-templ="text" data-center="48,24">
+				<rect data-key="outer" data-evt-no-click="" data-evt-z-index="1" width="144" height="96" rx="15"
+					ry="15" x="-24" y="-24" fill="transparent" stroke="transparent" stroke-width="1"></rect>
+				<rect data-key="main" width="96" height="48" rx="15" ry="15" fill="transparent" stroke="transparent"
+					stroke-width="1" class="main" data-text-for="text"></rect>
 
-				<rect data-text-for="text" x="15" y="5" rx="15" ry="15" width="90" height="40" />
-				<text data-key="text" data-line-height="20" x="15" y="25"
+				<!-- <rect data-text-for="text" x="4" y="4" rx="15" ry="15" width="40" height="40" /> -->
+				<text data-key="text" data-line-height="20" data-vertical-middle="34" x="8" y="24"
 					alignment-baseline="central" fill="#495057">&nbsp;</text>
 
-				<circle data-key="outright" data-connect="out" data-connect-point="120,25" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="120" cy="25" />
-				<circle data-key="outleft" data-connect="out" data-connect-point="0,25" data-connect-dir="left"
-					data-evt-z-index="1" r="10" cx="0" cy="25" />
-				<circle data-key="outtop" data-connect="out" data-connect-point="60,0" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="60" cy="0" />
-				<circle data-key="outbottom" data-connect="out" data-connect-point="60,50" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="60" cy="50" />
+				<circle data-key="outright" data-connect="out" data-connect-point="96,24" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="96" cy="24" />
+				<circle data-key="outleft" data-connect="out" data-connect-point="0,24" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="0" cy="24" />
+				<circle data-key="outtop" data-connect="out" data-connect-point="48,0" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="48" cy="0" />
+				<circle data-key="outbottom" data-connect="out" data-connect-point="48,48" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="48" cy="48" />
 
-				<circle data-key="inright" data-connect="in" data-connect-point="120,25" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="120" cy="25" />
-				<circle data-key="inleft" data-connect="in" data-connect-point="0,25" data-connect-dir="left"
-					data-evt-z-index="1" r="10" cx="0" cy="25" />
-				<circle data-key="intop" data-connect="in" data-connect-point="60,0" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="60" cy="0" />
-				<circle data-key="inbottom" data-connect="in" data-connect-point="60,50" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="60" cy="50" />
+				<circle data-key="inright" data-connect="in" data-connect-point="94,24" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="96" cy="24" />
+				<circle data-key="inleft" data-connect="in" data-connect-point="0,24" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="0" cy="24" />
+				<circle data-key="intop" data-connect="in" data-connect-point="48,0" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="48" cy="0" />
+				<circle data-key="inbottom" data-connect="in" data-connect-point="48,48" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="48" cy="48" />
 			</g>
 
-			<g data-templ="rhomb" data-center="60,35">
-				<path data-key="outer" data-evt-no-click="" data-evt-z-index="1" d="M -40 35 L60 -35 L160 35 L60 105 Z"
+			<g data-templ="rhomb" data-center="48,48">
+				<!-- <path data-key="outer" data-evt-no-click="" data-evt-z-index="1" d="M -40 35 L60 -35 L160 35 L60 105 Z"
 					stroke-width="1" stroke="transparent" fill="transparent" />
 				<path data-key="border" d="M0 35 L60 0 L120 35 L60 70 Z" stroke-width="20" stroke="#fff"
-					fill="transparent" stroke-linejoin="round" />
-				<path data-key="main" d="M0 35 L60 0 L120 35 L60 70 Z" stroke-width="18" stroke-linejoin="round"
-					stroke="#1D809F" fill="#1D809F" />
+					fill="transparent" stroke-linejoin="round" /> -->
+				<!-- <path data-key="main" d="M0 39 L39 0 L78 39 L39 78 Z" stroke-width="18" stroke-linejoin="round"
+					stroke="#1D809F" fill="#1D809F" data-text-for="text" /> -->
 
-				<rect data-text-for="text" x="15" y="15" rx="15" ry="15" width="90" height="40" />
-				<text data-key="text" data-line-height="20" data-vertical-middle="45" x="60" y="35" text-anchor="middle"
+				<path data-key="outer" data-evt-no-click="" data-evt-z-index="1" d="M-24 48 L48 -24 L120 48 L48 120 Z"
+					stroke-width="1" stroke="red" fill="transparent" />
+				<path data-key="border" d="M9 48 L48 9 L87 48 L48 87 Z" stroke-width="20" stroke="#fff"
+					fill="transparent" stroke-linejoin="round" />
+				<path data-key="main" d="M9 48 L48 9 L87 48 L48 87 Z" stroke-width="18" stroke-linejoin="round"
+					stroke="#1D809F" fill="#1D809F" data-text-for="text" />
+
+
+				<!-- <rect data-text-for="text" x="15" y="15" rx="15" ry="15" width="90" height="40" /> -->
+				<!-- <text data-key="text" data-line-height="20" data-vertical-middle="45" x="60" y="35" text-anchor="middle"
+					alignment-baseline="central" fill="#fff">&nbsp;</text> -->
+				<text data-key="text" data-line-height="20" data-vertical-middle="58" x="48" y="24" text-anchor="middle"
 					alignment-baseline="central" fill="#fff">&nbsp;</text>
 
-				<circle data-key="outleft" data-connect="out" data-connect-point="-8,35" data-connect-dir="left"
-					data-evt-z-index="1" r="10" cx="-8" cy="35" />
-				<circle data-key="outright" data-connect="out" data-connect-point="128,35" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="128" cy="35" />
-				<circle data-key="outtop" data-connect="out" data-connect-point="60,-8" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="60" cy="-8" />
-				<circle data-key="outbottom" data-connect="out" data-connect-point="60,78" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="60" cy="78" />
+				<circle data-key="outleft" data-connect="out" data-connect-point="0,48" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="0" cy="48" />
+				<circle data-key="outright" data-connect="out" data-connect-point="96,48" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="96" cy="48" />
+				<circle data-key="outtop" data-connect="out" data-connect-point="48,0" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="48" cy="0" />
+				<circle data-key="outbottom" data-connect="out" data-connect-point="48,96" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="48" cy="96" />
 
-				<circle data-key="inleft" data-connect="in" data-connect-point="-8,35" data-connect-dir="left"
-					data-evt-z-index="1" r="10" cx="-8" cy="35" />
-				<circle data-key="inright" data-connect="in" data-connect-point="128,35" data-connect-dir="right"
-					data-evt-z-index="1" r="10" cx="128" cy="35" />
-				<circle data-key="intop" data-connect="in" data-connect-point="60,-8" data-connect-dir="top"
-					data-evt-z-index="1" r="10" cx="60" cy="-8" />
-				<circle data-key="inbottom" data-connect="in" data-connect-point="60,78" data-connect-dir="bottom"
-					data-evt-z-index="1" r="10" cx="60" cy="78" />
+				<circle data-key="inleft" data-connect="in" data-connect-point="0,48" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="0" cy="48" />
+				<circle data-key="inright" data-connect="in" data-connect-point="96,48" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="96" cy="48" />
+				<circle data-key="intop" data-connect="in" data-connect-point="48,0" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="48" cy="0" />
+				<circle data-key="inbottom" data-connect="in" data-connect-point="48,96" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="48" cy="96" />
 			</g>
 
 			<circle data-templ="select-start" r="10" />

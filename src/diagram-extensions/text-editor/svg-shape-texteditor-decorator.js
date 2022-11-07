@@ -1,5 +1,5 @@
 import { SvgShapeEditableAbstractDecorator } from './svg-shape-editable-abstract-decorator.js';
-import { textEditorHighlightEmpty, textEditorShow } from './text-editor-utils.js';
+import { /* textEditorHighlightEmpty, */ textEditorShow } from './text-editor-utils.js';
 
 export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorator {
 	/**
@@ -25,9 +25,10 @@ export class SvgShapeTextEditorDecorator extends SvgShapeEditableAbstractDecorat
 			Object.assign(this.txtProps, param.props); // TODO: save only 'textContent' props
 		}
 
-		if (param.state && param.state.has('selected') && !this.stateGet().has('selected')) {
-			textEditorHighlightEmpty(this.svgEl, this.txtProps);
-		}
+		// currnelty don't used
+		// if (param.state && param.state.has('selected') && !this.stateGet().has('selected')) {
+		// 	textEditorHighlightEmpty(this.svgEl, this.txtProps);
+		// }
 
 		super.update(param);
 	}

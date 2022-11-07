@@ -64,14 +64,15 @@ export function textEditorShow(svgShapeEl, props, targetEl, onchange, onblur) {
 		});
 }
 
-/**
- * @param {SVGGraphicsElement} svgShapeEl
- * @param {DiagramShapeProps} props
- */
-export function textEditorHighlightEmpty(svgShapeEl, props) {
-	svgShapeEl.querySelectorAll('[data-text-for]').forEach(el => {
-		if (!props[el.getAttribute('data-text-for')]?.textContent) {
-			el.classList.add('empty');
-		}
-	});
-}
+// currnelty don't used
+// /**
+//  * @param {SVGGraphicsElement} svgShapeEl
+//  * @param {DiagramShapeProps} props
+//  */
+// export function textEditorHighlightEmpty(svgShapeEl, props) {
+// 	svgShapeEl.querySelectorAll('[data-text-for]').forEach(el => {
+// 		if (!props[el.getAttribute('data-text-for')]?.textContent) {
+// 			el.classList.add('empty');
+// 		}
+// 	});
+// }
