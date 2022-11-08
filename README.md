@@ -1,5 +1,5 @@
 # DgrmJS
-[NPM](https://badge.fury.io/js/dgrm)
+Flow diagram editor [dgrm.net](https://app.dgrm.net "Diagram builder") | [NPM](https://badge.fury.io/js/dgrm)
 
 DgrmJS is a JavaScript library for creating SVG flow diagram editors.  
 The main goal of the library is to set up workflows in BPM (Business Process Management) systems.
@@ -10,14 +10,7 @@ The main goal of the library is to set up workflows in BPM (Business Process Man
 
 <br />
 
-Demo: diagram editor [dgrm.net](https://app.dgrm.net "Diagram builder").
-
 <img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-sample.png" alt="diagram" width="600"/>
-
-Articles:  
-[JavaScript SVG diagram editor 6.5 times smaller than Bootstrap](https://alexey-boyko.medium.com/javascript-svg-diagram-editor-which-weighs-6-5-less-than-bootstrap-open-source-library-b753feaaf835 "JavaScript SVG diagram editor 6.5 times smaller than Bootstrap")  
-[JavaScript diagram editor that renders diagrams from PNG images (open source)](https://medium.com/codex/javascript-diagram-editor-that-renders-diagrams-from-png-images-open-source-d1de0f053088 "JavaScript diagram editor that renders diagrams from PNG images (open source)")  
-[JavaScript text editor for SVG](https://alexey-boyko.medium.com/javascript-text-editor-for-svg-6881f670d432)
 
 ## Main idea
 - Allow developers to use standard SVG objects and features to declaratively create shapes that will be used in the diagram.  
@@ -27,6 +20,13 @@ Developers can use these events to implement their own logic, for example, make 
 
 ## Apache-2.0 license
 Free for any type of use. Including commercial projects.
+
+## Articles:  
+[JavaScript SVG diagram editor 6.5 times smaller than Bootstrap](https://alexey-boyko.medium.com/javascript-svg-diagram-editor-which-weighs-6-5-less-than-bootstrap-open-source-library-b753feaaf835 "JavaScript SVG diagram editor 6.5 times smaller than Bootstrap")  
+[JavaScript diagram editor that renders diagrams from PNG images (open source)](https://medium.com/codex/javascript-diagram-editor-that-renders-diagrams-from-png-images-open-source-d1de0f053088 "JavaScript diagram editor that renders diagrams from PNG images (open source)")  
+[JavaScript text editor for SVG](https://alexey-boyko.medium.com/javascript-text-editor-for-svg-6881f670d432)  
+[Flowchart editor UI](https://alexey-boyko.medium.com/flowchart-editor-ui-a8face0729d0)  
+[JavaScript: Zoom like in maps for SVG/HTML](https://alexey-boyko.medium.com/javascript-zoom-like-in-maps-for-svg-html-89c0df016d8d)
 
 ## How to use
 See a minimalistic example - [GitHub repository: DgrmJS Example](https://github.com/AlexeyBoiko/DgrmJS-Example).
