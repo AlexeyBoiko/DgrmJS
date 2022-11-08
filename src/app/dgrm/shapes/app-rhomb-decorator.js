@@ -12,7 +12,7 @@ export class AppRhombDecorator extends AppShapeEditorDecorator {
 		super(diagram, svgShape, addParam);
 
 		/** @private */
-		this._width = 120;
+		this._width = 78;
 	}
 
 	/**
@@ -27,15 +27,15 @@ export class AppRhombDecorator extends AppShapeEditorDecorator {
 		}
 
 		const newWidth = resizeAlg(
-			// minVal
-			120,
-			// incrementVal
-			40,
+			// minVal 24 * 4 - 18 (stroke-width="18")
+			78,
+			// incrementVal, 24 * 2 = 48
+			48,
 			// currentVal
 			this._width,
 			// isOutFunc
 			width => {
-				this._testPath.setAttribute('d', rhombPathCalc(120, 70, width));
+				this._testPath.setAttribute('d', rhombPathCalc(78, 78, width, 9)); // 18 (stroke-width="18") / 2
 				return svgTextIsOut(textEl, this._testPath);
 			});
 
@@ -50,8 +50,8 @@ export class AppRhombDecorator extends AppShapeEditorDecorator {
 	 * @param {number} width
 	 */
 	_resize(width) {
-		const rhomb = { d: rhombPathCalc(120, 70, width) };
-		const connectors = rhombCalc(120, 70, width + 16);
+		const rhomb = { d: rhombPathCalc(78, 78, width, 9) };
+		const connectors = rhombCalc(96, 96, width + 18, 0); // 96 = 24 * 4
 		const cons = {
 			left: { cx: connectors.l.x },
 			right: { cx: connectors.r.x },
@@ -68,7 +68,7 @@ export class AppRhombDecorator extends AppShapeEditorDecorator {
 			// visability
 			props: {
 				main: rhomb,
-				outer: { d: rhombPathCalc(120, 70, width + 80) },
+				outer: { d: rhombPathCalc(78, 78, width + 48 + 18, 9) },
 				border: rhomb,
 				// out connectors
 				outleft: cons.left,
@@ -115,16 +115,17 @@ export class AppRhombDecorator extends AppShapeEditorDecorator {
  * @param {number} baseWidth
  * @param {number} baseHeight
  * @param {number} width
+ * @param {number} margin
  * @returns {{ l:Point, t:Point, r:Point, b:Point }}
  */
-function rhombCalc(baseWidth, baseHeight, width) {
+function rhombCalc(baseWidth, baseHeight, width, margin) {
 	const incrm = (width - baseWidth) / 2;
 	const incrmNeg = -1 * incrm;
 	return {
-		l: { x: incrmNeg, y: baseHeight / 2 },
-		t: { x: baseWidth / 2, y: incrmNeg },
-		r: { x: baseWidth + incrm, y: baseHeight / 2 },
-		b: { x: baseWidth / 2, y: baseHeight + incrm }
+		l: { x: incrmNeg + margin, y: baseHeight / 2 + margin },
+		t: { x: baseWidth / 2 + margin, y: incrmNeg + margin },
+		r: { x: baseWidth + incrm + margin, y: baseHeight / 2 + margin },
+		b: { x: baseWidth / 2 + margin, y: baseHeight + incrm + margin }
 	};
 }
 
@@ -132,10 +133,11 @@ function rhombCalc(baseWidth, baseHeight, width) {
  * @param {number} baseWidth
  * @param {number} baseHeight
  * @param {number} width
+ * @param {number} margin
  * @returns {string}
  */
-function rhombPathCalc(baseWidth, baseHeight, width) {
-	const rhomb = rhombCalc(baseWidth, baseHeight, width);
+function rhombPathCalc(baseWidth, baseHeight, width, margin) {
+	const rhomb = rhombCalc(baseWidth, baseHeight, width, margin);
 	return `M${rhomb.l.x} ${rhomb.l.y} L${rhomb.t.x} ${rhomb.t.y} L${rhomb.r.x} ${rhomb.r.y} L${rhomb.b.x} ${rhomb.b.y} Z`;
 }
 
