@@ -19,6 +19,7 @@ export function pngDgrmCreate(svg, callBack, dgrmChunkVal) {
 	/** @type {SVGSVGElement} */
 	// @ts-ignore
 	const svgVirtual = svg.cloneNode(true);
+	svgVirtual.style.backgroundImage = null;
 	svgVirtual.querySelectorAll('.selected, .highlighted').forEach(el => el.classList.remove('selected', 'highlighted'));
 
 	// diagram to left corner
