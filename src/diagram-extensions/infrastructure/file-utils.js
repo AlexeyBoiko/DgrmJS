@@ -3,7 +3,44 @@
  * @param {Blob} blob
  * @param {string} name
  */
-export function fileSave(blob, name) {
+export async function fileSave(blob, name) {
+	if ('showSaveFilePicker' in window) {
+		fileSaveAs(blob);
+	} else {
+		fileDownload(blob, name);
+	}
+}
+
+/**
+ * save file with "File save as" dialog
+ * @param {Blob} blob
+ */
+async function fileSaveAs(blob) {
+	try {
+		// @ts-ignore
+		const writable = await (await window.showSaveFilePicker({
+			types: [
+				{
+					description: 'PNG Image',
+					accept: {
+						'image/png': ['.png']
+					}
+				}
+			]
+		})).createWritable();
+		await writable.write(blob);
+		await writable.close();
+	} catch {
+		alert('Diagram not saved');
+	}
+}
+
+/**
+ * save file with default download process
+ * @param {Blob} blob
+ * @param {string} name
+ */
+function fileDownload(blob, name) {
 	const link = document.createElement('a');
 	link.download = name;
 	link.href = URL.createObjectURL(blob);
