@@ -103,9 +103,9 @@ export class FileOptions extends HTMLElement {
 				});
 				break;
 			case 'save':
-				this._diagram.pngCreate(png => {
+				this._diagram.pngCreate(async png => {
 					if (!png) { alert('Diagram is empty'); return; }
-					fileSave(png, 'dgrm.png');
+					await fileSave(png, 'dgrm.png');
 				});
 				break;
 			case 'link': {
