@@ -33,6 +33,6 @@ export default {
 				}
 			}
 		}),
-		replace({ 'https://localhost:7156/api': 'https://dgrm.boyko.tech/api' })
+		replace({ preventAssignment: true, 'https://localhost:7156/api': 'https://dgrm.boyko.tech/api' })
 	]
 };
