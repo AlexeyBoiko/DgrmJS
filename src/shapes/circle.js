@@ -1,8 +1,8 @@
 /**
- * @param {PositionScale} canvasPostionScale
+ * @param {PositionScale} canvasPositionScale
  * @param {CircleOptions} circleOptions
  */
-export function circle(canvasPostionScale, circleOptions) {
+export function circle(canvasPositionScale, circleOptions) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.innerHTML =
 	`<g data-templ="circle" data-center="0,0" id="circle">
@@ -32,7 +32,7 @@ export function circle(canvasPostionScale, circleOptions) {
 			data-evt-z-index="1" r="10" cx="0" cy="-48" />
 	</g>`;
 
-	shapeEventsProcess(canvasPostionScale, svgGrp, circleOptions.position);
+	shapeEventsProcess(canvasPositionScale, svgGrp, circleOptions.position);
 
 	return svgGrp;
 }

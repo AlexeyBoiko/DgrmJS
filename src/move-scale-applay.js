@@ -1,13 +1,13 @@
 /**
  * @param {HTMLElement} svg
  * @param {HTMLElement} canvas
- * @param {PositionScale} canvasPostionScale
+ * @param {PositionScale} canvasPositionScale
  */
-export function moveScaleApplay(svg, canvas, canvasPostionScale) {
-	const gripUpdate = applayGrid(svg, canvasPostionScale);
+export function moveScaleApplay(svg, canvas, canvasPositionScale) {
+	const gripUpdate = applayGrid(svg, canvasPositionScale);
 
 	function transform() {
-		canvas.style.transform = `matrix(${canvasPostionScale.scale}, 0, 0, ${canvasPostionScale.scale}, ${canvasPostionScale.position.x}, ${canvasPostionScale.position.y})`;
+		canvas.style.transform = `matrix(${canvasPositionScale.scale}, 0, 0, ${canvasPositionScale.scale}, ${canvasPositionScale.position.x}, ${canvasPositionScale.position.y})`;
 		gripUpdate();
 	}
 
@@ -18,17 +18,17 @@ export function moveScaleApplay(svg, canvas, canvasPostionScale) {
 	function scale(nextScale, originPoint) {
 		if (nextScale < 0.25 || nextScale > 4) { return; }
 
-		const divis = nextScale / canvasPostionScale.scale;
-		canvasPostionScale.scale = nextScale;
+		const divis = nextScale / canvasPositionScale.scale;
+		canvasPositionScale.scale = nextScale;
 
-		canvasPostionScale.position.x = divis * (canvasPostionScale.position.x - originPoint.x) + originPoint.x;
-		canvasPostionScale.position.y = divis * (canvasPostionScale.position.y - originPoint.y) + originPoint.y;
+		canvasPositionScale.position.x = divis * (canvasPositionScale.position.x - originPoint.x) + originPoint.x;
+		canvasPositionScale.position.y = divis * (canvasPositionScale.position.y - originPoint.y) + originPoint.y;
 
 		transform();
 	}
 
 	// move, scale with fingers
-	applayFingers(svg, canvasPostionScale, scale, transform);
+	applayFingers(svg, canvasPositionScale, scale, transform);
 
 	// scale with mouse wheel
 	svg.addEventListener('wheel', /** @param {WheelEvent} evt */ evt => {
@@ -39,19 +39,19 @@ export function moveScaleApplay(svg, canvas, canvasPostionScale) {
 			: 0.25; // mouse wheel
 
 		scale(
-			canvasPostionScale.scale + (delta < 0 ? scaleStep : -scaleStep),
+			canvasPositionScale.scale + (delta < 0 ? scaleStep : -scaleStep),
 			evtPoint(evt));
 	});
 }
 
 /**
  * @param {HTMLElement} svg
- * @param {PositionScale} canvasPostionScale
+ * @param {PositionScale} canvasPositionScale
  * @param {{(nextScale:number, originPoint:Point):void}} scaleFn
  * @param {{():void}} transformFn
  * @return
  */
-function applayFingers(svg, canvasPostionScale, scaleFn, transformFn) {
+function applayFingers(svg, canvasPositionScale, scaleFn, transformFn) {
 	/** @type {Pointer} */
 	let firstPointer;
 
@@ -71,8 +71,8 @@ function applayFingers(svg, canvasPostionScale, scaleFn, transformFn) {
 	function onMove(evt) {
 		if (firstPoinerShift && !secondPointer) {
 			// move with one poiner
-			canvasPostionScale.position.x = evt.clientX + firstPoinerShift.x;
-			canvasPostionScale.position.y = evt.clientY + firstPoinerShift.y;
+			canvasPositionScale.position.x = evt.clientX + firstPoinerShift.x;
+			canvasPositionScale.position.y = evt.clientY + firstPoinerShift.y;
 			transformFn();
 			return;
 		}
@@ -90,12 +90,12 @@ function applayFingers(svg, canvasPostionScale, scaleFn, transformFn) {
 		// not first move
 		if (distance) {
 			// move
-			canvasPostionScale.position.x = canvasPostionScale.position.x + centerNew.x - center.x;
-			canvasPostionScale.position.y = canvasPostionScale.position.x + centerNew.y - center.y;
+			canvasPositionScale.position.x = canvasPositionScale.position.x + centerNew.x - center.x;
+			canvasPositionScale.position.y = canvasPositionScale.position.x + centerNew.y - center.y;
 
 			// scale
 			scaleFn(
-				canvasPostionScale.scale / distance * distanceNew,
+				canvasPositionScale.scale / distance * distanceNew,
 				evtPoint(evt));
 		}
 
@@ -136,8 +136,8 @@ function applayFingers(svg, canvasPostionScale, scaleFn, transformFn) {
 		if (!firstPointer) {
 			firstPointer = evtPointer(evt);
 			firstPoinerShift = {
-				x: canvasPostionScale.position.x - firstPointer.pos.x,
-				y: canvasPostionScale.position.y - firstPointer.pos.y
+				x: canvasPositionScale.position.x - firstPointer.pos.x,
+				y: canvasPositionScale.position.y - firstPointer.pos.y
 			};
 			return;
 		}
@@ -161,9 +161,9 @@ function applayFingers(svg, canvasPostionScale, scaleFn, transformFn) {
 
 /**
  * @param {HTMLElement} svg
- * @param {PositionScale} canvasPostionScale
+ * @param {PositionScale} canvasPositionScale
  */
-function applayGrid(svg, canvasPostionScale) {
+function applayGrid(svg, canvasPositionScale) {
 	const cellSize = 24;
 
 	let curOpacity;
@@ -179,13 +179,13 @@ function applayGrid(svg, canvasPostionScale) {
 	svg.style.backgroundSize = `${cellSize}px ${cellSize}px`;
 
 	return function() {
-		const size = cellSize * canvasPostionScale.scale;
+		const size = cellSize * canvasPositionScale.scale;
 
-		if (canvasPostionScale.scale < 0.5) { backImg(0); } else
-		if (canvasPostionScale.scale <= 0.9) { backImg(0.3); } else { backImg(0.7); }
+		if (canvasPositionScale.scale < 0.5) { backImg(0); } else
+		if (canvasPositionScale.scale <= 0.9) { backImg(0.3); } else { backImg(0.7); }
 
 		svg.style.backgroundSize = `${size}px ${size}px`;
-		svg.style.backgroundPosition = `${canvasPostionScale.position.x}px ${canvasPostionScale.position.y}px`;
+		svg.style.backgroundPosition = `${canvasPositionScale.position.x}px ${canvasPositionScale.position.y}px`;
 	};
 }
 
