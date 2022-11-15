@@ -3,7 +3,7 @@ import minifyHTML from 'rollup-plugin-minify-html-literals';
 import replace from '@rollup/plugin-replace';
 
 export default {
-	input: 'src/app/index.js',
+	input: 'src/index.js',
 	output: {
 		file: 'dist/app/index.js',
 		format: 'iife',

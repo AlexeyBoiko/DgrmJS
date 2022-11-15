@@ -1,3 +1,5 @@
+import { processed } from './shapes/circle.js';
+
 /**
  * @param {HTMLElement} svg
  * @param {HTMLElement} canvas
@@ -125,7 +127,11 @@ function applayFingers(svg, canvasPositionScale, scaleFn, transformFn) {
 		}
 	};
 
-	svg.addEventListener('pointerdown', evt => {
+	svg.addEventListener('pointerdown', /** @type {DgrmEvent} */ evt => {
+		if (evt[processed] || (!firstPointer && !evt.isPrimary)) {
+			return;
+		}
+
 		svg.setPointerCapture(evt.pointerId);
 		if (!firstPointer && !secondPointer) {
 			svg.addEventListener('pointercancel', cancel, { passive: true, once: true });
@@ -198,3 +204,5 @@ function evtPoint(evt) { return { x: evt.clientX, y: evt.clientY }; }
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { {id:number, pos?:Point} } Pointer */
 /** @typedef { {position:Point, scale:number} } PositionScale */
+
+/** @typedef {import("./shapes/circle").DgrmEvent} DgrmEvent */
