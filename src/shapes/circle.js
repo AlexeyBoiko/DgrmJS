@@ -1,8 +1,8 @@
 /**
- * @param {PositionScale} canvasPositionScale
+ * @param {CanvasData} canvasData
  * @param {CircleOptions} circleOptions
  */
-export function circle(canvasPositionScale, circleOptions) {
+export function circle(canvasData, circleOptions) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.innerHTML =
 	`<g data-templ="circle" data-center="0,0" id="circle">
@@ -32,53 +32,89 @@ export function circle(canvasPositionScale, circleOptions) {
 			data-evt-z-index="1" r="10" cx="0" cy="-48" />
 	</g>`;
 
-	shapeEventsProcess(canvasPositionScale, svgGrp, circleOptions.position);
+	shapeEventsProcess(canvasData, svgGrp, circleOptions.position);
 
 	return svgGrp;
 }
 
 /**
- * @param {PositionScale} canvasPostionScale
+ * @param {CanvasData} canvasData
  * @param {SVGGraphicsElement} svgGrp
  * @param {Point} shapePosition
  */
-function shapeEventsProcess(canvasPostionScale, svgGrp, shapePosition) {
+function shapeEventsProcess(canvasData, svgGrp, shapePosition) {
 	function transform() {
 		svgGrp.style.transform = `translate(${shapePosition.x}px, ${shapePosition.y}px)`;
 	};
 	transform();
 
+	moveEventProcess(
+		svgGrp.querySelector('[data-key="main"]'),
+		canvasData,
+		shapePosition,
+		// onMove
+		transform,
+		// onMoveEnd
+		() => {
+			shapePosition.x = placeToCell(shapePosition.x);
+			shapePosition.y = placeToCell(shapePosition.y);
+			transform();
+		});
+
+	const cellSizeHalf = canvasData.cell / 2;
+	/** @param {number} coordinate */
+	function placeToCell(coordinate) {
+		const coor = (Math.round(coordinate / canvasData.cell) * canvasData.cell);
+		return (coordinate - coor > 0) ? coor + cellSizeHalf : coor - cellSizeHalf;
+	}
+}
+
+/**
+ * @param {Element} element
+ * @param {CanvasData} canvasScale
+ * @param {Point} shapePosition
+ * @param {{():void}} onMove
+ * @param {{():void}} onMoveEnd
+ */
+function moveEventProcess(element, canvasScale, shapePosition, onMove, onMoveEnd) {
 	/** @type {Point} */
 	let pointDownShift;
 
+	let isMoved = false;
+
 	/** @param {PointerEvent} evt */
-	function onMove(evt) {
+	function move(evt) {
 		if (pointDownShift) {
-			shapePosition.x = (evt.clientX + pointDownShift.x) / canvasPostionScale.scale;
-			shapePosition.y = (evt.clientY + pointDownShift.y) / canvasPostionScale.scale;
-			transform();
+			shapePosition.x = (evt.clientX + pointDownShift.x) / canvasScale.scale;
+			shapePosition.y = (evt.clientY + pointDownShift.y) / canvasScale.scale;
+			isMoved = true;
+			onMove();
 		}
 	}
 
 	function cancel() {
+		element.removeEventListener('pointermove', onMove);
 		pointDownShift = null;
-		svgGrp.removeEventListener('pointermove', onMove);
+		if (isMoved) {
+			onMoveEnd();
+		}
+		isMoved = false;
 	}
 
-	svgGrp.querySelector('[data-key="main"]').addEventListener('pointerdown', /** @param {PointerEvent} evt */ evt => {
+	element.addEventListener('pointerdown', /** @param {PointerEvent} evt */ evt => {
 		evt.stopPropagation();
-		svgGrp.setPointerCapture(evt.pointerId);
-		svgGrp.addEventListener('pointercancel', cancel, { passive: true, once: true });
-		svgGrp.addEventListener('pointerup', cancel, { passive: true, once: true });
-		svgGrp.addEventListener('pointermove', onMove, { passive: true });
+		element.setPointerCapture(evt.pointerId);
+		element.addEventListener('pointercancel', cancel, { passive: true, once: true });
+		element.addEventListener('pointerup', cancel, { passive: true, once: true });
+		element.addEventListener('pointermove', move, { passive: true });
 
 		pointDownShift = {
-			x: shapePosition.x * canvasPostionScale.scale - evt.clientX,
-			y: shapePosition.y * canvasPostionScale.scale - evt.clientY
+			x: shapePosition.x * canvasScale.scale - evt.clientX,
+			y: shapePosition.y * canvasScale.scale - evt.clientY
 		};
 	}, { passive: true });
 }
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { {position: Point, title?: string} } CircleOptions */
-/** @typedef { {position:Point, scale:number} } PositionScale */
+/** @typedef { {scale:number, cell:number} } CanvasData */

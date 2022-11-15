@@ -7,11 +7,12 @@ const canvas = document.getElementById('canvas');
 // move, scale
 
 const svg = document.getElementById('diagram');
-const canvasPositionScale = {
+const canvasData = {
 	position: { x: 0, y: 0 },
-	scale: 1
+	scale: 1,
+	cell: 24
 };
-moveScaleApplay(svg, canvas, canvasPositionScale);
+moveScaleApplay(svg, canvas, canvasData);
 
 //
 // Generate
@@ -26,7 +27,7 @@ moveScaleApplay(svg, canvas, canvasPositionScale);
 	for (let row = 0; row < 1; row++) {
 		for (let ii = 0; ii < 1; ii++) {
 			const shapeSvgElement = circle(
-				canvasPositionScale,
+				canvasData,
 				{
 					position: { x: posX += 120, y: posY },
 					title: counter.toString()
