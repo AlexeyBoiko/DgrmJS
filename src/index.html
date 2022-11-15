@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<link rel="icon" type="image/png"
+		href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAN5JREFUSEvNlc0RgyAQRtk2xEsqyaQEtYCYyoIFxFpSQg6BczrYDEZn+BdXnAk3D7zHt6wLsIMXHMxn/y+oRiUYwzMANrKpn25FdiWY4dcZ+gHAiyshC/jj3SPA3TmxJyELNNhJsLhequWn5WOzYIIiour4LSyBQbVVTxJYJ0YmfIkN15LsBMFyGBJ9J7KrBamLIrX+sQxJ6KddTZCET0S/LKYoKdgLT95BCXhUUAoeFJSEe4LS8IBAYvx9SHdLbJ/VRdUYE9DgmQno8AzBPvimWUR9u1dHBRVMGtcU2RcViIEZF5cYswAAAABJRU5ErkJggg==">
+	<style>
+		html,
+		body,
+		#diagram {
+			height: 100%;
+			width: 100%;
+			margin: 0;
+			user-select: none;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Liberation Sans", sans-serif;
+			font-size: 16px;
+			color: rgb(73, 80, 87);
+		}
+		#diagram {
+			shape-rendering:optimizeSpeed;
+			text-rendering:optimizeSpeed;
+		}
+		/*#canvas {
+			will-change: transform;
+		}*/
+	</style>
+	<title>Dgrm</title>
+</head>
+
+<body>
+	<svg id="diagram" xmlns="http://www.w3.org/2000/svg"
+		style="touch-action: none; background-color: #fff; display:block; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;">
+		<style type="text/css">
+			[data-connect] {
+				opacity: 0.51;
+				stroke: rgb(108 187 247);
+				fill: rgb(108 187 247);
+			}
+		</style>
+		<defs>
+			<g data-templ="circle" data-center="0,0" id="circle">
+				<circle data-key="outer" data-evt-no-click="" data-evt-z-index="1" r="72" fill="transparent"
+					stroke="transparent" stroke-width="1" />
+				<circle data-key="main" r="48" fill="#ff6600" stroke="#fff" stroke-width="1" class="main" data-text-for="text" />
+
+				<text data-key="text" data-line-height="20" data-vertical-middle="10" x="0" y="0" text-anchor="middle"
+					alignment-baseline="central" fill="#fff">&nbsp;</text>
+
+				<circle data-key="outright" data-connect="out" data-connect-point="48,0" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="48" cy="0" />
+				<circle data-key="outleft" data-connect="out" data-connect-point="-48,0" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="-48" cy="0" />
+				<circle data-key="outbottom" data-connect="out" data-connect-point="0,48" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="0" cy="48" />
+				<circle data-key="outtop" data-connect="out" data-connect-point="0,-48" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="0" cy="-48" />
+
+				<circle data-key="inright" data-connect="in" data-connect-point="48,0" data-connect-dir="right"
+					data-evt-z-index="1" r="10" cx="48" cy="0" />
+				<circle data-key="inleft" data-connect="in" data-connect-point="-48,0" data-connect-dir="left"
+					data-evt-z-index="1" r="10" cx="-48" cy="0" />
+				<circle data-key="inbottom" data-connect="in" data-connect-point="0,48" data-connect-dir="bottom"
+					data-evt-z-index="1" r="10" cx="0" cy="48" />
+				<circle data-key="intop" data-connect="in" data-connect-point="0,-48" data-connect-dir="top"
+					data-evt-z-index="1" r="10" cx="0" cy="-48" />
+			</g>
+		</defs>
+		<g id="canvas"></g>
+	</svg>
+	<script src="index.js" type="module"></script>
+</body>
+
+</html>
