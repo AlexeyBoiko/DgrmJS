@@ -54,10 +54,10 @@ export function moveScaleApplay(svg, canvas, canvasPositionScale) {
  * @return
  */
 function applayFingers(svg, canvasPositionScale, scaleFn, transformFn) {
-	/** @type {Pointer} */
+	/** @type { Pointer } */
 	let firstPointer;
 
-	/** @type {Pointer} */
+	/** @type { Pointer} */
 	let secondPointer;
 
 	/** @type {number} */
@@ -66,20 +66,29 @@ function applayFingers(svg, canvasPositionScale, scaleFn, transformFn) {
 	/** @type {Point} */
 	let center;
 
-	/** @type {Point} */
-	let firstPoinerShift;
+	const cancel = function(evt) {
+		distance = null;
+		center = null;
+		if (firstPointer?.id === evt.pointerId) { firstPointer = null; }
+		if (secondPointer?.id === evt.pointerId) { secondPointer = null; }
+	};
 
-	/** @param {PointerEvent} evt */
-	function onMove(evt) {
-		if (firstPoinerShift && !secondPointer) {
-			// move with one poiner
-			canvasPositionScale.position.x = evt.clientX + firstPoinerShift.x;
-			canvasPositionScale.position.y = evt.clientY + firstPoinerShift.y;
-			transformFn();
+	svg.addEventListener('pointerdown', evt => {
+		if (evt[processed] || (!firstPointer && !evt.isPrimary)) {
 			return;
 		}
 
-		// move and scale with two pointers
+		if (!firstPointer) { firstPointer = evtPointer(evt, canvasPositionScale); return; }
+		if (!secondPointer) { secondPointer = evtPointer(evt, canvasPositionScale); }
+	});
+	svg.addEventListener('pointermove', /** @type {PointerEvent} */ evt => {
+		if ((firstPointer && !secondPointer) || (!firstPointer && secondPointer)) {
+			// move with one poiner
+			canvasPositionScale.position.x = evt.clientX + (firstPointer || secondPointer).shift.x;
+			canvasPositionScale.position.y = evt.clientY + (firstPointer || secondPointer).shift.y;
+			transformFn();
+			return;
+		}
 
 		if (!secondPointer || !firstPointer || (secondPointer?.id !== evt.pointerId && firstPointer?.id !== evt.pointerId)) { return; }
 
@@ -91,78 +100,24 @@ function applayFingers(svg, canvasPositionScale, scaleFn, transformFn) {
 
 		// not first move
 		if (distance) {
-			// move
 			canvasPositionScale.position.x = canvasPositionScale.position.x + centerNew.x - center.x;
-			canvasPositionScale.position.y = canvasPositionScale.position.x + centerNew.y - center.y;
+			canvasPositionScale.position.y = canvasPositionScale.position.y + centerNew.y - center.y;
 
-			// scale
 			scaleFn(
 				canvasPositionScale.scale / distance * distanceNew,
-				evtPoint(evt));
+				centerNew);
 		}
 
 		distance = distanceNew;
 		center = centerNew;
 
-		if (firstPointer.id === evt.pointerId) { firstPointer.pos = evtPoint(evt); }
-		if (secondPointer.id === evt.pointerId) { secondPointer.pos = evtPoint(evt); }
-	}
-
-	/** @param {PointerEvent} evt */
-	function cancel(evt) {
-		distance = null;
-		center = null;
-
-		if (firstPointer?.id === evt.pointerId) {
-			firstPointer = null;
-			firstPoinerShift = null;
-		}
-
-		if (secondPointer?.id === evt.pointerId) {
-			secondPointer = null;
-		}
-
-		if (!firstPointer && !secondPointer) {
-			svg.removeEventListener('pointermove', onMove);
-		}
-	};
-
-	svg.addEventListener('pointerdown', /** @type {DgrmEvent} */ evt => {
-		if (evt[processed] || (!firstPointer && !evt.isPrimary)) {
-			return;
-		}
-
-		svg.setPointerCapture(evt.pointerId);
-		if (!firstPointer && !secondPointer) {
-			svg.addEventListener('pointercancel', cancel, { passive: true, once: true });
-			svg.addEventListener('pointerup', cancel, { passive: true, once: true });
-			svg.addEventListener('pointermove', onMove, { passive: true });
-		}
-
-		if (!firstPointer) {
-			firstPointer = evtPointer(evt);
-			firstPoinerShift = {
-				x: canvasPositionScale.position.x - firstPointer.pos.x,
-				y: canvasPositionScale.position.y - firstPointer.pos.y
-			};
-			return;
-		}
-
-		if (!secondPointer) {
-			secondPointer = evtPointer(evt);
-		}
-	}, { passive: true });
-
-	/**
-	 * @param {PointerEvent} evt
-	 * @return { {id:number, pos?:Point} }
-	 */
-	function evtPointer(evt) {
-		return {
-			id: evt.pointerId,
-			pos: evtPoint(evt)
-		};
-	}
+		if (firstPointer.id === evt.pointerId) { firstPointer = evtPointer(evt, canvasPositionScale); }
+		if (secondPointer.id === evt.pointerId) { secondPointer = evtPointer(evt, canvasPositionScale); }
+	});
+	svg.addEventListener('pointerleave', cancel);
+	svg.addEventListener('pointerout', cancel);
+	svg.addEventListener('pointercancel', cancel);
+	svg.addEventListener('pointerup', cancel);
 }
 
 /**
@@ -201,8 +156,24 @@ function applayGrid(svg, canvasPositionScale) {
  */
 function evtPoint(evt) { return { x: evt.clientX, y: evt.clientY }; }
 
+/**
+ * @param { PointerEvent } evt
+ * @param { PositionScale } canvasPositionScale
+ * @return { Pointer }
+ */
+function evtPointer(evt, canvasPositionScale) {
+	return {
+		id: evt.pointerId,
+		pos: evtPoint(evt),
+		shift: {
+			x: canvasPositionScale.position.x - evt.clientX,
+			y: canvasPositionScale.position.y - evt.clientY
+		}
+	};
+}
+
 /** @typedef { {x:number, y:number} } Point */
-/** @typedef { {id:number, pos?:Point} } Pointer */
+/** @typedef { {id:number, pos:Point, shift:Point} } Pointer */
 /** @typedef { {position:Point, scale:number} } PositionScale */
 
 /** @typedef {import("./shapes/circle").DgrmEvent} DgrmEvent */
