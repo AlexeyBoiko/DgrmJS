@@ -5,8 +5,7 @@
 export function circle(canvasData, circleData) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.innerHTML =
-	`<g>
-		<circle r="72" fill="transparent" stroke="red" stroke-width="1" />
+		`<circle data-key="outer" r="72" fill="transparent" stroke="red" stroke-width="1" />
 		<circle data-key="main" r="48" fill="#ff6600" stroke="#fff" stroke-width="1" class="main" data-text-for="text" />
 
 		<text data-key="text" data-line-height="20" data-vertical-middle="10" x="0" y="0" text-anchor="middle" style="pointer-events: none;"
@@ -20,8 +19,7 @@ export function circle(canvasData, circleData) {
 		<circle data-key="inright" data-connect="in" data-connect-point="48,0" data-connect-dir="right" r="10" cx="48" cy="0" />
 		<circle data-key="inleft" data-connect="in" data-connect-point="-48,0" data-connect-dir="left" r="10" cx="-48" cy="0" />
 		<circle data-key="inbottom" data-connect="in" data-connect-point="0,48" data-connect-dir="bottom" r="10" cx="0" cy="48" />
-		<circle data-key="intop" data-connect="in" data-connect-point="0,-48" data-connect-dir="top" r="10" cx="0" cy="-48" />
-	</g>`;
+		<circle data-key="intop" data-connect="in" data-connect-point="0,-48" data-connect-dir="top" r="10" cx="0" cy="-48" />`;
 
 	shapeEventsProcess(canvasData, svgGrp, circleData.position);
 
@@ -39,10 +37,22 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition) {
 	};
 	transform();
 
-	moveEventProcess(
-		svgGrp.querySelector('[data-key="main"]'),
+	const reset = moveEventProcess(
+		// svgGrp.querySelector('[data-key="main"]'),
+		svgGrp,
 		canvasData,
 		shapePosition,
+		// onMoveStart
+		evt => {
+			if (document.elementFromPoint(evt.clientX, evt.clientY).hasAttribute('data-connect')) {
+				reset();
+				svgGrp.classList.remove('selected');
+
+				const connectorElem = connector(canvasData, { x: evt.clientX, y: evt.clientY });
+				svgGrp.ownerSVGElement.append(connectorElem);
+				connectorElem.setPointerCapture(evt.pointerId);
+			}
+		},
 		// onMove
 		() => {
 			svgGrp.classList.remove('selected');
@@ -72,15 +82,62 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition) {
 }
 
 /**
+ * @param {CanvasData} canvasData
+ * @param { Point } position
+ */
+function connector(canvasData, position) {
+	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+	svgGrp.innerHTML = '<circle r="10" fill="transparent" stroke="red" stroke-width="1" />';
+
+	function transform() {
+		svgGrp.style.transform = `translate(${position.x}px, ${position.y}px)`;
+	};
+	transform();
+
+	moveEventProcess(
+		svgGrp,
+		canvasData,
+		position,
+		// onMoveStart
+		evt => {
+			// if (document.elementFromPoint(evt.clientX, evt.clientY).hasAttribute('data-connect')) {
+			// 	reset();
+			// }
+		},
+		// onMove
+		() => {
+			// svgGrp.classList.remove('selected');
+			transform();
+		},
+		// onMoveEnd
+		() => {
+			// shapePosition.x = placeToCell(shapePosition.x);
+			// shapePosition.y = placeToCell(shapePosition.y);
+			// transform();
+		},
+		// onClick
+		() => {
+			// svgGrp.classList.add('selected');
+		},
+		// onOutdown
+		() => {
+			// svgGrp.classList.remove('selected');
+		});
+
+	return svgGrp;
+}
+
+/**
  * @param { Element } element
  * @param { {scale:number} } canvasScale
  * @param { Point } shapePosition
+ * @param { {(evt:PointerEvent):void} } onMoveStart
  * @param { {():void} } onMove
  * @param { {():void} } onMoveEnd
  * @param { {():void} } onClick
  * @param { {():void} } onOutdown
  */
-function moveEventProcess(element, canvasScale, shapePosition, onMove, onMoveEnd, onClick, onOutdown) {
+function moveEventProcess(element, canvasScale, shapePosition, onMoveStart, onMove, onMoveEnd, onClick, onOutdown) {
 	/** @type {Point} */
 	let pointDownShift;
 
@@ -91,52 +148,59 @@ function moveEventProcess(element, canvasScale, shapePosition, onMove, onMoveEnd
 
 	/** @param {PointerEvent} evt */
 	function move(evt) {
-		// fix old android
-		if (!pointDown ||
-			Math.abs(pointDown.x - evt.clientX) > 3 ||
-			Math.abs(pointDown.y - evt.clientY) > 3) {
-			pointDown = null;
-
-			if (pointDownShift) {
-				shapePosition.x = (evt.clientX + pointDownShift.x) / canvasScale.scale;
-				shapePosition.y = (evt.clientY + pointDownShift.y) / canvasScale.scale;
-				isMoved = true;
-				onMove();
-			}
+		if (!pointDownShift ||
+			// fix old android
+			(pointDown &&
+				Math.abs(pointDown.x - evt.clientX) < 3 &&
+				Math.abs(pointDown.y - evt.clientY) < 3)) {
+			return;
 		}
+		pointDown = null;
+
+		if (!isMoved) {
+			onMoveStart(evt);
+
+			// if reset
+			if (!pointDownShift) { return; }
+		}
+
+		shapePosition.x = (evt.clientX + pointDownShift.x) / canvasScale.scale;
+		shapePosition.y = (evt.clientY + pointDownShift.y) / canvasScale.scale;
+		isMoved = true;
+		onMove();
 	}
 
 	function cancel() {
-		element.removeEventListener('pointermove', onMove);
-		pointDownShift = null;
 		if (isMoved) {
 			onMoveEnd();
+		} else {
+			onClick();
 		}
-		isMoved = false;
+		reset();
 	}
 
-	element.addEventListener('pointerdown', /** @param {DgrmEvent} evt */ evt => {
-		if (!evt.isPrimary) {
+	/** @param {PointerEvent} docEvt */
+	function docDown(docEvt) {
+		if (!element.contains(/** @type {Element} */(docEvt.target))) {
+			onOutdown();
+		}
+	}
+
+	/**
+	 * @param {DgrmEvent} evt
+	 */
+	function init(evt) {
+		if (!evt.isPrimary || pointDownShift) {
 			return;
 		}
 
 		evt[processed] = true;
 		element.setPointerCapture(evt.pointerId);
 		element.addEventListener('pointercancel', cancel, { passive: true, once: true });
+		element.addEventListener('pointerup', cancel, { passive: true, once: true });
 		element.addEventListener('pointermove', move, { passive: true });
 
-		element.addEventListener('pointerup', _ => {
-			if (!isMoved) {
-				onClick();
-			}
-			cancel();
-		}, { passive: true, once: true });
-
-		document.addEventListener('pointerdown', docEvt => {
-			if (docEvt.target !== element) {
-				onOutdown();
-			}
-		}, { passive: true, once: true, capture: true });
+		document.addEventListener('pointerdown', docDown, { passive: true, once: true, capture: true });
 
 		pointDownShift = {
 			x: shapePosition.x * canvasScale.scale - evt.clientX,
@@ -147,7 +211,22 @@ function moveEventProcess(element, canvasScale, shapePosition, onMove, onMoveEnd
 			x: evt.clientX,
 			y: evt.clientY
 		};
-	}, { passive: true });
+	}
+
+	element.addEventListener('gotpointercapture', init, { passive: true });
+	element.addEventListener('pointerdown', init, { passive: true });
+
+	function reset() {
+		element.removeEventListener('pointercancel', cancel);
+		element.removeEventListener('pointermove', move);
+		element.removeEventListener('pointerup', cancel);
+		element.removeEventListener('pointerdown', docDown, { capture: true });
+		pointDownShift = null;
+		pointDown = null;
+		isMoved = false;
+	}
+
+	return reset;
 }
 
 /** @typedef { {x:number, y:number} } Point */
