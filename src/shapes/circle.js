@@ -6,7 +6,7 @@ export function circle(canvasData, circleData) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.innerHTML =
 	`<g>
-		<circle r="72" fill="transparent" stroke="transparent" stroke-width="1" />
+		<circle r="72" fill="transparent" stroke="red" stroke-width="1" />
 		<circle data-key="main" r="48" fill="#ff6600" stroke="#fff" stroke-width="1" class="main" data-text-for="text" />
 
 		<text data-key="text" data-line-height="20" data-vertical-middle="10" x="0" y="0" text-anchor="middle" style="pointer-events: none;"
