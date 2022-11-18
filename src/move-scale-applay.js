@@ -1,4 +1,4 @@
-import { processed } from './shapes/circle.js';
+import { processed } from './shapes/move-event-process.js';
 
 /**
  * @param { HTMLElement } svg
@@ -185,4 +185,4 @@ function evtPointer(evt, canvasData) {
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { {id:number, pos:Point, shift:Point} } Pointer */
 
-/** @typedef {import("./shapes/circle").DgrmEvent} DgrmEvent */
+/** @typedef {import("./shapes/move-event-process").DgrmEvent} DgrmEvent */
