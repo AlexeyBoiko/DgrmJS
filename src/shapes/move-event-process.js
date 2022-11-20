@@ -3,7 +3,7 @@
  * @param { {scale:number} } canvasScale
  * @param { Point } shapePosition
  * @param { {(evt:PointerEvent):void} } onMoveStart
- * @param { {():void} } onMove
+ * @param { {(evt:PointerEvent):void} } onMove
  * @param { {():void} } onMoveEnd
  * @param { {():void} } onClick
  * @param { {():void} } onOutdown
@@ -38,7 +38,7 @@ export function moveEventProcess(element, canvasScale, shapePosition, onMoveStar
 		shapePosition.x = (evt.clientX + pointDownShift.x) / canvasScale.scale;
 		shapePosition.y = (evt.clientY + pointDownShift.y) / canvasScale.scale;
 		isMoved = true;
-		onMove();
+		onMove(evt);
 	}
 
 	function cancel() {

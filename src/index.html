@@ -24,8 +24,15 @@
 	<svg id="diagram" xmlns="http://www.w3.org/2000/svg"
 		style="touch-action: none; background-color: #fff; display:block; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;">
 		<style type="text/css">
-			[data-key="outer"] {
+			[data-outer] {
 				pointer-events: none;
+			}
+
+			.connector-active .path {
+				pointer-events: none;
+			}
+			.connector-active [data-outer] {
+				pointer-events: unset;
 			}
 
 			[data-connect] {
@@ -35,8 +42,12 @@
 				display: none;
 			}
 
-			.selected [data-connect="out"] {
+			.select [data-connect="out"],
+			.hover [data-connect="in"] {
 				display: unset;
+			}
+			[data-connect="in"].hover {
+				stroke-width: 40px;
 			}
 		</style>
 		<g id="canvas"></g>

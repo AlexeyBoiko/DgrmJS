@@ -6,13 +6,14 @@ import { moveEventProcess } from './move-event-process.js';
  */
 export function path(canvasData, pathData) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+	svgGrp.classList.add('path');
 	svgGrp.innerHTML =
 		`<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
 		<path data-key="path" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;" />
-		<path data-key="selected" d="M0 0" stroke="#333" stroke-width="1.8" fill="none"style="pointer-events: none;" />
+		<path data-key="selected" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;" />
 		<g data-key="arrow">
 			<circle r="10" stroke-width="1" fill="transparent" stroke="red" />
-			<path d="M-7 7 l 7 -7 l -7 -7" stroke="#333" stroke-width="1.8" fill="none"></path>
+			<path d="M-7 7 l 7 -7 l -7 -7" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
 		</g>`;
 
 	const path = svgGrp.querySelector('[data-key="path"]');
@@ -40,26 +41,23 @@ export function path(canvasData, pathData) {
 	}
 	draw();
 
+	/** @type { {():void} } */
+	let hoverEmulateDispose;
 	moveEventProcess(
 		arrow,
 		canvasData,
 		pathData.end.position,
 		// onMoveStart
-		evt => {
-			// if (document.elementFromPoint(evt.clientX, evt.clientY).hasAttribute('data-connect')) {
-			// 	reset();
-			// }
+		_ => {
+			hoverEmulateDispose = hoverEmulate(svgGrp.parentElement);
 		},
 		// onMove
 		() => {
-			// svgGrp.classList.remove('selected');
 			draw();
 		},
 		// onMoveEnd
 		() => {
-			// shapePosition.x = placeToCell(shapePosition.x);
-			// shapePosition.y = placeToCell(shapePosition.y);
-			// transform();
+			hoverEmulateDispose();
 		},
 		// onClick
 		() => {
@@ -68,10 +66,12 @@ export function path(canvasData, pathData) {
 		// onOutdown
 		() => {
 			// svgGrp.classList.remove('selected');
-		});
+		}
+	);
 
 	return {
 		elem: svgGrp,
+		draw,
 		setPointerCapture: /** @param {number} pointerId */(pointerId) => {
 			arrow.setPointerCapture(pointerId);
 		}
@@ -103,3 +103,43 @@ function pathCalc(pathData) {
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { {position: Point, dir: 'left' | 'right' | 'top' | 'bottom'} } PathEnd */
 /** @typedef { {start:PathEnd, end:PathEnd} } PathData */
+
+/** @param {Element} element */
+function hoverEmulate(element) {
+	element.classList.add('connector-active');
+
+	/** @type {Element} */
+	let elemFromPoint = null;
+
+	/** @param {PointerEvent} evt */
+	function move(evt) {
+		const elemFromPointNew = document.elementFromPoint(evt.clientX, evt.clientY);
+		if (elemFromPoint !== elemFromPointNew) {
+			if (elemFromPointNew.classList.contains('hovertrack')) {
+				elemFromPointNew.classList.add('hover');
+			}
+			let parentHover = false;
+			if (elemFromPointNew.parentElement.classList.contains('hovertrack')) {
+				elemFromPointNew.parentElement.classList.add('hover');
+				parentHover = true;
+			}
+
+			elemFromPoint?.classList.remove('hover');
+			if (elemFromPoint?.parentElement !== elemFromPointNew.parentElement || !parentHover) {
+				elemFromPoint?.parentElement.classList.remove('hover');
+			}
+
+			elemFromPoint = elemFromPointNew;
+		}
+	}
+
+	element.addEventListener('pointermove', move, { passive: true });
+	// dispose fn
+	return function() {
+		element.removeEventListener('pointermove', move);
+		element.classList.remove('connector-active');
+		elemFromPoint.classList.remove('hover');
+		elemFromPoint.parentElement.classList.remove('hover');
+		elemFromPoint = null;
+	};
+}
