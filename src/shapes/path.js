@@ -61,7 +61,7 @@ export function path(canvasData, data) {
 		// onMoveEnd
 		evt => {
 			const elemFromPoint = document.elementFromPoint(evt.clientX, evt.clientY);
-			const connectorKey = elemFromPoint.getAttribute('data-connect');
+			const connectorKey = elemFromPoint?.getAttribute('data-connect');
 			if (connectorKey) {
 				/** @type {DgrmElement} */(elemFromPoint.parentElement)[shape].pathAdd(connectorKey, pathShape);
 			}
@@ -120,17 +120,17 @@ function hoverEmulate(element) {
 	function move(evt) {
 		const elemFromPointNew = document.elementFromPoint(evt.clientX, evt.clientY);
 		if (elemFromPoint !== elemFromPointNew) {
-			if (elemFromPointNew.classList.contains('hovertrack')) {
+			if (elemFromPointNew?.classList.contains('hovertrack')) {
 				elemFromPointNew.classList.add('hover');
 			}
 			let parentHover = false;
-			if (elemFromPointNew.parentElement.classList.contains('hovertrack')) {
+			if (elemFromPointNew?.parentElement.classList.contains('hovertrack')) {
 				elemFromPointNew.parentElement.classList.add('hover');
 				parentHover = true;
 			}
 
 			elemFromPoint?.classList.remove('hover');
-			if (elemFromPoint?.parentElement !== elemFromPointNew.parentElement || !parentHover) {
+			if (elemFromPoint?.parentElement !== elemFromPointNew?.parentElement || !parentHover) {
 				elemFromPoint?.parentElement.classList.remove('hover');
 			}
 
@@ -142,8 +142,8 @@ function hoverEmulate(element) {
 	// dispose fn
 	return function() {
 		element.removeEventListener('pointermove', move);
-		elemFromPoint.classList.remove('hover');
-		elemFromPoint.parentElement.classList.remove('hover');
+		elemFromPoint?.classList.remove('hover');
+		elemFromPoint?.parentElement.classList.remove('hover');
 		elemFromPoint = null;
 	};
 }
