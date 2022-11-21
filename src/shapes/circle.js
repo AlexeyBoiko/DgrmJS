@@ -15,15 +15,10 @@ export function circle(canvasData, circleData) {
 		<text data-key="text" data-line-height="20" data-vertical-middle="10" x="0" y="0" text-anchor="middle" style="pointer-events: none;"
 			alignment-baseline="central" fill="#fff">&nbsp;</text>
 
-		<circle data-connect-key="outright" data-connect="out" r="10" cx="48" cy="0" />
-		<circle data-connect-key="outleft" data-connect="out" r="10" cx="-48" cy="0" />
-		<circle data-connect-key="outbottom" data-connect="out" r="10" cx="0" cy="48" />
-		<circle data-connect-key="outtop" data-connect="out" r="10" cx="0" cy="-48" />
-
-		<circle data-key="inright" data-connect="in" data-connect-point="48,0" data-connect-dir="right" class="hovertrack" r="10" cx="48" cy="0" />
-		<circle data-key="inleft" data-connect="in" data-connect-point="-48,0" data-connect-dir="left" class="hovertrack" r="10" cx="-48" cy="0" />
-		<circle data-key="inbottom" data-connect="in" data-connect-point="0,48" data-connect-dir="bottom" class="hovertrack" r="10" cx="0" cy="48" />
-		<circle data-key="intop" data-connect="in" data-connect-point="0,-48" data-connect-dir="top" r="10" class="hovertrack" cx="0" cy="-48" />`;
+		<circle data-connect="outright" class="hovertrack" r="10" cx="48" cy="0" />
+		<circle data-connect="outleft" class="hovertrack" r="10" cx="-48" cy="0" />
+		<circle data-connect="outbottom" class="hovertrack" r="10" cx="0" cy="48" />
+		<circle data-connect="outtop" class="hovertrack" r="10" cx="0" cy="-48" />`;
 
 	/** @type {ConnectorsData} */
 	const connectorsInnerPosition = {
@@ -48,8 +43,8 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 	/** @type {ConnectorsData} */
 	const connectorsData = JSON.parse(JSON.stringify(connectorsInnerPosition));
 
-	/** @type { {draw():void}[] } */
-	const paths = [];
+	/** @type { Set<{draw():void}> } */
+	const paths = new Set();
 
 	function draw() {
 		svgGrp.style.transform = `translate(${shapePosition.x}px, ${shapePosition.y}px)`;
@@ -74,7 +69,7 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 		shapePosition,
 		// onMoveStart
 		evt => {
-			const connectorKey = document.elementFromPoint(evt.clientX, evt.clientY).getAttribute('data-connect-key');
+			const connectorKey = document.elementFromPoint(evt.clientX, evt.clientY).getAttribute('data-connect');
 			if (connectorKey) {
 				reset();
 				svgGrp.classList.remove('select');
@@ -89,7 +84,7 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 				svgGrp.parentNode.append(pathShape.elem);
 				pathShape.setPointerCapture(evt.pointerId);
 
-				paths.push(pathShape);
+				paths.add(pathShape);
 			}
 		},
 		// onMove
@@ -98,7 +93,7 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 			draw();
 		},
 		// onMoveEnd
-		() => {
+		_ => {
 			shapePosition.x = placeToCell(shapePosition.x);
 			shapePosition.y = placeToCell(shapePosition.y);
 			draw();
@@ -118,6 +113,18 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 		const coor = (Math.round(coordinate / canvasData.cell) * canvasData.cell);
 		return (coordinate - coor > 0) ? coor + cellSizeHalf : coor - cellSizeHalf;
 	}
+
+	svgGrp[shape] = {
+		/**
+		 * @param {string} connectorKey
+		 * @param {Path} pathShape
+		 */
+		pathAdd: function(connectorKey, pathShape) {
+			pathShape.data.end = connectorsData[connectorKey];
+			paths.add(pathShape);
+			pathShape.draw();
+		}
+	};
 }
 
 /**
@@ -150,3 +157,7 @@ function reversDir(pathDir) {
 /** @typedef { 'left' | 'right' | 'top' | 'bottom' } PathDir */
 /** @typedef { {position: Point, dir: PathDir} } PathEnd */
 /** @typedef { Object.<string, PathEnd> } ConnectorsData */
+
+export const shape = Symbol(0);
+/** @typedef {Element & { [shape]?: {pathAdd(connectorKey:string, pathShape:Path):void} }} DgrmElement */
+/** @typedef {import('./path.js').Path} Path */

@@ -4,7 +4,7 @@
  * @param { Point } shapePosition
  * @param { {(evt:PointerEvent):void} } onMoveStart
  * @param { {(evt:PointerEvent):void} } onMove
- * @param { {():void} } onMoveEnd
+ * @param { {(evt:PointerEvent):void} } onMoveEnd
  * @param { {():void} } onClick
  * @param { {():void} } onOutdown
  */
@@ -41,9 +41,10 @@ export function moveEventProcess(element, canvasScale, shapePosition, onMoveStar
 		onMove(evt);
 	}
 
-	function cancel() {
+	/** @param {PointerEvent} evt */
+	function cancel(evt) {
 		if (isMoved) {
-			onMoveEnd();
+			onMoveEnd(evt);
 		} else {
 			onClick();
 		}

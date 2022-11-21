@@ -1,10 +1,12 @@
+import { shape } from './circle.js';
 import { moveEventProcess } from './move-event-process.js';
 
 /**
  * @param { {position:Point, scale:number} } canvasData
- * @param { PathData } pathData
+ * @param { PathData } data
+ * @return { Path }
  */
-export function path(canvasData, pathData) {
+export function path(canvasData, data) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.classList.add('path');
 	svgGrp.innerHTML =
@@ -24,20 +26,20 @@ export function path(canvasData, pathData) {
 
 	function draw() {
 		// path
-		const dAttr = pathCalc(pathData);
+		const dAttr = pathCalc(data);
 		path.setAttribute('d', dAttr);
 		outer.setAttribute('d', dAttr);
 		selected.setAttribute('d', dAttr);
 
 		// arrow
-		const angle = pathData.end.dir === 'right'
+		const angle = data.end.dir === 'right'
 			? 180
-			: pathData.end.dir === 'left'
+			: data.end.dir === 'left'
 				? 0
-				: pathData.end.dir === 'bottom'
+				: data.end.dir === 'bottom'
 					? 270
 					: 90;
-		arrow.style.transform = `translate(${pathData.end.position.x}px, ${pathData.end.position.y}px) rotate(${angle}deg)`;
+		arrow.style.transform = `translate(${data.end.position.x}px, ${data.end.position.y}px) rotate(${angle}deg)`;
 	}
 	draw();
 
@@ -46,7 +48,7 @@ export function path(canvasData, pathData) {
 	moveEventProcess(
 		arrow,
 		canvasData,
-		pathData.end.position,
+		data.end.position,
 		// onMoveStart
 		_ => {
 			hoverEmulateDispose = hoverEmulate(svgGrp.parentElement);
@@ -56,7 +58,12 @@ export function path(canvasData, pathData) {
 			draw();
 		},
 		// onMoveEnd
-		() => {
+		evt => {
+			const elemFromPoint = document.elementFromPoint(evt.clientX, evt.clientY);
+			const connectorKey = elemFromPoint.getAttribute('data-connect');
+			if (connectorKey) {
+				/** @type {DgrmElement} */(elemFromPoint.parentElement)[shape].pathAdd(connectorKey, pathShape);
+			}
 			hoverEmulateDispose();
 		},
 		// onClick
@@ -69,18 +76,20 @@ export function path(canvasData, pathData) {
 		}
 	);
 
-	return {
+	const pathShape = {
 		elem: svgGrp,
+		data,
 		draw,
 		setPointerCapture: /** @param {number} pointerId */(pointerId) => {
 			arrow.setPointerCapture(pointerId);
 		}
 	};
+	return pathShape;
 }
 
-/** @param {PathData} pathData */
-function pathCalc(pathData) {
-	const coef = Math.hypot(pathData.start.position.x - pathData.end.position.x, pathData.start.position.y - pathData.end.position.y) * 0.5;
+/** @param {PathData} data */
+function pathCalc(data) {
+	const coef = Math.hypot(data.start.position.x - data.end.position.x, data.start.position.y - data.end.position.y) * 0.5;
 
 	/** @param {PathEnd} pathEnd */
 	function cx(pathEnd) {
@@ -96,13 +105,9 @@ function pathCalc(pathData) {
 			: pathEnd.dir === 'bottom' ? pathEnd.position.y + coef : pathEnd.position.y - coef;
 	}
 
-	return `M ${pathData.start.position.x} ${pathData.start.position.y} C ${cx(pathData.start)} ${cy(pathData.start)}, ` +
-		`${cx(pathData.end)} ${cy(pathData.end)}, ${pathData.end.position.x} ${pathData.end.position.y}`;
+	return `M ${data.start.position.x} ${data.start.position.y} C ${cx(data.start)} ${cy(data.start)}, ` +
+		`${cx(data.end)} ${cy(data.end)}, ${data.end.position.x} ${data.end.position.y}`;
 }
-
-/** @typedef { {x:number, y:number} } Point */
-/** @typedef { {position: Point, dir: 'left' | 'right' | 'top' | 'bottom'} } PathEnd */
-/** @typedef { {start:PathEnd, end:PathEnd} } PathData */
 
 /** @param {Element} element */
 function hoverEmulate(element) {
@@ -143,3 +148,9 @@ function hoverEmulate(element) {
 		elemFromPoint = null;
 	};
 }
+
+/** @typedef { {x:number, y:number} } Point */
+/** @typedef { {position: Point, dir: 'left' | 'right' | 'top' | 'bottom'} } PathEnd */
+/** @typedef { {start:PathEnd, end:PathEnd} } PathData */
+/** @typedef { {elem: Element, data:PathData, draw():void, setPointerCapture:(pointerId:number)=>void} } Path */
+/** @typedef { import('./circle.js').DgrmElement } DgrmElement */
