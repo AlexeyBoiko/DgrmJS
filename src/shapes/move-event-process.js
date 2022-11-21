@@ -66,6 +66,12 @@ export function moveEventProcess(element, canvasScale, shapePosition, onMoveStar
 			return;
 		}
 
+		const pointElements = document.elementsFromPoint(evt.clientX, evt.clientY);
+		if (pointElements[0].hasAttribute('data-no-down')) {
+			pointElements[1].setPointerCapture(evt.pointerId);
+			return;
+		}
+
 		evt[processed] = true;
 		element.setPointerCapture(evt.pointerId);
 		element.addEventListener('pointercancel', cancel, { passive: true, once: true });

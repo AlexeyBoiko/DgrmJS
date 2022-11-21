@@ -51,6 +51,7 @@ export function path(canvasData, data) {
 		data.end.position,
 		// onMoveStart
 		_ => {
+			svgGrp.style.pointerEvents = 'none';
 			hoverEmulateDispose = hoverEmulate(svgGrp.parentElement);
 		},
 		// onMove
@@ -65,6 +66,7 @@ export function path(canvasData, data) {
 				/** @type {DgrmElement} */(elemFromPoint.parentElement)[shape].pathAdd(connectorKey, pathShape);
 			}
 			hoverEmulateDispose();
+			svgGrp.style.pointerEvents = 'unset';
 		},
 		// onClick
 		() => {
@@ -111,8 +113,6 @@ function pathCalc(data) {
 
 /** @param {Element} element */
 function hoverEmulate(element) {
-	element.classList.add('connector-active');
-
 	/** @type {Element} */
 	let elemFromPoint = null;
 
@@ -142,7 +142,6 @@ function hoverEmulate(element) {
 	// dispose fn
 	return function() {
 		element.removeEventListener('pointermove', move);
-		element.classList.remove('connector-active');
 		elemFromPoint.classList.remove('hover');
 		elemFromPoint.parentElement.classList.remove('hover');
 		elemFromPoint = null;
