@@ -1,4 +1,4 @@
-import { moveEventProcess } from './move-event-process.js';
+import { activeElemFromPoint, moveEventProcess } from './move-event-process.js';
 import { path } from './path.js';
 
 /**
@@ -9,16 +9,16 @@ export function circle(canvasData, circleData) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.classList.add('hovertrack');
 	svgGrp.innerHTML =
-		`<circle data-no-down r="72" fill="transparent" stroke="red" stroke-width="1" />
+		`<circle data-evt-no r="72" fill="transparent" stroke="red" stroke-width="1" />
 		<circle r="48" fill="#ff6600" stroke="#fff" stroke-width="1" class="main" data-text-for="text" />
 
 		<text data-key="text" data-line-height="20" data-vertical-middle="10" x="0" y="0" text-anchor="middle" style="pointer-events: none;"
 			alignment-baseline="central" fill="#fff">&nbsp;</text>
 
-		<circle data-connect="outright" class="hovertrack" r="10" cx="48" cy="0" />
-		<circle data-connect="outleft" class="hovertrack" r="10" cx="-48" cy="0" />
-		<circle data-connect="outbottom" class="hovertrack" r="10" cx="0" cy="48" />
-		<circle data-connect="outtop" class="hovertrack" r="10" cx="0" cy="-48" />`;
+		<circle data-connect="outright" class="hovertrack" data-evt-index="1" r="10" cx="48" cy="0" />
+		<circle data-connect="outleft" class="hovertrack" data-evt-index="1" r="10" cx="-48" cy="0" />
+		<circle data-connect="outbottom" class="hovertrack" data-evt-index="1" r="10" cx="0" cy="48" />
+		<circle data-connect="outtop" class="hovertrack" data-evt-index="1" r="10" cx="0" cy="-48" />`;
 
 	/** @type {ConnectorsData} */
 	const connectorsInnerPosition = {
@@ -69,7 +69,7 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 		shapePosition,
 		// onMoveStart
 		evt => {
-			const connectorKey = document.elementFromPoint(evt.clientX, evt.clientY).getAttribute('data-connect');
+			const connectorKey = activeElemFromPoint(evt).getAttribute('data-connect');
 			if (connectorKey) {
 				reset();
 				svgGrp.classList.remove('select');
@@ -114,7 +114,7 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 		return (coordinate - coor > 0) ? coor + cellSizeHalf : coor - cellSizeHalf;
 	}
 
-	svgGrp[shape] = {
+	svgGrp[Shape] = {
 		/**
 		 * @param {string} connectorKey
 		 * @param {Path} pathShape
@@ -158,6 +158,6 @@ function reversDir(pathDir) {
 /** @typedef { {position: Point, dir: PathDir} } PathEnd */
 /** @typedef { Object.<string, PathEnd> } ConnectorsData */
 
-export const shape = Symbol(0);
-/** @typedef {Element & { [shape]?: {pathAdd(connectorKey:string, pathShape:Path):void} }} DgrmElement */
+export const Shape = Symbol('shape');
+/** @typedef {Element & { [Shape]?: {pathAdd(connectorKey:string, pathShape:Path):void} }} DgrmElement */
 /** @typedef {import('./path.js').Path} Path */

@@ -1,4 +1,4 @@
-import { shape } from './circle.js';
+import { Shape } from './circle.js';
 import { moveEventProcess } from './move-event-process.js';
 
 /**
@@ -10,7 +10,7 @@ export function path(canvasData, data) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.classList.add('path');
 	svgGrp.innerHTML =
-		`<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
+		`<path data-key="outer" d="M0 0" stroke="red" stroke-width="20" fill="none" />
 		<path data-key="path" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;" />
 		<path data-key="selected" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;" />
 		<g data-key="arrow">
@@ -63,7 +63,7 @@ export function path(canvasData, data) {
 			const elemFromPoint = document.elementFromPoint(evt.clientX, evt.clientY);
 			const connectorKey = elemFromPoint?.getAttribute('data-connect');
 			if (connectorKey) {
-				/** @type {DgrmElement} */(elemFromPoint.parentElement)[shape].pathAdd(connectorKey, pathShape);
+				/** @type {DgrmElement} */(elemFromPoint.parentElement)[Shape].pathAdd(connectorKey, pathShape);
 			}
 			hoverEmulateDispose();
 			svgGrp.style.pointerEvents = 'unset';

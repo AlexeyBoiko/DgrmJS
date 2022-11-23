@@ -1,12 +1,12 @@
 import { moveScaleApplay } from './move-scale-applay.js';
 import { circle } from './shapes/circle.js';
-
-const canvas = document.getElementById('canvas');
-
-//
-// move, scale
+import { evtRouteApplay } from './shapes/move-event-process.js';
 
 const svg = document.getElementById('diagram');
+const canvas = document.getElementById('canvas');
+
+evtRouteApplay(svg);
+
 const canvasData = {
 	position: { x: 0, y: 0 },
 	scale: 1,

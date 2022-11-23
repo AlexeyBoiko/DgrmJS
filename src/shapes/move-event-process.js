@@ -51,9 +51,9 @@ export function moveEventProcess(element, canvasScale, shapePosition, onMoveStar
 		reset();
 	}
 
-	/** @param {PointerEvent} docEvt */
+	/** @param {PointerEvent & {target: Element}} docEvt */
 	function docDown(docEvt) {
-		if (!element.contains(/** @type {Element} */(docEvt.target))) {
+		if (!element.contains(activeElemFromPoint(docEvt))) {
 			onOutdown();
 		}
 	}
@@ -62,17 +62,11 @@ export function moveEventProcess(element, canvasScale, shapePosition, onMoveStar
 	 * @param {DgrmEvent} evt
 	 */
 	function init(evt) {
-		if (!evt.isPrimary || pointDownShift) {
+		if (evt[Processed] || !evt.isPrimary || pointDownShift) {
 			return;
 		}
 
-		const pointElements = document.elementsFromPoint(evt.clientX, evt.clientY);
-		if (pointElements[0].hasAttribute('data-no-down')) {
-			pointElements[1].setPointerCapture(evt.pointerId);
-			return;
-		}
-
-		evt[processed] = true;
+		evt[Processed] = true;
 		element.setPointerCapture(evt.pointerId);
 		element.addEventListener('pointercancel', cancel, { passive: true, once: true });
 		element.addEventListener('pointerup', cancel, { passive: true, once: true });
@@ -107,7 +101,29 @@ export function moveEventProcess(element, canvasScale, shapePosition, onMoveStar
 	return reset;
 }
 
-export const processed = Symbol(0);
-/** @typedef {PointerEvent & { [processed]?: boolean }} DgrmEvent */
+/** @param {HTMLElement} elem */
+export function evtRouteApplay(elem) {
+	elem.addEventListener('pointerdown', /** @param {DgrmEvent} evt */ evt => {
+		if (!evt.isPrimary || evt[Routeed]) { return; }
+
+		evt[Processed] = true;
+
+		const newEvt = new PointerEvent('pointerdown', evt);
+		newEvt[Routeed] = true;
+
+		activeElemFromPoint(evt).dispatchEvent(newEvt);
+	}, { capture: true, passive: true });
+}
+
+/** @param { {clientX:number, clientY:number} } evt */
+export function activeElemFromPoint(evt) {
+	return document.elementsFromPoint(evt.clientX, evt.clientY)
+		.sort((a, b) => a.getAttribute('data-evt-index') > b.getAttribute('data-evt-index') ? -1 : 1)
+		.find(el => !el.hasAttribute('data-evt-no'));
+}
+
+export const Processed = Symbol('processed');
+const Routeed = Symbol('routeed');
+/** @typedef {PointerEvent & { [Processed]?: boolean, [Routeed]?: boolean }} DgrmEvent */
 
 /** @typedef { {x:number, y:number} } Point */
