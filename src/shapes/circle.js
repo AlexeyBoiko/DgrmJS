@@ -1,3 +1,4 @@
+import { evtCanvasPoint } from './evt-canvas-point.js';
 import { activeElemFromPoint, moveEventProcess } from './move-event-process.js';
 import { path } from './path.js';
 
@@ -9,16 +10,16 @@ export function circle(canvasData, circleData) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.classList.add('hovertrack');
 	svgGrp.innerHTML =
-		`<circle data-evt-no r="72" fill="transparent" stroke="red" stroke-width="1" />
+		`<circle data-evt-no data-evt-index="1" r="72" fill="transparent" stroke="red" stroke-width="1" />
 		<circle r="48" fill="#ff6600" stroke="#fff" stroke-width="1" class="main" data-text-for="text" />
 
 		<text data-key="text" data-line-height="20" data-vertical-middle="10" x="0" y="0" text-anchor="middle" style="pointer-events: none;"
 			alignment-baseline="central" fill="#fff">&nbsp;</text>
 
-		<circle data-connect="outright" class="hovertrack" data-evt-index="1" r="10" cx="48" cy="0" />
-		<circle data-connect="outleft" class="hovertrack" data-evt-index="1" r="10" cx="-48" cy="0" />
-		<circle data-connect="outbottom" class="hovertrack" data-evt-index="1" r="10" cx="0" cy="48" />
-		<circle data-connect="outtop" class="hovertrack" data-evt-index="1" r="10" cx="0" cy="-48" />`;
+		<circle data-connect="outright" class="hovertrack" data-evt-index="2" r="10" cx="48" cy="0" />
+		<circle data-connect="outleft" class="hovertrack" data-evt-index="2" r="10" cx="-48" cy="0" />
+		<circle data-connect="outbottom" class="hovertrack" data-evt-index="2" r="10" cx="0" cy="48" />
+		<circle data-connect="outtop" class="hovertrack" data-evt-index="2" r="10" cx="0" cy="-48" />`;
 
 	/** @type {ConnectorsData} */
 	const connectorsInnerPosition = {
@@ -74,7 +75,7 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 				reset();
 				svgGrp.classList.remove('select');
 
-				const pathShape = path(canvasData, {
+				const pathShape = path(canvasData, thisShape, {
 					start: connectorsData[connectorKey],
 					end: {
 						dir: reversDir(connectorsData[connectorKey].dir),
@@ -114,7 +115,8 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 		return (coordinate - coor > 0) ? coor + cellSizeHalf : coor - cellSizeHalf;
 	}
 
-	svgGrp[Shape] = {
+	/** @type {Shape} */
+	const thisShape = {
 		/**
 		 * @param {string} connectorKey
 		 * @param {Path} pathShape
@@ -123,19 +125,15 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 			pathShape.data.end = connectorsData[connectorKey];
 			paths.add(pathShape);
 			pathShape.draw();
+		},
+
+		/** @param {Path} pathShape */
+		pathDel: function(pathShape) {
+			paths.delete(pathShape);
 		}
 	};
-}
 
-/**
- * @param { {position:Point, scale:number} } canvasData
- * @param { PointerEvent } evt
- */
-function evtCanvasPoint(canvasData, evt) {
-	return {
-		x: (evt.clientX - canvasData.position.x) / canvasData.scale,
-		y: (evt.clientY - canvasData.position.y) / canvasData.scale
-	};
+	svgGrp[ShapeSmbl] = thisShape;
 }
 
 /**
@@ -158,6 +156,13 @@ function reversDir(pathDir) {
 /** @typedef { {position: Point, dir: PathDir} } PathEnd */
 /** @typedef { Object.<string, PathEnd> } ConnectorsData */
 
-export const Shape = Symbol('shape');
-/** @typedef {Element & { [Shape]?: {pathAdd(connectorKey:string, pathShape:Path):void} }} DgrmElement */
+/**
+ * @typedef {{
+ * pathAdd(connectorKey:string, pathShape:Path):void
+ * pathDel(pathShape:Path):void
+ * }} Shape
+ */
+
+export const ShapeSmbl = Symbol('shape');
+/** @typedef {Element & { [ShapeSmbl]?: Shape }} DgrmElement */
 /** @typedef {import('./path.js').Path} Path */

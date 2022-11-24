@@ -1,4 +1,4 @@
-import { Processed } from './shapes/move-event-process.js';
+import { ProcessedSmbl } from './shapes/move-event-process.js';
 
 /**
  * @param { HTMLElement } svg
@@ -116,7 +116,7 @@ function applayFingers(svg, canvasData, scaleFn, transformFn) {
 	}
 
 	svg.addEventListener('pointerdown', evt => {
-		if (evt[Processed] || (!firstPointer && !evt.isPrimary) || (firstPointer && secondPointer)) {
+		if (evt[ProcessedSmbl] || (!firstPointer && !evt.isPrimary) || (firstPointer && secondPointer)) {
 			return;
 		}
 

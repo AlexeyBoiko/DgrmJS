@@ -1,20 +1,21 @@
-import { Shape } from './circle.js';
-import { moveEventProcess } from './move-event-process.js';
+import { ShapeSmbl } from './circle.js';
+import { evtCanvasPoint } from './evt-canvas-point.js';
+import { moveEventProcess, priorityElemFromPoint } from './move-event-process.js';
 
 /**
  * @param { {position:Point, scale:number} } canvasData
+ * @param { Shape } startShape
  * @param { PathData } data
- * @return { Path }
  */
-export function path(canvasData, data) {
+export function path(canvasData, startShape, data) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.classList.add('path');
 	svgGrp.innerHTML =
-		`<path data-key="outer" d="M0 0" stroke="red" stroke-width="20" fill="none" />
+		`<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
 		<path data-key="path" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;" />
 		<path data-key="selected" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;" />
 		<g data-key="arrow">
-			<circle r="10" stroke-width="1" fill="transparent" stroke="red" />
+			<circle r="10" stroke-width="1" fill="transparent" stroke="red" data-evt-index="1" />
 			<path d="M-7 7 l 7 -7 l -7 -7" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
 		</g>`;
 
@@ -43,14 +44,37 @@ export function path(canvasData, data) {
 	}
 	draw();
 
+	/** @type {Shape} */
+	let endShape;
+
 	/** @type { {():void} } */
 	let hoverEmulateDispose;
 	moveEventProcess(
 		arrow,
 		canvasData,
-		data.end.position,
+		// data.end.position,
+		{
+			get x() { return data.end.position.x; },
+			set x(val) { data.end.position.x = val; },
+
+			get y() { return data.end.position.y; },
+			set y(val) { data.end.position.y = val; }
+		},
 		// onMoveStart
-		_ => {
+		evt => {
+			// disconnect from shape
+			if (endShape) {
+				if (startShape !== endShape) {
+					endShape.pathDel(thisPath);
+				}
+				endShape = null; // TODO: remove
+				data.end = {
+					dir: data.end.dir,
+					position: evtCanvasPoint(canvasData, evt)
+				};
+			}
+
+			// hover emulation - start
 			svgGrp.style.pointerEvents = 'none';
 			hoverEmulateDispose = hoverEmulate(svgGrp.parentElement);
 		},
@@ -60,11 +84,16 @@ export function path(canvasData, data) {
 		},
 		// onMoveEnd
 		evt => {
-			const elemFromPoint = document.elementFromPoint(evt.clientX, evt.clientY);
+			// connect to shape
+
+			const elemFromPoint = priorityElemFromPoint(evt);
 			const connectorKey = elemFromPoint?.getAttribute('data-connect');
 			if (connectorKey) {
-				/** @type {DgrmElement} */(elemFromPoint.parentElement)[Shape].pathAdd(connectorKey, pathShape);
+				endShape = /** @type {DgrmElement} */(elemFromPoint.parentElement)[ShapeSmbl];
+				endShape.pathAdd(connectorKey, thisPath);
 			}
+
+			// hover emulation - end
 			hoverEmulateDispose();
 			svgGrp.style.pointerEvents = 'unset';
 		},
@@ -78,7 +107,8 @@ export function path(canvasData, data) {
 		}
 	);
 
-	const pathShape = {
+	/** @type {Path} */
+	const thisPath = {
 		elem: svgGrp,
 		data,
 		draw,
@@ -86,12 +116,15 @@ export function path(canvasData, data) {
 			arrow.setPointerCapture(pointerId);
 		}
 	};
-	return pathShape;
+	return thisPath;
 }
 
 /** @param {PathData} data */
 function pathCalc(data) {
-	const coef = Math.hypot(data.start.position.x - data.end.position.x, data.start.position.y - data.end.position.y) * 0.5;
+	let coef = Math.hypot(data.start.position.x - data.end.position.x, data.start.position.y - data.end.position.y) * 0.5;
+	coef = coef > 70
+		? 70
+		: coef < 15 ? 15 : coef;
 
 	/** @param {PathEnd} pathEnd */
 	function cx(pathEnd) {
@@ -118,7 +151,7 @@ function hoverEmulate(element) {
 
 	/** @param {PointerEvent} evt */
 	function move(evt) {
-		const elemFromPointNew = document.elementFromPoint(evt.clientX, evt.clientY);
+		const elemFromPointNew = priorityElemFromPoint(evt);
 		if (elemFromPoint !== elemFromPointNew) {
 			if (elemFromPointNew?.classList.contains('hovertrack')) {
 				elemFromPointNew.classList.add('hover');
@@ -153,3 +186,4 @@ function hoverEmulate(element) {
 /** @typedef { {start:PathEnd, end:PathEnd} } PathData */
 /** @typedef { {elem: Element, data:PathData, draw():void, setPointerCapture:(pointerId:number)=>void} } Path */
 /** @typedef { import('./circle.js').DgrmElement } DgrmElement */
+/** @typedef { import('./circle.js').Shape } Shape */

@@ -62,11 +62,11 @@ export function moveEventProcess(element, canvasScale, shapePosition, onMoveStar
 	 * @param {DgrmEvent} evt
 	 */
 	function init(evt) {
-		if (evt[Processed] || !evt.isPrimary || pointDownShift) {
+		if (evt[ProcessedSmbl] || !evt.isPrimary || pointDownShift) {
 			return;
 		}
 
-		evt[Processed] = true;
+		evt[ProcessedSmbl] = true;
 		element.setPointerCapture(evt.pointerId);
 		element.addEventListener('pointercancel', cancel, { passive: true, once: true });
 		element.addEventListener('pointerup', cancel, { passive: true, once: true });
@@ -104,12 +104,12 @@ export function moveEventProcess(element, canvasScale, shapePosition, onMoveStar
 /** @param {HTMLElement} elem */
 export function evtRouteApplay(elem) {
 	elem.addEventListener('pointerdown', /** @param {DgrmEvent} evt */ evt => {
-		if (!evt.isPrimary || evt[Routeed]) { return; }
+		if (!evt.isPrimary || evt[RouteedSmbl]) { return; }
 
-		evt[Processed] = true;
+		evt[ProcessedSmbl] = true;
 
 		const newEvt = new PointerEvent('pointerdown', evt);
-		newEvt[Routeed] = true;
+		newEvt[RouteedSmbl] = true;
 
 		activeElemFromPoint(evt).dispatchEvent(newEvt);
 	}, { capture: true, passive: true });
@@ -117,13 +117,22 @@ export function evtRouteApplay(elem) {
 
 /** @param { {clientX:number, clientY:number} } evt */
 export function activeElemFromPoint(evt) {
-	return document.elementsFromPoint(evt.clientX, evt.clientY)
-		.sort((a, b) => a.getAttribute('data-evt-index') > b.getAttribute('data-evt-index') ? -1 : 1)
-		.find(el => !el.hasAttribute('data-evt-no'));
+	return elemFromPointByPrioity(evt).find(el => !el.hasAttribute('data-evt-no'));
 }
 
-export const Processed = Symbol('processed');
-const Routeed = Symbol('routeed');
-/** @typedef {PointerEvent & { [Processed]?: boolean, [Routeed]?: boolean }} DgrmEvent */
+/** @param { {clientX:number, clientY:number} } evt */
+export function priorityElemFromPoint(evt) {
+	return elemFromPointByPrioity(evt)[0];
+}
+
+/** @param { {clientX:number, clientY:number} } evt */
+function elemFromPointByPrioity(evt) {
+	return document.elementsFromPoint(evt.clientX, evt.clientY)
+		.sort((a, b) => a.getAttribute('data-evt-index') > b.getAttribute('data-evt-index') ? -1 : 1);
+}
+
+export const ProcessedSmbl = Symbol('processed');
+const RouteedSmbl = Symbol('routeed');
+/** @typedef {PointerEvent & { [ProcessedSmbl]?: boolean, [RouteedSmbl]?: boolean }} DgrmEvent */
 
 /** @typedef { {x:number, y:number} } Point */
