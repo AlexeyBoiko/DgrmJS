@@ -17,6 +17,9 @@ export function moveEvtProc(element, canvasScale, shapePosition, onMoveStart, on
 
 	let isMoved = false;
 
+	/** @type {Element} */
+	let target;
+
 	/** @param {PointerEvent} evt */
 	function move(evt) {
 		if (!pointDownShift ||
@@ -67,10 +70,11 @@ export function moveEvtProc(element, canvasScale, shapePosition, onMoveStart, on
 		}
 
 		evt[ProcessedSmbl] = true;
-		element.setPointerCapture(evt.pointerId);
-		element.addEventListener('pointercancel', cancel, { passive: true, once: true });
-		element.addEventListener('pointerup', cancel, { passive: true, once: true });
-		element.addEventListener('pointermove', move, { passive: true });
+		target = /** @type {Element} */(evt.target);
+		target.setPointerCapture(evt.pointerId);
+		target.addEventListener('pointercancel', cancel, { passive: true, once: true });
+		target.addEventListener('pointerup', cancel, { passive: true, once: true });
+		target.addEventListener('pointermove', move, { passive: true });
 
 		document.addEventListener('pointerdown', docDown, { passive: true, once: true, capture: true });
 
@@ -89,10 +93,11 @@ export function moveEvtProc(element, canvasScale, shapePosition, onMoveStart, on
 	element.addEventListener('pointerdown', init, { passive: true });
 
 	function reset() {
-		element.removeEventListener('pointercancel', cancel);
-		element.removeEventListener('pointermove', move);
-		element.removeEventListener('pointerup', cancel);
+		target.removeEventListener('pointercancel', cancel);
+		target.removeEventListener('pointermove', move);
+		target.removeEventListener('pointerup', cancel);
 		element.removeEventListener('pointerdown', docDown, { capture: true });
+		target = null;
 		pointDownShift = null;
 		pointDown = null;
 		isMoved = false;

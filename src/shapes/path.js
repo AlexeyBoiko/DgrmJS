@@ -13,9 +13,9 @@ export function path(canvasData, startShape, data) {
 	svgGrp.innerHTML =
 		`<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
 		<path data-key="path" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;" />
-		<path data-key="selected" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;" />
+		<path data-key="selected" d="M0 0" stroke="transparent" stroke-width="10" fill="none" style="pointer-events: none;" />
 		<g data-key="arrow">
-			<circle r="10" stroke-width="1" fill="transparent" stroke="red" data-evt-index="1" />
+			<circle r="10" stroke-width="0" fill="transparent" data-evt-index="1" />
 			<path d="M-7 7 l 7 -7 l -7 -7" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
 		</g>`;
 
@@ -42,8 +42,8 @@ export function path(canvasData, startShape, data) {
 
 	/** @type { {():void} } */
 	let hoverEmulateDispose;
-	moveEvtProc(
-		arrow,
+	const reset = moveEvtProc(
+		svgGrp,
 		canvasData,
 		// data.end.position,
 		{
@@ -55,6 +55,14 @@ export function path(canvasData, startShape, data) {
 		},
 		// onMoveStart
 		evt => {
+			svgGrp.classList.remove('select');
+
+			// move not arrow
+			if (!arrow.contains(/** @type {Node} */(evt.target))) {
+				reset();
+				return;
+			}
+
 			// disconnect from shape
 			if (endShape) {
 				if (startShape !== endShape) {
@@ -92,11 +100,11 @@ export function path(canvasData, startShape, data) {
 		},
 		// onClick
 		() => {
-			// svgGrp.classList.add('selected');
+			svgGrp.classList.add('select');
 		},
 		// onOutdown
 		() => {
-			// svgGrp.classList.remove('selected');
+			svgGrp.classList.remove('select');
 		}
 	);
 
