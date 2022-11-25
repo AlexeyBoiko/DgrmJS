@@ -1,6 +1,6 @@
 import { ShapeSmbl } from './circle.js';
 import { evtCanvasPoint } from './evt-canvas-point.js';
-import { moveEventProcess, priorityElemFromPoint } from './move-event-process.js';
+import { moveEvtProc, priorityElemFromPoint } from './move-evt-proc.js';
 
 /**
  * @param { {position:Point, scale:number} } canvasData
@@ -33,14 +33,7 @@ export function path(canvasData, startShape, data) {
 		selected.setAttribute('d', dAttr);
 
 		// arrow
-		const angle = data.end.dir === 'right'
-			? 180
-			: data.end.dir === 'left'
-				? 0
-				: data.end.dir === 'bottom'
-					? 270
-					: 90;
-		arrow.style.transform = `translate(${data.end.position.x}px, ${data.end.position.y}px) rotate(${angle}deg)`;
+		arrow.style.transform = `translate(${data.end.position.x}px, ${data.end.position.y}px) rotate(${arrowAngle(data.end.dir)}deg)`;
 	}
 	draw();
 
@@ -49,7 +42,7 @@ export function path(canvasData, startShape, data) {
 
 	/** @type { {():void} } */
 	let hoverEmulateDispose;
-	moveEventProcess(
+	moveEvtProc(
 		arrow,
 		canvasData,
 		// data.end.position,
@@ -119,6 +112,17 @@ export function path(canvasData, startShape, data) {
 	return thisPath;
 }
 
+/** @param {Dir} dir */
+function arrowAngle(dir) {
+	return dir === 'right'
+		? 180
+		: dir === 'left'
+			? 0
+			: dir === 'bottom'
+				? 270
+				: 90;
+}
+
 /** @param {PathData} data */
 function pathCalc(data) {
 	let coef = Math.hypot(data.start.position.x - data.end.position.x, data.start.position.y - data.end.position.y) * 0.5;
@@ -182,8 +186,9 @@ function hoverEmulate(element) {
 }
 
 /** @typedef { {x:number, y:number} } Point */
-/** @typedef { {position: Point, dir: 'left' | 'right' | 'top' | 'bottom'} } PathEnd */
-/** @typedef { {start:PathEnd, end:PathEnd} } PathData */
-/** @typedef { {elem: Element, data:PathData, draw():void, setPointerCapture:(pointerId:number)=>void} } Path */
+/** @typedef { 'left' | 'right' | 'top' | 'bottom' } Dir */
+/** @typedef { {position: Point, dir: Dir } } PathEnd */
+/** @typedef { {start: PathEnd, end: PathEnd} } PathData */
+/** @typedef { {elem: Element, data: PathData, draw():void, setPointerCapture:(pointerId:number)=>void} } Path */
 /** @typedef { import('./circle.js').DgrmElement } DgrmElement */
 /** @typedef { import('./circle.js').Shape } Shape */

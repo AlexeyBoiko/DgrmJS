@@ -1,4 +1,4 @@
-import { ProcessedSmbl } from './shapes/move-event-process.js';
+import { ProcessedSmbl } from './shapes/move-evt-proc.js';
 
 /**
  * @param { HTMLElement } svg
@@ -185,4 +185,4 @@ function evtPointer(evt, canvasData) {
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { {id:number, pos:Point, shift:Point} } Pointer */
 
-/** @typedef {import("./shapes/move-event-process").DgrmEvent} DgrmEvent */
+/** @typedef {import("./shapes/move-evt-proc").DgrmEvent} DgrmEvent */

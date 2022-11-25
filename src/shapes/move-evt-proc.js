@@ -8,7 +8,7 @@
  * @param { {():void} } onClick
  * @param { {():void} } onOutdown
  */
-export function moveEventProcess(element, canvasScale, shapePosition, onMoveStart, onMove, onMoveEnd, onClick, onOutdown) {
+export function moveEvtProc(element, canvasScale, shapePosition, onMoveStart, onMove, onMoveEnd, onClick, onOutdown) {
 	/** @type {Point} */
 	let pointDownShift;
 

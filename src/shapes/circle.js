@@ -1,5 +1,5 @@
 import { evtCanvasPoint } from './evt-canvas-point.js';
-import { activeElemFromPoint, moveEventProcess } from './move-event-process.js';
+import { activeElemFromPoint, moveEvtProc } from './move-evt-proc.js';
 import { path } from './path.js';
 
 /**
@@ -29,7 +29,7 @@ export function circle(canvasData, circleData) {
 		outtop: { dir: 'top', position: { x: 0, y: -48 } }
 	};
 
-	shapeEventsProcess(canvasData, svgGrp, circleData.position, connectorsInnerPosition);
+	shapeEvtProc(canvasData, svgGrp, circleData.position, connectorsInnerPosition);
 
 	return svgGrp;
 }
@@ -40,7 +40,7 @@ export function circle(canvasData, circleData) {
  * @param {Point} shapePosition
  * @param {ConnectorsData} connectorsInnerPosition
  */
-function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPosition) {
+function shapeEvtProc(canvasData, svgGrp, shapePosition, connectorsInnerPosition) {
 	/** @type {ConnectorsData} */
 	const connectorsData = JSON.parse(JSON.stringify(connectorsInnerPosition));
 
@@ -64,7 +64,7 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 	};
 	draw();
 
-	const reset = moveEventProcess(
+	const reset = moveEvtProc(
 		svgGrp,
 		canvasData,
 		shapePosition,
@@ -95,8 +95,7 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 		},
 		// onMoveEnd
 		_ => {
-			shapePosition.x = placeToCell(shapePosition.x);
-			shapePosition.y = placeToCell(shapePosition.y);
+			placeToCell(shapePosition, canvasData.cell);
 			draw();
 		},
 		// onClick
@@ -107,13 +106,6 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 		() => {
 			svgGrp.classList.remove('select');
 		});
-
-	const cellSizeHalf = canvasData.cell / 2;
-	/** @param {number} coordinate */
-	function placeToCell(coordinate) {
-		const coor = (Math.round(coordinate / canvasData.cell) * canvasData.cell);
-		return (coordinate - coor > 0) ? coor + cellSizeHalf : coor - cellSizeHalf;
-	}
 
 	/** @type {Shape} */
 	const thisShape = {
@@ -134,6 +126,21 @@ function shapeEventsProcess(canvasData, svgGrp, shapePosition, connectorsInnerPo
 	};
 
 	svgGrp[ShapeSmbl] = thisShape;
+}
+
+/**
+ * @param {Point} shapePosition
+ * @param {number} cell
+ */
+function placeToCell(shapePosition, cell) {
+	const cellSizeHalf = cell / 2;
+	function placeToCell(coordinate) {
+		const coor = (Math.round(coordinate / cell) * cell);
+		return (coordinate - coor > 0) ? coor + cellSizeHalf : coor - cellSizeHalf;
+	}
+
+	shapePosition.x = placeToCell(shapePosition.x);
+	shapePosition.y = placeToCell(shapePosition.y);
 }
 
 /**
