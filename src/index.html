@@ -25,25 +25,24 @@
 		style="touch-action: none; background-color: #fff; display:block; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;">
 		<style type="text/css">
 			[data-connect] {
-				opacity: 0.51;
-				stroke: rgb(108 187 247);
-				fill: rgb(108 187 247);
 				display: none;
 			}
 
+			.select path[data-key="selected"],
+			.select [data-key="arrow"] circle,
 			.select [data-connect],
 			.hover [data-connect] {
 				display: unset;
+				opacity: 0.51;
+				stroke: rgb(108 187 247);
+				fill: rgb(108 187 247);
 			}
 			[data-connect].hover {
 				stroke-width: 25px;
 			}
 
-			.select [data-key="selected"] {
-				stroke: rgb(108 187 247 / 30%);
-			}
-			.select [data-key="arrow"] circle {
-				fill: rgb(108 187 247 / 30%);
+			.select path[data-key="selected"] {
+				fill:none;
 			}
 		</style>
 		<g id="canvas"></g>
