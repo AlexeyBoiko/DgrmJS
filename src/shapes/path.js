@@ -37,6 +37,8 @@ export function path(canvasData, startShape, data) {
 	}
 	draw();
 
+	const unSelect = () => svgGrp.classList.remove('select');
+
 	/** @type {Shape} */
 	let endShape;
 
@@ -55,7 +57,7 @@ export function path(canvasData, startShape, data) {
 		},
 		// onMoveStart
 		evt => {
-			svgGrp.classList.remove('select');
+			unSelect();
 
 			// move not arrow
 			if (!arrow.contains(/** @type {Node} */(evt.target))) {
@@ -80,9 +82,7 @@ export function path(canvasData, startShape, data) {
 			hoverEmulateDispose = hoverEmulate(svgGrp.parentElement);
 		},
 		// onMove
-		() => {
-			draw();
-		},
+		draw,
 		// onMoveEnd
 		evt => {
 			// connect to shape
@@ -99,13 +99,9 @@ export function path(canvasData, startShape, data) {
 			svgGrp.style.pointerEvents = 'unset';
 		},
 		// onClick
-		() => {
-			svgGrp.classList.add('select');
-		},
+		() => svgGrp.classList.add('select'),
 		// onOutdown
-		() => {
-			svgGrp.classList.remove('select');
-		}
+		unSelect
 	);
 
 	/** @type {Path} */

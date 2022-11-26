@@ -64,6 +64,8 @@ function shapeEvtProc(canvasData, svgGrp, shapePosition, connectorsInnerPosition
 	};
 	draw();
 
+	const unSelect = () => svgGrp.classList.remove('select');
+
 	const reset = moveEvtProc(
 		svgGrp,
 		canvasData,
@@ -71,10 +73,12 @@ function shapeEvtProc(canvasData, svgGrp, shapePosition, connectorsInnerPosition
 		// onMoveStart
 		/** @param {PointerEvent & { target: Element} } evt */
 		evt => {
+			unSelect();
+
 			const connectorKey = evt.target.getAttribute('data-connect');
 			if (connectorKey) {
 				reset();
-				svgGrp.classList.remove('select');
+				unSelect();
 
 				const pathShape = path(canvasData, thisShape, {
 					start: connectorsData[connectorKey],
@@ -90,23 +94,16 @@ function shapeEvtProc(canvasData, svgGrp, shapePosition, connectorsInnerPosition
 			}
 		},
 		// onMove
-		() => {
-			svgGrp.classList.remove('select');
-			draw();
-		},
+		draw,
 		// onMoveEnd
 		_ => {
 			placeToCell(shapePosition, canvasData.cell);
 			draw();
 		},
 		// onClick
-		() => {
-			svgGrp.classList.add('select');
-		},
+		() => svgGrp.classList.add('select'),
 		// onOutdown
-		() => {
-			svgGrp.classList.remove('select');
-		});
+		unSelect);
 
 	/** @type {Shape} */
 	const thisShape = {
