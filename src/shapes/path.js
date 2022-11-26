@@ -37,7 +37,8 @@ export function path(canvasData, startShape, data) {
 	}
 	draw();
 
-	const unSelect = () => svgGrp.classList.remove('select');
+	function select() { svgGrp.classList.add('select'); arrow.firstElementChild.setAttribute('data-evt-index', '2'); };
+	function unSelect() { svgGrp.classList.remove('select'); arrow.firstElementChild.setAttribute('data-evt-index', '1'); };
 
 	/** @type {Shape} */
 	let endShape;
@@ -99,7 +100,7 @@ export function path(canvasData, startShape, data) {
 			svgGrp.style.pointerEvents = 'unset';
 		},
 		// onClick
-		() => svgGrp.classList.add('select'),
+		select,
 		// onOutdown
 		unSelect
 	);
