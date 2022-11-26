@@ -1,5 +1,5 @@
 import { evtCanvasPoint } from './evt-canvas-point.js';
-import { activeElemFromPoint, moveEvtProc } from './move-evt-proc.js';
+import { moveEvtProc } from './move-evt-proc.js';
 import { path } from './path.js';
 
 /**
@@ -69,8 +69,9 @@ function shapeEvtProc(canvasData, svgGrp, shapePosition, connectorsInnerPosition
 		canvasData,
 		shapePosition,
 		// onMoveStart
+		/** @param {PointerEvent & { target: Element} } evt */
 		evt => {
-			const connectorKey = activeElemFromPoint(evt).getAttribute('data-connect');
+			const connectorKey = evt.target.getAttribute('data-connect');
 			if (connectorKey) {
 				reset();
 				svgGrp.classList.remove('select');

@@ -54,7 +54,7 @@ export function moveEvtProc(element, canvasScale, shapePosition, onMoveStart, on
 		reset();
 	}
 
-	/** @param {PointerEvent & {target: Element}} docEvt */
+	/** @param {PointerEvent} docEvt */
 	function docDown(docEvt) {
 		if (!element.contains(activeElemFromPoint(docEvt))) {
 			onOutdown();
@@ -121,7 +121,7 @@ export function evtRouteApplay(elem) {
 }
 
 /** @param { {clientX:number, clientY:number} } evt */
-export function activeElemFromPoint(evt) {
+function activeElemFromPoint(evt) {
 	return elemFromPointByPrioity(evt).find(el => !el.hasAttribute('data-evt-no'));
 }
 
