@@ -62,7 +62,7 @@ export function moveEvtProc(element, canvasScale, shapePosition, onMoveStart, on
 	}
 
 	/**
-	 * @param {DgrmEvent} evt
+	 * @param {ProcEvent} evt
 	 */
 	function init(evt) {
 		if (evt[ProcessedSmbl] || !evt.isPrimary || pointDownShift) {
@@ -108,7 +108,7 @@ export function moveEvtProc(element, canvasScale, shapePosition, onMoveStart, on
 
 /** @param {HTMLElement} elem */
 export function evtRouteApplay(elem) {
-	elem.addEventListener('pointerdown', /** @param {DgrmEvent} evt */ evt => {
+	elem.addEventListener('pointerdown', /** @param {ProcEvent} evt */ evt => {
 		if (!evt.isPrimary || evt[RouteedSmbl]) { return; }
 
 		evt[ProcessedSmbl] = true;
@@ -138,6 +138,6 @@ function elemFromPointByPrioity(evt) {
 
 export const ProcessedSmbl = Symbol('processed');
 const RouteedSmbl = Symbol('routeed');
-/** @typedef {PointerEvent & { [ProcessedSmbl]?: boolean, [RouteedSmbl]?: boolean }} DgrmEvent */
+/** @typedef {PointerEvent & { [ProcessedSmbl]?: boolean, [RouteedSmbl]?: boolean }} ProcEvent */
 
 /** @typedef { {x:number, y:number} } Point */

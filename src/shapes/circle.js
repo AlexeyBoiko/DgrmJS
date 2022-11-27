@@ -1,5 +1,6 @@
-import { evtCanvasPoint } from './evt-canvas-point.js';
-import { moveEvtProc } from './move-evt-proc.js';
+import { evtCanvasPoint } from '../infrastructure/evt-canvas-point.js';
+import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
+// import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
 import { path } from './path.js';
 
 /**
@@ -13,13 +14,14 @@ export function circle(canvasData, circleData) {
 		`<circle data-evt-no data-evt-index="1" r="72" fill="transparent" stroke="red" stroke-width="1" />
 		<circle r="48" fill="#ff6600" stroke="#fff" stroke-width="1" class="main" data-text-for="text" />
 
-		<text data-key="text" data-line-height="20" data-vertical-middle="10" x="0" y="0" text-anchor="middle" style="pointer-events: none;"
-			alignment-baseline="central" fill="#fff">&nbsp;</text>
+		<text data-key="text" x="0" y="0" text-anchor="middle" style="pointer-events: none;" alignment-baseline="central" fill="#fff">&nbsp;</text>
 
 		<circle data-connect="outright" class="hovertrack" data-evt-index="2" r="10" cx="48" cy="0" />
 		<circle data-connect="outleft" class="hovertrack" data-evt-index="2" r="10" cx="-48" cy="0" />
 		<circle data-connect="outbottom" class="hovertrack" data-evt-index="2" r="10" cx="0" cy="48" />
 		<circle data-connect="outtop" class="hovertrack" data-evt-index="2" r="10" cx="0" cy="-48" />`;
+
+	// svgTextDraw(svgGrp.querySelector('[data-key="text"]'), { verticalMiddle: 10, lineHeight: 20 }, circleData.title);
 
 	/** @type {ConnectorsData} */
 	const connectorsInnerPosition = {

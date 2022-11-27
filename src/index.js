@@ -1,6 +1,6 @@
 import { moveScaleApplay } from './move-scale-applay.js';
 import { circle } from './shapes/circle.js';
-import { evtRouteApplay } from './shapes/move-evt-proc.js';
+import { evtRouteApplay } from './infrastructure/move-evt-proc.js';
 
 const svg = document.getElementById('diagram');
 const canvas = document.getElementById('canvas');
@@ -30,7 +30,7 @@ moveScaleApplay(svg, canvas, canvasData);
 				canvasData,
 				{
 					position: { x: posX += 120, y: posY },
-					title: counter.toString()
+					title: `${counter.toString()}\nttt`
 				});
 			if (counter > 400) {
 			// 	// circle.style.display = 'none';

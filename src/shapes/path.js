@@ -1,6 +1,6 @@
 import { ShapeSmbl } from './circle.js';
-import { evtCanvasPoint } from './evt-canvas-point.js';
-import { moveEvtProc, priorityElemFromPoint } from './move-evt-proc.js';
+import { evtCanvasPoint } from '../infrastructure/evt-canvas-point.js';
+import { moveEvtProc, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
 
 /**
  * @param { {position:Point, scale:number} } canvasData
