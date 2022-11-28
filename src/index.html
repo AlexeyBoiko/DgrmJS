@@ -24,9 +24,11 @@
 	<svg id="diagram" xmlns="http://www.w3.org/2000/svg"
 		style="touch-action: none; background-color: #fff; display:block; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;">
 		<style type="text/css">
-			[data-connect] {
-				display: none;
+			text {
+				white-space: pre-wrap;
 			}
+
+			[data-connect] { display: none; }
 
 			.select path[data-key="selected"],
 			.select [data-key="arrow"] circle,
@@ -37,13 +39,9 @@
 				stroke: rgb(108 187 247);
 				fill: rgb(108 187 247);
 			}
-			[data-connect].hover {
-				stroke-width: 25px;
-			}
+			[data-connect].hover { stroke-width: 25px; }
 
-			.select path[data-key="selected"] {
-				fill:none;
-			}
+			.select path[data-key="selected"] { fill:none; }
 		</style>
 		<g id="canvas"></g>
 	</svg>

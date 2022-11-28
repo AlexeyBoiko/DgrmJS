@@ -30,7 +30,8 @@ moveScaleApplay(svg, canvas, canvasData);
 				canvasData,
 				{
 					position: { x: posX += 120, y: posY },
-					title: `${counter.toString()}\nttt`
+					title: `${counter.toString()}`
+					// title: `${counter.toString()}\n1\n1\n1`
 				});
 			if (counter > 400) {
 			// 	// circle.style.display = 'none';
