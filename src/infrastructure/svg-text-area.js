@@ -56,7 +56,7 @@ function foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, te
 	foreign.x.baseVal.value = textBbox.x - textareaPaddingAndBorder - ((textAlign === 'center') ? 10 : 0);
 
 	foreign.height.baseVal.value = textBbox.height + 2 * textareaPaddingAndBorder + 3; // +3 magic number for FireFox
-	console.log(textEl.y.baseVal, textBbox.y);
+	// console.log(textEl.y.baseVal, textBbox.y);
 	foreign.y.baseVal.value = textBbox.y - textareaPaddingAndBorder;
 
 	textarea.style.width = `${width}px`;
