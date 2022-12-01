@@ -11,9 +11,9 @@ export function svgTextDraw(textEl, str, verticalMiddle) {
 
 	textEl.innerHTML = strData.s;
 
-	if (strData.c > 0) {
-		textEl.y.baseVal[0].valueAsString = `${verticalMiddle - (strData.c) / 2}em`;
-	}
+	textEl.y.baseVal[0].newValueSpecifiedUnits(
+		textEl.y.baseVal[0].SVG_LENGTHTYPE_EMS, // em
+		strData.c > 0 ? verticalMiddle - (strData.c) / 2 : 0);
 }
 
 /**

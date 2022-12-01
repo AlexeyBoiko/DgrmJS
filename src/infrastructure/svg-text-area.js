@@ -34,7 +34,7 @@ export function textareaCreate(textEl, verticalMiddle, val, onchange, onblur) {
 
 	const textareaStyle = getComputedStyle(textarea);
 	// must be in px
-	const textareaPaddingAndBorder = 10;// parseInt(textareaStyle.padding) + parseInt(textareaStyle.borderWidth);
+	const textareaPaddingAndBorder = parseInt(textareaStyle.paddingLeft) + parseInt(textareaStyle.borderWidth);
 	foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textareaStyle.textAlign);
 
 	textarea.focus();
@@ -56,7 +56,6 @@ function foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, te
 	foreign.x.baseVal.value = textBbox.x - textareaPaddingAndBorder - ((textAlign === 'center') ? 10 : 0);
 
 	foreign.height.baseVal.value = textBbox.height + 2 * textareaPaddingAndBorder + 3; // +3 magic number for FireFox
-	// console.log(textEl.y.baseVal, textBbox.y);
 	foreign.y.baseVal.value = textBbox.y - textareaPaddingAndBorder;
 
 	textarea.style.width = `${width}px`;
