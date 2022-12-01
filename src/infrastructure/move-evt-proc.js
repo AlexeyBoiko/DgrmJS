@@ -133,7 +133,11 @@ export function priorityElemFromPoint(evt) {
 /** @param { {clientX:number, clientY:number} } evt */
 function elemFromPointByPrioity(evt) {
 	return document.elementsFromPoint(evt.clientX, evt.clientY)
-		.sort((a, b) => a.getAttribute('data-evt-index') > b.getAttribute('data-evt-index') ? -1 : 1);
+		.sort((a, b) => {
+			const ai = a.getAttribute('data-evt-index');
+			const bi = b.getAttribute('data-evt-index');
+			return (ai === bi) ? 0 : ai > bi ? -1 : 1;
+		});
 }
 
 export const ProcessedSmbl = Symbol('processed');
