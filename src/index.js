@@ -25,13 +25,14 @@ moveScaleApplay(svg, canvas, canvasData);
 	// const t0 = performance.now();
 
 	for (let row = 0; row < 1; row++) {
-		for (let ii = 0; ii < 2; ii++) {
+		for (let ii = 0; ii < 1; ii++) {
 			const shapeSvgElement = circle(
 				canvasData,
 				{
 					position: { x: posX += 120, y: posY },
-					title: `${counter.toString()}`
-					// title: `${counter.toString()}\n1\n1\n1`
+					// title: `${counter.toString()}`,
+					// r: 72
+					title: `${counter.toString()}\n1\n1\n1`
 				});
 			if (counter > 400) {
 			// 	// circle.style.display = 'none';

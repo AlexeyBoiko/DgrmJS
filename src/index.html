@@ -28,6 +28,21 @@
 				white-space: pre-wrap;
 			}
 
+			textarea {
+				text-align: center;
+				border: none;;
+				padding: 10px;
+				padding-top: 0.8em;
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Liberation Sans", sans-serif;
+				font-size: 16px;
+				background-color: transparent;
+				color: blue;
+				outline: none;
+				overflow: hidden;
+				resize: none;
+				line-height: 1em;
+			}
+
 			[data-connect] { display: none; }
 
 			.select path[data-key="selected"],
@@ -42,6 +57,12 @@
 			[data-connect].hover { stroke-width: 25px; }
 
 			.select path[data-key="selected"] { fill:none; }
+
+			.highlight [data-key="main"]{
+				paint-order: stroke;
+				stroke-width: 10px;
+				stroke: rgb(108 187 247 / 51%);
+			}
 		</style>
 		<g id="canvas"></g>
 	</svg>
