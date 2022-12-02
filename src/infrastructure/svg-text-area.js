@@ -9,7 +9,7 @@ import { svgTextDraw } from './svg-text-draw.js';
  * @param {string} val
  * @param {{(val:string):void}} onchange
  * @param {{(val:string):void}} onblur
- * @returns {SVGForeignObjectElement}
+ * @returns { {():void} } dispose function
  */
 export function textareaCreate(textEl, verticalMiddle, val, onchange, onblur) {
 	const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
@@ -38,7 +38,8 @@ export function textareaCreate(textEl, verticalMiddle, val, onchange, onblur) {
 	foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textareaStyle.textAlign);
 
 	textarea.focus();
-	return foreign;
+
+	return () => foreign.remove();
 }
 
 /**

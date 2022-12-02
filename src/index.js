@@ -25,8 +25,9 @@ moveScaleApplay(svg, canvas, canvasData);
 	// const t0 = performance.now();
 
 	for (let row = 0; row < 1; row++) {
-		for (let ii = 0; ii < 1; ii++) {
+		for (let ii = 0; ii < 2; ii++) {
 			const shapeSvgElement = circle(
+				svg,
 				canvasData,
 				{
 					position: { x: posX += 120, y: posY },

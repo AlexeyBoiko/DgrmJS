@@ -3,13 +3,13 @@ import { evtCanvasPoint } from '../infrastructure/evt-canvas-point.js';
 import { moveEvtProc, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
 
 /**
+ * @param {HTMLElement} svg
  * @param { {position:Point, scale:number} } canvasData
  * @param { Shape } startShape
  * @param { PathData } data
  */
-export function path(canvasData, startShape, data) {
+export function path(svg, canvasData, startShape, data) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-	svgGrp.classList.add('path');
 	svgGrp.innerHTML =
 		`<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
 		<path data-key="path" d="M0 0" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;" />
@@ -46,6 +46,7 @@ export function path(canvasData, startShape, data) {
 	/** @type { {():void} } */
 	let hoverEmulateDispose;
 	const reset = moveEvtProc(
+		svg,
 		svgGrp,
 		canvasData,
 		// data.end.position,

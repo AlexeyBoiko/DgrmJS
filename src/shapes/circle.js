@@ -5,10 +5,11 @@ import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
 import { path } from './path.js';
 
 /**
+ * @param {HTMLElement} svg
  * @param {CanvasData} canvasData
  * @param {CircleData} circleData
  */
-export function circle(canvasData, circleData) {
+export function circle(svg, canvasData, circleData) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.classList.add('hovertrack');
 	svgGrp.innerHTML = `
@@ -49,18 +50,18 @@ export function circle(canvasData, circleData) {
 		crclR(child('outer'), circleData.r + 24);
 		crclR(child('main'), circleData.r);
 	}
-	if (!!circleData.r && circleData.r !== 48) { resize(); }
 
+	if (!!circleData.r && circleData.r !== 48) { resize(); }
 	svgTextDraw(child('text'), circleData.title || '', 0);
-	shapeEvtProc(canvasData, svgGrp, circleData.position, /** @type {ConnectorsData} */(connectorsInnerPosition),
+
+	function onTextChange(txt) { circleData.title = txt; }
+	let textEditorDispose;
+	shapeEvtProc(svg, canvasData, svgGrp, circleData.position, /** @type {ConnectorsData} */(connectorsInnerPosition),
 		// onEdit
+		() => { textEditorDispose = textareaCreate(child('text'), 0, circleData.title || '', onTextChange, onTextChange); },
+		// onEditStop
 		() => {
-			textareaCreate(child('text'), 0, circleData.title || '',
-				// onchange
-				_ => {},
-				// onblur
-				_ => {}
-			);
+			textEditorDispose();
 		}
 	);
 
@@ -80,13 +81,15 @@ function crclR(crcl, r) { crcl.r.baseVal.value = r; }
 function crclPos(crcl, pos) { crcl.cx.baseVal.value = pos.x; crcl.cy.baseVal.value = pos.y; }
 
 /**
+ * @param {HTMLElement} svg
  * @param {CanvasData} canvasData
  * @param {SVGGraphicsElement} svgGrp
  * @param {Point} shapePosition
  * @param {ConnectorsData} connectorsInnerPosition
  * @param {{():void}} onEdit
+ * @param {{():void}} onEditStop
  */
-function shapeEvtProc(canvasData, svgGrp, shapePosition, connectorsInnerPosition, onEdit) {
+function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPosition, onEdit, onEditStop) {
 	/** @type {ConnectorsData} */
 	const connectorsData = JSON.parse(JSON.stringify(connectorsInnerPosition));
 
@@ -114,11 +117,15 @@ function shapeEvtProc(canvasData, svgGrp, shapePosition, connectorsInnerPosition
 	const classDel = cl => svgGrp.classList.remove(cl);
 	const classHas = cl => svgGrp.classList.contains(cl);
 	function unSelect() {
+		// in edit mode
+		if (classHas('highlight')) { onEditStop(); }
+
 		classDel('select');
 		classDel('highlight');
 	}
 
 	const reset = moveEvtProc(
+		svg,
 		svgGrp,
 		canvasData,
 		shapePosition,
@@ -130,9 +137,8 @@ function shapeEvtProc(canvasData, svgGrp, shapePosition, connectorsInnerPosition
 			const connectorKey = evt.target.getAttribute('data-connect');
 			if (connectorKey) {
 				reset();
-				unSelect();
 
-				const pathShape = path(canvasData, thisShape, {
+				const pathShape = path(svg, canvasData, thisShape, {
 					start: connectorsData[connectorKey],
 					end: {
 						dir: reversDir(connectorsData[connectorKey].dir),
@@ -154,8 +160,10 @@ function shapeEvtProc(canvasData, svgGrp, shapePosition, connectorsInnerPosition
 		},
 		// onClick
 		() => {
+			// in edit mode
 			if (classHas('highlight')) { return; }
 
+			// to edit mode
 			if (classHas('select') && !classHas('highlight')) {
 				classDel('select');
 				classAdd('highlight');
@@ -164,6 +172,7 @@ function shapeEvtProc(canvasData, svgGrp, shapePosition, connectorsInnerPosition
 				return;
 			}
 
+			// to select mode
 			classAdd('select');
 		},
 		// onOutdown

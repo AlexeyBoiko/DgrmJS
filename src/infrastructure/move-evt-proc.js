@@ -1,5 +1,6 @@
 /**
- * @param { Element } element
+ * @param { Element } elemTrackOutdown poitdows in this element will be tracking to fire {onOutdown} callback
+ * @param { Element } elem
  * @param { {scale:number} } canvasScale
  * @param { Point } shapePosition
  * @param { {(evt:PointerEvent):void} } onMoveStart
@@ -8,7 +9,7 @@
  * @param { {():void} } onClick
  * @param { {():void} } onOutdown
  */
-export function moveEvtProc(element, canvasScale, shapePosition, onMoveStart, onMove, onMoveEnd, onClick, onOutdown) {
+export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, onMoveStart, onMove, onMoveEnd, onClick, onOutdown) {
 	/** @type {Point} */
 	let pointDownShift;
 
@@ -51,12 +52,13 @@ export function moveEvtProc(element, canvasScale, shapePosition, onMoveStart, on
 		} else {
 			onClick();
 		}
-		reset();
+		reset(true);
 	}
 
-	/** @param {PointerEvent} docEvt */
+	/** @param {PointerEvent & { target:Node}} docEvt */
 	function docDown(docEvt) {
-		if (!element.contains(activeElemFromPoint(docEvt))) {
+		if (!elem.contains(docEvt.target)) {
+			reset();
 			onOutdown();
 		}
 	}
@@ -76,7 +78,7 @@ export function moveEvtProc(element, canvasScale, shapePosition, onMoveStart, on
 		target.addEventListener('pointerup', cancel, { passive: true, once: true });
 		target.addEventListener('pointermove', move, { passive: true });
 
-		document.addEventListener('pointerdown', docDown, { passive: true, once: true, capture: true });
+		elemTrackOutdown.addEventListener('pointerdown', docDown, { passive: true });
 
 		pointDownShift = {
 			x: shapePosition.x * canvasScale.scale - evt.clientX,
@@ -89,14 +91,15 @@ export function moveEvtProc(element, canvasScale, shapePosition, onMoveStart, on
 		};
 	}
 
-	element.addEventListener('gotpointercapture', init, { passive: true });
-	element.addEventListener('pointerdown', init, { passive: true });
+	elem.addEventListener('gotpointercapture', init, { passive: true });
+	elem.addEventListener('pointerdown', init, { passive: true });
 
-	function reset() {
-		target.removeEventListener('pointercancel', cancel);
-		target.removeEventListener('pointermove', move);
-		target.removeEventListener('pointerup', cancel);
-		element.removeEventListener('pointerdown', docDown, { capture: true });
+	/** @param {boolean=} saveOutTrack */
+	function reset(saveOutTrack) {
+		target?.removeEventListener('pointercancel', cancel);
+		target?.removeEventListener('pointermove', move);
+		target?.removeEventListener('pointerup', cancel);
+		if (!saveOutTrack) { elemTrackOutdown.removeEventListener('pointerdown', docDown); }
 		target = null;
 		pointDownShift = null;
 		pointDown = null;
@@ -111,11 +114,10 @@ export function evtRouteApplay(elem) {
 	elem.addEventListener('pointerdown', /** @param {ProcEvent} evt */ evt => {
 		if (!evt.isPrimary || evt[RouteedSmbl]) { return; }
 
-		evt[ProcessedSmbl] = true;
+		evt.stopImmediatePropagation();
 
 		const newEvt = new PointerEvent('pointerdown', evt);
 		newEvt[RouteedSmbl] = true;
-
 		activeElemFromPoint(evt).dispatchEvent(newEvt);
 	}, { capture: true, passive: true });
 }
