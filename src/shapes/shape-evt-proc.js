@@ -8,7 +8,7 @@ import { textareaCreate } from '../infrastructure/svg-text-area.js';
  *  - shape move
  *  - connectors
  *  - text editor
- *  - standart edit panel
+ *  - standard edit panel
  *  - onTextChange callback
  * @param {HTMLElement} svg
  * @param {CanvasData} canvasData
