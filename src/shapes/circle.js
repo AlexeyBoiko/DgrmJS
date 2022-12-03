@@ -1,7 +1,6 @@
-import { textareaCreate } from '../infrastructure/svg-text-area.js';
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
 import { ceil, child } from '../infrastructure/util.js';
-import { shapeEvtProc } from './shape-evt-proc.js';
+import { shapeEditEvtProc } from './shape-evt-proc.js';
 
 /**
  * @param {HTMLElement} svg
@@ -22,6 +21,7 @@ export function circle(svg, canvasData, circleData) {
 		<circle data-key="outbottom" data-connect="outbottom" class="hovertrack" data-evt-index="2" r="10" cx="0" cy="48" />
 		<circle data-key="outtop" data-connect="outtop" class="hovertrack" data-evt-index="2" r="10" cx="0" cy="-48" />`;
 
+	/** @type {ConnectorsData} */
 	const connectorsInnerPosition = {
 		outright: { dir: 'right', position: { x: 48, y: 0 } },
 		outleft: { dir: 'left', position: { x: -48, y: 0 } },
@@ -32,14 +32,15 @@ export function circle(svg, canvasData, circleData) {
 	/** @type {SVGTextElement} */
 	const textEl = child(svgGrp, 'text');
 
-	let textEditorDispose;
-	const draw = shapeEvtProc(svg, canvasData, svgGrp, circleData.position, /** @type {ConnectorsData} */(connectorsInnerPosition),
-		// onEdit
-		() => { textEditorDispose = textareaCreate(textEl, 0, circleData.title, onTextChange, onTextChange); },
-		// onEditStop
+	const draw = shapeEditEvtProc(svg, canvasData, svgGrp, circleData, connectorsInnerPosition, textEl,
+		// onTextChange
 		() => {
-			textEditorDispose();
-			textEditorDispose = null;
+			const newRadius = textElRadius(textEl, 48, 24);
+			if (newRadius !== circleData.r) {
+				circleData.r = newRadius;
+				resizeAndDraw();
+				// this.panelUpdPos();
+			}
 		}
 	);
 
@@ -56,19 +57,6 @@ export function circle(svg, canvasData, circleData) {
 		radiusSet(svgGrp, 'outer', circleData.r + 24);
 		radiusSet(svgGrp, 'main', circleData.r);
 		draw();
-	}
-
-	/** @param {string} txt */
-	function onTextChange(txt) {
-		circleData.title = txt;
-
-		// resize
-		const newRadius = textElRadius(textEl, 48, 24);
-		if (newRadius !== circleData.r) {
-			circleData.r = newRadius;
-			resizeAndDraw();
-			// this.panelUpdPos();
-		}
 	}
 
 	svgTextDraw(textEl, circleData.title, 0);

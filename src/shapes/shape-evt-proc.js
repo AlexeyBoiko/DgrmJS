@@ -1,8 +1,49 @@
 import { classAdd, classDel, classHas, evtCanvasPoint } from '../infrastructure/util.js';
 import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
 import { path } from './path.js';
+import { textareaCreate } from '../infrastructure/svg-text-area.js';
 
 /**
+ * provides:
+ *  - shape move
+ *  - connectors
+ *  - text editor
+ *  - standart edit panel
+ *  - onTextChange callback
+ * @param {HTMLElement} svg
+ * @param {CanvasData} canvasData
+ * @param {SVGGraphicsElement} svgGrp
+ * @param {{position: Point, title?: string}} shapeData
+ * @param {ConnectorsData} connectorsInnerPosition
+ * @param {SVGTextElement} textEl
+ * @param {{():void}} onTextChange
+ */
+export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textEl, onTextChange) {
+	let textEditorDispose;
+	const draw = shapeEvtProc(svg, canvasData, svgGrp, shapeData.position, connectorsInnerPosition,
+		// onEdit
+		() => { textEditorDispose = textareaCreate(textEl, 0, shapeData.title, onTxtChange, onTxtChange); },
+		// onEditStop
+		() => {
+			textEditorDispose();
+			textEditorDispose = null;
+		}
+	);
+
+	/** @param {string} txt */
+	function onTxtChange(txt) {
+		shapeData.title = txt;
+		onTextChange();
+	}
+
+	return draw;
+}
+
+/**
+ * provides:
+ *  - shape move
+ *  - connectors
+ *  - onEdit, onEditStop callbacks
  * @param {HTMLElement} svg
  * @param {CanvasData} canvasData
  * @param {SVGGraphicsElement} svgGrp
@@ -11,7 +52,7 @@ import { path } from './path.js';
  * @param {{():void}} onEdit
  * @param {{():void}} onEditStop
  */
-export function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPosition, onEdit, onEditStop) {
+function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPosition, onEdit, onEditStop) {
 	/** @type {ConnectorsData} */
 	const connectorsData = JSON.parse(JSON.stringify(connectorsInnerPosition));
 
