@@ -62,6 +62,7 @@ export function circle(svg, canvasData, circleData) {
 		// onEditStop
 		() => {
 			textEditorDispose();
+			textEditorDispose = null;
 		}
 	);
 
