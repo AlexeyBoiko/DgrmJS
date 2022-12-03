@@ -72,7 +72,7 @@ export function path(svg, canvasData, startShape, data) {
 				if (startShape !== endShape) {
 					endShape.pathDel(thisPath);
 				}
-				endShape = null; // TODO: remove
+				endShape = null;
 				data.end = {
 					dir: data.end.dir,
 					position: evtCanvasPoint(canvasData, evt)
@@ -98,6 +98,7 @@ export function path(svg, canvasData, startShape, data) {
 
 			// hover emulation - end
 			hoverEmulateDispose();
+			hoverEmulateDispose = null;
 			svgGrp.style.pointerEvents = 'unset';
 		},
 		// onClick
