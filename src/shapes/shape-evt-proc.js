@@ -1,0 +1,166 @@
+import { evtCanvasPoint } from '../infrastructure/evt-canvas-point.js';
+import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
+import { path } from './path.js';
+
+/**
+ * @param {HTMLElement} svg
+ * @param {CanvasData} canvasData
+ * @param {SVGGraphicsElement} svgGrp
+ * @param {Point} shapePosition
+ * @param {ConnectorsData} connectorsInnerPosition
+ * @param {{():void}} onEdit
+ * @param {{():void}} onEditStop
+ */
+export function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPosition, onEdit, onEditStop) {
+	/** @type {ConnectorsData} */
+	const connectorsData = JSON.parse(JSON.stringify(connectorsInnerPosition));
+
+	/** @type { Set<{draw():void}> } */
+	const paths = new Set();
+
+	function draw() {
+		svgGrp.style.transform = `translate(${shapePosition.x}px, ${shapePosition.y}px)`;
+
+		// paths
+		for (const connectorKey in connectorsInnerPosition) {
+			connectorsData[connectorKey].position = {
+				x: connectorsInnerPosition[connectorKey].position.x + shapePosition.x,
+				y: connectorsInnerPosition[connectorKey].position.y + shapePosition.y
+			};
+		}
+
+		for (const path of paths) {
+			path.draw();
+		}
+	};
+	draw();
+
+	const classAdd = cl => svgGrp.classList.add(cl);
+	const classDel = cl => svgGrp.classList.remove(cl);
+	const classHas = cl => svgGrp.classList.contains(cl);
+	function unSelect() {
+		// in edit mode
+		if (classHas('highlight')) { onEditStop(); }
+
+		classDel('select');
+		classDel('highlight');
+	}
+
+	const reset = moveEvtProc(
+		svg,
+		svgGrp,
+		canvasData,
+		shapePosition,
+		// onMoveStart
+		/** @param {PointerEvent & { target: Element} } evt */
+		evt => {
+			unSelect();
+
+			const connectorKey = evt.target.getAttribute('data-connect');
+			if (connectorKey) {
+				reset();
+
+				const pathShape = path(svg, canvasData, thisShape, {
+					start: connectorsData[connectorKey],
+					end: {
+						dir: reversDir(connectorsData[connectorKey].dir),
+						position: evtCanvasPoint(canvasData, evt)
+					}
+				});
+				svgGrp.parentNode.append(pathShape.elem);
+				pathShape.setPointerCapture(evt.pointerId);
+
+				paths.add(pathShape);
+			}
+		},
+		// onMove
+		draw,
+		// onMoveEnd
+		_ => {
+			placeToCell(shapePosition, canvasData.cell);
+			draw();
+		},
+		// onClick
+		() => {
+			// in edit mode
+			if (classHas('highlight')) { return; }
+
+			// to edit mode
+			if (classHas('select') && !classHas('highlight')) {
+				classDel('select');
+				classAdd('highlight');
+				// edit mode
+				onEdit();
+				return;
+			}
+
+			// to select mode
+			classAdd('select');
+		},
+		// onOutdown
+		unSelect);
+
+	/** @type {Shape} */
+	const thisShape = {
+		/**
+		 * @param {string} connectorKey
+		 * @param {Path} pathShape
+		 */
+		pathAdd: function(connectorKey, pathShape) {
+			pathShape.data.end = connectorsData[connectorKey];
+			paths.add(pathShape);
+			pathShape.draw();
+		},
+
+		/** @param {Path} pathShape */
+		pathDel: function(pathShape) {
+			paths.delete(pathShape);
+		}
+	};
+
+	svgGrp[ShapeSmbl] = thisShape;
+}
+
+/**
+ * @param {Point} shapePosition
+ * @param {number} cell
+ */
+function placeToCell(shapePosition, cell) {
+	const cellSizeHalf = cell / 2;
+	function placeToCell(coordinate) {
+		const coor = (Math.round(coordinate / cell) * cell);
+		return (coordinate - coor > 0) ? coor + cellSizeHalf : coor - cellSizeHalf;
+	}
+
+	shapePosition.x = placeToCell(shapePosition.x);
+	shapePosition.y = placeToCell(shapePosition.y);
+}
+
+/**
+ * @param {PathDir} pathDir
+ * @return {PathDir}
+ */
+function reversDir(pathDir) {
+	return pathDir === 'left'
+		? 'right'
+		: pathDir === 'right'
+			? 'left'
+			: pathDir === 'top' ? 'bottom' : 'top';
+}
+
+/** @typedef { {x:number, y:number} } Point */
+/** @typedef { {position:Point, scale:number, cell:number} } CanvasData */
+
+/** @typedef { 'left' | 'right' | 'top' | 'bottom' } PathDir */
+/** @typedef { {position: Point, dir: PathDir} } PathEnd */
+/** @typedef { Object.<string, PathEnd> } ConnectorsData */
+
+export const ShapeSmbl = Symbol('shape');
+/**
+ * @typedef {{
+ * pathAdd(connectorKey:string, pathShape:Path):void
+ * pathDel(pathShape:Path):void
+ * }} Shape
+ */
+/** @typedef {Element & { [ShapeSmbl]?: Shape }} DgrmElement */
+/** @typedef {import('./path.js').Path} Path */

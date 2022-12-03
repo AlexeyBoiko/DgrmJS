@@ -1,6 +1,6 @@
-import { ShapeSmbl } from './circle.js';
 import { evtCanvasPoint } from '../infrastructure/evt-canvas-point.js';
 import { moveEvtProc, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
+import { ShapeSmbl } from './shape-evt-proc.js';
 
 /**
  * @param {HTMLElement} svg
@@ -196,5 +196,5 @@ function hoverEmulate(element) {
 /** @typedef { {position: Point, dir: Dir } } PathEnd */
 /** @typedef { {start: PathEnd, end: PathEnd} } PathData */
 /** @typedef { {elem: Element, data: PathData, draw():void, setPointerCapture:(pointerId:number)=>void} } Path */
-/** @typedef { import('./circle.js').DgrmElement } DgrmElement */
-/** @typedef { import('./circle.js').Shape } Shape */
+/** @typedef { import('./shape-evt-proc.js').DgrmElement } DgrmElement */
+/** @typedef { import('./shape-evt-proc.js').Shape } Shape */
