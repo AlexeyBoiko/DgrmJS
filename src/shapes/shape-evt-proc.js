@@ -2,6 +2,7 @@ import { classAdd, classDel, classHas, evtCanvasPoint } from '../infrastructure/
 import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
 import { path } from './path.js';
 import { textareaCreate } from '../infrastructure/svg-text-area.js';
+import { settingsPnlCreate } from './shape-settings.js';
 
 /**
  * provides:
@@ -20,13 +21,19 @@ import { textareaCreate } from '../infrastructure/svg-text-area.js';
  */
 export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textEl, onTextChange) {
 	let textEditorDispose;
+	let settingsPnlDispose;
 	const draw = shapeEvtProc(svg, canvasData, svgGrp, shapeData.position, connectorsInnerPosition,
 		// onEdit
-		() => { textEditorDispose = textareaCreate(textEl, 0, shapeData.title, onTxtChange, onTxtChange); },
+		() => {
+			textEditorDispose = textareaCreate(textEl, 0, shapeData.title, onTxtChange, onTxtChange);
+
+			const position = svgGrp.getBoundingClientRect();
+			settingsPnlDispose = settingsPnlCreate(position.left + 10, position.top + 10, () => {});
+		},
 		// onEditStop
 		() => {
-			textEditorDispose();
-			textEditorDispose = null;
+			textEditorDispose(); textEditorDispose = null;
+			settingsPnlDispose(); settingsPnlDispose = null;
 		}
 	);
 

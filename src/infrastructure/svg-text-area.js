@@ -12,7 +12,7 @@ import { svgTextDraw } from './svg-text-draw.js';
  * @returns { {():void} } dispose function
  */
 export function textareaCreate(textEl, verticalMiddle, val, onchange, onblur) {
-	const foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+	let foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
 
 	const textarea = document.createElement('textarea');
 	textarea.style.caretColor = textEl.getAttribute('fill');
@@ -39,7 +39,7 @@ export function textareaCreate(textEl, verticalMiddle, val, onchange, onblur) {
 
 	textarea.focus();
 
-	return () => foreign.remove();
+	return () => { foreign.remove(); foreign = null; };
 }
 
 /**
