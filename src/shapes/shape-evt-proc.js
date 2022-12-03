@@ -1,4 +1,4 @@
-import { evtCanvasPoint } from '../infrastructure/evt-canvas-point.js';
+import { classAdd, classDel, classHas, evtCanvasPoint } from '../infrastructure/util.js';
 import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
 import { path } from './path.js';
 
@@ -33,17 +33,13 @@ export function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsI
 			path.draw();
 		}
 	};
-	draw();
 
-	const classAdd = cl => svgGrp.classList.add(cl);
-	const classDel = cl => svgGrp.classList.remove(cl);
-	const classHas = cl => svgGrp.classList.contains(cl);
 	function unSelect() {
 		// in edit mode
-		if (classHas('highlight')) { onEditStop(); }
+		if (classHas(svgGrp, 'highlight')) { onEditStop(); }
 
-		classDel('select');
-		classDel('highlight');
+		classDel(svgGrp, 'select');
+		classDel(svgGrp, 'highlight');
 	}
 
 	const reset = moveEvtProc(
@@ -83,19 +79,19 @@ export function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsI
 		// onClick
 		() => {
 			// in edit mode
-			if (classHas('highlight')) { return; }
+			if (classHas(svgGrp, 'highlight')) { return; }
 
 			// to edit mode
-			if (classHas('select') && !classHas('highlight')) {
-				classDel('select');
-				classAdd('highlight');
+			if (classHas(svgGrp, 'select') && !classHas(svgGrp, 'highlight')) {
+				classDel(svgGrp, 'select');
+				classAdd(svgGrp, 'highlight');
 				// edit mode
 				onEdit();
 				return;
 			}
 
 			// to select mode
-			classAdd('select');
+			classAdd(svgGrp, 'select');
 		},
 		// onOutdown
 		unSelect);
@@ -119,6 +115,8 @@ export function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsI
 	};
 
 	svgGrp[ShapeSmbl] = thisShape;
+
+	return draw;
 }
 
 /**

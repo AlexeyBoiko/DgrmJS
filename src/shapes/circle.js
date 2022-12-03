@@ -1,5 +1,6 @@
 import { textareaCreate } from '../infrastructure/svg-text-area.js';
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
+import { ceil, child } from '../infrastructure/util.js';
 import { shapeEvtProc } from './shape-evt-proc.js';
 
 /**
@@ -21,16 +22,6 @@ export function circle(svg, canvasData, circleData) {
 		<circle data-key="outbottom" data-connect="outbottom" class="hovertrack" data-evt-index="2" r="10" cx="0" cy="48" />
 		<circle data-key="outtop" data-connect="outtop" class="hovertrack" data-evt-index="2" r="10" cx="0" cy="-48" />`;
 
-	/**
-	 * @template T
-	 * @param {string} key
-	 * @returns T
-	 */
-	const child = (key) => /** @type {T} */(svgGrp.querySelector(`[data-key="${key}"]`));
-
-	/** @type {SVGTextElement} */
-	const textEl = child('text');
-
 	const connectorsInnerPosition = {
 		outright: { dir: 'right', position: { x: 48, y: 0 } },
 		outleft: { dir: 'left', position: { x: -48, y: 0 } },
@@ -38,26 +29,11 @@ export function circle(svg, canvasData, circleData) {
 		outtop: { dir: 'top', position: { x: 0, y: -48 } }
 	};
 
-	function resize() {
-		connectorsInnerPosition.outright.position.x = circleData.r;
-		connectorsInnerPosition.outleft.position.x = -circleData.r;
-		connectorsInnerPosition.outbottom.position.y = circleData.r;
-		connectorsInnerPosition.outtop.position.y = -circleData.r;
+	/** @type {SVGTextElement} */
+	const textEl = child(svgGrp, 'text');
 
-		for (const connectorKey in connectorsInnerPosition) {
-			crclPos(child(connectorKey), connectorsInnerPosition[connectorKey].position);
-		}
-
-		crclR(child('outer'), circleData.r + 24);
-		crclR(child('main'), circleData.r);
-	}
-
-	if (!!circleData.r && circleData.r !== 48) { resize(); }
-	svgTextDraw(textEl, circleData.title, 0);
-
-	function onTextChange(txt) { circleData.title = txt; }
 	let textEditorDispose;
-	shapeEvtProc(svg, canvasData, svgGrp, circleData.position, /** @type {ConnectorsData} */(connectorsInnerPosition),
+	const draw = shapeEvtProc(svg, canvasData, svgGrp, circleData.position, /** @type {ConnectorsData} */(connectorsInnerPosition),
 		// onEdit
 		() => { textEditorDispose = textareaCreate(textEl, 0, circleData.title, onTextChange, onTextChange); },
 		// onEditStop
@@ -67,20 +43,77 @@ export function circle(svg, canvasData, circleData) {
 		}
 	);
 
+	function resizeAndDraw() {
+		connectorsInnerPosition.outright.position.x = circleData.r;
+		connectorsInnerPosition.outleft.position.x = -circleData.r;
+		connectorsInnerPosition.outbottom.position.y = circleData.r;
+		connectorsInnerPosition.outtop.position.y = -circleData.r;
+
+		for (const connectorKey in connectorsInnerPosition) {
+			positionSet(child(svgGrp, connectorKey), connectorsInnerPosition[connectorKey].position);
+		}
+
+		radiusSet(svgGrp, 'outer', circleData.r + 24);
+		radiusSet(svgGrp, 'main', circleData.r);
+		draw();
+	}
+
+	/** @param {string} txt */
+	function onTextChange(txt) {
+		circleData.title = txt;
+
+		// resize
+		const newRadius = textElRadius(textEl, 48, 24);
+		if (newRadius !== circleData.r) {
+			circleData.r = newRadius;
+			resizeAndDraw();
+			// this.panelUpdPos();
+		}
+	}
+
+	svgTextDraw(textEl, circleData.title, 0);
+	if (!!circleData.r && circleData.r !== 48) { resizeAndDraw(); } else { draw(); }
+
 	return svgGrp;
 }
 
 /**
- * @param {SVGCircleElement} crcl
+ * @param {Element} svgGrp
+ * @param {string} key
  * @param {number} r
  */
-function crclR(crcl, r) { crcl.r.baseVal.value = r; }
+function radiusSet(svgGrp, key, r) { child(svgGrp, key).r.baseVal.value = r; }
 
 /**
  * @param {SVGCircleElement} crcl
  * @param {Point} pos
  */
-function crclPos(crcl, pos) { crcl.cx.baseVal.value = pos.x; crcl.cy.baseVal.value = pos.y; }
+function positionSet(crcl, pos) { crcl.cx.baseVal.value = pos.x; crcl.cy.baseVal.value = pos.y; }
+
+/**
+ * calc radius that cover SVGTextElement bbox
+ * @param {SVGTextElement} textEl
+ * @param {*} minR
+ * @param {*} step
+ */
+function textElRadius(textEl, minR, step) {
+	let maxRadiusQrt = 0;
+	for (const span of textEl.getElementsByTagName('tspan')) {
+		for (const point of boxPoints(span.getBBox())) {
+			const r = point.x ** 2 + point.y ** 2;
+			if (r > maxRadiusQrt) { maxRadiusQrt = r; }
+		}
+	}
+	return ceil(minR, step, Math.sqrt(maxRadiusQrt));
+}
+
+/** @param {DOMRect} box */
+const boxPoints = (box) => [
+	{ x: box.x, y: box.y },
+	{ x: box.right, y: box.y },
+	{ x: box.x, y: box.bottom },
+	{ x: box.right, y: box.bottom }
+];
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { import('./shape-evt-proc.js').CanvasData } CanvasData */

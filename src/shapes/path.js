@@ -1,4 +1,4 @@
-import { evtCanvasPoint } from '../infrastructure/evt-canvas-point.js';
+import { child, classAdd, classDel, classHas, evtCanvasPoint } from '../infrastructure/util.js';
 import { moveEvtProc, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
 import { ShapeSmbl } from './shape-evt-proc.js';
 
@@ -19,11 +19,11 @@ export function path(svg, canvasData, startShape, data) {
 			<path d="M-7 7 l 7 -7 l -7 -7" stroke="#333" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
 		</g>`;
 
-	const path = svgGrp.querySelector('[data-key="path"]');
-	const outer = svgGrp.querySelector('[data-key="outer"]');
-	const selected = svgGrp.querySelector('[data-key="selected"]');
+	const path = child(svgGrp, 'path');
+	const outer = child(svgGrp, 'outer');
+	const selected = child(svgGrp, 'selected');
 	/** @type {SVGElement} */
-	const arrow = svgGrp.querySelector('[data-key="arrow"]');
+	const arrow = child(svgGrp, 'arrow');
 
 	function draw() {
 		// path
@@ -37,8 +37,8 @@ export function path(svg, canvasData, startShape, data) {
 	}
 	draw();
 
-	function select() { svgGrp.classList.add('select'); arrow.firstElementChild.setAttribute('data-evt-index', '2'); };
-	function unSelect() { svgGrp.classList.remove('select'); arrow.firstElementChild.setAttribute('data-evt-index', '1'); };
+	function select() { classAdd(svgGrp, 'select'); arrow.firstElementChild.setAttribute('data-evt-index', '2'); };
+	function unSelect() { classDel(svgGrp, 'select'); arrow.firstElementChild.setAttribute('data-evt-index', '1'); };
 
 	/** @type {Shape} */
 	let endShape;
@@ -164,18 +164,18 @@ function hoverEmulate(element) {
 	function move(evt) {
 		const elemFromPointNew = priorityElemFromPoint(evt);
 		if (elemFromPoint !== elemFromPointNew) {
-			if (elemFromPointNew?.classList.contains('hovertrack')) {
-				elemFromPointNew.classList.add('hover');
+			if (classHas(elemFromPointNew, 'hovertrack')) {
+				classAdd(elemFromPointNew, 'hover');
 			}
 			let parentHover = false;
-			if (elemFromPointNew?.parentElement.classList.contains('hovertrack')) {
-				elemFromPointNew.parentElement.classList.add('hover');
+			if (classHas(elemFromPointNew?.parentElement, 'hovertrack')) {
+				classAdd(elemFromPointNew.parentElement, 'hover');
 				parentHover = true;
 			}
 
-			elemFromPoint?.classList.remove('hover');
+			classDel(elemFromPoint, 'hover');
 			if (elemFromPoint?.parentElement !== elemFromPointNew?.parentElement || !parentHover) {
-				elemFromPoint?.parentElement.classList.remove('hover');
+				classDel(elemFromPoint?.parentElement, 'hover');
 			}
 
 			elemFromPoint = elemFromPointNew;
@@ -186,8 +186,8 @@ function hoverEmulate(element) {
 	// dispose fn
 	return function() {
 		element.removeEventListener('pointermove', move);
-		elemFromPoint?.classList.remove('hover');
-		elemFromPoint?.parentElement.classList.remove('hover');
+		classDel(elemFromPoint, 'hover');
+		classDel(elemFromPoint?.parentElement, 'hover');
 		elemFromPoint = null;
 	};
 }

@@ -32,7 +32,7 @@ moveScaleApplay(svg, canvas, canvasData);
 				{
 					position: { x: posX += 120, y: posY },
 					// title: `${counter.toString()}`,
-					// r: 72
+					// r: 72,
 					title: `${counter.toString()}\n1\n1\n1`
 				});
 			if (counter > 400) {
