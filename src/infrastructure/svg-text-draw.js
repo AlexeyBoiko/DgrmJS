@@ -6,7 +6,7 @@
  */
 export function svgTextDraw(textEl, str, verticalMiddle) {
 	const strData = svgStrToTspan(
-		str,
+		(str || ''),
 		textEl.x?.baseVal[0]?.value ?? 0);
 
 	textEl.innerHTML = strData.s;

@@ -28,6 +28,9 @@ export function circle(svg, canvasData, circleData) {
 	 */
 	const child = (key) => /** @type {T} */(svgGrp.querySelector(`[data-key="${key}"]`));
 
+	/** @type {SVGTextElement} */
+	const textEl = child('text');
+
 	const connectorsInnerPosition = {
 		outright: { dir: 'right', position: { x: 48, y: 0 } },
 		outleft: { dir: 'left', position: { x: -48, y: 0 } },
@@ -50,13 +53,13 @@ export function circle(svg, canvasData, circleData) {
 	}
 
 	if (!!circleData.r && circleData.r !== 48) { resize(); }
-	svgTextDraw(child('text'), circleData.title || '', 0);
+	svgTextDraw(textEl, circleData.title, 0);
 
 	function onTextChange(txt) { circleData.title = txt; }
 	let textEditorDispose;
 	shapeEvtProc(svg, canvasData, svgGrp, circleData.position, /** @type {ConnectorsData} */(connectorsInnerPosition),
 		// onEdit
-		() => { textEditorDispose = textareaCreate(child('text'), 0, circleData.title || '', onTextChange, onTextChange); },
+		() => { textEditorDispose = textareaCreate(textEl, 0, circleData.title, onTextChange, onTextChange); },
 		// onEditStop
 		() => {
 			textEditorDispose();
