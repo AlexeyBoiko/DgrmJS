@@ -5,8 +5,7 @@
   "scripts": {
     "lint": "eslint src/**/*.js",
     "tscheck": "node_modules\\.bin\\tsc --noEmit -p ./jsconfig.json",
-    "build": "rollup -c rollup.app.config.js",
-    "build-dgrm-npm": "rollup -c rollup.diagram-npm-package.config.js"
+    "build": "rollup -c rollup.app.config.js"
   },
   "author": "Alexey Boyko",
   "license": "ISC",

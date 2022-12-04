@@ -26,10 +26,17 @@ export default {
 						template.parts.some(part => {
 							return (
 								part.text.includes('<style') ||
-								part.text.includes('<div')
+								part.text.includes('<div') ||
+								part.text.includes('<circle')
 							);
 						})
 					);
+				},
+				minifyOptions: {
+					collapseWhitespace: true,
+					minifyCSS: true,
+					removeComments: true,
+					keepClosingSlash: true
 				}
 			}
 		}),
