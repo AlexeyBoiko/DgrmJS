@@ -21,19 +21,21 @@ import { settingsPnlCreate } from './shape-settings.js';
  */
 export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textEl, onTextChange) {
 	let textEditorDispose;
-	let settingsPnlDispose;
+
+	/** @type { {position:(bottomX:number, bottomY:number)=>void, dispose:()=>void} } */
+	let settingsPnl;
 	const draw = shapeEvtProc(svg, canvasData, svgGrp, shapeData.position, connectorsInnerPosition,
 		// onEdit
 		() => {
 			textEditorDispose = textareaCreate(textEl, 0, shapeData.title, onTxtChange, onTxtChange);
 
 			const position = svgGrp.getBoundingClientRect();
-			settingsPnlDispose = settingsPnlCreate(position.left + 10, position.top + 10, () => {});
+			settingsPnl = settingsPnlCreate(position.left + 10, position.top + 10, () => {});
 		},
 		// onEditStop
 		() => {
 			textEditorDispose(); textEditorDispose = null;
-			settingsPnlDispose(); settingsPnlDispose = null;
+			settingsPnl.dispose(); settingsPnl = null;
 		}
 	);
 
@@ -43,7 +45,14 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
 		onTextChange();
 	}
 
-	return draw;
+	// draw fn
+	return () => {
+		if (settingsPnl) {
+			const position = svgGrp.getBoundingClientRect();
+			settingsPnl.position(position.left + 10, position.top + 10);
+		}
+		draw();
+	};
 }
 
 /**

@@ -14,13 +14,23 @@ export function settingsPnlCreate(bottomX, bottomY, onCmd) {
 	div.append(shapeSettings);
 	document.body.append(div);
 
-	div.style.left = `${bottomX}px`;
-	div.style.top = `${window.scrollY + bottomY - div.getBoundingClientRect().height}px`; // window.scrollY fix IPhone keyboard
+	function position(btmX, btmY) {
+		div.style.left = `${btmX}px`;
+		div.style.top = `${window.scrollY + btmY - div.getBoundingClientRect().height}px`; // window.scrollY fix IPhone keyboard
+	}
+	position(bottomX, bottomY);
 
 	// dispose function
-	return () => {
-		div.remove();
-		div = null;
+	return {
+		/**
+		 * @param {number} bottomX positon of the bottom left corner of the panel
+		 * @param {number} bottomY positon of the bottom left corner of the panel
+		 */
+		position,
+		dispose: () => {
+			div.remove();
+			div = null;
+		}
 	};
 }
 
