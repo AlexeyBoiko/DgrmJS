@@ -16,10 +16,10 @@ export function circle(svg, canvasData, circleData) {
 
 		<text data-key="text" x="0" y="0" text-anchor="middle" style="pointer-events: none;" fill="#fff">&nbsp;</text>
 
-		<circle data-key="outright" data-connect="outright" class="hovertrack" data-evt-index="2" r="10" cx="48" cy="0" />
-		<circle data-key="outleft" data-connect="outleft" class="hovertrack" data-evt-index="2" r="10" cx="-48" cy="0" />
-		<circle data-key="outbottom" data-connect="outbottom" class="hovertrack" data-evt-index="2" r="10" cx="0" cy="48" />
-		<circle data-key="outtop" data-connect="outtop" class="hovertrack" data-evt-index="2" r="10" cx="0" cy="-48" />`;
+		<circle data-key="outright" 	data-connect="outright" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(48px, 0);" />
+		<circle data-key="outleft" 		data-connect="outleft" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(-48px, 0);" />
+		<circle data-key="outbottom" 	data-connect="outbottom" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, 48px);" />
+		<circle data-key="outtop" 		data-connect="outtop" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, -48px);" />`;
 
 	/** @type {ConnectorsData} */
 	const connectorsInnerPosition = {
@@ -76,7 +76,7 @@ function radiusSet(svgGrp, key, r) { child(svgGrp, key).r.baseVal.value = r; }
  * @param {SVGCircleElement} crcl
  * @param {Point} pos
  */
-function positionSet(crcl, pos) { crcl.cx.baseVal.value = pos.x; crcl.cy.baseVal.value = pos.y; }
+function positionSet(crcl, pos) { crcl.style.transform = `translate(${pos.x}px, ${pos.y}px)`; }
 
 /**
  * calc radius that cover SVGTextElement bbox
