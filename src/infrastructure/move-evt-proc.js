@@ -63,11 +63,16 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 		}
 	}
 
+	function wheel() {
+		reset();
+		onOutdown();
+	}
+
 	/**
 	 * @param {ProcEvent} evt
 	 */
 	function init(evt) {
-		if (evt[ProcessedSmbl] || !evt.isPrimary || pointDownShift) {
+		if (evt[ProcessedSmbl] || !evt.isPrimary) {
 			return;
 		}
 
@@ -78,6 +83,7 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 		target.addEventListener('pointerup', cancel, { passive: true, once: true });
 		target.addEventListener('pointermove', move, { passive: true });
 
+		elemTrackOutdown.addEventListener('wheel', wheel, { passive: true, once: true });
 		elemTrackOutdown.addEventListener('pointerdown', docDown, { passive: true });
 
 		pointDownShift = {
@@ -91,15 +97,17 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 		};
 	}
 
-	elem.addEventListener('gotpointercapture', init, { passive: true });
 	elem.addEventListener('pointerdown', init, { passive: true });
 
 	/** @param {boolean=} saveOutTrack */
 	function reset(saveOutTrack) {
 		target?.removeEventListener('pointercancel', cancel);
-		target?.removeEventListener('pointermove', move);
 		target?.removeEventListener('pointerup', cancel);
-		if (!saveOutTrack) { elemTrackOutdown.removeEventListener('pointerdown', docDown); }
+		target?.removeEventListener('pointermove', move);
+		if (!saveOutTrack) {
+			elemTrackOutdown.removeEventListener('pointerdown', docDown);
+			elemTrackOutdown.removeEventListener('wheel', wheel);
+		}
 		target = null;
 		pointDownShift = null;
 		pointDown = null;

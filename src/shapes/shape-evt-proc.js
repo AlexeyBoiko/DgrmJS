@@ -18,8 +18,9 @@ import { settingsPnlCreate } from './shape-settings.js';
  * @param {ConnectorsData} connectorsInnerPosition
  * @param {SVGTextElement} textEl
  * @param {{():void}} onTextChange
+ * @param {{(evt:CustomEvent<{cmd:string, arg:string}>):void}} onCmd
  */
-export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textEl, onTextChange) {
+export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textEl, onTextChange, onCmd) {
 	let textEditorDispose;
 
 	/** @type { {position:(bottomX:number, bottomY:number)=>void, dispose:()=>void} } */
@@ -30,7 +31,7 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
 			textEditorDispose = textareaCreate(textEl, 0, shapeData.title, onTxtChange, onTxtChange);
 
 			const position = svgGrp.getBoundingClientRect();
-			settingsPnl = settingsPnlCreate(position.left + 10, position.top + 10, () => {});
+			settingsPnl = settingsPnlCreate(position.left + 10, position.top + 10, onCmd);
 		},
 		// onEditStop
 		() => {
@@ -121,7 +122,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 					}
 				});
 				svgGrp.parentNode.append(pathShape.elem);
-				pathShape.setPointerCapture(evt.pointerId);
+				pathShape.pointerCapture(evt);
 
 				paths.add(pathShape);
 			}
@@ -174,6 +175,14 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 	svgGrp[ShapeSmbl] = thisShape;
 
 	return draw;
+	// {
+	// 	draw,
+	// 	dispose: () => {
+	// 		for (const path of paths) {
+	// 			path.
+	// 		}
+	// 	}
+	// };
 }
 
 /**

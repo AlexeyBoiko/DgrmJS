@@ -112,8 +112,13 @@ export function path(svg, canvasData, startShape, data) {
 		elem: svgGrp,
 		data,
 		draw,
-		setPointerCapture: /** @param {number} pointerId */(pointerId) => {
-			arrow.setPointerCapture(pointerId);
+		/** @param {PointerEventInit} evt */
+		pointerCapture: (evt) => {
+			const newEvt = new PointerEvent('pointerdown', evt);
+			arrow.dispatchEvent(newEvt);
+		},
+		dispose: () => {
+
 		}
 	};
 	return thisPath;
@@ -196,6 +201,14 @@ function hoverEmulate(element) {
 /** @typedef { 'left' | 'right' | 'top' | 'bottom' } Dir */
 /** @typedef { {position: Point, dir: Dir } } PathEnd */
 /** @typedef { {start: PathEnd, end: PathEnd} } PathData */
-/** @typedef { {elem: Element, data: PathData, draw():void, setPointerCapture:(pointerId:number)=>void} } Path */
+/**
+ * @typedef {{
+ * elem: Element,
+ * data: PathData,
+ * draw():void,
+ * pointerCapture:(evt:PointerEventInit)=>void,
+ * dispose():void
+ * }} Path
+ */
 /** @typedef { import('./shape-evt-proc.js').DgrmElement } DgrmElement */
 /** @typedef { import('./shape-evt-proc.js').Shape } Shape */

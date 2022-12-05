@@ -1,15 +1,13 @@
 /**
  * @param {number} bottomX positon of the bottom left corner of the panel
  * @param {number} bottomY positon of the bottom left corner of the panel
- * @param { {(arg: {cmd:string, arg:string}):void} } onCmd
+ * @param { {(evt: CustomEvent<{cmd:string, arg:string}>):void} } onCmd
  */
 export function settingsPnlCreate(bottomX, bottomY, onCmd) {
 	const shapeSettings = new ShapeSettings();
-	shapeSettings.addEventListener('cmd', /** @param {CustomEvent} evt */ evt => {
-		onCmd(evt.detail);
-	});
+	shapeSettings.addEventListener('cmd', onCmd);
 
-	let div = document.createElement('div');
+	const div = document.createElement('div');
 	div.style.cssText = 'position: fixed; box-shadow: 0px 0px 58px 2px rgb(34 60 80 / 20%); border-radius: 16px; background-color: rgba(255,255,255, .9);';
 	div.append(shapeSettings);
 	document.body.append(div);
@@ -27,10 +25,7 @@ export function settingsPnlCreate(bottomX, bottomY, onCmd) {
 		 * @param {number} bottomY positon of the bottom left corner of the panel
 		 */
 		position,
-		dispose: () => {
-			div.remove();
-			div = null;
-		}
+		dispose: () => div.remove()
 	};
 }
 

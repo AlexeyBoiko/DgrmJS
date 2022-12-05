@@ -1,5 +1,5 @@
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
-import { ceil, child } from '../infrastructure/util.js';
+import { ceil, child, classAdd, classDel } from '../infrastructure/util.js';
 import { shapeEditEvtProc } from './shape-evt-proc.js';
 
 /**
@@ -39,7 +39,18 @@ export function circle(svg, canvasData, circleData) {
 			if (newRadius !== circleData.r) {
 				circleData.r = newRadius;
 				resizeAndDraw();
-				// this.panelUpdPos();
+			}
+		},
+		// onCmd
+		evt => {
+			switch (evt.detail.cmd) {
+				case 'style':
+					classDel(svgGrp, circleData.style);
+					classAdd(svgGrp, evt.detail.arg);
+					circleData.style = evt.detail.arg;
+					break;
+				case 'del':
+					break;
 			}
 		}
 	);
@@ -106,4 +117,4 @@ const boxPoints = (box) => [
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { import('./shape-evt-proc.js').CanvasData } CanvasData */
 /** @typedef { import('./shape-evt-proc.js').ConnectorsData } ConnectorsData */
-/** @typedef { {position: Point, title?: string, r?:number} } CircleData */
+/** @typedef { {position: Point, title?: string, style?: string, r?:number} } CircleData */
