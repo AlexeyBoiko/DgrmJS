@@ -11,7 +11,7 @@ export function circle(svg, canvasData, circleData) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.classList.add('hovertrack');
 	svgGrp.innerHTML = `
-		<circle data-key="outer" data-evt-no data-evt-index="1" r="72" fill="transparent" stroke="red" stroke-width="1" />
+		<circle data-key="outer" data-evt-no data-evt-index="1" r="72" fill="transparent" stroke-width="0" />
 		<circle data-key="main" r="48" fill="#ff6600" stroke="#fff" stroke-width="1" />
 
 		<text data-key="text" x="0" y="0" text-anchor="middle" style="pointer-events: none;" fill="#fff">&nbsp;</text>
@@ -32,7 +32,7 @@ export function circle(svg, canvasData, circleData) {
 	/** @type {SVGTextElement} */
 	const textEl = child(svgGrp, 'text');
 
-	const draw = shapeEditEvtProc(svg, canvasData, svgGrp, circleData, connectorsInnerPosition, textEl,
+	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, circleData, connectorsInnerPosition, textEl,
 		// onTextChange
 		() => {
 			const newRadius = textElRadius(textEl, 48, 24);
@@ -50,6 +50,8 @@ export function circle(svg, canvasData, circleData) {
 					circleData.style = evt.detail.arg;
 					break;
 				case 'del':
+					shapeProc.del();
+					svgGrp.remove();
 					break;
 			}
 		}
@@ -67,11 +69,11 @@ export function circle(svg, canvasData, circleData) {
 
 		radiusSet(svgGrp, 'outer', circleData.r + 24);
 		radiusSet(svgGrp, 'main', circleData.r);
-		draw();
+		shapeProc.draw();
 	}
 
 	svgTextDraw(textEl, circleData.title, 0);
-	if (!!circleData.r && circleData.r !== 48) { resizeAndDraw(); } else { draw(); }
+	if (!!circleData.r && circleData.r !== 48) { resizeAndDraw(); } else { shapeProc.draw(); }
 
 	return svgGrp;
 }

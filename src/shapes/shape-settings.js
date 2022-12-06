@@ -18,14 +18,13 @@ export function settingsPnlCreate(bottomX, bottomY, onCmd) {
 	}
 	position(bottomX, bottomY);
 
-	// dispose function
 	return {
 		/**
 		 * @param {number} bottomX positon of the bottom left corner of the panel
 		 * @param {number} bottomY positon of the bottom left corner of the panel
 		 */
 		position,
-		dispose: () => div.remove()
+		del: () => div.remove()
 	};
 }
 

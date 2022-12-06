@@ -117,8 +117,10 @@ export function path(svg, canvasData, startShape, data) {
 			const newEvt = new PointerEvent('pointerdown', evt);
 			arrow.dispatchEvent(newEvt);
 		},
-		dispose: () => {
-
+		del: () => {
+			startShape.pathDel(thisPath);
+			endShape?.pathDel(thisPath);
+			svgGrp.remove();
 		}
 	};
 	return thisPath;
@@ -207,7 +209,7 @@ function hoverEmulate(element) {
  * data: PathData,
  * draw():void,
  * pointerCapture:(evt:PointerEventInit)=>void,
- * dispose():void
+ * del():void
  * }} Path
  */
 /** @typedef { import('./shape-evt-proc.js').DgrmElement } DgrmElement */

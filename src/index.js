@@ -1,6 +1,8 @@
-import { moveScaleApplay } from './move-scale-applay.js';
+import { moveScaleApplay } from './infrastructure/move-scale-applay.js';
 import { circle } from './shapes/circle.js';
 import { evtRouteApplay } from './infrastructure/move-evt-proc.js';
+
+import './ui/menu.js';
 
 const svg = document.getElementById('diagram');
 const canvas = document.getElementById('canvas');

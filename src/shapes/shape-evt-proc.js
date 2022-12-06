@@ -21,24 +21,28 @@ import { settingsPnlCreate } from './shape-settings.js';
  * @param {{(evt:CustomEvent<{cmd:string, arg:string}>):void}} onCmd
  */
 export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textEl, onTextChange, onCmd) {
-	let textEditorDispose;
+	/** @type {{():void}} */
+	let textEditorDel;
 
-	/** @type { {position:(bottomX:number, bottomY:number)=>void, dispose:()=>void} } */
+	/** @type { {position:(bottomX:number, bottomY:number)=>void, del:()=>void} } */
 	let settingsPnl;
-	const draw = shapeEvtProc(svg, canvasData, svgGrp, shapeData.position, connectorsInnerPosition,
+
+	const shapeProc = shapeEvtProc(svg, canvasData, svgGrp, shapeData.position, connectorsInnerPosition,
 		// onEdit
 		() => {
-			textEditorDispose = textareaCreate(textEl, 0, shapeData.title, onTxtChange, onTxtChange);
+			textEditorDel = textareaCreate(textEl, 0, shapeData.title, onTxtChange, onTxtChange);
 
 			const position = svgGrp.getBoundingClientRect();
 			settingsPnl = settingsPnlCreate(position.left + 10, position.top + 10, onCmd);
 		},
 		// onEditStop
-		() => {
-			textEditorDispose(); textEditorDispose = null;
-			settingsPnl.dispose(); settingsPnl = null;
-		}
+		del
 	);
+
+	function del() {
+		if (textEditorDel) { textEditorDel(); textEditorDel = null; }
+		settingsPnl?.del(); settingsPnl = null;
+	}
 
 	/** @param {string} txt */
 	function onTxtChange(txt) {
@@ -46,13 +50,18 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
 		onTextChange();
 	}
 
-	// draw fn
-	return () => {
-		if (settingsPnl) {
-			const position = svgGrp.getBoundingClientRect();
-			settingsPnl.position(position.left + 10, position.top + 10);
+	return {
+		draw: () => {
+			if (settingsPnl) {
+				const position = svgGrp.getBoundingClientRect();
+				settingsPnl.position(position.left + 10, position.top + 10);
+			}
+			shapeProc.draw();
+		},
+		del: () => {
+			del();
+			shapeProc.del();
 		}
-		draw();
 	};
 }
 
@@ -73,7 +82,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 	/** @type {ConnectorsData} */
 	const connectorsData = JSON.parse(JSON.stringify(connectorsInnerPosition));
 
-	/** @type { Set<{draw():void}> } */
+	/** @type { Set<Path> } */
 	const paths = new Set();
 
 	function draw() {
@@ -100,7 +109,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 		classDel(svgGrp, 'highlight');
 	}
 
-	const reset = moveEvtProc(
+	const moveProcReset = moveEvtProc(
 		svg,
 		svgGrp,
 		canvasData,
@@ -112,7 +121,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 
 			const connectorKey = evt.target.getAttribute('data-connect');
 			if (connectorKey) {
-				reset();
+				moveProcReset();
 
 				const pathShape = path(svg, canvasData, thisShape, {
 					start: connectorsData[connectorKey],
@@ -174,15 +183,15 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 
 	svgGrp[ShapeSmbl] = thisShape;
 
-	return draw;
-	// {
-	// 	draw,
-	// 	dispose: () => {
-	// 		for (const path of paths) {
-	// 			path.
-	// 		}
-	// 	}
-	// };
+	return {
+		draw,
+		del: () => {
+			moveProcReset();
+			for (const path of paths) {
+				path.del();
+			}
+		}
+	};
 }
 
 /**
