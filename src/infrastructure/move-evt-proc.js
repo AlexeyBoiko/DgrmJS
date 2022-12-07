@@ -6,7 +6,7 @@
  * @param { {(evt:PointerEvent):void} } onMoveStart
  * @param { {(evt:PointerEvent):void} } onMove
  * @param { {(evt:PointerEvent):void} } onMoveEnd
- * @param { {():void} } onClick
+ * @param { {(evt:PointerEvent):void} } onClick
  * @param { {():void} } onOutdown
  */
 export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, onMoveStart, onMove, onMoveEnd, onClick, onOutdown) {
@@ -50,7 +50,7 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 		if (isMoved) {
 			onMoveEnd(evt);
 		} else {
-			onClick();
+			onClick(evt);
 		}
 		reset(true);
 	}

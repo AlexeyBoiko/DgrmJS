@@ -27,7 +27,8 @@ export default {
 							return (
 								part.text.includes('<style') ||
 								part.text.includes('<div') ||
-								part.text.includes('<circle')
+								part.text.includes('<circle') ||
+								part.text.includes('<path')
 							);
 						})
 					);

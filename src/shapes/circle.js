@@ -1,5 +1,5 @@
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
-import { ceil, child, classAdd, classDel } from '../infrastructure/util.js';
+import { ceil, child } from '../infrastructure/util.js';
 import { shapeEditEvtProc } from './shape-evt-proc.js';
 
 /**
@@ -39,20 +39,6 @@ export function circle(svg, canvasData, circleData) {
 			if (newRadius !== circleData.r) {
 				circleData.r = newRadius;
 				resizeAndDraw();
-			}
-		},
-		// onCmd
-		evt => {
-			switch (evt.detail.cmd) {
-				case 'style':
-					classDel(svgGrp, circleData.style);
-					classAdd(svgGrp, evt.detail.arg);
-					circleData.style = evt.detail.arg;
-					break;
-				case 'del':
-					shapeProc.del();
-					svgGrp.remove();
-					break;
 			}
 		}
 	);

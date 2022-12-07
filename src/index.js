@@ -35,6 +35,7 @@ moveScaleApplay(svg, canvas, canvasData);
 				// title: `${counter.toString()}`,
 				// r: 72,
 				title: `${counter.toString()}\n1\n1\n1`
+				// style: 'cl-red'
 			});
 			if (counter > 400) {
 			// 	// circle.style.display = 'none';
@@ -46,8 +47,9 @@ moveScaleApplay(svg, canvas, canvasData);
 				const pathShape = path(svg, canvasData, {
 					startShape: { shapeEl: prevShapeSvgElement, connectorKey: 'right' },
 					endShape: { shapeEl: shapeSvgElement, connectorKey: 'left' }
+					// style: 'cl-red'
 				});
-				canvas.append(pathShape.elem);
+				canvas.append(pathShape);
 			}
 			prevShapeSvgElement = shapeSvgElement;
 
