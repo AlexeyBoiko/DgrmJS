@@ -5,10 +5,9 @@ import { ShapeSmbl } from './shape-evt-proc.js';
 /**
  * @param {HTMLElement} svg
  * @param { {position:Point, scale:number} } canvasData
- * @param { Shape } startShape
- * @param { PathData } data
+ * @param { PathData } pathData
  */
-export function path(svg, canvasData, startShape, data) {
+export function path(svg, canvasData, pathData) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.innerHTML =
 		`<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
@@ -27,21 +26,17 @@ export function path(svg, canvasData, startShape, data) {
 
 	function draw() {
 		// path
-		const dAttr = pathCalc(data);
+		const dAttr = pathCalc(pathData);
 		path.setAttribute('d', dAttr);
 		outer.setAttribute('d', dAttr);
 		selected.setAttribute('d', dAttr);
 
 		// arrow
-		arrow.style.transform = `translate(${data.end.position.x}px, ${data.end.position.y}px) rotate(${arrowAngle(data.end.dir)}deg)`;
+		arrow.style.transform = `translate(${pathData.end.position.x}px, ${pathData.end.position.y}px) rotate(${arrowAngle(pathData.end.dir)}deg)`;
 	}
-	draw();
 
 	function select() { classAdd(svgGrp, 'select'); arrow.firstElementChild.setAttribute('data-evt-index', '2'); };
 	function unSelect() { classDel(svgGrp, 'select'); arrow.firstElementChild.setAttribute('data-evt-index', '1'); };
-
-	/** @type {Shape} */
-	let endShape;
 
 	/** @type { {():void} } */
 	let hoverEmulateDispose;
@@ -51,11 +46,11 @@ export function path(svg, canvasData, startShape, data) {
 		canvasData,
 		// data.end.position,
 		{
-			get x() { return data.end.position.x; },
-			set x(val) { data.end.position.x = val; },
+			get x() { return pathData.end.position.x; },
+			set x(val) { pathData.end.position.x = val; },
 
-			get y() { return data.end.position.y; },
-			set y(val) { data.end.position.y = val; }
+			get y() { return pathData.end.position.y; },
+			set y(val) { pathData.end.position.y = val; }
 		},
 		// onMoveStart
 		evt => {
@@ -68,13 +63,13 @@ export function path(svg, canvasData, startShape, data) {
 			}
 
 			// disconnect from shape
-			if (endShape) {
-				if (startShape !== endShape) {
-					endShape.pathDel(thisPath);
+			if (pathData.endShape) {
+				if (pathData.endShape.shapeEl !== pathData.startShape.shapeEl) {
+					pathData.endShape.shapeEl[ShapeSmbl].pathDel(thisPath);
 				}
-				endShape = null;
-				data.end = {
-					dir: data.end.dir,
+				pathData.endShape = null;
+				pathData.end = {
+					dir: pathData.end.dir,
 					position: evtCanvasPoint(canvasData, evt)
 				};
 			}
@@ -88,12 +83,12 @@ export function path(svg, canvasData, startShape, data) {
 		// onMoveEnd
 		evt => {
 			// connect to shape
-
 			const elemFromPoint = priorityElemFromPoint(evt);
 			const connectorKey = elemFromPoint?.getAttribute('data-connect');
 			if (connectorKey) {
-				endShape = /** @type {DgrmElement} */(elemFromPoint.parentElement)[ShapeSmbl];
-				endShape.pathAdd(connectorKey, thisPath);
+				pathData.endShape = { shapeEl: elemFromPoint.parentElement, connectorKey };
+				pathData.end = pathData.endShape.shapeEl[ShapeSmbl].pathAdd(connectorKey, thisPath);
+				draw();
 			}
 
 			// hover emulation - end
@@ -110,7 +105,7 @@ export function path(svg, canvasData, startShape, data) {
 	/** @type {Path} */
 	const thisPath = {
 		elem: svgGrp,
-		data,
+		data: pathData,
 		draw,
 		/** @param {PointerEventInit} evt */
 		pointerCapture: (evt) => {
@@ -118,11 +113,16 @@ export function path(svg, canvasData, startShape, data) {
 			arrow.dispatchEvent(newEvt);
 		},
 		del: () => {
-			startShape.pathDel(thisPath);
-			endShape?.pathDel(thisPath);
+			pathData.startShape.shapeEl[ShapeSmbl].pathDel(thisPath);
+			pathData.endShape?.shapeEl[ShapeSmbl].pathDel(thisPath);
 			svgGrp.remove();
 		}
 	};
+
+	if (pathData.startShape) { pathData.start = pathData.startShape.shapeEl[ShapeSmbl].pathAdd(pathData.startShape.connectorKey, thisPath); }
+	if (pathData.endShape) { pathData.end = pathData.endShape.shapeEl[ShapeSmbl].pathAdd(pathData.endShape.connectorKey, thisPath); }
+	draw();
+
 	return thisPath;
 }
 
@@ -201,14 +201,15 @@ function hoverEmulate(element) {
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { 'left' | 'right' | 'top' | 'bottom' } Dir */
-/** @typedef { {position: Point, dir: Dir } } PathEnd */
-/** @typedef { {start: PathEnd, end: PathEnd} } PathData */
+/** @typedef { {shapeEl: DgrmElement, connectorKey: string} } PathConnectedShape */
+/** @typedef { {position: Point, dir: Dir}} PathEnd */
+/** @typedef { {start?: PathEnd, startShape?: PathConnectedShape, end?: PathEnd, endShape?: PathConnectedShape} } PathData */
 /**
  * @typedef {{
- * elem: Element,
- * data: PathData,
- * draw():void,
- * pointerCapture:(evt:PointerEventInit)=>void,
+ * elem: Element
+ * data: PathData
+ * draw():void
+ * pointerCapture:(evt:PointerEventInit)=>void
  * del():void
  * }} Path
  */

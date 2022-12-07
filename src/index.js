@@ -3,6 +3,7 @@ import { circle } from './shapes/circle.js';
 import { evtRouteApplay } from './infrastructure/move-evt-proc.js';
 
 import './ui/menu.js';
+import { path } from './shapes/path.js';
 
 const svg = document.getElementById('diagram');
 const canvas = document.getElementById('canvas');
@@ -26,22 +27,30 @@ moveScaleApplay(svg, canvas, canvasData);
 
 	// const t0 = performance.now();
 
+	let prevShapeSvgElement;
 	for (let row = 0; row < 1; row++) {
 		for (let ii = 0; ii < 2; ii++) {
-			const shapeSvgElement = circle(
-				svg,
-				canvasData,
-				{
-					position: { x: posX += 120, y: posY },
-					// title: `${counter.toString()}`,
-					// r: 72,
-					title: `${counter.toString()}\n1\n1\n1`
-				});
+			const shapeSvgElement = circle(svg, canvasData, {
+				position: { x: posX += 120, y: posY },
+				// title: `${counter.toString()}`,
+				// r: 72,
+				title: `${counter.toString()}\n1\n1\n1`
+			});
 			if (counter > 400) {
 			// 	// circle.style.display = 'none';
 				// continue;
 			}
 			canvas.append(shapeSvgElement);
+
+			if (prevShapeSvgElement) {
+				const pathShape = path(svg, canvasData, {
+					startShape: { shapeEl: prevShapeSvgElement, connectorKey: 'right' },
+					endShape: { shapeEl: shapeSvgElement, connectorKey: 'left' }
+				});
+				canvas.append(pathShape.elem);
+			}
+			prevShapeSvgElement = shapeSvgElement;
+
 			counter++;
 		}
 		posX = 60;

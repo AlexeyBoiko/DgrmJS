@@ -16,17 +16,17 @@ export function circle(svg, canvasData, circleData) {
 
 		<text data-key="text" x="0" y="0" text-anchor="middle" style="pointer-events: none;" fill="#fff">&nbsp;</text>
 
-		<circle data-key="outright" 	data-connect="outright" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(48px, 0);" />
-		<circle data-key="outleft" 		data-connect="outleft" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(-48px, 0);" />
-		<circle data-key="outbottom" 	data-connect="outbottom" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, 48px);" />
-		<circle data-key="outtop" 		data-connect="outtop" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, -48px);" />`;
+		<circle data-key="right" 	data-connect="right" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(48px, 0);" />
+		<circle data-key="left"		data-connect="left"		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(-48px, 0);" />
+		<circle data-key="bottom" 	data-connect="bottom"	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, 48px);" />
+		<circle data-key="top" 		data-connect="top" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, -48px);" />`;
 
 	/** @type {ConnectorsData} */
 	const connectorsInnerPosition = {
-		outright: { dir: 'right', position: { x: 48, y: 0 } },
-		outleft: { dir: 'left', position: { x: -48, y: 0 } },
-		outbottom: { dir: 'bottom', position: { x: 0, y: 48 } },
-		outtop: { dir: 'top', position: { x: 0, y: -48 } }
+		right: { dir: 'right', position: { x: 48, y: 0 } },
+		left: { dir: 'left', position: { x: -48, y: 0 } },
+		bottom: { dir: 'bottom', position: { x: 0, y: 48 } },
+		top: { dir: 'top', position: { x: 0, y: -48 } }
 	};
 
 	/** @type {SVGTextElement} */
@@ -58,10 +58,10 @@ export function circle(svg, canvasData, circleData) {
 	);
 
 	function resizeAndDraw() {
-		connectorsInnerPosition.outright.position.x = circleData.r;
-		connectorsInnerPosition.outleft.position.x = -circleData.r;
-		connectorsInnerPosition.outbottom.position.y = circleData.r;
-		connectorsInnerPosition.outtop.position.y = -circleData.r;
+		connectorsInnerPosition.right.position.x = circleData.r;
+		connectorsInnerPosition.left.position.x = -circleData.r;
+		connectorsInnerPosition.bottom.position.y = circleData.r;
+		connectorsInnerPosition.top.position.y = -circleData.r;
 
 		for (const connectorKey in connectorsInnerPosition) {
 			positionSet(child(svgGrp, connectorKey), connectorsInnerPosition[connectorKey].position);

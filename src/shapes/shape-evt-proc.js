@@ -123,8 +123,8 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 			if (connectorKey) {
 				moveProcReset();
 
-				const pathShape = path(svg, canvasData, thisShape, {
-					start: connectorsData[connectorKey],
+				const pathShape = path(svg, canvasData, {
+					startShape: { shapeEl: svgGrp, connectorKey },
 					end: {
 						dir: reversDir(connectorsData[connectorKey].dir),
 						position: evtCanvasPoint(canvasData, evt)
@@ -132,7 +132,6 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 				});
 				svgGrp.parentNode.append(pathShape.elem);
 				pathShape.pointerCapture(evt);
-
 				paths.add(pathShape);
 			}
 		},
@@ -170,9 +169,8 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 		 * @param {Path} pathShape
 		 */
 		pathAdd: function(connectorKey, pathShape) {
-			pathShape.data.end = connectorsData[connectorKey];
 			paths.add(pathShape);
-			pathShape.draw();
+			return connectorsData[connectorKey];
 		},
 
 		/** @param {Path} pathShape */
@@ -231,7 +229,7 @@ function reversDir(pathDir) {
 export const ShapeSmbl = Symbol('shape');
 /**
  * @typedef {{
- * pathAdd(connectorKey:string, pathShape:Path):void
+ * pathAdd(connectorKey:string, pathShape:Path):PathEnd
  * pathDel(pathShape:Path):void
  * }} Shape
  */
