@@ -2,7 +2,7 @@ import { ProcessedSmbl } from './move-evt-proc.js';
 
 /**
  * @param { HTMLElement } svg
- * @param { HTMLElement } canvas
+ * @param { SVGGElement } canvas
  * @param { {position:Point, scale:number, cell: number} } canvasData
  */
 export function moveScaleApplay(svg, canvas, canvasData) {

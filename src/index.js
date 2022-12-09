@@ -1,21 +1,25 @@
 import { moveScaleApplay } from './infrastructure/move-scale-applay.js';
-import { circle } from './shapes/circle.js';
 import { evtRouteApplay } from './infrastructure/move-evt-proc.js';
-
-import './ui/menu.js';
+import { circle } from './shapes/circle.js';
 import { path } from './shapes/path.js';
+import './ui/menu.js';
 
-const svg = document.getElementById('diagram');
-const canvas = document.getElementById('canvas');
-
-evtRouteApplay(svg);
-
-const canvasData = {
-	position: { x: 0, y: 0 },
-	scale: 1,
-	cell: 24
+const diagramData = {
+	svg: document.getElementById('diagram'),
+	/** @type {SVGGElement} */
+	// @ts-ignore
+	canvas: document.getElementById('canvas'),
+	canvasData: {
+		position: { x: 0, y: 0 },
+		scale: 1,
+		cell: 24
+	}
 };
-moveScaleApplay(svg, canvas, canvasData);
+
+evtRouteApplay(diagramData.svg);
+moveScaleApplay(diagramData.svg, diagramData.canvas, diagramData.canvasData);
+
+/** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(diagramData);
 
 //
 // Generate
@@ -30,8 +34,8 @@ moveScaleApplay(svg, canvas, canvasData);
 	let prevShapeSvgElement;
 	for (let row = 0; row < 1; row++) {
 		for (let ii = 0; ii < 2; ii++) {
-			const shapeSvgElement = circle(svg, canvasData, {
-				type: 0,
+			const shapeSvgElement = circle(diagramData.svg, diagramData.canvasData, {
+				type: 1,
 				position: { x: posX += 120, y: posY },
 				// title: `${counter.toString()}`,
 				// r: 72,
@@ -42,15 +46,15 @@ moveScaleApplay(svg, canvas, canvasData);
 			// 	// circle.style.display = 'none';
 				// continue;
 			}
-			canvas.append(shapeSvgElement);
+			diagramData.canvas.append(shapeSvgElement);
 
 			if (prevShapeSvgElement) {
-				const pathShape = path(svg, canvasData, {
+				const pathShape = path(diagramData.svg, diagramData.canvasData, {
 					startShape: { shapeEl: prevShapeSvgElement, connectorKey: 'right' },
 					endShape: { shapeEl: shapeSvgElement, connectorKey: 'left' }
 					// style: 'cl-red'
 				});
-				canvas.append(pathShape);
+				diagramData.canvas.append(pathShape);
 			}
 			prevShapeSvgElement = shapeSvgElement;
 
