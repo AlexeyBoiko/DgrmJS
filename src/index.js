@@ -31,6 +31,7 @@ moveScaleApplay(svg, canvas, canvasData);
 	for (let row = 0; row < 1; row++) {
 		for (let ii = 0; ii < 2; ii++) {
 			const shapeSvgElement = circle(svg, canvasData, {
+				type: 0,
 				position: { x: posX += 120, y: posY },
 				// title: `${counter.toString()}`,
 				// r: 72,

@@ -105,4 +105,4 @@ const boxPoints = (box) => [
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { import('./shape-evt-proc.js').CanvasData } CanvasData */
 /** @typedef { import('./shape-evt-proc.js').ConnectorsData } ConnectorsData */
-/** @typedef { {position: Point, title?: string, style?: string, r?:number} } CircleData */
+/** @typedef { {type:number, position: Point, title?: string, style?: string, r?:number} } CircleData */

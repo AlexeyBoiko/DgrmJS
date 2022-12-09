@@ -14,7 +14,7 @@ import { settingsPnlCreate } from './shape-settings.js';
  * @param {HTMLElement} svg
  * @param {CanvasData} canvasData
  * @param {ShapeElement} svgGrp
- * @param {{position: Point, title?: string, style?: string}} shapeData
+ * @param {ShapeData & { title?: string, style?: string}} shapeData
  * @param {ConnectorsData} connectorsInnerPosition
  * @param {SVGTextElement} textEl
  * @param {{():void}} onTextChange
@@ -26,7 +26,7 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
 	/** @type { {position:(bottomX:number, bottomY:number)=>void, del:()=>void} } */
 	let settingsPnl;
 
-	const shapeProc = shapeEvtProc(svg, canvasData, svgGrp, shapeData.position, connectorsInnerPosition,
+	const shapeProc = shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition,
 		// onEdit
 		() => {
 			textEditorDel = textareaCreate(textEl, 0, shapeData.title, onTxtChange, onTxtChange);
@@ -65,7 +65,7 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
 		onTextChange();
 	}
 
-	classAdd(svgGrp, shapeData.style);
+	if (shapeData.style) { classAdd(svgGrp, shapeData.style); }
 
 	return {
 		draw: () => {
@@ -86,12 +86,12 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
  * @param {HTMLElement} svg
  * @param {CanvasData} canvasData
  * @param {ShapeElement} svgGrp
- * @param {Point} shapePosition
+ * @param {ShapeData} shapeData
  * @param {ConnectorsData} connectorsInnerPosition
  * @param {{():void}} onEdit
  * @param {{():void}} onEditStop
  */
-function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPosition, onEdit, onEditStop) {
+function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, onEdit, onEditStop) {
 	/** @type {ConnectorsData} */
 	const connectorsData = JSON.parse(JSON.stringify(connectorsInnerPosition));
 
@@ -99,13 +99,13 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 	const paths = new Set();
 
 	function draw() {
-		svgGrp.style.transform = `translate(${shapePosition.x}px, ${shapePosition.y}px)`;
+		svgGrp.style.transform = `translate(${shapeData.position.x}px, ${shapeData.position.y}px)`;
 
 		// paths
 		for (const connectorKey in connectorsInnerPosition) {
 			connectorsData[connectorKey].position = {
-				x: connectorsInnerPosition[connectorKey].position.x + shapePosition.x,
-				y: connectorsInnerPosition[connectorKey].position.y + shapePosition.y
+				x: connectorsInnerPosition[connectorKey].position.x + shapeData.position.x,
+				y: connectorsInnerPosition[connectorKey].position.y + shapeData.position.y
 			};
 		}
 
@@ -126,7 +126,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 		svg,
 		svgGrp,
 		canvasData,
-		shapePosition,
+		shapeData.position,
 		// onMoveStart
 		/** @param {PointerEvent & { target: Element} } evt */
 		evt => {
@@ -152,7 +152,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 		draw,
 		// onMoveEnd
 		_ => {
-			placeToCell(shapePosition, canvasData.cell);
+			placeToCell(shapeData.position, canvasData.cell);
 			draw();
 		},
 		// onClick
@@ -188,7 +188,9 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapePosition, connectorsInnerPos
 		/** @param {PathElement} pathEl */
 		pathDel: function(pathEl) {
 			paths.delete(pathEl);
-		}
+		},
+
+		data: shapeData
 	};
 
 	return {
@@ -236,13 +238,15 @@ function reversDir(pathDir) {
 /** @typedef { {position: Point, dir: PathDir} } PathEnd */
 /** @typedef { Object.<string, PathEnd> } ConnectorsData */
 
-export const ShapeSmbl = Symbol('shape');
+/** @typedef { {type: number, position: Point} } ShapeData */
 /**
- * @typedef {{
- * pathAdd(connectorKey:string, pathEl:PathElement):PathEnd
- * pathDel(pathEl:PathElement):void
- * }} Shape
+@typedef {{
+pathAdd(connectorKey:string, pathEl:PathElement):PathEnd
+pathDel(pathEl:PathElement):void
+data: ShapeData
+}} Shape
  */
+export const ShapeSmbl = Symbol('shape');
 /** @typedef {SVGGraphicsElement & { [ShapeSmbl]?: Shape }} ShapeElement */
 /** @typedef {import('./path.js').Path} Path */
 /** @typedef {import('./path.js').PathElement} PathElement */

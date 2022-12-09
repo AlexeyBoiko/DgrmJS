@@ -50,23 +50,29 @@ export function path(svg, canvasData, pathData) {
 
 	/** @param {PointerEvent} evt */
 	function select(evt) {
-		if (classHas(svgGrp, 'select')) { return; }
+		// in edit mode
+		if (classHas(svgGrp, 'select') && settingsPnl) { return; }
 
+		// to edit mode
+		if (classHas(svgGrp, 'select') && !settingsPnl) {
+			settingsPnl = settingsPnlCreate(evt.clientX - 10, evt.clientY - 10, evt => {
+				switch (evt.detail.cmd) {
+					case 'style':
+						classDel(svgGrp, pathData.style);
+						classAdd(svgGrp, evt.detail.arg);
+						pathData.style = evt.detail.arg;
+						break;
+					case 'del':
+						del();
+						break;
+				}
+			});
+			return;
+		}
+
+		// to select mode
 		classAdd(svgGrp, 'select');
 		arrow.firstElementChild.setAttribute('data-evt-index', '2');
-
-		settingsPnl = settingsPnlCreate(evt.clientX - 10, evt.clientY - 10, evt => {
-			switch (evt.detail.cmd) {
-				case 'style':
-					classDel(svgGrp, pathData.style);
-					classAdd(svgGrp, evt.detail.arg);
-					pathData.style = evt.detail.arg;
-					break;
-				case 'del':
-					del();
-					break;
-			}
-		});
 	};
 
 	function unSelect() {
@@ -148,10 +154,11 @@ export function path(svg, canvasData, pathData) {
 			const newEvt = new PointerEvent('pointerdown', evt);
 			arrow.dispatchEvent(newEvt);
 		},
-		del
+		del,
+		data: pathData
 	};
 
-	classAdd(svgGrp, pathData.style);
+	if (pathData.style) { classAdd(svgGrp, pathData.style); }
 	if (pathData.startShape) { pathData.start = pathData.startShape.shapeEl[ShapeSmbl].pathAdd(pathData.startShape.connectorKey, svgGrp); }
 	if (pathData.endShape) { pathData.end = pathData.endShape.shapeEl[ShapeSmbl].pathAdd(pathData.endShape.connectorKey, svgGrp); }
 	draw();
@@ -250,6 +257,7 @@ style?: string,
 draw():void
 pointerCapture:(evt:PointerEventInit)=>void
 del():void
+data: PathData
 }} Path
  */
 export const PathSmbl = Symbol('path');

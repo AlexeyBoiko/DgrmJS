@@ -9,7 +9,7 @@ export class Menu extends HTMLElement {
 				left: 15px;
 				cursor: pointer;
 			}
-			.options {
+			#options {
 				position: fixed;
 				padding: 15px;
 				box-shadow: 0px 0px 58px 2px rgb(34 60 80 / 20%);
@@ -22,7 +22,7 @@ export class Menu extends HTMLElement {
 				z-index: 1;
 			}
 
-			.options div, .options a { 
+			#options div, #options a { 
 				color: rgb(13, 110, 253); 
 				cursor: pointer; margin: 10px 0;
 				display: flex;
@@ -30,7 +30,7 @@ export class Menu extends HTMLElement {
 				line-height: 25px;
 				text-decoration: none;
 			}
-			.options div svg, .options a svg { margin-right: 10px; }
+			#options div svg, #options a svg { margin-right: 10px; }
 
 			.load svg { animation: rot 1.2s linear infinite; }
 			@keyframes rot {
@@ -43,7 +43,7 @@ export class Menu extends HTMLElement {
 			}
 			</style>
 			<svg data-cmd="menu" class="menu" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" fill="rgba(52,71,103,1)"/></svg>
-			<div class="options" style="visibility: hidden;">
+			<div id="options" style="visibility: hidden;">
 			 	<div data-cmd="menu" style="margin: 0 0 15px;"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" fill="rgba(52,71,103,1)"/></svg></div>
 				<div data-cmd="new"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M9 2.003V2h10.998C20.55 2 21 2.455 21 2.992v18.016a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 20.993V8l6-5.997zM5.83 8H9V4.83L5.83 8zM11 4v5a1 1 0 0 1-1 1H5v10h14V4h-8z" fill="rgba(52,71,103,1)"/></svg>New diagram</div>
 				<div data-cmd="open"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 21a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h7.414l2 2H20a1 1 0 0 1 1 1v3h-2V7h-7.414l-2-2H4v11.998L5.5 11h17l-2.31 9.243a1 1 0 0 1-.97.757H3zm16.938-8H7.062l-1.5 6h12.876l1.5-6z" fill="rgba(52,71,103,1)"/></svg>Open diagram image</div>
@@ -56,10 +56,10 @@ export class Menu extends HTMLElement {
 		shadow.querySelectorAll('[data-cmd]').forEach(el => el.addEventListener('click', this));
 
 		/**
-		 * @type {HTMLDivElement}
+		 * @type {HTMLElement}
 		 * @private
 		 */
-		this._options = shadow.querySelector('.options');
+		this._options = shadow.getElementById('options');
 	}
 
 	// init(diagram) {
