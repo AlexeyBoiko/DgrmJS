@@ -17,7 +17,6 @@ export function serialize(canvas) {
 			// path
 
 			const pathData = shape[PathSmbl].data;
-			if (!pathData.startShape || !pathData.endShape) { continue; }
 			const pathJson = {
 				type: 0,
 				s: shapes.indexOf(pathData.startShape.shapeEl),
