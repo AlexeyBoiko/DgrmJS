@@ -4,22 +4,19 @@ import { circle } from './shapes/circle.js';
 import { path } from './shapes/path.js';
 import './ui/menu.js';
 
-const diagramData = {
-	svg: document.getElementById('diagram'),
-	/** @type {SVGGElement} */
-	// @ts-ignore
-	canvas: document.getElementById('canvas'),
-	canvasData: {
-		position: { x: 0, y: 0 },
-		scale: 1,
-		cell: 24
-	}
+/** @type {SVGGElement} */
+// @ts-ignore
+const canvas = document.getElementById('canvas');
+const canvasData = {
+	position: { x: 0, y: 0 },
+	scale: 1,
+	cell: 24
 };
 
-evtRouteApplay(diagramData.svg);
-moveScaleApplay(diagramData.svg, diagramData.canvas, diagramData.canvasData);
+evtRouteApplay(canvas.ownerSVGElement);
+moveScaleApplay(canvas, canvasData);
 
-/** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(diagramData);
+/** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas, canvasData);
 
 //
 // Generate
@@ -34,7 +31,7 @@ moveScaleApplay(diagramData.svg, diagramData.canvas, diagramData.canvasData);
 	let prevShapeSvgElement;
 	for (let row = 0; row < 1; row++) {
 		for (let ii = 0; ii < 2; ii++) {
-			const shapeSvgElement = circle(diagramData.svg, diagramData.canvasData, {
+			const shapeSvgElement = circle(canvas.ownerSVGElement, canvasData, {
 				type: 1,
 				position: { x: posX += 120, y: posY },
 				// title: `${counter.toString()}`,
@@ -46,15 +43,15 @@ moveScaleApplay(diagramData.svg, diagramData.canvas, diagramData.canvasData);
 			// 	// circle.style.display = 'none';
 				// continue;
 			}
-			diagramData.canvas.append(shapeSvgElement);
+			canvas.append(shapeSvgElement);
 
 			if (prevShapeSvgElement) {
-				const pathShape = path(diagramData.svg, diagramData.canvasData, {
+				const pathShape = path(canvas.ownerSVGElement, canvasData, {
 					startShape: { shapeEl: prevShapeSvgElement, connectorKey: 'right' },
 					endShape: { shapeEl: shapeSvgElement, connectorKey: 'left' }
 					// style: 'cl-red'
 				});
-				diagramData.canvas.append(pathShape);
+				canvas.append(pathShape);
 			}
 			prevShapeSvgElement = shapeSvgElement;
 

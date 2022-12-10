@@ -69,12 +69,12 @@ export class Menu extends HTMLElement {
 		click('menu2', toggle);
 
 		clickUIDisable('save', () => {
-			const serialized = serialize(this._diagramData.canvas);
+			const serialized = serialize(this._canvas);
 			if (serialized.s.length === 0) { alert('Diagram is empty'); return; }
 
 			dgrmPngCreate(
-				this._diagramData.canvas,
-				this._diagramData.canvasData,
+				this._canvas,
+				this._canvasData,
 				JSON.stringify(serialized),
 				png => fileSave(png, 'dgrm.png')); // TODO: check await
 		});
@@ -84,15 +84,18 @@ export class Menu extends HTMLElement {
 				const dgrmChunk = await dgrmPngChunkGet(png);
 				if (!dgrmChunk) { alert('File cannot be read. Use the exact image file you got from the application.'); return; }
 
-				deserialize(this._diagramData.canvas, this._diagramData.canvasData, JSON.parse(dgrmChunk));
+				deserialize(this._canvas, this._canvasData, JSON.parse(dgrmChunk));
 			});
 		});
 	}
 
-	/** @param {{canvas: SVGGElement, canvasData:{position:Point, scale:number, cell:number}}} diagramData */
-	init(diagramData) {
-		/** @private */
-		this._diagramData = diagramData;
+	/**
+	 * @param {SVGGElement} canvas
+	 * @param {{position:Point, scale:number, cell:number}} canvasData
+	 */
+	init(canvas, canvasData) {
+		/** @private */ this._canvas = canvas;
+		/** @private */ this._canvasData = canvasData;
 	}
 
 	// init(diagram) {

@@ -117,7 +117,7 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 	return reset;
 }
 
-/** @param {HTMLElement} elem */
+/** @param {Element} elem */
 export function evtRouteApplay(elem) {
 	elem.addEventListener('pointerdown', /** @param {ProcEvent} evt */ evt => {
 		if (!evt.isPrimary || evt[RouteedSmbl]) { return; }

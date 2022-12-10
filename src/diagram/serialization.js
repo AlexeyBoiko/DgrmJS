@@ -1,3 +1,4 @@
+import { CanvasSmbl } from '../infrastructure/move-scale-applay.js';
 import { circle } from '../shapes/circle.js';
 import { path, PathSmbl } from '../shapes/path.js';
 import { ShapeSmbl } from '../shapes/shape-evt-proc.js';
@@ -88,18 +89,19 @@ export function deserialize(canvas, canvasData, data) {
 	}
 }
 
-/** @param {SVGGElement} canvas */
+/** @param {CanvasElement} canvas */
 function dgrmClear(canvas) {
-	// TODO: reset position and scale
 	while (canvas.firstChild) {
 		/** @type {ShapeElement} */(canvas.firstChild)[ShapeSmbl]?.del();
 	}
+	canvas[CanvasSmbl].move(0, 0, 1);
 }
 
 /** @typedef {{v:string, s: Array<(ShapeData | PathSerialized) & {elem?:SVGGraphicsElement}>}} DiagramSerialized */
 
 /** @typedef { import("../shapes/shape-evt-proc").ShapeElement } ShapeElement */
 /** @typedef { import('../shapes/shape-evt-proc.js').ShapeData } ShapeData */
+/** @typedef { import('../infrastructure/move-scale-applay.js').CanvasElement } CanvasElement */
 
 /** @typedef { import("../shapes/path").PathElement } PathElement */
 /** @typedef { import('../shapes/path.js').PathData } PathData */

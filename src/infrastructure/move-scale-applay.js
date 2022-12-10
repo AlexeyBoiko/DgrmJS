@@ -1,12 +1,11 @@
 import { ProcessedSmbl } from './move-evt-proc.js';
 
 /**
- * @param { HTMLElement } svg
- * @param { SVGGElement } canvas
+ * @param { CanvasElement } canvas
  * @param { {position:Point, scale:number, cell: number} } canvasData
  */
-export function moveScaleApplay(svg, canvas, canvasData) {
-	const gripUpdate = applayGrid(svg, canvasData);
+export function moveScaleApplay(canvas, canvasData) {
+	const gripUpdate = applayGrid(canvas.ownerSVGElement, canvasData);
 
 	function transform() {
 		canvas.style.transform = `matrix(${canvasData.scale}, 0, 0, ${canvasData.scale}, ${canvasData.position.x}, ${canvasData.position.y})`;
@@ -30,10 +29,10 @@ export function moveScaleApplay(svg, canvas, canvasData) {
 	}
 
 	// move, scale with fingers
-	applayFingers(svg, canvasData, scale, transform);
+	applayFingers(canvas.ownerSVGElement, canvasData, scale, transform);
 
 	// scale with mouse wheel
-	svg.addEventListener('wheel', /** @param {WheelEvent} evt */ evt => {
+	canvas.ownerSVGElement.addEventListener('wheel', /** @param {WheelEvent} evt */ evt => {
 		evt.preventDefault();
 		const delta = evt.deltaY || evt.deltaX;
 		const scaleStep = Math.abs(delta) < 50
@@ -44,10 +43,20 @@ export function moveScaleApplay(svg, canvas, canvasData) {
 			canvasData.scale + (delta < 0 ? scaleStep : -scaleStep),
 			evtPoint(evt));
 	});
+
+	canvas[CanvasSmbl] = {
+		/** @param {number} x, @param {number} y, @param {number} scale */
+		move: (x, y, scale) => {
+			canvasData.position.x = x;
+			canvasData.position.y = y;
+			canvasData.scale = scale;
+			transform();
+		}
+	};
 }
 
 /**
- * @param { HTMLElement } svg
+ * @param { SVGSVGElement } svg
  * @param { {position:Point, scale:number} } canvasData
  * @param { {(nextScale:number, originPoint:Point):void} } scaleFn
  * @param { {():void} } transformFn
@@ -133,7 +142,7 @@ function applayFingers(svg, canvasData, scaleFn, transformFn) {
 }
 
 /**
- * @param { HTMLElement } svg
+ * @param { SVGSVGElement } svg
  * @param { {position:Point, scale:number, cell: number} } canvasData
  */
 function applayGrid(svg, canvasData) {
@@ -186,3 +195,6 @@ function evtPointer(evt, canvasData) {
 /** @typedef { {id:number, pos:Point, shift:Point} } Pointer */
 
 /** @typedef {import("./move-evt-proc").ProcEvent} DgrmEvent */
+
+export const CanvasSmbl = Symbol('Canvas');
+/** @typedef {SVGGElement & { [CanvasSmbl]?: {move(x:number, y:number, scale:number):void} }} CanvasElement */
