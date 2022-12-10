@@ -47,18 +47,21 @@ export function deserialize(canvas, canvasData, data) {
 	if (data.v !== '1') { alert('wrong format'); return; }
 	dgrmClear(canvas);
 
-	/** @param {ShapeData & {elem?:SVGGraphicsElement}} shapeData */
+	/** @type {Map<ShapeData, SVGGraphicsElement>} */
+	const shapeDataToElem = new Map();
+
+	/** @param {ShapeData} shapeData */
 	function shapeEnsure(shapeData) {
-		if (!shapeData.elem) {
-			let shapeEl;
+		let shapeEl = shapeDataToElem.get(shapeData);
+		if (!shapeEl) {
 			switch (shapeData.type) {
 				// circle
 				case 1: shapeEl = circle(canvas.ownerSVGElement, canvasData, /** @type {ShapeData} */(shapeData)); break;
 			}
 			canvas.append(shapeEl);
-			shapeData.elem = shapeEl;
+			shapeDataToElem.set(shapeData, shapeEl);
 		}
-		return shapeData.elem;
+		return shapeEl;
 	}
 
 	/** @param {number?} index */
@@ -97,7 +100,7 @@ function dgrmClear(canvas) {
 	canvas[CanvasSmbl].move(0, 0, 1);
 }
 
-/** @typedef {{v:string, s: Array<(ShapeData | PathSerialized) & {elem?:SVGGraphicsElement}>}} DiagramSerialized */
+/** @typedef {{v:string, s: Array<ShapeData | PathSerialized>}} DiagramSerialized */
 
 /** @typedef { import("../shapes/shape-evt-proc").ShapeElement } ShapeElement */
 /** @typedef { import('../shapes/shape-evt-proc.js').ShapeData } ShapeData */
