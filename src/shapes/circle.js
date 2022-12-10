@@ -3,7 +3,7 @@ import { ceil, child } from '../infrastructure/util.js';
 import { shapeEditEvtProc } from './shape-evt-proc.js';
 
 /**
- * @param {HTMLElement} svg
+ * @param {Element} svg
  * @param {CanvasData} canvasData
  * @param {CircleData} circleData
  */

@@ -1,4 +1,4 @@
-import { pngChunkSet } from '../infrastructure/png-chunk.js';
+import { pngChunkGet, pngChunkSet } from '../infrastructure/png-chunk.js';
 import { svgToPng } from '../infrastructure/svg-to-png.js';
 
 /**
@@ -7,7 +7,7 @@ import { svgToPng } from '../infrastructure/svg-to-png.js';
  * @param {string} dgrmChunkVal
  * @param {BlobCallback} callBack
  */
-export function pngCreate(canvas, canvasData, dgrmChunkVal, callBack) {
+export function dgrmPngCreate(canvas, canvasData, dgrmChunkVal, callBack) {
 	const rectToShow = canvas.getBoundingClientRect();
 	const svgVirtual = /** @type {SVGSVGElement} */(canvas.ownerSVGElement.cloneNode(true));
 	svgVirtual.style.backgroundImage = null;
@@ -25,6 +25,15 @@ export function pngCreate(canvas, canvasData, dgrmChunkVal, callBack) {
 		// callBack
 		async blob => callBack(await pngChunkSet(blob, 'dgRm', new TextEncoder().encode(dgrmChunkVal)))
 	);
+}
+
+/**
+ * @param {Blob} png
+ * @returns {Promise<string|null>}
+ */
+export async function dgrmPngChunkGet(png) {
+	const dgrmChunkVal = await pngChunkGet(png, 'dgRm');
+	return dgrmChunkVal ? new TextDecoder().decode(dgrmChunkVal) : null;
 }
 
 /** @typedef { {x:number, y:number} } Point */

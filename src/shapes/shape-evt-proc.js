@@ -11,7 +11,7 @@ import { settingsPnlCreate } from './shape-settings.js';
  *  - text editor
  *  - standard edit panel
  *  - onTextChange callback
- * @param {HTMLElement} svg
+ * @param {Element} svg
  * @param {CanvasData} canvasData
  * @param {ShapeElement} svgGrp
  * @param {ShapeData & { title?: string, style?: string}} shapeData
@@ -26,35 +26,7 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
 	/** @type { {position:(bottomX:number, bottomY:number)=>void, del:()=>void} } */
 	let settingsPnl;
 
-	const shapeProc = shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition,
-		// onEdit
-		() => {
-			textEditorDel = textareaCreate(textEl, 0, shapeData.title, onTxtChange, onTxtChange);
-
-			const position = svgGrp.getBoundingClientRect();
-			settingsPnl = settingsPnlCreate(position.left + 10, position.top + 10, onCmd);
-		},
-		// onEditStop
-		del
-	);
-
-	/** @param {CustomEvent<{cmd:string, arg:string}>} evt */
-	function onCmd(evt) {
-		switch (evt.detail.cmd) {
-			case 'style':
-				classDel(svgGrp, shapeData.style);
-				classAdd(svgGrp, evt.detail.arg);
-				shapeData.style = evt.detail.arg;
-				break;
-			case 'del':
-				del();
-				shapeProc.del();
-				svgGrp.remove();
-				break;
-		}
-	}
-
-	function del() {
+	function delEditor() {
 		if (textEditorDel) { textEditorDel(); textEditorDel = null; }
 		settingsPnl?.del(); settingsPnl = null;
 	}
@@ -65,7 +37,39 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
 		onTextChange();
 	}
 
+	const shapeProc = shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition,
+		// onEdit
+		() => {
+			textEditorDel = textareaCreate(textEl, 0, shapeData.title, onTxtChange, onTxtChange);
+
+			const position = svgGrp.getBoundingClientRect();
+			settingsPnl = settingsPnlCreate(position.left + 10, position.top + 10, onCmd);
+		},
+		// onEditStop
+		delEditor
+	);
+
+	function del() {
+		delEditor();
+		shapeProc.del();
+		svgGrp.remove();
+	}
+
+	/** @param {CustomEvent<{cmd:string, arg:string}>} evt */
+	function onCmd(evt) {
+		switch (evt.detail.cmd) {
+			case 'style':
+				classDel(svgGrp, shapeData.style);
+				classAdd(svgGrp, evt.detail.arg);
+				shapeData.style = evt.detail.arg;
+				break;
+			case 'del': del(); break;
+		}
+	}
+
 	if (shapeData.style) { classAdd(svgGrp, shapeData.style); }
+
+	svgGrp[ShapeSmbl].del = del;
 
 	return {
 		draw: () => {
@@ -83,7 +87,7 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
  *  - shape move
  *  - connectors
  *  - onEdit, onEditStop callbacks
- * @param {HTMLElement} svg
+ * @param {Element} svg
  * @param {CanvasData} canvasData
  * @param {ShapeElement} svgGrp
  * @param {ShapeData} shapeData
@@ -244,6 +248,7 @@ function reversDir(pathDir) {
 pathAdd(connectorKey:string, pathEl:PathElement):PathEnd
 pathDel(pathEl:PathElement):void
 data: ShapeData
+del?:()=>void
 }} Shape
  */
 export const ShapeSmbl = Symbol('shape');

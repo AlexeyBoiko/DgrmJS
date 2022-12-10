@@ -42,3 +42,19 @@ function fileDownload(blob, name) {
 	URL.revokeObjectURL(link.href);
 	link.remove();
 }
+
+/**
+ * @param {string} accept
+ * @param {BlobCallback} callBack
+ */
+export function fileOpen(accept, callBack) {
+	const input = document.createElement('input');
+	input.type = 'file';
+	input.multiple = false;
+	input.accept = accept;
+	input.onchange = async function() {
+		callBack((!input.files?.length) ? null : input.files[0]);
+	};
+	input.click();
+	input.remove();
+}

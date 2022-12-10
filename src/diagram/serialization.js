@@ -38,32 +38,30 @@ export function serialize(canvas) {
 }
 
 /**
- * @param {HTMLElement} svg
  * @param {CanvasData} canvasData
- * @param {HTMLElement} canvas
+ * @param {SVGGElement} canvas
  * @param {DiagramSerialized} data
  */
-export function deserialize(svg, canvas, canvasData, data) {
+export function deserialize(canvas, canvasData, data) {
 	if (data.v !== '1') { alert('wrong format'); return; }
+	dgrmClear(canvas);
 
-	/** @param {ShapeData} shapeData */
-	function shapeCreate(shapeData) {
-		let shapeEl;
-		switch (shapeData.type) {
-			// circle
-			case 1: shapeEl = circle(svg, canvasData, /** @type {ShapeData} */(shapeData)); break;
+	/** @param {ShapeData & {elem?:SVGGraphicsElement}} shapeData */
+	function shapeEnsure(shapeData) {
+		if (!shapeData.elem) {
+			let shapeEl;
+			switch (shapeData.type) {
+				// circle
+				case 1: shapeEl = circle(canvas.ownerSVGElement, canvasData, /** @type {ShapeData} */(shapeData)); break;
+			}
+			canvas.append(shapeEl);
+			shapeData.elem = shapeEl;
 		}
-		canvas.append(shapeEl);
-		return shapeEl;
+		return shapeData.elem;
 	}
 
 	/** @param {number?} index */
-	function ensureShape(index) {
-		if (!data.s[index].elem) {
-			data.s[index].elem = shapeCreate(/** @type {ShapeData} */(data.s[index]));
-		}
-		return data.s[index].elem;
-	}
+	const shapeByIndex = (index) => shapeEnsure(/** @type {ShapeData} */(data.s[index]));
 
 	for (const shape of data.s) {
 		switch (shape.type) {
@@ -72,21 +70,29 @@ export function deserialize(svg, canvas, canvasData, data) {
 				const pathSerialized = /** @type {PathSerialized} */(shape);
 				/** @type {PathData} */
 				const pathData = {
-					startShape: { shapeEl: ensureShape(pathSerialized.s), connectorKey: pathSerialized.sk },
+					startShape: { shapeEl: shapeByIndex(pathSerialized.s), connectorKey: pathSerialized.sk },
 					style: pathSerialized.c
 				};
 
 				if (!pathSerialized.ep) {
-					pathData.endShape = { shapeEl: ensureShape(pathSerialized.e), connectorKey: pathSerialized.ek };
+					pathData.endShape = { shapeEl: shapeByIndex(pathSerialized.e), connectorKey: pathSerialized.ek };
 				} else {
 					pathData.end = pathSerialized.ep;
 				}
 
-				canvas.append(path(svg, canvasData, pathData));
+				canvas.append(path(canvas.ownerSVGElement, canvasData, pathData));
 				break;
 			}
-			default: shapeCreate(/** @type {ShapeData} */(shape)); break;
+			default: shapeEnsure(/** @type {ShapeData} */(shape)); break;
 		}
+	}
+}
+
+/** @param {SVGGElement} canvas */
+function dgrmClear(canvas) {
+	// TODO: reset position and scale
+	while (canvas.firstChild) {
+		/** @type {ShapeElement} */(canvas.firstChild)[ShapeSmbl]?.del();
 	}
 }
 

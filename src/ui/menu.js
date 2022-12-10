@@ -1,6 +1,6 @@
-import { pngCreate } from '../diagram/png.js';
-import { serialize } from '../diagram/serialization.js';
-import { fileSave } from '../infrastructure/file.js';
+import { dgrmPngChunkGet, dgrmPngCreate } from '../diagram/png.js';
+import { deserialize, serialize } from '../diagram/serialization.js';
+import { fileOpen, fileSave } from '../infrastructure/file.js';
 import { uiDisable } from './ui.js';
 
 export class Menu extends HTMLElement {
@@ -54,8 +54,9 @@ export class Menu extends HTMLElement {
 
 		/** @param {string} id, @param {()=>void} handler */
 		function click(id, handler) { shadow.getElementById(id).onclick = handler; }
+
 		/** @param {string} id, @param {()=>void} handler */
-		function clickWithUIDisable(id, handler) {
+		function clickUIDisable(id, handler) {
 			shadow.getElementById(id).onclick = _ => {
 				uiDisable(true);
 				handler();
@@ -67,19 +68,28 @@ export class Menu extends HTMLElement {
 		click('menu', toggle);
 		click('menu2', toggle);
 
-		clickWithUIDisable('save', () => {
+		clickUIDisable('save', () => {
 			const serialized = serialize(this._diagramData.canvas);
 			if (serialized.s.length === 0) { alert('Diagram is empty'); return; }
 
-			pngCreate(
+			dgrmPngCreate(
 				this._diagramData.canvas,
 				this._diagramData.canvasData,
 				JSON.stringify(serialized),
 				png => fileSave(png, 'dgrm.png')); // TODO: check await
 		});
+
+		clickUIDisable('open', () => {
+			fileOpen('.png', async png => {
+				const dgrmChunk = await dgrmPngChunkGet(png);
+				if (!dgrmChunk) { alert('File cannot be read. Use the exact image file you got from the application.'); return; }
+
+				deserialize(this._diagramData.canvas, this._diagramData.canvasData, JSON.parse(dgrmChunk));
+			});
+		});
 	}
 
-	/** @param {{canvas: SVGGElement, canvasData:{position:Point, scale:number}}} diagramData */
+	/** @param {{canvas: SVGGElement, canvasData:{position:Point, scale:number, cell:number}}} diagramData */
 	init(diagramData) {
 		/** @private */
 		this._diagramData = diagramData;

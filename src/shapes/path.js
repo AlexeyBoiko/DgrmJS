@@ -4,7 +4,7 @@ import { ShapeSmbl } from './shape-evt-proc.js';
 import { settingsPnlCreate } from './shape-settings.js';
 
 /**
- * @param {HTMLElement} svg
+ * @param {Element} svg
  * @param {{position:Point, scale:number}} canvasData
  * @param {PathData} pathData
  */
