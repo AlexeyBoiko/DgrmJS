@@ -25,7 +25,7 @@ async function fileSaveAs(blob) {
 		await writable.write(blob);
 		await writable.close();
 	} catch {
-		alert('Diagram not saved');
+		alert('File not saved');
 	}
 }
 
