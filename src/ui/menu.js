@@ -1,5 +1,6 @@
-import { dgrmPngChunkGet, dgrmPngCreate } from '../diagram/png.js';
-import { deserialize, serialize } from '../diagram/serialization.js';
+import { dgrmClear } from '../diagram/dgrm-clear.js';
+import { dgrmPngChunkGet, dgrmPngCreate } from '../diagram/dgrm-png.js';
+import { deserialize, serialize } from '../diagram/dgrm-serialization.js';
 import { fileOpen, fileSave } from '../infrastructure/file.js';
 import { uiDisable } from './ui.js';
 
@@ -67,6 +68,8 @@ export class Menu extends HTMLElement {
 
 		click('menu', toggle);
 		click('menu2', toggle);
+
+		clickUIDisable('new', () => dgrmClear(this._canvas));
 
 		clickUIDisable('save', () => {
 			const serialized = serialize(this._canvas);
