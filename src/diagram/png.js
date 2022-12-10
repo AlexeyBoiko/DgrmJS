@@ -13,6 +13,9 @@ export function dgrmPngCreate(canvas, canvasData, dgrmChunkVal, callBack) {
 	svgVirtual.style.backgroundImage = null;
 	svgVirtual.querySelectorAll('.select, .highlight').forEach(el => el.classList.remove('select', 'highlight'));
 
+	const nonSvgElems = svgVirtual.getElementsByTagName('foreignObject');
+	while (nonSvgElems[0]) { nonSvgElems[0].parentNode.removeChild(nonSvgElems[0]); }
+
 	// diagram to left corner
 	const canvasElVirtual = /** @type{SVGGraphicsElement} */(svgVirtual.children[1]);
 	const divis = 1 / canvasData.scale;
