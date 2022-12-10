@@ -79,14 +79,9 @@ export class Menu extends HTMLElement {
 				png => fileSave(png, 'dgrm.png')); // TODO: check await
 		});
 
-		clickUIDisable('open', () => {
-			fileOpen('.png', async png => {
-				const dgrmChunk = await dgrmPngChunkGet(png);
-				if (!dgrmChunk) { alert('File cannot be read. Use the exact image file you got from the application.'); return; }
-
-				deserialize(this._canvas, this._canvasData, JSON.parse(dgrmChunk));
-			});
-		});
+		clickUIDisable('open', () =>
+			fileOpen('.png', async png => await loadData(this._canvas, this._canvasData, png))
+		);
 	}
 
 	/**
@@ -96,6 +91,20 @@ export class Menu extends HTMLElement {
 	init(canvas, canvasData) {
 		/** @private */ this._canvas = canvas;
 		/** @private */ this._canvasData = canvasData;
+
+		// file drag to window
+		document.body.addEventListener('dragover', evt => { evt.preventDefault(); });
+		document.body.addEventListener('drop', async evt => {
+			evt.preventDefault();
+
+			if (evt.dataTransfer?.items?.length !== 1 ||
+				evt.dataTransfer.items[0].kind !== 'file' ||
+				evt.dataTransfer.items[0].type !== 'image/png') {
+				alert(cantOpenMsg); return;
+			}
+
+			await loadData(this._canvas, this._canvasData, evt.dataTransfer.items[0].getAsFile());
+		});
 	}
 
 	// init(diagram) {
@@ -185,5 +194,19 @@ export class Menu extends HTMLElement {
 	// }
 };
 customElements.define('ap-menu', Menu);
+
+/**
+ * @param {SVGGElement} canvas
+ * @param {{position:Point, scale:number, cell:number}} canvasData
+ * @param {Blob} png
+ */
+async function loadData(canvas, canvasData, png) {
+	const dgrmChunk = await dgrmPngChunkGet(png);
+	if (!dgrmChunk) { alert(cantOpenMsg); return; }
+
+	deserialize(canvas, canvasData, JSON.parse(dgrmChunk));
+}
+
+const cantOpenMsg = 'File cannot be read. Use the exact image file you got from the application.';
 
 /** @typedef { {x:number, y:number} } Point */
