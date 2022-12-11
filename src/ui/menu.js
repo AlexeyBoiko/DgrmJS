@@ -1,6 +1,7 @@
 import { dgrmClear } from '../diagram/dgrm-clear.js';
 import { dgrmPngChunkGet, dgrmPngCreate } from '../diagram/dgrm-png.js';
 import { deserialize, serialize } from '../diagram/dgrm-serialization.js';
+import { generateKey, srvSave } from '../diagram/dgrm-srv.js';
 import { fileOpen, fileSave } from '../infrastructure/file.js';
 import { uiDisable } from './ui.js';
 
@@ -54,10 +55,7 @@ export class Menu extends HTMLElement {
 		function toggle() { options.style.visibility = options.style.visibility === 'visible' ? 'hidden' : 'visible'; }
 
 		/** @param {string} id, @param {()=>void} handler */
-		function click(id, handler) { shadow.getElementById(id).onclick = handler; }
-
-		/** @param {string} id, @param {()=>void} handler */
-		function clickUIDisable(id, handler) {
+		function click(id, handler) {
 			shadow.getElementById(id).onclick = _ => {
 				uiDisable(true);
 				handler();
@@ -66,14 +64,14 @@ export class Menu extends HTMLElement {
 			};
 		}
 
-		click('menu', toggle);
-		click('menu2', toggle);
+		shadow.getElementById('menu').onclick = toggle;
+		shadow.getElementById('menu2').onclick = toggle;
 
-		clickUIDisable('new', () => dgrmClear(this._canvas));
+		click('new', () => dgrmClear(this._canvas));
 
-		clickUIDisable('save', () => {
+		click('save', () => {
 			const serialized = serialize(this._canvas);
-			if (serialized.s.length === 0) { alert('Diagram is empty'); return; }
+			if (serialized.s.length === 0) { alertEmpty(); return; }
 
 			dgrmPngCreate(
 				this._canvas,
@@ -82,9 +80,23 @@ export class Menu extends HTMLElement {
 				png => fileSave(png, 'dgrm.png')); // TODO: check await
 		});
 
-		clickUIDisable('open', () =>
+		click('open', () =>
 			fileOpen('.png', async png => await loadData(this._canvas, this._canvasData, png))
 		);
+
+		click('link', async () => {
+			const serialized = serialize(this._canvas);
+			if (serialized.s.length === 0) { alertEmpty(); return; }
+
+			const key = generateKey();
+			const url = new URL(window.location.href);
+			url.searchParams.set('k', key);
+			// use clipboard befoure server call - to fix 'Document is not focused'
+			await navigator.clipboard.writeText(url.toString());
+			await srvSave(key, serialized);
+
+			alert('Link to diagram copied to clipboard');
+		});
 	}
 
 	/**
@@ -103,7 +115,7 @@ export class Menu extends HTMLElement {
 			if (evt.dataTransfer?.items?.length !== 1 ||
 				evt.dataTransfer.items[0].kind !== 'file' ||
 				evt.dataTransfer.items[0].type !== 'image/png') {
-				alert(cantOpenMsg); return;
+				alertCantOpen(); return;
 			}
 
 			await loadData(this._canvas, this._canvasData, evt.dataTransfer.items[0].getAsFile());
@@ -205,11 +217,12 @@ customElements.define('ap-menu', Menu);
  */
 async function loadData(canvas, canvasData, png) {
 	const dgrmChunk = await dgrmPngChunkGet(png);
-	if (!dgrmChunk) { alert(cantOpenMsg); return; }
+	if (!dgrmChunk) { alertCantOpen(); return; }
 
 	deserialize(canvas, canvasData, JSON.parse(dgrmChunk));
 }
 
-const cantOpenMsg = 'File cannot be read. Use the exact image file you got from the application.';
+const alertCantOpen = () => alert('File cannot be read. Use the exact image file you got from the application.');
+const alertEmpty = () => alert('Diagram is empty');
 
 /** @typedef { {x:number, y:number} } Point */

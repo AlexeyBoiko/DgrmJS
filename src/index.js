@@ -3,10 +3,12 @@ import { evtRouteApplay } from './infrastructure/move-evt-proc.js';
 import { circle } from './shapes/circle.js';
 import { path } from './shapes/path.js';
 import './ui/menu.js';
+import { uiDisable } from './ui/ui.js';
+import { srvGet } from './diagram/dgrm-srv.js';
+import { deserialize } from './diagram/dgrm-serialization.js';
 
-/** @type {SVGGElement} */
 // @ts-ignore
-const canvas = document.getElementById('canvas');
+/** @type {SVGGElement} */ const canvas = document.getElementById('canvas');
 const canvasData = {
 	position: { x: 0, y: 0 },
 	scale: 1,
@@ -17,6 +19,19 @@ evtRouteApplay(canvas.ownerSVGElement);
 moveScaleApplay(canvas, canvasData);
 
 /** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas, canvasData);
+
+// load diagram by link
+let url = new URL(window.location.href);
+if (url.searchParams.get('k')) {
+	uiDisable(true);
+	srvGet(url.searchParams.get('k')).then(appData => {
+		url.searchParams.delete('k');
+		deserialize(canvas, canvasData, appData);
+		history.replaceState(null, null, url);
+		uiDisable(false);
+		url = null;
+	});
+} else { url = null; }
 
 //
 // Generate

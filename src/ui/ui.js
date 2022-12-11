@@ -17,7 +17,7 @@ export function uiDisable(isDisable) {
 		</style>`;
 		overlay.classList.add('blnk');
 		document.body.append(overlay);
-	} else {
+	} else if (!isDisable) {
 		overlay.remove();
 		overlay = null;
 	}
