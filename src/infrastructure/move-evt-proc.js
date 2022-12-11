@@ -120,7 +120,7 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 /** @param {Element} elem */
 export function evtRouteApplay(elem) {
 	elem.addEventListener('pointerdown', /** @param {ProcEvent} evt */ evt => {
-		if (!evt.isPrimary || evt[RouteedSmbl]) { return; }
+		if (!evt.isPrimary || evt[RouteedSmbl] || !evt.isTrusted) { return; }
 
 		evt.stopImmediatePropagation();
 

@@ -150,10 +150,7 @@ export function path(svg, canvasData, pathData) {
 	svgGrp[PathSmbl] = {
 		draw,
 		/** @param {PointerEventInit} evt */
-		pointerCapture: (evt) => {
-			const newEvt = new PointerEvent('pointerdown', evt);
-			arrow.dispatchEvent(newEvt);
-		},
+		pointerCapture: evt => arrow.dispatchEvent(new PointerEvent('pointerdown', evt)),
 		del,
 		data: pathData
 	};

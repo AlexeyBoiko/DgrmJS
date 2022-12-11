@@ -21,24 +21,17 @@ export function evtCanvasPoint(canvasData, evt) {
  */
 export const child = (parent, key) => /** @type {T} */(parent.querySelector(`[data-key="${key}"]`));
 
-/**
- * @param {Element} el
- * @param {string} cl
- */
+/** @param {Element} el, @param {string} cl */
 export const classAdd = (el, cl) => el?.classList.add(cl);
-/**
- * @param {Element} el
- * @param {string} cl
- */
+
+/** @param {Element} el, @param {string} cl */
 export const classDel = (el, cl) => el?.classList.remove(cl);
-/**
- * @param {Element} el
- * @param {string} cl
- */
+
+/** @param {Element} el, @param {string} cl */
 export const classHas = (el, cl) => el?.classList.contains(cl);
 
 //
-// other
+// math utils
 
 /**
  * Get the ceiling for a number {val} with a given floor height {step}

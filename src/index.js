@@ -2,10 +2,11 @@ import { moveScaleApplay } from './infrastructure/move-scale-applay.js';
 import { evtRouteApplay } from './infrastructure/move-evt-proc.js';
 import { circle } from './shapes/circle.js';
 import { path } from './shapes/path.js';
-import './ui/menu.js';
 import { uiDisable } from './ui/ui.js';
 import { srvGet } from './diagram/dgrm-srv.js';
 import { deserialize } from './diagram/dgrm-serialization.js';
+import './ui/menu.js';
+import './ui/shape-menu.js';
 
 // @ts-ignore
 /** @type {SVGGElement} */ const canvas = document.getElementById('canvas');
@@ -19,6 +20,7 @@ evtRouteApplay(canvas.ownerSVGElement);
 moveScaleApplay(canvas, canvasData);
 
 /** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas, canvasData);
+/** @type { import('./ui/shape-menu').ShapeMenu } */(document.getElementById('menu-shape')).init(canvas, canvasData);
 
 // load diagram by link
 let url = new URL(window.location.href);
