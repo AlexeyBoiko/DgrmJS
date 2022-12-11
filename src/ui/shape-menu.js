@@ -108,6 +108,7 @@ export class ShapeMenu extends HTMLElement {
 					if (this._parentElem === this._pointElem) {
 						// TODO: check mobile
 						// this._diagram.svg.setPointerCapture(evt.pointerId);
+						this._shapeCreate(evt);
 					}
 
 					/**
@@ -122,20 +123,7 @@ export class ShapeMenu extends HTMLElement {
 
 				if (this._pressedShapeTemplKey) {
 					// when shape drag out from menu panel
-
-					let shapeEl;
-					switch (this._pressedShapeTemplKey) {
-						// circle
-						case 1:
-							shapeEl = circle(this._canvas.ownerSVGElement, this._canvasData, {
-								type: 1,
-								position: evtCanvasPoint(this._canvasData, evt),
-								title: 'Title'
-							});
-							break;
-					}
-					this._canvas.append(shapeEl);
-					shapeEl.dispatchEvent(new PointerEvent('pointerdown', evt));
+					this._shapeCreate(evt);
 				}
 				this._clean();
 				break;
@@ -151,6 +139,26 @@ export class ShapeMenu extends HTMLElement {
 				this._clean();
 				break;
 		}
+	}
+
+	/**
+	 * @param {PointerEvent} evt
+	 * @private
+	 */
+	_shapeCreate(evt) {
+		let shapeEl;
+		switch (this._pressedShapeTemplKey) {
+			// circle
+			case 1:
+				shapeEl = circle(this._canvas.ownerSVGElement, this._canvasData, {
+					type: 1,
+					position: evtCanvasPoint(this._canvasData, evt),
+					title: 'Title'
+				});
+				break;
+		}
+		this._canvas.append(shapeEl);
+		shapeEl.dispatchEvent(new PointerEvent('pointerdown', evt));
 	}
 
 	/** @private */
