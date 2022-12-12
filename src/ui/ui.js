@@ -22,3 +22,6 @@ export function uiDisable(isDisable) {
 		overlay = null;
 	}
 }
+
+/** @param {boolean} show */
+export function tipShow(show) { document.getElementById('tip').style.display = show ? 'unset' : 'none'; }

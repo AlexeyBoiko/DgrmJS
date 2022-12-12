@@ -1,5 +1,6 @@
 import { evtCanvasPoint } from '../infrastructure/util.js';
 import { circle } from '../shapes/circle.js';
+import { tipShow } from './ui.js';
 
 export class ShapeMenu extends HTMLElement {
 	connectedCallback() {
@@ -107,8 +108,8 @@ export class ShapeMenu extends HTMLElement {
 					// pointerleave
 					if (this._parentElem === this._pointElem) {
 						// TODO: check mobile
-						// this._diagram.svg.setPointerCapture(evt.pointerId);
-						this._shapeCreate(evt);
+						this._canvas.ownerSVGElement.setPointerCapture(evt.pointerId);
+						// this._shapeCreate(evt);
 					}
 
 					/**
@@ -146,6 +147,8 @@ export class ShapeMenu extends HTMLElement {
 	 * @private
 	 */
 	_shapeCreate(evt) {
+		tipShow(false);
+
 		let shapeEl;
 		switch (this._pressedShapeTemplKey) {
 			// circle

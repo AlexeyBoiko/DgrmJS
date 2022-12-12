@@ -91,6 +91,8 @@ function applayFingers(svg, canvasData, scaleFn, transformFn) {
 
 	/** @param {PointerEvent} evt */
 	function move(evt) {
+		if (evt[ProcessedSmbl]) { return; }
+
 		if ((firstPointer && !secondPointer) || (!firstPointer && secondPointer)) {
 			// move with one pointer
 			canvasData.position.x = evt.clientX + (firstPointer || secondPointer).shift.x;

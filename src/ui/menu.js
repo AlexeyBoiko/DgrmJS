@@ -3,7 +3,7 @@ import { dgrmPngChunkGet, dgrmPngCreate } from '../diagram/dgrm-png.js';
 import { deserialize, serialize } from '../diagram/dgrm-serialization.js';
 import { generateKey, srvSave } from '../diagram/dgrm-srv.js';
 import { fileOpen, fileSave } from '../infrastructure/file.js';
-import { uiDisable } from './ui.js';
+import { tipShow, uiDisable } from './ui.js';
 
 export class Menu extends HTMLElement {
 	connectedCallback() {
@@ -67,7 +67,7 @@ export class Menu extends HTMLElement {
 		shadow.getElementById('menu').onclick = toggle;
 		shadow.getElementById('menu2').onclick = toggle;
 
-		click('new', () => dgrmClear(this._canvas));
+		click('new', () => { dgrmClear(this._canvas); tipShow(true); });
 
 		click('save', () => {
 			const serialized = serialize(this._canvas);
@@ -130,6 +130,8 @@ customElements.define('ap-menu', Menu);
  * @param {Blob} png
  */
 async function loadData(canvas, canvasData, png) {
+	tipShow(false);
+
 	const dgrmChunk = await dgrmPngChunkGet(png);
 	if (!dgrmChunk) { alertCantOpen(); return; }
 
