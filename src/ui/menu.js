@@ -81,7 +81,7 @@ export class Menu extends HTMLElement {
 		});
 
 		click('open', () =>
-			fileOpen('.png', async png => await loadData(this._canvas, this._canvasData, png))
+			fileOpen('.png', async png => await loadData(this._canvas, this._shapeTypeMap, png))
 		);
 
 		click('link', async () => {
@@ -102,10 +102,12 @@ export class Menu extends HTMLElement {
 	/**
 	 * @param {SVGGElement} canvas
 	 * @param {{position:Point, scale:number, cell:number}} canvasData
+	 * @param {Record<number, {create :(shapeData)=>SVGGraphicsElement}>} shapeTypeMap
 	 */
-	init(canvas, canvasData) {
+	init(canvas, canvasData, shapeTypeMap) {
 		/** @private */ this._canvas = canvas;
 		/** @private */ this._canvasData = canvasData;
+		/** @private */ this._shapeTypeMap = shapeTypeMap;
 
 		// file drag to window
 		document.body.addEventListener('dragover', evt => { evt.preventDefault(); });
@@ -118,7 +120,7 @@ export class Menu extends HTMLElement {
 				alertCantOpen(); return;
 			}
 
-			await loadData(this._canvas, this._canvasData, evt.dataTransfer.items[0].getAsFile());
+			await loadData(this._canvas, this._shapeTypeMap, evt.dataTransfer.items[0].getAsFile());
 		});
 	}
 };
@@ -126,16 +128,16 @@ customElements.define('ap-menu', Menu);
 
 /**
  * @param {SVGGElement} canvas
- * @param {{position:Point, scale:number, cell:number}} canvasData
+ * @param {Record<number, {create :(shapeData)=>SVGGraphicsElement}>} shapeTypeMap
  * @param {Blob} png
  */
-async function loadData(canvas, canvasData, png) {
+async function loadData(canvas, shapeTypeMap, png) {
 	tipShow(false);
 
 	const dgrmChunk = await dgrmPngChunkGet(png);
 	if (!dgrmChunk) { alertCantOpen(); return; }
 
-	deserialize(canvas, canvasData, JSON.parse(dgrmChunk));
+	deserialize(canvas, shapeTypeMap, JSON.parse(dgrmChunk));
 }
 
 const alertCantOpen = () => alert('File cannot be read. Use the exact image file you got from the application.');

@@ -1,5 +1,4 @@
-import { circle } from '../shapes/circle.js';
-import { path, PathSmbl } from '../shapes/path.js';
+import { PathSmbl } from '../shapes/path.js';
 import { ShapeSmbl } from '../shapes/shape-evt-proc.js';
 import { dgrmClear } from './dgrm-clear.js';
 
@@ -38,11 +37,11 @@ export function serialize(canvas) {
 }
 
 /**
- * @param {CanvasData} canvasData
  * @param {SVGGElement} canvas
+ * @param {Record<number, {create :(shapeData)=>SVGGraphicsElement}>} shapeTypeMap
  * @param {DiagramSerialized} data
  */
-export function deserialize(canvas, canvasData, data) {
+export function deserialize(canvas, shapeTypeMap, data) {
 	if (data.v !== '1') { alert('wrong format'); return; }
 	dgrmClear(canvas);
 
@@ -53,10 +52,7 @@ export function deserialize(canvas, canvasData, data) {
 	function shapeEnsure(shapeData) {
 		let shapeEl = shapeDataToElem.get(shapeData);
 		if (!shapeEl) {
-			switch (shapeData.type) {
-				// circle
-				case 1: shapeEl = circle(canvas.ownerSVGElement, canvasData, /** @type {ShapeData} */(shapeData)); break;
-			}
+			shapeEl = shapeTypeMap[shapeData.type].create(shapeData);
 			canvas.append(shapeEl);
 			shapeDataToElem.set(shapeData, shapeEl);
 		}
@@ -83,7 +79,7 @@ export function deserialize(canvas, canvasData, data) {
 					pathData.end = pathSerialized.ep;
 				}
 
-				canvas.append(path(canvas.ownerSVGElement, canvasData, pathData));
+				canvas.append(shapeTypeMap[0].create(pathData));
 				break;
 			}
 			default: shapeEnsure(/** @type {ShapeData} */(shape)); break;

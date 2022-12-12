@@ -1,5 +1,4 @@
 import { evtCanvasPoint } from '../infrastructure/util.js';
-import { circle } from '../shapes/circle.js';
 import { tipShow } from './ui.js';
 
 export class ShapeMenu extends HTMLElement {
@@ -87,10 +86,12 @@ export class ShapeMenu extends HTMLElement {
 	/**
 	 * @param {SVGGElement} canvas
 	 * @param {{position:{x:number, y:number}, scale:number, cell:number}} canvasData
+	 * @param {Record<number, {create :(shapeData)=>SVGGraphicsElement}>} shapeTypeMap
 	 */
-	init(canvas, canvasData) {
+	init(canvas, canvasData, shapeTypeMap) {
 		/** @private */ this._canvas = canvas;
 		/** @private */ this._canvasData = canvasData;
+		/** @private */ this._shapeTypeMap = shapeTypeMap;
 	}
 
 	/** @param {PointerEvent & { currentTarget: Element }} evt */
@@ -149,17 +150,11 @@ export class ShapeMenu extends HTMLElement {
 	_shapeCreate(evt) {
 		tipShow(false);
 
-		let shapeEl;
-		switch (this._pressedShapeTemplKey) {
-			// circle
-			case 1:
-				shapeEl = circle(this._canvas.ownerSVGElement, this._canvasData, {
-					type: 1,
-					position: evtCanvasPoint(this._canvasData, evt),
-					title: 'Title'
-				});
-				break;
-		}
+		const shapeEl = this._shapeTypeMap[this._pressedShapeTemplKey].create({
+			type: 1,
+			position: evtCanvasPoint(this._canvasData, evt),
+			title: 'Title'
+		});
 		this._canvas.append(shapeEl);
 		shapeEl.dispatchEvent(new PointerEvent('pointerdown', evt));
 	}

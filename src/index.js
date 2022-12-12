@@ -8,6 +8,7 @@ import { deserialize } from './diagram/dgrm-serialization.js';
 import './ui/menu.js';
 import './ui/shape-menu.js';
 import { groupSelectApplay } from './diagram/group-select-applay.js';
+import { shapeTypeMap } from './shapes/shape-type-map.js';
 
 // @ts-ignore
 /** @type {SVGGElement} */ const canvas = document.getElementById('canvas');
@@ -16,13 +17,14 @@ const canvasData = {
 	scale: 1,
 	cell: 24
 };
+const shapesTypeMap = shapeTypeMap(canvas.ownerSVGElement, canvasData);
 
 evtRouteApplay(canvas.ownerSVGElement);
 groupSelectApplay(canvas.ownerSVGElement);
 moveScaleApplay(canvas, canvasData);
 
-/** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas, canvasData);
-/** @type { import('./ui/shape-menu').ShapeMenu } */(document.getElementById('menu-shape')).init(canvas, canvasData);
+/** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas, canvasData, shapesTypeMap);
+/** @type { import('./ui/shape-menu').ShapeMenu } */(document.getElementById('menu-shape')).init(canvas, canvasData, shapesTypeMap);
 
 // load diagram by link
 let url = new URL(window.location.href);
