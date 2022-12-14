@@ -39,9 +39,12 @@ export function groupSelectApplay(canvas, canvasData, shapeTypeMap) {
 			const selectRectCanvasPoint = pointInCanvas(canvasData, selectRectPos.x, selectRectPos.y);
 			const selectRectCanvasWidth = selectRect.width.baseVal.value / canvasData.scale;
 			const selectRectCanvasHeight = selectRect.height.baseVal.value / canvasData.scale;
-			for (const shape of canvas.children) {
-				const shapePos = /** @type {ShapeElement} */(shape)[ShapeSmbl]?.data.position;
-				if (shapePos && pointInRect(selectRectCanvasPoint, selectRectCanvasWidth, selectRectCanvasHeight, shapePos)) {
+			for (const shape of /** @type {Iterable<ShapeElement>} */(canvas.children)) {
+				const shapePos = shape[ShapeSmbl]?.data.position;
+				if (shapePos &&
+					pointInRect(selectRectCanvasPoint, selectRectCanvasWidth, selectRectCanvasHeight,
+						shapePos.x + shapeTypeMap[shape[ShapeSmbl]?.data.type].center.x,
+						shapePos.y + shapeTypeMap[shape[ShapeSmbl]?.data.type].center.y)) {
 					classAdd(shape, 'highlight');
 				}
 			}
@@ -86,13 +89,12 @@ export function groupSelectApplay(canvas, canvasData, shapeTypeMap) {
 
 /**
  * @param {Point} rectPosition
- * @param {number} rectWidth
- * @param {number} rectHeight
- * @param {Point} point
+ * @param {number} rectWidth, @param {number} rectHeight
+ * @param {number} x, @param {number} y
  */
-const pointInRect = (rectPosition, rectWidth, rectHeight, point) =>
-	rectPosition.x <= point.x && point.x <= rectPosition.x + rectWidth &&
-	rectPosition.y <= point.y && point.y <= rectPosition.y + rectHeight;
+const pointInRect = (rectPosition, rectWidth, rectHeight, x, y) =>
+	rectPosition.x <= x && x <= rectPosition.x + rectWidth &&
+	rectPosition.y <= y && y <= rectPosition.y + rectHeight;
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { import('../shapes/shape-evt-proc.js').ShapeElement } ShapeElement */
