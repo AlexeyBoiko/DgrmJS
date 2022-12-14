@@ -5,10 +5,10 @@ import { path } from './shapes/path.js';
 import { tipShow, uiDisable } from './ui/ui.js';
 import { srvGet } from './diagram/dgrm-srv.js';
 import { deserialize } from './diagram/dgrm-serialization.js';
-import './ui/menu.js';
-import './ui/shape-menu.js';
 import { groupSelectApplay } from './diagram/group-select-applay.js';
 import { shapeTypeMap } from './shapes/shape-type-map.js';
+import './ui/menu.js';
+import './ui/shape-menu.js';
 
 // @ts-ignore
 /** @type {SVGGElement} */ const canvas = document.getElementById('canvas');
@@ -20,7 +20,7 @@ const canvasData = {
 const shapesTypeMap = shapeTypeMap(canvas.ownerSVGElement, canvasData);
 
 evtRouteApplay(canvas.ownerSVGElement);
-groupSelectApplay(canvas.ownerSVGElement);
+groupSelectApplay(canvas, canvasData, shapesTypeMap);
 moveScaleApplay(canvas, canvasData);
 
 /** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas, canvasData, shapesTypeMap);

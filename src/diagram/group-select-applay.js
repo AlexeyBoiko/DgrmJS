@@ -1,7 +1,15 @@
 import { ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
+import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
+import { classAdd } from '../infrastructure/util.js';
+import { ShapeSmbl } from '../shapes/shape-evt-proc.js';
 
-/** @param {SVGSVGElement} svg */
-export function groupSelectApplay(svg) {
+/**
+ * @param {SVGGElement} canvas
+ * @param {{position:{x:number, y:number}, scale:number}} canvasData
+ * @param {Record<number, ShapeType>} shapeTypeMap
+ */
+export function groupSelectApplay(canvas, canvasData, shapeTypeMap) {
+	const svg = canvas.ownerSVGElement;
 	let timer;
 	/** @type {Point} */ let selectStart;
 	/** @type {SVGCircleElement} */ let startCircle;
@@ -27,6 +35,18 @@ export function groupSelectApplay(svg) {
 
 	/** @param {PointerEvent} evt */
 	function onUp(evt) {
+		if (selectRect) {
+			const selectRectCanvasPoint = pointInCanvas(canvasData, selectRectPos.x, selectRectPos.y);
+			const selectRectCanvasWidth = selectRect.width.baseVal.value / canvasData.scale;
+			const selectRectCanvasHeight = selectRect.height.baseVal.value / canvasData.scale;
+			for (const shape of canvas.children) {
+				const shapePos = /** @type {ShapeElement} */(shape)[ShapeSmbl]?.data.position;
+				if (shapePos && pointInRect(selectRectCanvasPoint, selectRectCanvasWidth, selectRectCanvasHeight, shapePos)) {
+					classAdd(shape, 'highlight');
+				}
+			}
+		}
+
 		reset();
 	}
 
@@ -41,6 +61,8 @@ export function groupSelectApplay(svg) {
 
 	svg.addEventListener('pointerdown', evt => {
 		if (evt[ProcessedSmbl] || !evt.isPrimary) { reset(); return; }
+		console.log(evt.target);
+		console.log(`processed: ${evt[ProcessedSmbl]}`);
 
 		svg.addEventListener('pointermove', onMove, { passive: true });
 		svg.addEventListener('wheel', reset, { passive: true, once: true });
@@ -62,4 +84,16 @@ export function groupSelectApplay(svg) {
 	}, { passive: true });
 }
 
+/**
+ * @param {Point} rectPosition
+ * @param {number} rectWidth
+ * @param {number} rectHeight
+ * @param {Point} point
+ */
+const pointInRect = (rectPosition, rectWidth, rectHeight, point) =>
+	rectPosition.x <= point.x && point.x <= rectPosition.x + rectWidth &&
+	rectPosition.y <= point.y && point.y <= rectPosition.y + rectHeight;
+
 /** @typedef { {x:number, y:number} } Point */
+/** @typedef { import('../shapes/shape-evt-proc.js').ShapeElement } ShapeElement */
+/** @typedef { import('../shapes/shape-type-map.js').ShapeType } ShapeType */

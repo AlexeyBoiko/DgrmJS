@@ -1,6 +1,16 @@
 import { ProcessedSmbl } from './move-evt-proc.js';
 
 /**
+ * Get point in canvas given the scale and position of the canvas
+ * @param {{position:{x:number, y:number}, scale:number}} canvasData
+ * @param {number} x, @param {number} y
+ */
+export const pointInCanvas = (canvasData, x, y) => ({
+	x: (x - canvasData.position.x) / canvasData.scale,
+	y: (y - canvasData.position.y) / canvasData.scale
+});
+
+/**
  * @param { CanvasElement } canvas
  * @param { {position:Point, scale:number, cell: number} } canvasData
  */

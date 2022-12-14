@@ -1,4 +1,4 @@
-import { evtCanvasPoint } from '../infrastructure/util.js';
+import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { tipShow } from './ui.js';
 
 export class ShapeMenu extends HTMLElement {
@@ -86,7 +86,7 @@ export class ShapeMenu extends HTMLElement {
 	/**
 	 * @param {SVGGElement} canvas
 	 * @param {{position:{x:number, y:number}, scale:number, cell:number}} canvasData
-	 * @param {Record<number, {create :(shapeData)=>SVGGraphicsElement}>} shapeTypeMap
+	 * @param {Record<number, ShapeType>} shapeTypeMap
 	 */
 	init(canvas, canvasData, shapeTypeMap) {
 		/** @private */ this._canvas = canvas;
@@ -150,9 +150,13 @@ export class ShapeMenu extends HTMLElement {
 	_shapeCreate(evt) {
 		tipShow(false);
 
+		const evtPoint = pointInCanvas(this._canvasData, evt.clientX, evt.clientY);
 		const shapeEl = this._shapeTypeMap[this._pressedShapeTemplKey].create({
-			type: 1,
-			position: evtCanvasPoint(this._canvasData, evt),
+			type: this._pressedShapeTemplKey,
+			position: {
+				x: evtPoint.x - this._shapeTypeMap[this._pressedShapeTemplKey].center.x,
+				y: evtPoint.y - this._shapeTypeMap[this._pressedShapeTemplKey].center.y
+			},
 			title: 'Title'
 		});
 		this._canvas.append(shapeEl);
@@ -167,3 +171,5 @@ export class ShapeMenu extends HTMLElement {
 	}
 }
 customElements.define('ap-menu-shape', ShapeMenu);
+
+/** @typedef { import('../shapes/shape-type-map.js').ShapeType } ShapeType */

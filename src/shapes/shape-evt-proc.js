@@ -1,8 +1,9 @@
-import { classAdd, classDel, classHas, evtCanvasPoint } from '../infrastructure/util.js';
+import { classAdd, classDel, classHas } from '../infrastructure/util.js';
 import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
 import { path, PathSmbl } from './path.js';
 import { textareaCreate } from '../infrastructure/svg-text-area.js';
 import { settingsPnlCreate } from './shape-settings.js';
+import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
 
 /**
  * provides:
@@ -144,7 +145,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
 					startShape: { shapeEl: svgGrp, connectorKey },
 					end: {
 						dir: reversDir(connectorsData[connectorKey].dir),
-						position: evtCanvasPoint(canvasData, evt)
+						position: pointInCanvas(canvasData, evt.clientX, evt.clientY)
 					}
 				});
 				svgGrp.parentNode.append(pathEl);

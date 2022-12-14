@@ -1,7 +1,8 @@
-import { child, classAdd, classDel, classHas, evtCanvasPoint } from '../infrastructure/util.js';
+import { child, classAdd, classDel, classHas } from '../infrastructure/util.js';
 import { moveEvtProc, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
 import { ShapeSmbl } from './shape-evt-proc.js';
 import { settingsPnlCreate } from './shape-settings.js';
+import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
 
 /**
  * @param {Element} svg
@@ -114,7 +115,7 @@ export function path(svg, canvasData, pathData) {
 				pathData.endShape = null;
 				pathData.end = {
 					dir: pathData.end.dir,
-					position: evtCanvasPoint(canvasData, evt)
+					position: pointInCanvas(canvasData, evt.clientX, evt.clientY)
 				};
 			}
 
