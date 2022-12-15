@@ -78,7 +78,7 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
 				const position = svgGrp.getBoundingClientRect();
 				settingsPnl.position(position.left + 10, position.top + 10);
 			}
-			shapeProc.draw();
+			shapeProc.drawPosition();
 		}
 	};
 }
@@ -103,7 +103,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
 	/** @type { Set<PathElement> } */
 	const paths = new Set();
 
-	function draw() {
+	function drawPosition() {
 		svgGrp.style.transform = `translate(${shapeData.position.x}px, ${shapeData.position.y}px)`;
 
 		// paths
@@ -154,11 +154,11 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
 			}
 		},
 		// onMove
-		draw,
+		drawPosition,
 		// onMoveEnd
 		_ => {
 			placeToCell(shapeData.position, canvasData.cell);
-			draw();
+			drawPosition();
 		},
 		// onClick
 		_ => {
@@ -195,11 +195,13 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
 			paths.delete(pathEl);
 		},
 
+		drawPosition,
+
 		data: shapeData
 	};
 
 	return {
-		draw,
+		drawPosition,
 		del: () => {
 			moveProcReset();
 			for (const path of paths) {
@@ -246,10 +248,11 @@ function reversDir(pathDir) {
 /** @typedef { {type: number, position: Point} } ShapeData */
 /**
 @typedef {{
-pathAdd(connectorKey:string, pathEl:PathElement):PathEnd
-pathDel(pathEl:PathElement):void
+pathAdd(connectorKey:string, pathEl:PathElement): PathEnd
+pathDel(pathEl:PathElement): void
+drawPosition: ()=>void
 data: ShapeData
-del?:()=>void
+del?: ()=>void
 }} Shape
  */
 export const ShapeSmbl = Symbol('shape');

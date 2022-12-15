@@ -10,20 +10,14 @@
  * @param { {():void} } onOutdown
  */
 export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, onMoveStart, onMove, onMoveEnd, onClick, onOutdown) {
-	/** @type {Point} */
-	let pointDownShift;
-
-	/** @type {Point} */
-	let pointDown;
-
 	let isMoved = false;
-
-	/** @type {Element} */
-	let target;
+	let isInit = false;
+	/** @type {Element} */ let target;
+	/** @type {Point} */ let pointDown;
 
 	/** @param {PointerEvent} evt */
 	function move(evt) {
-		if (!pointDownShift ||
+		if (!isInit ||
 			// fix old android
 			(pointDown &&
 				Math.abs(pointDown.x - evt.clientX) < 3 &&
@@ -36,11 +30,11 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 			onMoveStart(evt);
 
 			// if reset
-			if (!pointDownShift) { return; }
+			if (!isInit) { return; }
 		}
 
-		shapePosition.x = (evt.clientX + pointDownShift.x) / canvasScale.scale;
-		shapePosition.y = (evt.clientY + pointDownShift.y) / canvasScale.scale;
+		shapePosition.x += evt.movementX / canvasScale.scale;
+		shapePosition.y += evt.movementY / canvasScale.scale;
 		isMoved = true;
 		onMove(evt);
 	}
@@ -86,15 +80,8 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 		elemTrackOutdown.addEventListener('wheel', wheel, { passive: true, once: true });
 		elemTrackOutdown.addEventListener('pointerdown', docDown, { passive: true });
 
-		pointDownShift = {
-			x: shapePosition.x * canvasScale.scale - evt.clientX,
-			y: shapePosition.y * canvasScale.scale - evt.clientY
-		};
-
-		pointDown = {
-			x: evt.clientX,
-			y: evt.clientY
-		};
+		pointDown = { x: evt.clientX, y: evt.clientY };
+		isInit = true;
 	}
 
 	elem.addEventListener('pointerdown', init, { passive: true });
@@ -109,9 +96,9 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 			elemTrackOutdown.removeEventListener('wheel', wheel);
 		}
 		target = null;
-		pointDownShift = null;
 		pointDown = null;
 		isMoved = false;
+		isInit = false;
 	}
 
 	return reset;

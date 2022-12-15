@@ -53,7 +53,7 @@ export function groupSelectApplay(canvas, canvasData, shapeTypeMap) {
 					selectedShapes.push(shapeEl);
 				}
 			}
-			groupEvtProcDispose = groupEvtProc(svg, selectedShapes);
+			groupEvtProcDispose = groupEvtProc(svg, selectedShapes, canvasData);
 		}
 
 		reset();
@@ -96,8 +96,9 @@ export function groupSelectApplay(canvas, canvasData, shapeTypeMap) {
 /**
  * @param {SVGSVGElement} svg
  * @param {ShapeElement[]} selectedShapeElems
+ * @param {{scale:number}} canvasData
  */
-function groupEvtProc(svg, selectedShapeElems) {
+function groupEvtProc(svg, selectedShapeElems, canvasData) {
 	let isMove = false;
 	let isDownOnSelectedShape = false;
 
@@ -131,13 +132,18 @@ function groupEvtProc(svg, selectedShapeElems) {
 		dispose(true);
 	}
 
-	function move() {
+	/** @param {PointerEvent} evt */
+	function move(evt) {
 		// move canvas
 		if (!isDownOnSelectedShape) { dispose(true); return; }
 
 		// move selected shapes
 		isMove = true;
-		// TODO: move selected shapes
+		for (const shapeEl of selectedShapeElems) {
+			shapeEl[ShapeSmbl].data.position.x += evt.movementX / canvasData.scale;
+			shapeEl[ShapeSmbl].data.position.y += evt.movementY / canvasData.scale;
+			shapeEl[ShapeSmbl].drawPosition();
+		}
 	}
 
 	/** @param {boolean=} saveOnDown */
