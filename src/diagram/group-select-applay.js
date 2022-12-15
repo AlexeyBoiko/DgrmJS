@@ -1,6 +1,6 @@
 import { ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
-import { classAdd } from '../infrastructure/util.js';
+import { classAdd, classDel } from '../infrastructure/util.js';
 import { ShapeSmbl } from '../shapes/shape-evt-proc.js';
 
 /**
@@ -15,6 +15,7 @@ export function groupSelectApplay(canvas, canvasData, shapeTypeMap) {
 	/** @type {SVGCircleElement} */ let startCircle;
 	/** @type {SVGRectElement} */ let selectRect;
 	/** @type {Point} */ let selectRectPos;
+	/** @type {()=>void} */let groupEvtProcDispose;
 
 	/** @param {PointerEvent} evt */
 	function onMove(evt) {
@@ -39,15 +40,20 @@ export function groupSelectApplay(canvas, canvasData, shapeTypeMap) {
 			const selectRectCanvasPoint = pointInCanvas(canvasData, selectRectPos.x, selectRectPos.y);
 			const selectRectCanvasWidth = selectRect.width.baseVal.value / canvasData.scale;
 			const selectRectCanvasHeight = selectRect.height.baseVal.value / canvasData.scale;
-			for (const shape of /** @type {Iterable<ShapeElement>} */(canvas.children)) {
-				const shapePos = shape[ShapeSmbl]?.data.position;
-				if (shapePos &&
+
+			/** @type {ShapeElement[]} */
+			const selectedShapes = [];
+			for (const shapeEl of /** @type {Iterable<ShapeElement>} */(canvas.children)) {
+				const shape = shapeEl[ShapeSmbl];
+				if (shape &&
 					pointInRect(selectRectCanvasPoint, selectRectCanvasWidth, selectRectCanvasHeight,
-						shapePos.x + shapeTypeMap[shape[ShapeSmbl]?.data.type].center.x,
-						shapePos.y + shapeTypeMap[shape[ShapeSmbl]?.data.type].center.y)) {
-					classAdd(shape, 'highlight');
+						shape.data.position.x + shapeTypeMap[shape.data.type].center.x,
+						shape.data.position.y + shapeTypeMap[shape.data.type].center.y)) {
+					classAdd(shapeEl, 'highlight');
+					selectedShapes.push(shapeEl);
 				}
 			}
+			groupEvtProcDispose = groupEvtProc(svg, selectedShapes);
 		}
 
 		reset();
@@ -64,14 +70,14 @@ export function groupSelectApplay(canvas, canvasData, shapeTypeMap) {
 
 	svg.addEventListener('pointerdown', evt => {
 		if (evt[ProcessedSmbl] || !evt.isPrimary) { reset(); return; }
-		console.log(evt.target);
-		console.log(`processed: ${evt[ProcessedSmbl]}`);
 
 		svg.addEventListener('pointermove', onMove, { passive: true });
 		svg.addEventListener('wheel', reset, { passive: true, once: true });
 		svg.addEventListener('pointerup', onUp, { passive: true, once: true });
 
 		timer = setTimeout(_ => {
+			if (groupEvtProcDispose) { groupEvtProcDispose(); groupEvtProcDispose = null; }
+
 			startCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 			startCircle.style.cssText = 'r:10px; fill: rgb(108 187 247 / 51%)';
 			startCircle.style.transform = `translate(${evt.clientX}px, ${evt.clientY}px)`;
@@ -85,6 +91,74 @@ export function groupSelectApplay(canvas, canvasData, shapeTypeMap) {
 			svg.append(selectRect);
 		}, 500);
 	}, { passive: true });
+}
+
+/**
+ * @param {SVGSVGElement} svg
+ * @param {ShapeElement[]} selectedShapeElems
+ */
+function groupEvtProc(svg, selectedShapeElems) {
+	let isMove = false;
+	let isDownOnSelectedShape = false;
+
+	/** @param {PointerEvent & {target:Node}} evt */
+	function down(evt) {
+		isDownOnSelectedShape = selectedShapeElems.some(shapeEl => shapeEl.contains(evt.target));
+
+		// down on not selected shape
+		if (!isDownOnSelectedShape && evt.target !== svg) {
+			dispose();
+			return;
+		}
+
+		if (isDownOnSelectedShape) {
+			evt.stopImmediatePropagation();
+		}
+
+		svg.addEventListener('pointerup', up, { passive: true });
+		svg.addEventListener('pointermove', move, { passive: true });
+	}
+
+	function up() {
+		if (!isMove) {
+			// click on canvas
+			if (!isDownOnSelectedShape) { dispose(); }
+
+			// click on selected shape
+			// TODO: show del button
+		}
+
+		dispose(true);
+	}
+
+	function move() {
+		// move canvas
+		if (!isDownOnSelectedShape) { dispose(true); return; }
+
+		// move selected shapes
+		isMove = true;
+		// TODO: move selected shapes
+	}
+
+	/** @param {boolean=} saveOnDown */
+	function dispose(saveOnDown) {
+		svg.removeEventListener('pointerup', up);
+		svg.removeEventListener('pointermove', move);
+		isMove = false;
+		isDownOnSelectedShape = false;
+
+		if (!saveOnDown) {
+			svg.removeEventListener('pointerdown', down, { capture: true });
+			let shapeEl = selectedShapeElems.pop();
+			while (shapeEl) {
+				classDel(shapeEl, 'highlight');
+				shapeEl = selectedShapeElems.pop();
+			};
+		}
+	}
+
+	svg.addEventListener('pointerdown', down, { passive: true, capture: true });
+	return dispose;
 }
 
 /**
