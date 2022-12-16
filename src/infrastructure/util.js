@@ -9,6 +9,12 @@
  */
 export const child = (parent, key) => /** @type {T} */(parent.querySelector(`[data-key="${key}"]`));
 
+/**
+ * @param {HTMLElement} crcl
+ * @param {Point} pos
+ */
+export function positionSet(crcl, pos) { crcl.style.transform = `translate(${pos.x}px, ${pos.y}px)`; }
+
 /** @param {Element} el, @param {string} cl */
 export const classAdd = (el, cl) => el?.classList.add(cl);
 
@@ -31,3 +37,5 @@ export function ceil(min, step, val) {
 	if (val <= min) { return min; }
 	return min + Math.ceil((val - min) / step) * step;
 }
+
+/** @typedef { {x:number, y:number} } Point */

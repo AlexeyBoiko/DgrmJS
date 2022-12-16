@@ -1,5 +1,6 @@
 import { circle } from './circle.js';
 import { path } from './path.js';
+import { rect } from './rect.js';
 
 /**
  * @param {Element} svg
@@ -9,7 +10,8 @@ import { path } from './path.js';
 export function shapeTypeMap(svg, canvasData) {
 	return {
 		0: { create: shapeData => path(svg, canvasData, shapeData) },
-		1: { create: shapeData => circle(svg, canvasData, shapeData), center: { x: 0, y: 0 } }
+		1: { create: shapeData => circle(svg, canvasData, shapeData), center: { x: 0, y: 0 } },
+		2: { create: shapeData => rect(svg, canvasData, shapeData), center: { x: 48, y: 24 } }
 	};
 }
 

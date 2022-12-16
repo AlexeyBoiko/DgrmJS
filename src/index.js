@@ -9,6 +9,7 @@ import { groupSelectApplay } from './diagram/group-select-applay.js';
 import { shapeTypeMap } from './shapes/shape-type-map.js';
 import './ui/menu.js';
 import './ui/shape-menu.js';
+import { rect } from './shapes/rect.js';
 
 // @ts-ignore
 /** @type {SVGGElement} */ const canvas = document.getElementById('canvas');
@@ -53,7 +54,9 @@ if (url.searchParams.get('k')) {
 	let prevShapeSvgElement;
 	for (let row = 0; row < 1; row++) {
 		for (let ii = 0; ii < 2; ii++) {
-			const shapeSvgElement = circle(canvas.ownerSVGElement, canvasData, {
+			let createFn = circle;
+			if (ii === 1) { createFn = rect; }
+			const shapeSvgElement = createFn(canvas.ownerSVGElement, canvasData, {
 				type: 1,
 				position: { x: posX += 120, y: posY },
 				// title: `${counter.toString()}`,

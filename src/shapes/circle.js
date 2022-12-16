@@ -1,5 +1,5 @@
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
-import { ceil, child } from '../infrastructure/util.js';
+import { ceil, child, positionSet } from '../infrastructure/util.js';
 import { shapeEditEvtProc } from './shape-evt-proc.js';
 
 /**
@@ -70,12 +70,6 @@ export function circle(svg, canvasData, circleData) {
  * @param {number} r
  */
 function radiusSet(svgGrp, key, r) { child(svgGrp, key).r.baseVal.value = r; }
-
-/**
- * @param {SVGCircleElement} crcl
- * @param {Point} pos
- */
-function positionSet(crcl, pos) { crcl.style.transform = `translate(${pos.x}px, ${pos.y}px)`; }
 
 /**
  * calc radius that cover SVGTextElement bbox
