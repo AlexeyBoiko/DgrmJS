@@ -2,6 +2,7 @@ import { ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { classAdd, classDel } from '../infrastructure/util.js';
 import { ShapeSmbl } from '../shapes/shape-evt-proc.js';
+import { delPnlCreate } from '../shapes/shape-settings.js';
 
 /**
  * @param {SVGGElement} canvas
@@ -102,8 +103,13 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 	let isMove = false;
 	let isDownOnSelectedShape = false;
 
+	/** @type {{del():void}} */
+	let pnl;
+	const pnlDel = () => { pnl?.del(); pnl = null; };
+
 	/** @param {PointerEvent & {target:Node}} evt */
 	function down(evt) {
+		pnlDel();
 		isDownOnSelectedShape = selectedShapeElems.some(shapeEl => shapeEl.contains(evt.target));
 
 		// down on not selected shape
@@ -116,17 +122,23 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 			evt.stopImmediatePropagation();
 		}
 
-		svg.addEventListener('pointerup', up, { passive: true });
+		svg.addEventListener('pointerup', up, { passive: true, once: true });
 		svg.addEventListener('pointermove', move, { passive: true });
 	}
 
-	function up() {
+	/** @param {PointerEvent} evt */
+	function up(evt) {
 		if (!isMove) {
 			// click on canvas
-			if (!isDownOnSelectedShape) { dispose(); }
+			if (!isDownOnSelectedShape) { dispose(); return; }
 
 			// click on selected shape
-			// TODO: show del button
+			pnl = delPnlCreate(evt.clientX - 10, evt.clientY - 10,
+				// click on del btn
+				() => {
+					arrPop(selectedShapeElems, shapeEl => shapeEl[ShapeSmbl].del());
+					dispose();
+				});
 		}
 
 		dispose(true);
@@ -155,16 +167,23 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 
 		if (!saveOnDown) {
 			svg.removeEventListener('pointerdown', down, { capture: true });
-			let shapeEl = selectedShapeElems.pop();
-			while (shapeEl) {
-				classDel(shapeEl, 'highlight');
-				shapeEl = selectedShapeElems.pop();
-			};
+			pnlDel();
+			arrPop(selectedShapeElems, shapeEl => classDel(shapeEl, 'highlight'));
 		}
 	}
 
 	svg.addEventListener('pointerdown', down, { passive: true, capture: true });
 	return dispose;
+}
+
+/**
+ * @template T
+ * @param {Array<T>} arr
+ * @param {{(el:T):void}} action
+ */
+function arrPop(arr, action) {
+	let itm = arr.pop();
+	while (itm) { action(itm); itm = arr.pop(); };
 }
 
 /**

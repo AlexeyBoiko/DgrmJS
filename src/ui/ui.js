@@ -1,6 +1,4 @@
-/** @type {HTMLDivElement} */
-let overlay;
-
+/** @type {HTMLDivElement} */ let overlay;
 /** @param {boolean} isDisable */
 export function uiDisable(isDisable) {
 	if (isDisable && !overlay) {
