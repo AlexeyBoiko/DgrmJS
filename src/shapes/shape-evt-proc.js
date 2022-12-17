@@ -18,9 +18,10 @@ import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
  * @param {ShapeData & { title?: string, style?: string}} shapeData
  * @param {ConnectorsData} connectorsInnerPosition
  * @param {SVGTextElement} textEl
+ * @param {number} textVerticalMiddle em
  * @param {{():void}} onTextChange
  */
-export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textEl, onTextChange) {
+export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textVerticalMiddle, textEl, onTextChange) {
 	/** @type {{():void}} */
 	let textEditorDel;
 
@@ -41,7 +42,7 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
 	const shapeProc = shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition,
 		// onEdit
 		() => {
-			textEditorDel = textareaCreate(textEl, 0, shapeData.title, onTxtChange, onTxtChange);
+			textEditorDel = textareaCreate(textEl, textVerticalMiddle, shapeData.title, onTxtChange, onTxtChange);
 
 			const position = svgGrp.getBoundingClientRect();
 			settingsPnl = settingsPnlCreate(position.left + 10, position.top + 10, onCmd);

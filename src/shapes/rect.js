@@ -32,7 +32,7 @@ export function rect(svg, canvasData, rectData) {
 	/** @type {SVGTextElement} */
 	const textEl = child(svgGrp, 'text');
 
-	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, rectData, connectorsInnerPosition, textEl,
+	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, rectData, connectorsInnerPosition, 1.5, textEl,
 		// onTextChange
 		() => {
 			// const newRadius = textElRadius(textEl, 48, 24);
@@ -58,7 +58,7 @@ export function rect(svg, canvasData, rectData) {
 		shapeProc.draw();
 	}
 
-	svgTextDraw(textEl, rectData.title, 0);
+	svgTextDraw(textEl, rectData.title, 1.5);
 	if (!!rectData.w && (rectData.w !== 96 || rectData.h !== 48)) { resizeAndDraw(); } else { shapeProc.draw(); }
 
 	return svgGrp;

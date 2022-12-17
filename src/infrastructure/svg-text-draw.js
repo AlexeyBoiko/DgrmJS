@@ -13,7 +13,7 @@ export function svgTextDraw(textEl, str, verticalMiddle) {
 
 	textEl.y.baseVal[0].newValueSpecifiedUnits(
 		textEl.y.baseVal[0].SVG_LENGTHTYPE_EMS, // em
-		strData.c > 0 ? verticalMiddle - (strData.c) / 2 : 0);
+		strData.c > 0 ? verticalMiddle - (strData.c) / 2 : verticalMiddle);
 }
 
 /**

@@ -5,7 +5,7 @@ import { svgTextDraw } from './svg-text-draw.js';
  * update 'textEl' with text from teaxtArea
  * resize teaxtArea - so teaxtArea always cover all 'textEl'
  * @param {SVGTextElement} textEl
- * @param {number} verticalMiddle
+ * @param {number} verticalMiddle em
  * @param {string} val
  * @param {{(val:string):void}} onchange
  * @param {{(val:string):void}} onblur

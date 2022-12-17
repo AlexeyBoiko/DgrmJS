@@ -32,7 +32,7 @@ export function circle(svg, canvasData, circleData) {
 	/** @type {SVGTextElement} */
 	const textEl = child(svgGrp, 'text');
 
-	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, circleData, connectorsInnerPosition, textEl,
+	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, circleData, connectorsInnerPosition, 0, textEl,
 		// onTextChange
 		() => {
 			const newRadius = textElRadius(textEl, 48, 24);
