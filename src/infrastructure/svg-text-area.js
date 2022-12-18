@@ -18,7 +18,7 @@ export function textareaCreate(textEl, verticalMiddle, val, onchange, onblur) {
 	textarea.style.caretColor = textEl.getAttribute('fill');
 	textarea.value = val || '';
 	textarea.oninput = function() {
-		svgTextDraw(textEl, textarea.value, verticalMiddle);
+		svgTextDraw(textEl, verticalMiddle, textarea.value);
 		foreignWidthSet(textEl, foreign, textarea, textareaPaddingAndBorder, textareaStyle.textAlign);
 		onchange(textarea.value);
 	};

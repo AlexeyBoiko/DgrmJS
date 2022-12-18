@@ -29,13 +29,17 @@ export function circle(svg, canvasData, circleData) {
 		top: { dir: 'top', position: { x: 0, y: -48 } }
 	};
 
-	/** @type {SVGTextElement} */
-	const textEl = child(svgGrp, 'text');
+	const textSettings = {
+		/** @type {SVGTextElement} */
+		el: child(svgGrp, 'text'),
+		/** vericale middle, em */
+		vMid: 0
+	};
 
-	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, circleData, connectorsInnerPosition, 0, textEl,
+	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, circleData, connectorsInnerPosition, textSettings,
 		// onTextChange
 		() => {
-			const newRadius = textElRadius(textEl, 48, 24);
+			const newRadius = textElRadius(textSettings.el, 48, 24);
 			if (newRadius !== circleData.r) {
 				circleData.r = newRadius;
 				resizeAndDraw();
@@ -58,18 +62,14 @@ export function circle(svg, canvasData, circleData) {
 		shapeProc.draw();
 	}
 
-	svgTextDraw(textEl, circleData.title, 0);
 	if (!!circleData.r && circleData.r !== 48) { resizeAndDraw(); } else { shapeProc.draw(); }
+	svgTextDraw(textSettings.el, textSettings.vMid, circleData.title);
 
 	return svgGrp;
 }
 
-/**
- * @param {Element} svgGrp
- * @param {string} key
- * @param {number} r
- */
-function radiusSet(svgGrp, key, r) { child(svgGrp, key).r.baseVal.value = r; }
+/** @param {Element} svgGrp, @param {string} key, @param {number} r */
+function radiusSet(svgGrp, key, r) { /** @type {SVGCircleElement} */(child(svgGrp, key)).r.baseVal.value = r; }
 
 /**
  * calc radius that cover SVGTextElement bbox

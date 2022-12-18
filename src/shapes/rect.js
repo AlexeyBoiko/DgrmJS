@@ -29,10 +29,14 @@ export function rect(svg, canvasData, rectData) {
 		top: { dir: 'top', position: { x: 48, y: 0 } }
 	};
 
-	/** @type {SVGTextElement} */
-	const textEl = child(svgGrp, 'text');
+	const textSettings = {
+		/** @type {SVGTextElement} */
+		el: child(svgGrp, 'text'),
+		/** vericale middle, em */
+		vMid: rectData.h * 0.03125 // {if h = 48, verticalMiddle = 1.5} => (h * 1.5) / 48
+	};
 
-	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, rectData, connectorsInnerPosition, 1.5, textEl,
+	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, rectData, connectorsInnerPosition, textSettings,
 		// onTextChange
 		() => {
 			// const newRadius = textElRadius(textEl, 48, 24);
@@ -44,24 +48,46 @@ export function rect(svg, canvasData, rectData) {
 	);
 
 	function resizeAndDraw() {
-		// connectorsInnerPosition.right.position.x = circleData.r;
-		// connectorsInnerPosition.left.position.x = -circleData.r;
-		// connectorsInnerPosition.bottom.position.y = circleData.r;
-		// connectorsInnerPosition.top.position.y = -circleData.r;
+		const hHalf = rectData.h / 2;
+		const wHalf = rectData.w / 2;
 
+		// connectors
+		connectorPositionSet(connectorsInnerPosition.right, rectData.w, hHalf);
+		connectorPositionSet(connectorsInnerPosition.left, 0, hHalf);
+		connectorPositionSet(connectorsInnerPosition.bottom, wHalf, rectData.h);
+		connectorPositionSet(connectorsInnerPosition.top, wHalf, 0);
 		for (const connectorKey in connectorsInnerPosition) {
 			positionSet(child(svgGrp, connectorKey), connectorsInnerPosition[connectorKey].position);
 		}
 
-		// radiusSet(svgGrp, 'outer', circleData.r + 24);
-		// radiusSet(svgGrp, 'main', circleData.r);
+		// shape
+		rectSet(svgGrp, 'main', rectData.w, rectData.h);
+		rectSet(svgGrp, 'outer', rectData.w + 48, rectData.h + 48);
+
+		// text
+		textSettings.el.x.baseVal[0].value = wHalf;
+		textSettings.vMid = rectData.h * 0.03125;
+
 		shapeProc.draw();
 	}
 
-	svgTextDraw(textEl, rectData.title, 1.5);
 	if (!!rectData.w && (rectData.w !== 96 || rectData.h !== 48)) { resizeAndDraw(); } else { shapeProc.draw(); }
+	svgTextDraw(textSettings.el, textSettings.vMid, rectData.title);
 
 	return svgGrp;
+}
+
+/** @param {Element} svgGrp, @param {string} key, @param {number} w, @param {number} h */
+function rectSet(svgGrp, key, w, h) {
+	/** @type {SVGRectElement} */ const rect = child(svgGrp, key);
+	rect.width.baseVal.value = w;
+	rect.height.baseVal.value = h;
+}
+
+/** @param { {position:Point} } connectorEnd, @param {number} x, @param {number} y */
+function connectorPositionSet(connectorEnd, x, y) {
+	connectorEnd.position.x = x;
+	connectorEnd.position.y = y;
 }
 
 /** @typedef { {x:number, y:number} } Point */

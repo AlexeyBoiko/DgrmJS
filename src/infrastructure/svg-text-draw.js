@@ -1,10 +1,10 @@
 /**
  * @param {SVGTextElement} textEl target text element
- * @param {string} str
  * @param {number} verticalMiddle
+ * @param {string} str
  * @returns {void}
  */
-export function svgTextDraw(textEl, str, verticalMiddle) {
+export function svgTextDraw(textEl, verticalMiddle, str) {
 	const strData = svgStrToTspan(
 		(str || ''),
 		textEl.x?.baseVal[0]?.value ?? 0);
