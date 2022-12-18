@@ -65,8 +65,8 @@ if (url.searchParams.get('k')) {
 
 				// r: 72,
 
-				w: 120,
-				h: 98
+				// w: 120,
+				// h: 98
 			});
 			if (counter > 400) {
 			// 	// circle.style.display = 'none';

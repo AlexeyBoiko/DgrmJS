@@ -1,5 +1,5 @@
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
-import { child, positionSet } from '../infrastructure/util.js';
+import { ceil, child, positionSet } from '../infrastructure/util.js';
 import { shapeEditEvtProc } from './shape-evt-proc.js';
 
 /**
@@ -8,10 +8,13 @@ import { shapeEditEvtProc } from './shape-evt-proc.js';
  * @param {RectData} rectData
  */
 export function rect(svg, canvasData, rectData) {
+	rectData.w = rectData.w ?? 96;
+	rectData.h = rectData.h ?? 48;
+
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.classList.add('hovertrack');
 	svgGrp.innerHTML = `
-		<rect data-key="outer" data-evt-no data-evt-index="1" width="144" height="96" rx="15" ry="15" x="-24" y="-24" fill="transparent" stroke="transparent" stroke-width="1" />
+		<rect data-key="outer" data-evt-no data-evt-index="1" width="144" height="96" x="-24" y="-24" fill="transparent" stroke="transparent" stroke-width="1" />
 		<rect data-key="main" width="96" height="48" rx="15" ry="15" fill="#1aaee5" stroke="#fff" stroke-width="1" />
 
 		<text data-key="text" x="48" y="24" text-anchor="middle" style="pointer-events: none;" fill="#fff">&nbsp;</text>
@@ -33,40 +36,41 @@ export function rect(svg, canvasData, rectData) {
 		/** @type {SVGTextElement} */
 		el: child(svgGrp, 'text'),
 		/** vericale middle, em */
-		vMid: rectData.h * 0.03125 // {if h = 48, verticalMiddle = 1.5} => (h * 1.5) / 48
+		vMid: 1.5
 	};
 
 	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, rectData, connectorsInnerPosition, textSettings,
 		// onTextChange
 		() => {
-			// const newRadius = textElRadius(textEl, 48, 24);
-			// if (newRadius !== circleData.r) {
-			// 	circleData.r = newRadius;
-			// 	resizeAndDraw();
-			// }
+			const textBox = textSettings.el.getBBox();
+			const newWidth = ceil(96, 48, textBox.width);
+			const newHeight = ceil(48, 48, textBox.height);
+
+			if (rectData.w !== newWidth || rectData.h !== newHeight) {
+				rectData.w = newWidth;
+				rectData.h = newHeight;
+				resizeAndDraw();
+			}
 		}
 	);
 
 	function resizeAndDraw() {
-		const hHalf = rectData.h / 2;
-		const wHalf = rectData.w / 2;
+		const mainX = (96 - rectData.w) / 2;
+		const mainY = (48 - rectData.h) / 2;
 
-		// connectors
-		connectorPositionSet(connectorsInnerPosition.right, rectData.w, hHalf);
-		connectorPositionSet(connectorsInnerPosition.left, 0, hHalf);
-		connectorPositionSet(connectorsInnerPosition.bottom, wHalf, rectData.h);
-		connectorPositionSet(connectorsInnerPosition.top, wHalf, 0);
+		const middleX = rectData.w / 2 + mainX;
+		const middleY = rectData.h / 2 + mainY;
+
+		connectorPositionSet(connectorsInnerPosition.right, rectData.w + mainX, middleY);
+		connectorPositionSet(connectorsInnerPosition.left, mainX, middleY);
+		connectorPositionSet(connectorsInnerPosition.bottom, middleX, rectData.h + mainY);
+		connectorPositionSet(connectorsInnerPosition.top, middleX, mainY);
 		for (const connectorKey in connectorsInnerPosition) {
 			positionSet(child(svgGrp, connectorKey), connectorsInnerPosition[connectorKey].position);
 		}
 
-		// shape
-		rectSet(svgGrp, 'main', rectData.w, rectData.h);
-		rectSet(svgGrp, 'outer', rectData.w + 48, rectData.h + 48);
-
-		// text
-		textSettings.el.x.baseVal[0].value = wHalf;
-		textSettings.vMid = rectData.h * 0.03125;
+		rectSet(svgGrp, 'main', rectData.w, rectData.h, mainX, mainY);
+		rectSet(svgGrp, 'outer', rectData.w + 48, rectData.h + 48, mainX - 24, mainY - 24);
 
 		shapeProc.draw();
 	}
@@ -77,11 +81,17 @@ export function rect(svg, canvasData, rectData) {
 	return svgGrp;
 }
 
-/** @param {Element} svgGrp, @param {string} key, @param {number} w, @param {number} h */
-function rectSet(svgGrp, key, w, h) {
+/**
+ * @param {Element} svgGrp, @param {string} key,
+ * @param {number} w, @param {number} h
+ * @param {number} x, @param {number} y
+ */
+function rectSet(svgGrp, key, w, h, x, y) {
 	/** @type {SVGRectElement} */ const rect = child(svgGrp, key);
 	rect.width.baseVal.value = w;
 	rect.height.baseVal.value = h;
+	rect.x.baseVal.value = x;
+	rect.y.baseVal.value = y;
 }
 
 /** @param { {position:Point} } connectorEnd, @param {number} x, @param {number} y */
