@@ -10,6 +10,7 @@ import { shapeTypeMap } from './shapes/shape-type-map.js';
 import './ui/menu.js';
 import './ui/shape-menu.js';
 import { rect } from './shapes/rect.js';
+import { rhomb } from './shapes/rhomb.js';
 
 // @ts-ignore
 /** @type {SVGGElement} */ const canvas = document.getElementById('canvas');
@@ -54,7 +55,7 @@ if (url.searchParams.get('k')) {
 	let prevShapeSvgElement;
 	for (let row = 0; row < 1; row++) {
 		for (let ii = 0; ii < 2; ii++) {
-			let createFn = circle;
+			let createFn = rhomb;
 			if (ii === 1) { createFn = rect; }
 			const shapeSvgElement = createFn(canvas.ownerSVGElement, canvasData, {
 				type: 1,
