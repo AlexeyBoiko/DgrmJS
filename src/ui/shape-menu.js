@@ -65,12 +65,12 @@ export class ShapeMenu extends HTMLElement {
 					<svg data-cmd="shapeAdd" data-cmd-arg="2" class="big">
 						<rect x="1" y="1" width="60" height="40" rx="15" ry="15"></rect>
 					</svg>
-					<svg data-cmd="shapeAdd" data-cmd-arg="3" class="big">
+					<svg data-cmd="shapeAdd" data-cmd-arg="4" class="big">
 						<g transform="translate(1,1)">
 							<path d="M0 20 L30 0 L60 20 L30 40 Z" stroke-width="2" stroke-linejoin="round"></path>
 						</g>
 					</svg>
-					<svg data-cmd="shapeAdd" data-cmd-arg="4">
+					<svg data-cmd="shapeAdd" data-cmd-arg="3">
 						<text x="5" y="40" font-size="52px" fill="#344767" stroke-width="0">T</text>
 					</svg>
 				</div>

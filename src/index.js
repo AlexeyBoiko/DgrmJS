@@ -59,7 +59,7 @@ if (url.searchParams.get('k')) {
 			const shapeSvgElement = createFn(canvas.ownerSVGElement, canvasData, {
 				type: 1,
 				position: { x: posX += 120, y: posY },
-				title: `${counter.toString()}`,
+				title: `${counter.toString()}`
 				// title: `${counter.toString()}\n1\n1\n1`
 				// style: 'cl-red'
 
@@ -67,6 +67,7 @@ if (url.searchParams.get('k')) {
 
 				// w: 120,
 				// h: 98
+				// t: true
 			});
 			if (counter > 400) {
 			// 	// circle.style.display = 'none';

@@ -5,7 +5,6 @@
  * @returns {void}
  */
 export function svgTextDraw(textEl, verticalMiddle, str) {
-	console.log('svgTextDraw', textEl.x?.baseVal[0]?.value);
 	const strData = svgStrToTspan(
 		(str || ''),
 		textEl.x?.baseVal[0]?.value ?? 0);

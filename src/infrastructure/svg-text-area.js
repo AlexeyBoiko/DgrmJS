@@ -15,7 +15,6 @@ export function textareaCreate(textEl, verticalMiddle, val, onchange, onblur) {
 	let foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
 
 	const textarea = document.createElement('textarea');
-	textarea.style.caretColor = textEl.getAttribute('fill');
 	textarea.value = val || '';
 	textarea.oninput = function() {
 		svgTextDraw(textEl, verticalMiddle, textarea.value);
