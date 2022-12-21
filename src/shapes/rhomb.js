@@ -1,5 +1,5 @@
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
-import { child, classAdd } from '../infrastructure/util.js';
+import { child, classAdd, positionSet } from '../infrastructure/util.js';
 import { shapeEditEvtProc } from './shape-evt-proc.js';
 
 /**
@@ -12,7 +12,7 @@ export function rhomb(svg, canvasData, rectData) {
 	classAdd(svgGrp, 'shrhomb');
 	classAdd(svgGrp, 'hovertrack');
 	svgGrp.innerHTML = `
-		<path data-key="outer" data-evt-no data-evt-index="1" d="M-24 48 L48 -24 L120 48 L48 120 Z" stroke-width="1" stroke="transparent" fill="transparent" />
+		<path data-key="outer" data-evt-no data-evt-index="1" d="M-24 48 L48 -24 L120 48 L48 120 Z" stroke-width="1" stroke="red" fill="transparent" />
 		<path data-key="border" d="M9 48 L48 9 L87 48 L48 87 Z" stroke-width="20" stroke="#fff"	fill="transparent" stroke-linejoin="round" />
 		<path data-key="main" d="M9 48 L48 9 L87 48 L48 87 Z" stroke-width="18" stroke-linejoin="round"	stroke="#1D809F" fill="#1D809F" />
 
@@ -54,22 +54,19 @@ export function rhomb(svg, canvasData, rectData) {
 	);
 
 	function resizeAndDraw() {
-		// const mainX = rectData.t ? 0 : (96 - rectData.w) / 2;
-		// const mainY = (48 - rectData.h) / 2;
+		const connectors = rhombCalc(96, 96, rectData.w + 18, 0); // 96 = 24 * 4
+		connectorsInnerPosition.right.position.x = connectors.r.x;
+		connectorsInnerPosition.left.position.x = connectors.l.x;
+		connectorsInnerPosition.bottom.position.y = connectors.b.y;
+		connectorsInnerPosition.top.position.y = connectors.t.y;
+		for (const connectorKey in connectorsInnerPosition) {
+			positionSet(child(svgGrp, connectorKey), connectorsInnerPosition[connectorKey].position);
+		}
 
-		// const middleX = rectData.w / 2 + mainX;
-		// const middleY = rectData.h / 2 + mainY;
-
-		// connectorPositionSet(connectorsInnerPosition.right, rectData.w + mainX, middleY);
-		// connectorPositionSet(connectorsInnerPosition.left, mainX, middleY);
-		// connectorPositionSet(connectorsInnerPosition.bottom, middleX, rectData.h + mainY);
-		// connectorPositionSet(connectorsInnerPosition.top, middleX, mainY);
-		// for (const connectorKey in connectorsInnerPosition) {
-		// 	positionSet(child(svgGrp, connectorKey), connectorsInnerPosition[connectorKey].position);
-		// }
-
-		// rectSet(svgGrp, 'main', rectData.w, rectData.h, mainX, mainY);
-		// rectSet(svgGrp, 'outer', rectData.w + 48, rectData.h + 48, mainX - 24, mainY - 24);
+		const mainRhomb = rhombCalc(78, 78, rectData.w, 9);
+		rhombSet(svgGrp, 'main', mainRhomb);
+		rhombSet(svgGrp, 'border', mainRhomb);
+		rhombSet(svgGrp, 'outer', rhombCalc(78, 78, rectData.w + 48 + 18, 9));
 
 		shapeProc.draw();
 	}
@@ -78,6 +75,30 @@ export function rhomb(svg, canvasData, rectData) {
 	svgTextDraw(textSettings.el, textSettings.vMid, rectData.title);
 
 	return svgGrp;
+}
+
+/**
+ * @param {Element} svgGrp, @param {string} key,
+ * @param {RhombPoints} rhomb
+ */
+function rhombSet(svgGrp, key, rhomb) {
+	/** @type {SVGPathElement} */(child(svgGrp, key)).setAttribute('d', `M${rhomb.l.x} ${rhomb.l.y} L${rhomb.t.x} ${rhomb.t.y} L${rhomb.r.x} ${rhomb.r.y} L${rhomb.b.x} ${rhomb.b.y} Z`);
+}
+
+/**
+ * @param {number} baseWidth, @param {number} baseHeight
+ * @param {number} width, @param {number} margin
+ * @returns {RhombPoints}
+ */
+function rhombCalc(baseWidth, baseHeight, width, margin) {
+	const incrm = (width - baseWidth) / 2;
+	const incrmNeg = -1 * incrm;
+	return {
+		l: { x: incrmNeg + margin, y: baseHeight / 2 + margin },
+		t: { x: baseWidth / 2 + margin, y: incrmNeg + margin },
+		r: { x: baseWidth + incrm + margin, y: baseHeight / 2 + margin },
+		b: { x: baseWidth / 2 + margin, y: baseHeight + incrm + margin }
+	};
 }
 
 /** @typedef { {x:number, y:number} } Point */
@@ -89,3 +110,4 @@ type:number, position: Point, title?: string, style?: string,
 w?:number
 }} RhombData
 */
+/** @typedef { { l:Point, t:Point, r:Point, b:Point } } RhombPoints */
