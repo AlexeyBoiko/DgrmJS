@@ -9,10 +9,7 @@
  */
 export const child = (parent, key) => /** @type {T} */(parent.querySelector(`[data-key="${key}"]`));
 
-/**
- * @param {HTMLElement} crcl
- * @param {Point} pos
- */
+/** @param {HTMLElement} crcl, @param {Point} pos */
 export function positionSet(crcl, pos) { crcl.style.transform = `translate(${pos.x}px, ${pos.y}px)`; }
 
 /** @param {Element} el, @param {string} cl */
@@ -23,6 +20,35 @@ export const classDel = (el, cl) => el?.classList.remove(cl);
 
 /** @param {Element} el, @param {string} cl */
 export const classHas = (el, cl) => el?.classList.contains(cl);
+
+/**
+ * calc farthest point of <tspan>s bbox in {textEl}
+ * origin is in the center
+ * @param {SVGTextElement} textEl
+ */
+export function svgTxtFarthestPoint(textEl) {
+	/** @type {Point} */
+	let maxPoint;
+	let maxAbsSum = 0;
+	for (const span of textEl.getElementsByTagName('tspan')) {
+		for (const point of boxPoints(span.getBBox())) {
+			const pointAbsSum = Math.abs(point.x) + Math.abs(point.y);
+			if (maxAbsSum < pointAbsSum) {
+				maxPoint = point;
+				maxAbsSum = pointAbsSum;
+			}
+		}
+	}
+	return maxPoint;
+}
+
+/** @param {DOMRect} box */
+const boxPoints = (box) => [
+	{ x: box.x, y: box.y },
+	{ x: box.right, y: box.y },
+	{ x: box.x, y: box.bottom },
+	{ x: box.right, y: box.bottom }
+];
 
 //
 // math utils

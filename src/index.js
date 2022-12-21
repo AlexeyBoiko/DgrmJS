@@ -1,6 +1,6 @@
 import { moveScaleApplay } from './infrastructure/move-scale-applay.js';
 import { evtRouteApplay } from './infrastructure/move-evt-proc.js';
-import { circle } from './shapes/circle.js';
+// import { circle } from './shapes/circle.js';
 import { path } from './shapes/path.js';
 import { tipShow, uiDisable } from './ui/ui.js';
 import { srvGet } from './diagram/dgrm-srv.js';
@@ -60,7 +60,7 @@ if (url.searchParams.get('k')) {
 			const shapeSvgElement = createFn(canvas.ownerSVGElement, canvasData, {
 				type: 1,
 				position: { x: posX += 120, y: posY },
-				title: `${counter.toString()}`,
+				title: `${counter.toString()}`
 				// title: `${counter.toString()}\n1\n1\n1`
 				// style: 'cl-red'
 
@@ -70,7 +70,7 @@ if (url.searchParams.get('k')) {
 				// h: 98
 				// t: true
 
-				w: 126
+				// w: 144
 			});
 			if (counter > 400) {
 			// 	// circle.style.display = 'none';

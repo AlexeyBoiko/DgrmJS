@@ -1,5 +1,5 @@
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
-import { ceil, child, positionSet } from '../infrastructure/util.js';
+import { ceil, child, positionSet, svgTxtFarthestPoint } from '../infrastructure/util.js';
 import { shapeEditEvtProc } from './shape-evt-proc.js';
 
 /**
@@ -72,29 +72,16 @@ export function circle(svg, canvasData, circleData) {
 function radiusSet(svgGrp, key, r) { /** @type {SVGCircleElement} */(child(svgGrp, key)).r.baseVal.value = r; }
 
 /**
- * calc radius that cover SVGTextElement bbox
+ * calc radius that cover all <tspan> in SVGTextElement
+ * origin is in the center of the circle
  * @param {SVGTextElement} textEl
  * @param {*} minR
  * @param {*} step
  */
 function textElRadius(textEl, minR, step) {
-	let maxRadiusQrt = 0;
-	for (const span of textEl.getElementsByTagName('tspan')) {
-		for (const point of boxPoints(span.getBBox())) {
-			const r = point.x ** 2 + point.y ** 2;
-			if (r > maxRadiusQrt) { maxRadiusQrt = r; }
-		}
-	}
-	return ceil(minR, step, Math.sqrt(maxRadiusQrt));
+	const farthestPoint = svgTxtFarthestPoint(textEl);
+	return ceil(minR, step, Math.sqrt(farthestPoint.x ** 2 + farthestPoint.y ** 2));
 }
-
-/** @param {DOMRect} box */
-const boxPoints = (box) => [
-	{ x: box.x, y: box.y },
-	{ x: box.right, y: box.y },
-	{ x: box.x, y: box.bottom },
-	{ x: box.right, y: box.bottom }
-];
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { import('./shape-evt-proc.js').CanvasData } CanvasData */
