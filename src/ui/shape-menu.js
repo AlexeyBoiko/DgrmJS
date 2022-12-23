@@ -154,8 +154,8 @@ export class ShapeMenu extends HTMLElement {
 		const shapeEl = this._shapeTypeMap[this._pressedShapeTemplKey].create({
 			type: this._pressedShapeTemplKey,
 			position: {
-				x: evtPoint.x - this._shapeTypeMap[this._pressedShapeTemplKey].center.x,
-				y: evtPoint.y - this._shapeTypeMap[this._pressedShapeTemplKey].center.y
+				x: evtPoint.x,
+				y: evtPoint.y
 			},
 			title: 'Title'
 		});

@@ -12,32 +12,32 @@ export function rect(svg, canvasData, rectData) {
 	classAdd(svgGrp, 'hovertrack');
 	if (rectData.t) { classAdd(svgGrp, 'shtxt'); }
 	svgGrp.innerHTML = `
-		<rect data-key="outer" data-evt-no data-evt-index="1" width="144" height="96" x="-24" y="-24" fill="transparent" stroke="transparent" stroke-width="1" />
-		<rect data-key="main" width="96" height="48" rx="15" ry="15" fill="#1aaee5" stroke="#fff" stroke-width="1" />
+		<rect data-key="outer" data-evt-no data-evt-index="1" width="144" height="96" x="-72" y="-48" fill="transparent" stroke="transparent" stroke-width="0" />
+		<rect data-key="main" width="96" height="48" x="-48" y="-24" rx="15" ry="15" fill="#1aaee5" stroke="#fff" stroke-width="1" />
 
-		<text data-key="text" y="24" ${rectData.t ? 'x="8"' : 'x="48" text-anchor="middle"'} style="pointer-events: none;" fill="#fff">&nbsp;</text>
+		<text data-key="text" y="0" ${rectData.t ? 'x="-40"' : 'x="0" text-anchor="middle"'} style="pointer-events: none;" fill="#fff">&nbsp;</text>
 
-		<circle data-key="right" 	data-connect="right" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(96px, 24px);" />
-		<circle data-key="left"		data-connect="left"		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, 24px);" />
-		<circle data-key="bottom" 	data-connect="bottom"	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(48px, 48px);" />
-		<circle data-key="top" 		data-connect="top" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(48px, 0);" />`;
+		<circle data-key="right" 	data-connect="right" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(48px, 0);" />
+		<circle data-key="left"		data-connect="left"		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(-48px, 0);" />
+		<circle data-key="bottom" 	data-connect="bottom"	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, 24px);" />
+		<circle data-key="top" 		data-connect="top" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, -24px);" />`;
 
 	rectData.w = rectData.w ?? 96;
 	rectData.h = rectData.h ?? 48;
 
 	/** @type {ConnectorsData} */
 	const connectorsInnerPosition = {
-		right: { dir: 'right', position: { x: 96, y: 24 } },
-		left: { dir: 'left', position: { x: 0, y: 24 } },
-		bottom: { dir: 'bottom', position: { x: 48, y: 48 } },
-		top: { dir: 'top', position: { x: 48, y: 0 } }
+		right: { dir: 'right', position: { x: 48, y: 0 } },
+		left: { dir: 'left', position: { x: -48, y: 0 } },
+		bottom: { dir: 'bottom', position: { x: 0, y: 24 } },
+		top: { dir: 'top', position: { x: 0, y: -24 } }
 	};
 
 	const textSettings = {
 		/** @type {SVGTextElement} */
 		el: child(svgGrp, 'text'),
 		/** vericale middle, em */
-		vMid: 1.5
+		vMid: 0
 	};
 
 	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, rectData, connectorsInnerPosition, textSettings,
@@ -56,16 +56,16 @@ export function rect(svg, canvasData, rectData) {
 	);
 
 	function resizeAndDraw() {
-		const mainX = rectData.t ? 0 : (96 - rectData.w) / 2;
-		const mainY = (48 - rectData.h) / 2;
+		const mainX = rectData.t ? -48 : rectData.w / -2;
+		const mainY = rectData.h / -2;
+		const middleX = rectData.t ? rectData.w / 2 - 48 : 0;
 
-		const middleX = rectData.w / 2 + mainX;
-		const middleY = rectData.h / 2 + mainY;
-
-		connectorPositionSet(connectorsInnerPosition.right, rectData.w + mainX, middleY);
-		connectorPositionSet(connectorsInnerPosition.left, mainX, middleY);
-		connectorPositionSet(connectorsInnerPosition.bottom, middleX, rectData.h + mainY);
-		connectorPositionSet(connectorsInnerPosition.top, middleX, mainY);
+		connectorsInnerPosition.right.position.x = rectData.t ? rectData.w - 48 : -mainX;
+		connectorsInnerPosition.left.position.x = mainX;
+		connectorsInnerPosition.bottom.position.y = -mainY;
+		connectorsInnerPosition.bottom.position.x = middleX;
+		connectorsInnerPosition.top.position.y = mainY;
+		connectorsInnerPosition.top.position.x = middleX;
 		for (const connectorKey in connectorsInnerPosition) {
 			positionSet(child(svgGrp, connectorKey), connectorsInnerPosition[connectorKey].position);
 		}
@@ -93,12 +93,6 @@ function rectSet(svgGrp, key, w, h, x, y) {
 	rect.height.baseVal.value = h;
 	rect.x.baseVal.value = x;
 	rect.y.baseVal.value = y;
-}
-
-/** @param { {position:Point} } connectorEnd, @param {number} x, @param {number} y */
-function connectorPositionSet(connectorEnd, x, y) {
-	connectorEnd.position.x = x;
-	connectorEnd.position.y = y;
 }
 
 /** @typedef { {x:number, y:number} } Point */

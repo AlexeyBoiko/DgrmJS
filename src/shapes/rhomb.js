@@ -17,7 +17,6 @@ export function rhomb(svg, canvasData, rhombData) {
 		<path data-key="main" d="M-39 0 L0 -39 L39 0 L0 39 Z" stroke-width="18" stroke-linejoin="round"	stroke="#1D809F" fill="#1D809F" />
 
 		<text data-key="text" x="0" y="0" text-anchor="middle" style="pointer-events: none;" fill="#fff">&nbsp;</text>
-		<!-- <circle r="10" cx="0" cy="0" fill="#ff6600" /> -->
 
 		<circle data-key="right" 	data-connect="right" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(48px, 0);" />
 		<circle data-key="left"		data-connect="left"		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(-48px, 0);" />

@@ -7,9 +7,8 @@ import { delPnlCreate } from '../shapes/shape-settings.js';
 /**
  * @param {SVGGElement} canvas
  * @param {{position:{x:number, y:number}, scale:number}} canvasData
- * @param {Record<number, ShapeType>} shapeTypeMap
  */
-export function groupSelectApplay(canvas, canvasData, shapeTypeMap) {
+export function groupSelectApplay(canvas, canvasData) {
 	const svg = canvas.ownerSVGElement;
 	let timer;
 	/** @type {Point} */ let selectStart;
@@ -47,9 +46,9 @@ export function groupSelectApplay(canvas, canvasData, shapeTypeMap) {
 			for (const shapeEl of /** @type {Iterable<ShapeElement>} */(canvas.children)) {
 				const shape = shapeEl[ShapeSmbl];
 				if (shape &&
-					pointInRect(selectRectCanvasPoint, selectRectCanvasWidth, selectRectCanvasHeight,
-						shape.data.position.x + shapeTypeMap[shape.data.type].center.x,
-						shape.data.position.y + shapeTypeMap[shape.data.type].center.y)) {
+					pointInRect(selectRectCanvasPoint,
+						selectRectCanvasWidth, selectRectCanvasHeight,
+						shape.data.position.x, shape.data.position.y)) {
 					classAdd(shapeEl, 'highlight');
 					selectedShapes.push(shapeEl);
 				}
@@ -197,4 +196,3 @@ const pointInRect = (rectPosition, rectWidth, rectHeight, x, y) =>
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { import('../shapes/shape-evt-proc.js').ShapeElement } ShapeElement */
-/** @typedef { import('../shapes/shape-type-map.js').ShapeType } ShapeType */

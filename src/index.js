@@ -22,7 +22,7 @@ const canvasData = {
 const shapesTypeMap = shapeTypeMap(canvas.ownerSVGElement, canvasData);
 
 evtRouteApplay(canvas.ownerSVGElement);
-groupSelectApplay(canvas, canvasData, shapesTypeMap);
+groupSelectApplay(canvas, canvasData);
 moveScaleApplay(canvas, canvasData);
 
 /** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas, canvasData, shapesTypeMap);
@@ -60,7 +60,7 @@ if (url.searchParams.get('k')) {
 			const shapeSvgElement = createFn(canvas.ownerSVGElement, canvasData, {
 				type: 1,
 				position: { x: posX += 120, y: posY },
-				title: `${counter.toString()}`
+				title: `${counter.toString()}`//,
 				// title: `${counter.toString()}\n1\n1\n1`
 				// style: 'cl-red'
 
