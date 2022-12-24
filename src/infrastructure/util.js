@@ -51,7 +51,7 @@ const boxPoints = (box) => [
 ];
 
 //
-// math utils
+// math, arr utils
 
 /**
  * Get the ceiling for a number {val} with a given floor height {step}
@@ -62,6 +62,16 @@ const boxPoints = (box) => [
 export function ceil(min, step, val) {
 	if (val <= min) { return min; }
 	return min + Math.ceil((val - min) / step) * step;
+}
+
+/**
+ * @template T
+ * @param {Array<T>} arr
+ * @param {{(el:T):void}} action
+ */
+export function arrPop(arr, action) {
+	let itm = arr.pop();
+	while (itm) { action(itm); itm = arr.pop(); };
 }
 
 /** @typedef { {x:number, y:number} } Point */

@@ -1,6 +1,6 @@
 import { ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
-import { classAdd, classDel } from '../infrastructure/util.js';
+import { arrPop, classAdd, classDel } from '../infrastructure/util.js';
 import { placeToCell, ShapeSmbl } from '../shapes/shape-evt-proc.js';
 import { delPnlCreate } from '../shapes/shape-settings.js';
 
@@ -180,16 +180,6 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 
 	svg.addEventListener('pointerdown', down, { passive: true, capture: true });
 	return dispose;
-}
-
-/**
- * @template T
- * @param {Array<T>} arr
- * @param {{(el:T):void}} action
- */
-function arrPop(arr, action) {
-	let itm = arr.pop();
-	while (itm) { action(itm); itm = arr.pop(); };
 }
 
 /**
