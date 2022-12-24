@@ -121,6 +121,7 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 			evt.stopImmediatePropagation();
 		}
 
+		svg.setPointerCapture(evt.pointerId);
 		svg.addEventListener('pointerup', up, { passive: true, once: true });
 		svg.addEventListener('pointermove', move, { passive: true });
 	}
