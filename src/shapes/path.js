@@ -76,15 +76,22 @@ export function path(svg, canvasData, pathData) {
 		arrow.firstElementChild.setAttribute('data-evt-index', '2');
 	};
 
+	/** @type { {():void} } */
+	let hoverEmulateDispose;
 	function unSelect() {
 		classDel(svgGrp, 'select');
 		arrow.firstElementChild.setAttribute('data-evt-index', '1');
 
-		settingsPnl?.del(); settingsPnl = null;
+		settingsPnl?.del();
+		settingsPnl = null;
+
+		if (hoverEmulateDispose) {
+			hoverEmulateDispose();
+			hoverEmulateDispose = null;
+			svgGrp.style.pointerEvents = 'unset';
+		}
 	};
 
-	/** @type { {():void} } */
-	let hoverEmulateDispose;
 	const reset = moveEvtProc(
 		svg,
 		svgGrp,
@@ -138,9 +145,7 @@ export function path(svg, canvasData, pathData) {
 			}
 
 			// hover emulation - end
-			hoverEmulateDispose();
-			hoverEmulateDispose = null;
-			svgGrp.style.pointerEvents = 'unset';
+			unSelect();
 		},
 		// onClick
 		select,
