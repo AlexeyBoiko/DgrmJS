@@ -1,12 +1,12 @@
 import { ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { classAdd, classDel } from '../infrastructure/util.js';
-import { ShapeSmbl } from '../shapes/shape-evt-proc.js';
+import { placeToCell, ShapeSmbl } from '../shapes/shape-evt-proc.js';
 import { delPnlCreate } from '../shapes/shape-settings.js';
 
 /**
  * @param {SVGGElement} canvas
- * @param {{position:{x:number, y:number}, scale:number}} canvasData
+ * @param {{position:{x:number, y:number}, scale:number, cell:number}} canvasData
  */
 export function groupSelectApplay(canvas, canvasData) {
 	const svg = canvas.ownerSVGElement;
@@ -96,7 +96,7 @@ export function groupSelectApplay(canvas, canvasData) {
 /**
  * @param {SVGSVGElement} svg
  * @param {ShapeElement[]} selectedShapeElems
- * @param {{scale:number}} canvasData
+ * @param {{scale:number, cell:number}} canvasData
  */
 function groupEvtProc(svg, selectedShapeElems, canvasData) {
 	let isMove = false;
@@ -138,6 +138,13 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 					arrPop(selectedShapeElems, shapeEl => shapeEl[ShapeSmbl].del());
 					dispose();
 				});
+		} else {
+			// move end
+
+			for (const shapeEl of selectedShapeElems) {
+				placeToCell(shapeEl[ShapeSmbl].data.position, canvasData.cell);
+				shapeEl[ShapeSmbl].drawPosition();
+			}
 		}
 
 		dispose(true);

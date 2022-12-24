@@ -215,7 +215,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
  * @param {Point} shapePosition
  * @param {number} cell
  */
-function placeToCell(shapePosition, cell) {
+export function placeToCell(shapePosition, cell) {
 	const cellSizeHalf = cell / 2;
 	function placeToCell(coordinate) {
 		const coor = (Math.round(coordinate / cell) * cell);
