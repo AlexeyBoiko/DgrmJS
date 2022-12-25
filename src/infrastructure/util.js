@@ -21,6 +21,12 @@ export const classDel = (el, cl) => el?.classList.remove(cl);
 /** @param {Element} el, @param {string} cl */
 export const classHas = (el, cl) => el?.classList.contains(cl);
 
+/** @param {Element} el, @param {string} type, @param {EventListenerOrEventListenerObject} listener, @param {boolean?=} once */
+export const listen = (el, type, listener, once) => el.addEventListener(type, listener, { passive: true, once });
+
+/** @param {Element} el, @param {string} type, @param {EventListenerOrEventListenerObject} listener, @param {boolean?=} capture */
+export const listenDel = (el, type, listener, capture) => el?.removeEventListener(type, listener, { capture });
+
 /**
  * calc farthest point of <tspan>s bbox in {textEl}
  * origin is in the center

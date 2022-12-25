@@ -1,4 +1,5 @@
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
+import { listen } from '../infrastructure/util.js';
 import { tipShow } from './ui.js';
 
 export class ShapeMenu extends HTMLElement {
@@ -77,10 +78,10 @@ export class ShapeMenu extends HTMLElement {
 			</div>`;
 
 		const menu = shadow.getElementById('menu');
-		menu.querySelectorAll('[data-cmd="shapeAdd"]').forEach(el => el.addEventListener('pointerdown', this));
-		menu.addEventListener('pointerleave', this);
-		menu.addEventListener('pointerup', this);
-		menu.addEventListener('pointermove', this);
+		menu.querySelectorAll('[data-cmd="shapeAdd"]').forEach(el => listen(el, 'pointerdown', this));
+		listen(menu, 'pointerleave', this);
+		listen(menu, 'pointerup', this);
+		listen(menu, 'pointermove', this);
 	};
 
 	/**

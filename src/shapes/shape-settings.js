@@ -1,3 +1,5 @@
+import { listen } from '../infrastructure/util.js';
+
 /**
  * @param {number} bottomX positon of the bottom left corner of the panel
  * @param {number} bottomY positon of the bottom left corner of the panel
@@ -96,7 +98,7 @@ class ShapeSettings extends HTMLElement {
 			${delSvg}
 		</div>`;
 
-		shadow.querySelectorAll('[data-cmd]').forEach(el => el.addEventListener('click', this));
+		shadow.querySelectorAll('[data-cmd]').forEach(el => listen(el, 'click', this));
 
 		/** @private */
 		this._parent = shadow.host.parentElement;

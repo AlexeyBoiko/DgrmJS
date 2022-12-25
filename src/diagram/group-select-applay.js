@@ -1,6 +1,6 @@
 import { ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
-import { arrPop, classAdd, classDel } from '../infrastructure/util.js';
+import { arrPop, classAdd, classDel, listen, listenDel } from '../infrastructure/util.js';
 import { placeToCell, ShapeSmbl } from '../shapes/shape-evt-proc.js';
 import { delPnlCreate } from '../shapes/shape-settings.js';
 
@@ -63,17 +63,18 @@ export function groupSelectApplay(canvas, canvasData) {
 		clearTimeout(timer); timer = null;
 		startCircle?.remove(); startCircle = null;
 		selectRect?.remove(); selectRect = null;
-		svg.removeEventListener('pointermove', onMove);
-		svg.removeEventListener('wheel', reset);
-		svg.removeEventListener('pointerup', onUp);
+
+		listenDel(svg, 'pointermove', onMove);
+		listenDel(svg, 'wheel', reset);
+		listenDel(svg, 'pointerup', onUp);
 	}
 
-	svg.addEventListener('pointerdown', evt => {
+	listen(svg, 'pointerdown', /** @param {PointerEvent} evt */ evt => {
 		if (evt[ProcessedSmbl] || !evt.isPrimary) { reset(); return; }
 
-		svg.addEventListener('pointermove', onMove, { passive: true });
-		svg.addEventListener('wheel', reset, { passive: true, once: true });
-		svg.addEventListener('pointerup', onUp, { passive: true, once: true });
+		listen(svg, 'pointermove', onMove);
+		listen(svg, 'wheel', reset, true);
+		listen(svg, 'pointerup', onUp, true);
 
 		timer = setTimeout(_ => {
 			if (groupEvtProcDispose) { groupEvtProcDispose(); groupEvtProcDispose = null; }
@@ -90,7 +91,7 @@ export function groupSelectApplay(canvas, canvasData) {
 			selectRect.style.transform = `translate(${selectRectPos.x}px, ${selectRectPos.y}px)`;
 			svg.append(selectRect);
 		}, 500);
-	}, { passive: true });
+	});
 }
 
 /**
@@ -122,8 +123,8 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 		}
 
 		svg.setPointerCapture(evt.pointerId);
-		svg.addEventListener('pointerup', up, { passive: true, once: true });
-		svg.addEventListener('pointermove', move, { passive: true });
+		listen(svg, 'pointerup', up, true);
+		listen(svg, 'pointermove', move);
 	}
 
 	/** @param {PointerEvent} evt */
@@ -167,19 +168,20 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 
 	/** @param {boolean=} saveOnDown */
 	function dispose(saveOnDown) {
-		svg.removeEventListener('pointerup', up);
-		svg.removeEventListener('pointermove', move);
+		listenDel(svg, 'pointerup', up);
+		listenDel(svg, 'pointermove', move);
 		isMove = false;
 		isDownOnSelectedShape = false;
 
 		if (!saveOnDown) {
-			svg.removeEventListener('pointerdown', down, { capture: true });
+			listenDel(svg, 'pointerdown', down, true);
 			pnlDel();
 			arrPop(selectedShapeElems, shapeEl => classDel(shapeEl, 'highlight'));
 		}
 	}
 
 	svg.addEventListener('pointerdown', down, { passive: true, capture: true });
+
 	return dispose;
 }
 

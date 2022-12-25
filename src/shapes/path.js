@@ -1,4 +1,4 @@
-import { child, classAdd, classDel, classHas } from '../infrastructure/util.js';
+import { child, classAdd, classDel, classHas, listen, listenDel } from '../infrastructure/util.js';
 import { moveEvtProc, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
 import { ShapeSmbl } from './shape-evt-proc.js';
 import { settingsPnlCreate } from './shape-settings.js';
@@ -232,10 +232,10 @@ function hoverEmulate(element) {
 		}
 	}
 
-	element.addEventListener('pointermove', move, { passive: true });
+	listen(element, 'pointermove', move);
 	// dispose fn
 	return function() {
-		element.removeEventListener('pointermove', move);
+		listenDel(element, 'pointermove', move);
 		classDel(elemFromPoint, 'hover');
 		classDel(elemFromPoint?.parentElement, 'hover');
 		elemFromPoint = null;

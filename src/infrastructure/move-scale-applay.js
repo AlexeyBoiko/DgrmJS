@@ -1,4 +1,5 @@
 import { ProcessedSmbl } from './move-evt-proc.js';
+import { listen, listenDel } from './util.js';
 
 /**
  * Get point in canvas given the scale and position of the canvas
@@ -93,9 +94,9 @@ function applayFingers(svg, canvasData, scaleFn, transformFn) {
 		if (secondPointer?.id === evt.pointerId) { secondPointer = null; }
 
 		if (!firstPointer && !secondPointer) {
-			svg.removeEventListener('pointermove', move);
-			svg.removeEventListener('pointercancel', cancel);
-			svg.removeEventListener('pointerup', cancel);
+			listenDel(svg, 'pointermove', move);
+			listenDel(svg, 'pointercancel', cancel);
+			listenDel(svg, 'pointerup', cancel);
 		}
 	};
 
@@ -136,16 +137,16 @@ function applayFingers(svg, canvasData, scaleFn, transformFn) {
 		if (secondPointer.id === evt.pointerId) { secondPointer = evtPointer(evt, canvasData); }
 	}
 
-	svg.addEventListener('pointerdown', evt => {
+	listen(svg, 'pointerdown', /** @param {PointerEvent} evt */ evt => {
 		if (evt[ProcessedSmbl] || (!firstPointer && !evt.isPrimary) || (firstPointer && secondPointer)) {
 			return;
 		}
 
 		svg.setPointerCapture(evt.pointerId);
 		if (!firstPointer) {
-			svg.addEventListener('pointermove', move, { passive: true });
-			svg.addEventListener('pointercancel', cancel, { passive: true });
-			svg.addEventListener('pointerup', cancel, { passive: true });
+			listen(svg, 'pointermove', move);
+			listen(svg, 'pointercancel', cancel);
+			listen(svg, 'pointerup', cancel);
 		}
 
 		if (!firstPointer) { firstPointer = evtPointer(evt, canvasData); return; }

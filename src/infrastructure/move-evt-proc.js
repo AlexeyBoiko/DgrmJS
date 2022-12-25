@@ -1,3 +1,5 @@
+import { listenDel, listen } from './util.js';
+
 /**
  * @param { Element } elemTrackOutdown poitdows in this element will be tracking to fire {onOutdown} callback
  * @param { Element } elem
@@ -73,27 +75,27 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 		evt[ProcessedSmbl] = true;
 		target = /** @type {Element} */(evt.target);
 		target.setPointerCapture(evt.pointerId);
-		target.addEventListener('pointercancel', cancel, { passive: true, once: true });
-		target.addEventListener('pointerup', cancel, { passive: true, once: true });
-		target.addEventListener('pointermove', move, { passive: true });
+		listen(target, 'pointercancel', cancel, true);
+		listen(target, 'pointerup', cancel, true);
+		listen(target, 'pointermove', move);
 
-		elemTrackOutdown.addEventListener('wheel', wheel, { passive: true, once: true });
-		elemTrackOutdown.addEventListener('pointerdown', docDown, { passive: true });
+		listen(elemTrackOutdown, 'wheel', wheel, true);
+		listen(elemTrackOutdown, 'pointerdown', docDown);
 
 		pointDown = { x: evt.clientX, y: evt.clientY };
 		isInit = true;
 	}
 
-	elem.addEventListener('pointerdown', init, { passive: true });
+	listen(elem, 'pointerdown', init);
 
 	/** @param {boolean=} saveOutTrack */
 	function reset(saveOutTrack) {
-		target?.removeEventListener('pointercancel', cancel);
-		target?.removeEventListener('pointerup', cancel);
-		target?.removeEventListener('pointermove', move);
+		listenDel(target, 'pointercancel', cancel);
+		listenDel(target, 'pointerup', cancel);
+		listenDel(target, 'pointermove', move);
 		if (!saveOutTrack) {
-			elemTrackOutdown.removeEventListener('pointerdown', docDown);
-			elemTrackOutdown.removeEventListener('wheel', wheel);
+			listenDel(elemTrackOutdown, 'pointerdown', docDown);
+			listenDel(elemTrackOutdown, 'wheel', wheel);
 		}
 		target = null;
 		pointDown = null;
