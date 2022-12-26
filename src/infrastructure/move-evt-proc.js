@@ -15,18 +15,10 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 	let isMoved = false;
 	let isInit = false;
 	/** @type {Element} */ let target;
-	/** @type {Point} */ let pointDown;
 
 	/** @param {PointerEvent} evt */
 	function move(evt) {
-		if (!isInit ||
-			// fix old android
-			(pointDown &&
-				Math.abs(pointDown.x - evt.clientX) < 3 &&
-				Math.abs(pointDown.y - evt.clientY) < 3)) {
-			return;
-		}
-		pointDown = null;
+		if (!isInit) { return; }
 
 		if (!isMoved) {
 			onMoveStart(evt);
@@ -82,7 +74,6 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 		listen(elemTrackOutdown, 'wheel', wheel, true);
 		listen(elemTrackOutdown, 'pointerdown', docDown);
 
-		pointDown = { x: evt.clientX, y: evt.clientY };
 		isInit = true;
 	}
 
@@ -98,7 +89,6 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 			listenDel(elemTrackOutdown, 'wheel', wheel);
 		}
 		target = null;
-		pointDown = null;
 		isMoved = false;
 		isInit = false;
 	}
