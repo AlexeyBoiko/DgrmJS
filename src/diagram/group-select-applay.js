@@ -80,6 +80,7 @@ export function groupSelectApplay(canvas, canvasData) {
 			if (groupEvtProcDispose) { groupEvtProcDispose(); groupEvtProcDispose = null; }
 
 			startCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+			classAdd(startCircle, 'ative-elem');
 			startCircle.style.cssText = 'r:10px; fill: rgb(108 187 247 / 51%)';
 			startCircle.style.transform = `translate(${evt.clientX}px, ${evt.clientY}px)`;
 			svg.append(startCircle);

@@ -26,7 +26,7 @@
 		@media only screen and (max-width: 700px) {
 			.links {
 				display: none;
-			}
+			}	
 		}
 	</style>
 	<title>Dgrm</title>
@@ -96,6 +96,17 @@
 				stroke-width: 10px;
 				stroke: rgb(108 187 247 / 51%);
 			}
+			
+			@media (pointer: coarse) {
+				[data-key="arrow"] circle { r: 20px; }
+				.ative-elem {
+					stroke: rgb(108 187 247 / 51%);
+					stroke-width: 70px;
+				}
+	
+				[data-connect] { stroke-width: 15px; }
+				[data-connect].hover { stroke-width: 50px; }
+			}
 
 			/* text shape */
 			.shtxt textarea { text-align: left; caret-color: rgb(73, 80, 87); }
@@ -131,6 +142,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20221205-2" type="module"></script>
+	<script src="index.js?v=20221205-3" type="module"></script>
 </body>
 </html>
