@@ -1,5 +1,5 @@
 import { CanvasSmbl } from '../infrastructure/move-scale-applay.js';
-import { ShapeSmbl } from '../shapes/shape-evt-proc.js';
+import { ShapeSmbl } from '../shapes/shape-smbl.js';
 
 /** @param {CanvasElement} canvas */
 export function dgrmClear(canvas) {

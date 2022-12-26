@@ -1,8 +1,8 @@
 import { child, classAdd, classDel, classHas, listen, listenDel } from '../infrastructure/util.js';
 import { moveEvtProc, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
-import { ShapeSmbl } from './shape-evt-proc.js';
 import { settingsPnlCreate } from './shape-settings.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
+import { ShapeSmbl } from './shape-smbl.js';
 
 /**
  * @param {Element} svg

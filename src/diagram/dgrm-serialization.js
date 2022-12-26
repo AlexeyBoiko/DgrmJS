@@ -1,5 +1,5 @@
 import { PathSmbl } from '../shapes/path.js';
-import { ShapeSmbl } from '../shapes/shape-evt-proc.js';
+import { ShapeSmbl } from '../shapes/shape-smbl.js';
 import { dgrmClear } from './dgrm-clear.js';
 
 /** @param {Element} canvas */

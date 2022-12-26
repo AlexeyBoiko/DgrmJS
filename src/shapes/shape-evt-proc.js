@@ -4,6 +4,7 @@ import { path, PathSmbl } from './path.js';
 import { textareaCreate } from '../infrastructure/svg-text-area.js';
 import { settingsPnlCreate } from './shape-settings.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
+import { ShapeSmbl } from './shape-smbl.js';
 
 /**
  * provides:
@@ -255,7 +256,7 @@ data: ShapeData
 del?: ()=>void
 }} Shape
  */
-export const ShapeSmbl = Symbol('shape');
+
 /** @typedef {SVGGraphicsElement & { [ShapeSmbl]?: Shape }} ShapeElement */
 /** @typedef {import('./path.js').Path} Path */
 /** @typedef {import('./path.js').PathElement} PathElement */

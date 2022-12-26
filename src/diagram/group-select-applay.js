@@ -2,8 +2,9 @@ import { MovementXSmbl, MovementYSmbl } from '../infrastructure/move-evt-mobile-
 import { ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { arrPop, classAdd, classDel, listen, listenDel } from '../infrastructure/util.js';
-import { placeToCell, ShapeSmbl } from '../shapes/shape-evt-proc.js';
+import { placeToCell } from '../shapes/shape-evt-proc.js';
 import { delPnlCreate } from '../shapes/shape-settings.js';
+import { ShapeSmbl } from '../shapes/shape-smbl.js';
 
 /**
  * @param {SVGGElement} canvas
