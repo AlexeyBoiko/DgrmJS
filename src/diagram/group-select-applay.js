@@ -1,3 +1,4 @@
+import { MovementXSmbl, MovementYSmbl } from '../infrastructure/move-evt-mobile-fix.js';
 import { ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { arrPop, classAdd, classDel, listen, listenDel } from '../infrastructure/util.js';
@@ -153,7 +154,7 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 		dispose(true);
 	}
 
-	/** @param {PointerEvent} evt */
+	/** @param {PointerEventFixMovement} evt */
 	function move(evt) {
 		// move canvas
 		if (!isDownOnSelectedShape) { dispose(true); return; }
@@ -161,8 +162,8 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 		// move selected shapes
 		isMove = true;
 		for (const shapeEl of selectedShapeElems) {
-			shapeEl[ShapeSmbl].data.position.x += evt.movementX / canvasData.scale;
-			shapeEl[ShapeSmbl].data.position.y += evt.movementY / canvasData.scale;
+			shapeEl[ShapeSmbl].data.position.x += evt[MovementXSmbl] / canvasData.scale;
+			shapeEl[ShapeSmbl].data.position.y += evt[MovementYSmbl] / canvasData.scale;
 			shapeEl[ShapeSmbl].drawPosition();
 		}
 	}
@@ -197,3 +198,4 @@ const pointInRect = (rectPosition, rectWidth, rectHeight, x, y) =>
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { import('../shapes/shape-evt-proc.js').ShapeElement } ShapeElement */
+/** @typedef { import('../infrastructure/move-evt-mobile-fix.js').PointerEventFixMovement} PointerEventFixMovement */

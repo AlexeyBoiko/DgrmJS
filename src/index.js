@@ -11,7 +11,7 @@ import './ui/menu.js';
 import './ui/shape-menu.js';
 import { rect } from './shapes/rect.js';
 import { rhomb } from './shapes/rhomb.js';
-import { moveOldAndoidFixApplay } from './infrastructure/move-old-android-fix.js';
+import { moveEvtMobileFix } from './infrastructure/move-evt-mobile-fix.js';
 
 // @ts-ignore
 /** @type {SVGGElement} */ const canvas = document.getElementById('canvas');
@@ -22,7 +22,7 @@ const canvasData = {
 };
 const shapesTypeMap = shapeTypeMap(canvas.ownerSVGElement, canvasData);
 
-moveOldAndoidFixApplay(canvas.ownerSVGElement);
+moveEvtMobileFix(canvas.ownerSVGElement);
 evtRouteApplay(canvas.ownerSVGElement);
 groupSelectApplay(canvas, canvasData);
 moveScaleApplay(canvas, canvasData);

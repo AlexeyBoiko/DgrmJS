@@ -1,3 +1,4 @@
+import { MovementXSmbl, MovementYSmbl } from './move-evt-mobile-fix.js';
 import { listenDel, listen } from './util.js';
 
 /**
@@ -16,7 +17,7 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 	let isInit = false;
 	/** @type {Element} */ let target;
 
-	/** @param {PointerEvent} evt */
+	/** @param {PointerEventFixMovement} evt */
 	function move(evt) {
 		if (!isInit) { return; }
 
@@ -27,8 +28,8 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 			if (!isInit) { return; }
 		}
 
-		shapePosition.x += evt.movementX / canvasScale.scale;
-		shapePosition.y += evt.movementY / canvasScale.scale;
+		shapePosition.x += evt[MovementXSmbl] / canvasScale.scale;
+		shapePosition.y += evt[MovementYSmbl] / canvasScale.scale;
 		isMoved = true;
 		onMove(evt);
 	}
@@ -133,4 +134,5 @@ export const ProcessedSmbl = Symbol('processed');
 const RouteedSmbl = Symbol('routeed');
 /** @typedef {PointerEvent & { [ProcessedSmbl]?: boolean, [RouteedSmbl]?: boolean }} ProcEvent */
 
+/** @typedef {import('./move-evt-mobile-fix.js').PointerEventFixMovement} PointerEventFixMovement */
 /** @typedef { {x:number, y:number} } Point */
