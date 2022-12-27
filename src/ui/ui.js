@@ -22,4 +22,7 @@ export function uiDisable(isDisable) {
 }
 
 /** @param {boolean} show */
-export function tipShow(show) { document.getElementById('tip').style.display = show ? 'unset' : 'none'; }
+export function tipShow(show) {
+	document.getElementById('diagram').style.pointerEvents = show ? 'none' : 'unset';
+	document.getElementById('tip').style.display = show ? 'unset' : 'none';
+}
