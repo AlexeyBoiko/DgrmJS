@@ -12,7 +12,7 @@ export function rect(svg, canvasData, rectData) {
 	classAdd(svgGrp, 'hovertrack');
 	if (rectData.t) { classAdd(svgGrp, 'shtxt'); }
 	svgGrp.innerHTML = `
-		<rect data-key="outer" data-evt-no data-evt-index="1" width="144" height="96" x="-72" y="-48" fill="transparent" stroke="transparent" stroke-width="0" />
+		<rect data-key="outer" data-evt-no data-evt-index="2" width="144" height="96" x="-72" y="-48" fill="transparent" stroke="transparent" stroke-width="0" />
 		<rect data-key="main" width="96" height="48" x="-48" y="-24" rx="15" ry="15" fill="#1aaee5" stroke="#fff" stroke-width="1" />
 
 		<text data-key="text" y="0" ${rectData.t ? 'x="-40"' : 'x="0" text-anchor="middle"'} style="pointer-events: none;" fill="#fff">&nbsp;</text>

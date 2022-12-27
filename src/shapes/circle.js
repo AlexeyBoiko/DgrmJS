@@ -11,7 +11,7 @@ export function circle(svg, canvasData, circleData) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	svgGrp.classList.add('hovertrack');
 	svgGrp.innerHTML = `
-		<circle data-key="outer" data-evt-no data-evt-index="1" r="72" fill="transparent" stroke-width="0" />
+		<circle data-key="outer" data-evt-no data-evt-index="2" r="72" fill="transparent" stroke-width="0" />
 		<circle data-key="main" r="48" fill="#ff6600" stroke="#fff" stroke-width="1" />
 
 		<text data-key="text" x="0" y="0" text-anchor="middle" style="pointer-events: none;" fill="#fff">&nbsp;</text>

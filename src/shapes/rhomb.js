@@ -12,7 +12,7 @@ export function rhomb(svg, canvasData, rhombData) {
 	classAdd(svgGrp, 'shrhomb');
 	classAdd(svgGrp, 'hovertrack');
 	svgGrp.innerHTML = `
-		<path data-key="outer" data-evt-no data-evt-index="1" d="M-72 0 L0 -72 L72 0 L0 72 Z" stroke-width="0" fill="transparent" />
+		<path data-key="outer" data-evt-no data-evt-index="2" d="M-72 0 L0 -72 L72 0 L0 72 Z" stroke-width="0" fill="transparent" />
 		<path data-key="border" d="M-39 0 L0 -39 L39 0 L0 39 Z" stroke-width="20" stroke="#fff"	fill="transparent" stroke-linejoin="round" />
 		<path data-key="main" d="M-39 0 L0 -39 L39 0 L0 39 Z" stroke-width="18" stroke-linejoin="round"	stroke="#1D809F" fill="#1D809F" />
 
