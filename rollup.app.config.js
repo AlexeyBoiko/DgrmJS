@@ -3,7 +3,7 @@ import minifyHTML from 'rollup-plugin-minify-html-literals';
 import replace from '@rollup/plugin-replace';
 
 export default {
-	input: 'src/app/index.js',
+	input: 'src/index.js',
 	output: {
 		file: 'dist/app/index.js',
 		format: 'iife',
@@ -26,10 +26,18 @@ export default {
 						template.parts.some(part => {
 							return (
 								part.text.includes('<style') ||
-								part.text.includes('<div')
+								part.text.includes('<div') ||
+								part.text.includes('<circle') ||
+								part.text.includes('<path')
 							);
 						})
 					);
+				},
+				minifyOptions: {
+					collapseWhitespace: true,
+					minifyCSS: true,
+					removeComments: true,
+					keepClosingSlash: true
 				}
 			}
 		}),
