@@ -1,10 +1,10 @@
 {
-    "compilerOptions": {
-      "checkJs": true,
-      "target": "ES2021"
-    },
-    "include": [
-      "src/**/*.js",
-      "src/**/*.ts",
-    ]
-  }
+  "compilerOptions": {
+    "checkJs": true,
+    "target": "ES2021"
+  },
+  "include": [
+    "src/**/*.js",
+    "src/**/*.ts",
+  ]
+}
