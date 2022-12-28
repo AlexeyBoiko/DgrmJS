@@ -91,7 +91,7 @@ export class Menu extends HTMLElement {
 			const key = generateKey();
 			const url = new URL(window.location.href);
 			url.searchParams.set('k', key);
-			// use clipboard befoure server call - to fix 'Document is not focused'
+			// use clipboard before server call - to fix 'Document is not focused'
 			await navigator.clipboard.writeText(url.toString());
 			await srvSave(key, serialized);
 
@@ -132,12 +132,11 @@ customElements.define('ap-menu', Menu);
  * @param {Blob} png
  */
 async function loadData(canvas, shapeTypeMap, png) {
-	tipShow(false);
-
 	const dgrmChunk = await dgrmPngChunkGet(png);
 	if (!dgrmChunk) { alertCantOpen(); return; }
-
-	deserialize(canvas, shapeTypeMap, JSON.parse(dgrmChunk));
+	if (deserialize(canvas, shapeTypeMap, JSON.parse(dgrmChunk))) {
+		tipShow(false);
+	}
 }
 
 const alertCantOpen = () => alert('File cannot be read. Use the exact image file you got from the application.');

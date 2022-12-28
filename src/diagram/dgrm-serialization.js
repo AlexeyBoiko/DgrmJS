@@ -42,7 +42,7 @@ export function serialize(canvas) {
  * @param {DiagramSerialized} data
  */
 export function deserialize(canvas, shapeTypeMap, data) {
-	if (data.v !== '1') { alert('Wrong format'); return; }
+	if (data.v !== '1') { alert('Wrong format'); return false; }
 	dgrmClear(canvas);
 
 	/** @type {Map<ShapeData, SVGGraphicsElement>} */
@@ -85,6 +85,8 @@ export function deserialize(canvas, shapeTypeMap, data) {
 			default: shapeEnsure(/** @type {ShapeData} */(shape)); break;
 		}
 	}
+
+	return true;
 }
 
 /** @typedef {{v:string, s: Array<ShapeData | PathSerialized>}} DiagramSerialized */
