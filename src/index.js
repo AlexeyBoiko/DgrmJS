@@ -32,7 +32,7 @@ if (url.searchParams.get('k')) {
 	uiDisable(true);
 	srvGet(url.searchParams.get('k')).then(appData => {
 		url.searchParams.delete('k');
-		if (deserialize(canvas, canvasData, appData)) { tipShow(false); }
+		if (deserialize(canvas, shapesTypeMap, appData)) { tipShow(false); }
 		history.replaceState(null, null, url);
 		uiDisable(false);
 		url = null;
