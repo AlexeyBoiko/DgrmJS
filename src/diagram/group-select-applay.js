@@ -1,7 +1,7 @@
 import { MovementXSmbl, MovementYSmbl } from '../infrastructure/move-evt-mobile-fix.js';
 import { ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
-import { arrPop, classAdd, classDel, listen, listenDel } from '../infrastructure/util.js';
+import { arrPop, classAdd, classDel, listen, listenDel, svgEl } from '../infrastructure/util.js';
 import { placeToCell } from '../shapes/shape-evt-proc.js';
 import { delPnlCreate } from '../shapes/shape-settings.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
@@ -81,7 +81,7 @@ export function groupSelectApplay(canvas, canvasData) {
 		timer = setTimeout(_ => {
 			if (groupEvtProcDispose) { groupEvtProcDispose(); groupEvtProcDispose = null; }
 
-			startCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+			startCircle = svgEl('circle');
 			classAdd(startCircle, 'ative-elem');
 			startCircle.style.cssText = 'r:10px; fill: rgb(108 187 247 / 51%)';
 			startCircle.style.transform = `translate(${evt.clientX}px, ${evt.clientY}px)`;
@@ -89,7 +89,7 @@ export function groupSelectApplay(canvas, canvasData) {
 
 			selectStart = { x: evt.clientX, y: evt.clientY };
 			selectRectPos = { x: evt.clientX, y: evt.clientY };
-			selectRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+			selectRect = svgEl('rect');
 			selectRect.style.cssText = 'rx:10px; fill: rgb(108 187 247 / 51%)';
 			selectRect.style.transform = `translate(${selectRectPos.x}px, ${selectRectPos.y}px)`;
 			svg.append(selectRect);

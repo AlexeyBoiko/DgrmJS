@@ -30,12 +30,12 @@ export const listenDel = (el, type, listener, capture) => el?.removeEventListene
 /**
  * @template {keyof SVGElementTagNameMap} T
  * @param {T} qualifiedName
- * @param {string} innerHTML
+ * @param {string?=} innerHTML
  * @returns {SVGElementTagNameMap[T]}
  */
 export function svgEl(qualifiedName, innerHTML) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', qualifiedName);
-	svgGrp.innerHTML = innerHTML;
+	if (innerHTML) { svgGrp.innerHTML = innerHTML; }
 	return svgGrp;
 }
 

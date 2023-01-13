@@ -1,4 +1,5 @@
 import { svgTextDraw } from './svg-text-draw.js';
+import { svgEl } from './util.js';
 
 /**
  * Create teaxtArea above SVGTextElement 'textEl'
@@ -12,7 +13,7 @@ import { svgTextDraw } from './svg-text-draw.js';
  * @returns { {():void} } dispose function
  */
 export function textareaCreate(textEl, verticalMiddle, val, onchange, onblur) {
-	let foreign = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+	let foreign = svgEl('foreignObject');
 
 	const textarea = document.createElement('textarea');
 	textarea.value = val || '';
