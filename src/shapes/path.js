@@ -10,7 +10,7 @@ import { ShapeSmbl } from './shape-smbl.js';
  * @param {PathData} pathData
  */
 export function path(svg, canvasData, pathData) {
-	const svgGrp = svgEl('path', `
+	const svgGrp = svgEl('g', `
 		<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
 		<path data-key="path" class="path" d="M0 0" stroke="#495057" stroke-width="1.8" fill="none" style="pointer-events: none;" />
 		<path data-key="selected" d="M0 0" stroke="transparent" stroke-width="10" fill="none" style="pointer-events: none;" />
