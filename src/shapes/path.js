@@ -1,4 +1,4 @@
-import { child, classAdd, classDel, classHas, listen, listenDel, svgG } from '../infrastructure/util.js';
+import { child, classAdd, classDel, classHas, listen, listenDel, svgEl } from '../infrastructure/util.js';
 import { moveEvtProc, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
 import { settingsPnlCreate } from './shape-settings.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
@@ -10,7 +10,7 @@ import { ShapeSmbl } from './shape-smbl.js';
  * @param {PathData} pathData
  */
 export function path(svg, canvasData, pathData) {
-	const svgGrp = svgG(`
+	const svgGrp = svgEl('path', `
 		<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
 		<path data-key="path" class="path" d="M0 0" stroke="#495057" stroke-width="1.8" fill="none" style="pointer-events: none;" />
 		<path data-key="selected" d="M0 0" stroke="transparent" stroke-width="10" fill="none" style="pointer-events: none;" />

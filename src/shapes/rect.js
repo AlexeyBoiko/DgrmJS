@@ -1,6 +1,5 @@
-import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
-import { ceil, child, positionSet, svgG } from '../infrastructure/util.js';
-import { shapeEditEvtProc } from './shape-evt-proc.js';
+import { ceil, child, classAdd, positionSet } from '../infrastructure/util.js';
+import { shapeCreate } from './shape-evt-proc.js';
 
 /**
  * @param {Element} svg
@@ -8,76 +7,59 @@ import { shapeEditEvtProc } from './shape-evt-proc.js';
  * @param {RectData} rectData
  */
 export function rect(svg, canvasData, rectData) {
-	const svgGrp = svgG(`
+	const templ = `
 		<rect data-key="outer" data-evt-no data-evt-index="2" width="144" height="96" x="-72" y="-48" fill="transparent" stroke="transparent" stroke-width="0" />
 		<rect data-key="main" width="96" height="48" x="-48" y="-24" rx="15" ry="15" fill="#1aaee5" stroke="#fff" stroke-width="1" />
+		<text data-key="text" y="0" ${rectData.t ? 'x="-40"' : 'x="0" text-anchor="middle"'} style="pointer-events: none;" fill="#fff">&nbsp;</text>`;
 
-		<text data-key="text" y="0" ${rectData.t ? 'x="-40"' : 'x="0" text-anchor="middle"'} style="pointer-events: none;" fill="#fff">&nbsp;</text>
-
-		<circle data-key="right" 	data-connect="right" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(48px, 0);" />
-		<circle data-key="left"		data-connect="left"		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(-48px, 0);" />
-		<circle data-key="bottom" 	data-connect="bottom"	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, 24px);" />
-		<circle data-key="top" 		data-connect="top" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, -24px);" />`,
-	rectData.t ? 'shtxt' : null);
-
-	rectData.w = rectData.w ?? 96;
-	rectData.h = rectData.h ?? 48;
-
-	/** @type {ConnectorsData} */
-	const connectorsInnerPosition = {
-		right: { dir: 'right', position: { x: 48, y: 0 } },
-		left: { dir: 'left', position: { x: -48, y: 0 } },
-		bottom: { dir: 'bottom', position: { x: 0, y: 24 } },
-		top: { dir: 'top', position: { x: 0, y: -24 } }
-	};
-
-	const textSettings = {
-		/** @type {SVGTextElement} */
-		el: child(svgGrp, 'text'),
-		/** vericale middle, em */
-		vMid: 0
-	};
-
-	const shapeProc = shapeEditEvtProc(svg, canvasData, svgGrp, rectData, connectorsInnerPosition, textSettings,
+	const shape = shapeCreate(svg, canvasData, rectData, templ,
+		{
+			right: { dir: 'right', position: { x: 48, y: 0 } },
+			left: { dir: 'left', position: { x: -48, y: 0 } },
+			bottom: { dir: 'bottom', position: { x: 0, y: 24 } },
+			top: { dir: 'top', position: { x: 0, y: -24 } }
+		},
 		// onTextChange
-		() => {
-			const textBox = textSettings.el.getBBox();
+		txtEl => {
+			const textBox = txtEl.getBBox();
 			const newWidth = ceil(96, 48, textBox.width + (rectData.t ? 6 : 0)); // 6 px right padding for text shape
 			const newHeight = ceil(48, 48, textBox.height);
 
 			if (rectData.w !== newWidth || rectData.h !== newHeight) {
 				rectData.w = newWidth;
 				rectData.h = newHeight;
-				resizeAndDraw();
+				resize();
 			}
-		}
-	);
+		});
 
-	function resizeAndDraw() {
+	rectData.w = rectData.w ?? 96;
+	rectData.h = rectData.h ?? 48;
+	if (rectData.t) { classAdd(shape.el, 'shtxt'); }
+
+	function resize() {
 		const mainX = rectData.t ? -48 : rectData.w / -2;
 		const mainY = rectData.h / -2;
 		const middleX = rectData.t ? rectData.w / 2 - 48 : 0;
 
-		connectorsInnerPosition.right.position.x = rectData.t ? rectData.w - 48 : -mainX;
-		connectorsInnerPosition.left.position.x = mainX;
-		connectorsInnerPosition.bottom.position.y = -mainY;
-		connectorsInnerPosition.bottom.position.x = middleX;
-		connectorsInnerPosition.top.position.y = mainY;
-		connectorsInnerPosition.top.position.x = middleX;
-		for (const connectorKey in connectorsInnerPosition) {
-			positionSet(child(svgGrp, connectorKey), connectorsInnerPosition[connectorKey].position);
+		shape.cons.right.position.x = rectData.t ? rectData.w - 48 : -mainX;
+		shape.cons.left.position.x = mainX;
+		shape.cons.bottom.position.y = -mainY;
+		shape.cons.bottom.position.x = middleX;
+		shape.cons.top.position.y = mainY;
+		shape.cons.top.position.x = middleX;
+		for (const connectorKey in shape.cons) {
+			positionSet(child(shape.el, connectorKey), shape.cons[connectorKey].position);
 		}
 
-		rectSet(svgGrp, 'main', rectData.w, rectData.h, mainX, mainY);
-		rectSet(svgGrp, 'outer', rectData.w + 48, rectData.h + 48, mainX - 24, mainY - 24);
+		rectSet(shape.el, 'main', rectData.w, rectData.h, mainX, mainY);
+		rectSet(shape.el, 'outer', rectData.w + 48, rectData.h + 48, mainX - 24, mainY - 24);
 
-		shapeProc.draw();
+		shape.draw();
 	}
 
-	if (!!rectData.w && (rectData.w !== 96 || rectData.h !== 48)) { resizeAndDraw(); } else { shapeProc.draw(); }
-	svgTextDraw(textSettings.el, textSettings.vMid, rectData.title);
+	if (rectData.w !== 96 || rectData.h !== 48) { resize(); } else { shape.draw(); }
 
-	return svgGrp;
+	return shape.el;
 }
 
 /**

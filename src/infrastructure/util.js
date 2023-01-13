@@ -27,11 +27,15 @@ export const listen = (el, type, listener, once) => el.addEventListener(type, li
 /** @param {Element} el, @param {string} type, @param {EventListenerOrEventListenerObject} listener, @param {boolean?=} capture */
 export const listenDel = (el, type, listener, capture) => el?.removeEventListener(type, listener, { capture });
 
-/** @param {string} innerHTML, @param {string?=} cssClass */
-export function svgG(innerHTML, cssClass) {
-	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+/**
+ * @template {keyof SVGElementTagNameMap} T
+ * @param {T} qualifiedName
+ * @param {string} innerHTML
+ * @returns {SVGElementTagNameMap[T]}
+ */
+export function svgEl(qualifiedName, innerHTML) {
+	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', qualifiedName);
 	svgGrp.innerHTML = innerHTML;
-	if (cssClass) { classAdd(svgGrp, cssClass); }
 	return svgGrp;
 }
 

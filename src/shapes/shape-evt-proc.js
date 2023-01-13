@@ -1,15 +1,58 @@
-import { classAdd, classDel, classHas } from '../infrastructure/util.js';
+import { child, classAdd, classDel, classHas, svgEl } from '../infrastructure/util.js';
 import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
 import { path, PathSmbl } from './path.js';
 import { textareaCreate } from '../infrastructure/svg-text-area.js';
 import { settingsPnlCreate } from './shape-settings.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { ShapeSmbl } from './shape-smbl.js';
+import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
 
 /**
  * provides:
  *  - shape move
  *  - connectors
+ *
+ *  - text editor
+ *  - standard edit panel
+ *  - onTextChange callback
+ * @param {Element} svg
+ * @param {CanvasData} canvasData
+ * @param {string} shapeHtml must have '<text data-key="text">'
+ * @param {ShapeData & { title?: string, style?: string}} shapeData
+ * @param {ConnectorsData} cons
+ * @param {{(txtEl:SVGTextElement):void}} onTextChange
+ */
+export function shapeCreate(svg, canvasData, shapeData, shapeHtml, cons, onTextChange) {
+	const el = svgEl('g', `${shapeHtml}
+		${Object.entries(cons)
+		.map(cc => `<circle data-key="${cc[0]}" data-connect="${cc[1].dir}"	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(${cc[1].position.x}px, ${cc[1].position.y}px);" />`)
+		.join()}`);
+
+	const textSettings = {
+		/** @type {SVGTextElement} */
+		el: child(el, 'text'),
+		/** vericale middle, em */
+		vMid: 0
+	};
+
+	svgTextDraw(textSettings.el, textSettings.vMid, shapeData.title);
+
+	const shapeProc = shapeEditEvtProc(svg, canvasData, el, shapeData, cons, textSettings,
+		// onTextChange
+		() => onTextChange(textSettings.el));
+
+	return {
+		el,
+		cons,
+		draw: shapeProc.draw
+	};
+}
+
+/**
+ * provides:
+ *  - shape move
+ *  - connectors
+ *
  *  - text editor
  *  - standard edit panel
  *  - onTextChange callback
@@ -21,7 +64,7 @@ import { ShapeSmbl } from './shape-smbl.js';
  * @param { {el:SVGTextElement, vMid: number} } textSettings vMid in em
  * @param {{():void}} onTextChange
  */
-export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textSettings, onTextChange) {
+function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textSettings, onTextChange) {
 	/** @type {{():void}} */
 	let textEditorDel;
 
