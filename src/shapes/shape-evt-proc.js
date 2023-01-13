@@ -98,6 +98,8 @@ export function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsI
  * @param {{():void}} onEditStop
  */
 function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, onEdit, onEditStop) {
+	classAdd(svgGrp, 'hovertrack');
+
 	/** @type {ConnectorsData} */
 	const connectorsData = JSON.parse(JSON.stringify(connectorsInnerPosition));
 

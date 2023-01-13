@@ -9,7 +9,6 @@ import { shapeEditEvtProc } from './shape-evt-proc.js';
  */
 export function rect(svg, canvasData, rectData) {
 	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-	classAdd(svgGrp, 'hovertrack');
 	if (rectData.t) { classAdd(svgGrp, 'shtxt'); }
 	svgGrp.innerHTML = `
 		<rect data-key="outer" data-evt-no data-evt-index="2" width="144" height="96" x="-72" y="-48" fill="transparent" stroke="transparent" stroke-width="0" />
