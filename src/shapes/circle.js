@@ -1,5 +1,5 @@
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
-import { ceil, child, positionSet, svgTxtFarthestPoint } from '../infrastructure/util.js';
+import { ceil, child, positionSet, svgG, svgTxtFarthestPoint } from '../infrastructure/util.js';
 import { shapeEditEvtProc } from './shape-evt-proc.js';
 
 /**
@@ -8,8 +8,7 @@ import { shapeEditEvtProc } from './shape-evt-proc.js';
  * @param {CircleData} circleData
  */
 export function circle(svg, canvasData, circleData) {
-	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-	svgGrp.innerHTML = `
+	const svgGrp = svgG(`
 		<circle data-key="outer" data-evt-no data-evt-index="2" r="72" fill="transparent" stroke-width="0" />
 		<circle data-key="main" r="48" fill="#ff6600" stroke="#fff" stroke-width="1" />
 
@@ -18,7 +17,7 @@ export function circle(svg, canvasData, circleData) {
 		<circle data-key="right" 	data-connect="right" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(48px, 0);" />
 		<circle data-key="left"		data-connect="left"		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(-48px, 0);" />
 		<circle data-key="bottom" 	data-connect="bottom"	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, 48px);" />
-		<circle data-key="top" 		data-connect="top" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, -48px);" />`;
+		<circle data-key="top" 		data-connect="top" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, -48px);" />`);
 
 	/** @type {ConnectorsData} */
 	const connectorsInnerPosition = {

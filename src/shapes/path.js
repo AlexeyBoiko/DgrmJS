@@ -1,4 +1,4 @@
-import { child, classAdd, classDel, classHas, listen, listenDel } from '../infrastructure/util.js';
+import { child, classAdd, classDel, classHas, listen, listenDel, svgG } from '../infrastructure/util.js';
 import { moveEvtProc, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
 import { settingsPnlCreate } from './shape-settings.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
@@ -10,16 +10,14 @@ import { ShapeSmbl } from './shape-smbl.js';
  * @param {PathData} pathData
  */
 export function path(svg, canvasData, pathData) {
-	/** @type {PathElement} */
-	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-	svgGrp.innerHTML = `
+	const svgGrp = svgG(`
 		<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
 		<path data-key="path" class="path" d="M0 0" stroke="#495057" stroke-width="1.8" fill="none" style="pointer-events: none;" />
 		<path data-key="selected" d="M0 0" stroke="transparent" stroke-width="10" fill="none" style="pointer-events: none;" />
 		<g data-key="arrow">
 			<circle r="10" stroke-width="0" fill="transparent" data-evt-index="1" />
 			<path class="path" d="M-7 7 l 7 -7 l -7 -7" stroke="#495057" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
-		</g>`;
+		</g>`);
 
 	const path = child(svgGrp, 'path');
 	const outer = child(svgGrp, 'outer');
@@ -248,19 +246,19 @@ function hoverEmulate(element) {
 /** @typedef { {position: Point, dir: Dir}} PathEnd */
 /**
 @typedef {{
-start?: PathEnd,
-startShape?: PathConnectedShape,
-end?: PathEnd,
-endShape?: PathConnectedShape,
-style?: string,
+	start?: PathEnd,
+	startShape?: PathConnectedShape,
+	end?: PathEnd,
+	endShape?: PathConnectedShape,
+	style?: string,
 }} PathData
 */
 /**
 @typedef {{
-draw():void
-pointerCapture:(evt:PointerEventInit)=>void
-del():void
-data: PathData
+	draw():void
+	pointerCapture:(evt:PointerEventInit)=>void
+	del():void
+	data: PathData
 }} Path
  */
 export const PathSmbl = Symbol('path');

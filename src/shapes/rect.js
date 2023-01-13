@@ -1,5 +1,5 @@
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
-import { ceil, child, classAdd, positionSet } from '../infrastructure/util.js';
+import { ceil, child, positionSet, svgG } from '../infrastructure/util.js';
 import { shapeEditEvtProc } from './shape-evt-proc.js';
 
 /**
@@ -8,9 +8,7 @@ import { shapeEditEvtProc } from './shape-evt-proc.js';
  * @param {RectData} rectData
  */
 export function rect(svg, canvasData, rectData) {
-	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-	if (rectData.t) { classAdd(svgGrp, 'shtxt'); }
-	svgGrp.innerHTML = `
+	const svgGrp = svgG(`
 		<rect data-key="outer" data-evt-no data-evt-index="2" width="144" height="96" x="-72" y="-48" fill="transparent" stroke="transparent" stroke-width="0" />
 		<rect data-key="main" width="96" height="48" x="-48" y="-24" rx="15" ry="15" fill="#1aaee5" stroke="#fff" stroke-width="1" />
 
@@ -19,7 +17,8 @@ export function rect(svg, canvasData, rectData) {
 		<circle data-key="right" 	data-connect="right" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(48px, 0);" />
 		<circle data-key="left"		data-connect="left"		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(-48px, 0);" />
 		<circle data-key="bottom" 	data-connect="bottom"	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, 24px);" />
-		<circle data-key="top" 		data-connect="top" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, -24px);" />`;
+		<circle data-key="top" 		data-connect="top" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, -24px);" />`,
+	rectData.t ? 'shtxt' : null);
 
 	rectData.w = rectData.w ?? 96;
 	rectData.h = rectData.h ?? 48;
@@ -99,7 +98,7 @@ function rectSet(svgGrp, key, w, h, x, y) {
 /** @typedef { import('./shape-evt-proc.js').ConnectorsData } ConnectorsData */
 /**
 @typedef {{
-type:number, position: Point, title?: string, style?: string,
-w?:number, h?:number
-t?:boolean
+	type:number, position: Point, title?: string, style?: string,
+	w?:number, h?:number
+	t?:boolean
 }} RectData */

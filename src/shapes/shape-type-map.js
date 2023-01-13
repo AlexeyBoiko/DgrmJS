@@ -22,6 +22,6 @@ export function shapeTypeMap(svg, canvasData) {
 /** @typedef {import('./rect.js').RectData} RectData */
 /**
 @typedef {{
-create: (shapeData)=>SVGGraphicsElement
+	create: (shapeData)=>SVGGraphicsElement
 }} ShapeType
 */

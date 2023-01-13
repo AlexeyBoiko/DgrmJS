@@ -1,5 +1,5 @@
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
-import { ceil, child, classAdd, positionSet, svgTxtFarthestPoint } from '../infrastructure/util.js';
+import { ceil, child, positionSet, svgG, svgTxtFarthestPoint } from '../infrastructure/util.js';
 import { shapeEditEvtProc } from './shape-evt-proc.js';
 
 /**
@@ -8,9 +8,7 @@ import { shapeEditEvtProc } from './shape-evt-proc.js';
  * @param {RhombData} rhombData
  */
 export function rhomb(svg, canvasData, rhombData) {
-	const svgGrp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-	classAdd(svgGrp, 'shrhomb');
-	svgGrp.innerHTML = `
+	const svgGrp = svgG(`
 		<path data-key="outer" data-evt-no data-evt-index="2" d="M-72 0 L0 -72 L72 0 L0 72 Z" stroke-width="0" fill="transparent" />
 		<path data-key="border" d="M-39 0 L0 -39 L39 0 L0 39 Z" stroke-width="20" stroke="#fff"	fill="transparent" stroke-linejoin="round" />
 		<path data-key="main" d="M-39 0 L0 -39 L39 0 L0 39 Z" stroke-width="18" stroke-linejoin="round"	stroke="#1D809F" fill="#1D809F" />
@@ -20,7 +18,7 @@ export function rhomb(svg, canvasData, rhombData) {
 		<circle data-key="right" 	data-connect="right" 	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(48px, 0);" />
 		<circle data-key="left"		data-connect="left"		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(-48px, 0);" />
 		<circle data-key="bottom" 	data-connect="bottom"	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, 48px);" />
-		<circle data-key="top" 		data-connect="top" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, -48px);" />`;
+		<circle data-key="top" 		data-connect="top" 		class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(0, -48px);" />`, 'shrhomb');
 
 	/** @type {ConnectorsData} */
 	const connectorsInnerPosition = {
