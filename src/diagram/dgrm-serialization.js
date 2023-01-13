@@ -75,7 +75,7 @@ export function deserialize(canvas, shapeTypeMap, data) {
 			case 0: {
 				const pathSerialized = /** @type {PathSerialized} */(shape);
 				/** @type {PathData} */
-				const pathData = { style: pathSerialized.c	};
+				const pathData = { style: pathSerialized.c };
 
 				// start
 				if (!pathSerialized.sp) {

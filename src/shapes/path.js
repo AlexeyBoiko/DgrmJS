@@ -38,6 +38,13 @@ export function path(svg, canvasData, pathData) {
 		selected.setAttribute('d', dAttr);
 
 		// ends
+
+		if (!pathData.startShape || !pathData.endShape) {
+			const endDir = dirByAngle(pathData.start.position, pathData.end.position);
+			if (!pathData.endShape) { pathData.end.dir = endDir; }
+			if (!pathData.startShape) { pathData.start.dir = dirReverse(endDir); }
+		}
+
 		endDraw(start, pathData.start);
 		endDraw(end, pathData.end);
 	}
@@ -48,7 +55,7 @@ export function path(svg, canvasData, pathData) {
 	function del() {
 		settingsPnl?.del(); settingsPnl = null;
 		reset();
-		pathData.startShape.shapeEl[ShapeSmbl].pathDel(svgGrp);
+		pathData.startShape?.shapeEl[ShapeSmbl].pathDel(svgGrp);
 		pathData.endShape?.shapeEl[ShapeSmbl].pathDel(svgGrp);
 		svgGrp.remove();
 	}
@@ -123,7 +130,6 @@ export function path(svg, canvasData, pathData) {
 
 			// move not arrow
 			if (!movedEnd) {
-			// if (!end.contains(/** @type {Node} */(evt.target))) {
 				reset();
 				return;
 			}
@@ -216,14 +222,29 @@ function endDraw(endEl, endData) {
 }
 
 /** @param {Dir} dir */
-function arrowAngle(dir) {
-	return dir === 'right'
-		? 180
-		: dir === 'left'
-			? 0
-			: dir === 'bottom'
-				? 270
-				: 90;
+const arrowAngle = dir => dir === 'right'
+	? 180
+	: dir === 'left'
+		? 0
+		: dir === 'bottom'
+			? 270
+			: 90;
+
+/** @param {Dir} dir, @return {Dir} */
+export const dirReverse = dir =>	dir === 'left'
+	? 'right'
+	: dir === 'right'
+		? 'left'
+		: dir === 'top' ? 'bottom' : 'top';
+
+/** @param {Point} s, @param {Point} e, @return {Dir} */
+function dirByAngle(s, e) {
+	const rad = Math.atan2(e.y - s.y, e.x - s.x);
+	return numInRangeIncludeEnds(rad, -0.8, 0.8)
+		? 'left'
+		: numInRangeIncludeEnds(rad, 0.8, 2.4)
+			? 'top'
+			: numInRangeIncludeEnds(rad, 2.4, 3.2) || numInRangeIncludeEnds(rad, -3.2, -2.4) ? 'right' : 'bottom';
 }
 
 /** @param {PathData} data */
@@ -287,6 +308,9 @@ function hoverEmulate(element) {
 		elemFromPoint = null;
 	};
 }
+
+/** @param {number} num, @param {number} a, @param {number} b */
+const numInRangeIncludeEnds = (num, a, b) => a <= num && num <= b;
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { 'left' | 'right' | 'top' | 'bottom' } Dir */

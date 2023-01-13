@@ -1,6 +1,6 @@
 import { child, classAdd, classDel, classHas, svgEl } from '../infrastructure/util.js';
 import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
-import { path, PathSmbl } from './path.js';
+import { path, PathSmbl, dirReverse } from './path.js';
 import { textareaCreate } from '../infrastructure/svg-text-area.js';
 import { settingsPnlCreate } from './shape-settings.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
@@ -190,7 +190,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
 				const pathEl = path(svg, canvasData, {
 					startShape: { shapeEl: svgGrp, connectorKey },
 					end: {
-						dir: reversDir(connectorsData[connectorKey].dir),
+						dir: dirReverse(connectorsData[connectorKey].dir),
 						position: pointInCanvas(canvasData, evt.clientX, evt.clientY)
 					}
 				});
@@ -270,18 +270,6 @@ export function placeToCell(shapePosition, cell) {
 
 	shapePosition.x = placeToCell(shapePosition.x);
 	shapePosition.y = placeToCell(shapePosition.y);
-}
-
-/**
- * @param {PathDir} pathDir
- * @return {PathDir}
- */
-function reversDir(pathDir) {
-	return pathDir === 'left'
-		? 'right'
-		: pathDir === 'right'
-			? 'left'
-			: pathDir === 'top' ? 'bottom' : 'top';
 }
 
 /** @typedef { {x:number, y:number} } Point */
