@@ -79,7 +79,7 @@
 			[data-connect] { display: none; }
 
 			.select path[data-key="selected"],
-			.select [data-key="arrow"] circle,
+			.select .path-end,
 			.select [data-connect],
 			.hover [data-connect] {
 				display: unset;
@@ -98,7 +98,7 @@
 			}
 			
 			@media (pointer: coarse) {
-				[data-key="arrow"] circle { r: 20px; }
+				circle.path-end { r: 20px; }
 				.ative-elem {
 					stroke: rgb(108 187 247 / 51%);
 					stroke-width: 70px;

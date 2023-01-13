@@ -16,17 +16,24 @@ export function serialize(canvas) {
 			// path
 
 			const pathData = shape[PathSmbl].data;
-			const pathJson = {
-				type: 0,
-				s: shapes.indexOf(pathData.startShape.shapeEl),
-				sk: pathData.startShape.connectorKey
-			};
+			const pathJson = { type: 0	};
+
+			// start
+			if (pathData.startShape) {
+				pathJson.s = shapes.indexOf(pathData.startShape.shapeEl);
+				pathJson.sk = pathData.startShape.connectorKey;
+			} else {
+				pathJson.sp = pathData.start;
+			}
+
+			// end
 			if (pathData.endShape) {
 				pathJson.e = shapes.indexOf(pathData.endShape.shapeEl);
 				pathJson.ek = pathData.endShape.connectorKey;
 			} else {
 				pathJson.ep = pathData.end;
 			}
+
 			if (pathData.style) { pathJson.c = pathData.style; }
 
 			diagramSerialized.s.push(pathJson);
@@ -68,11 +75,16 @@ export function deserialize(canvas, shapeTypeMap, data) {
 			case 0: {
 				const pathSerialized = /** @type {PathSerialized} */(shape);
 				/** @type {PathData} */
-				const pathData = {
-					startShape: { shapeEl: shapeByIndex(pathSerialized.s), connectorKey: pathSerialized.sk },
-					style: pathSerialized.c
-				};
+				const pathData = { style: pathSerialized.c	};
 
+				// start
+				if (!pathSerialized.sp) {
+					pathData.startShape = { shapeEl: shapeByIndex(pathSerialized.s), connectorKey: pathSerialized.sk };
+				} else {
+					pathData.start = pathSerialized.sp;
+				}
+
+				// end
 				if (!pathSerialized.ep) {
 					pathData.endShape = { shapeEl: shapeByIndex(pathSerialized.e), connectorKey: pathSerialized.ek };
 				} else {
@@ -97,6 +109,6 @@ export function deserialize(canvas, shapeTypeMap, data) {
 /** @typedef { import("../shapes/path").PathElement } PathElement */
 /** @typedef { import('../shapes/path.js').PathData } PathData */
 /** @typedef { import("../shapes/path").PathEnd } PathEnd */
-/** @typedef { {type:number, s:number, sk:string, e?:number, ek?:string, ep?:PathEnd, c?:string} } PathSerialized */
+/** @typedef { {type:number, s?:number, sk?:string, sp?:PathEnd, e?:number, ek?:string, ep?:PathEnd, c?:string} } PathSerialized */
 
 /** @typedef { import('../shapes/shape-evt-proc.js').CanvasData } CanvasData */
