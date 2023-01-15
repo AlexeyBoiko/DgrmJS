@@ -28,8 +28,7 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 			if (!isInit) { return; }
 		}
 
-		shapePosition.x += evt[MovementXSmbl] / canvasScale.scale;
-		shapePosition.y += evt[MovementYSmbl] / canvasScale.scale;
+		movementApplay(shapePosition, canvasScale.scale, evt);
 		isMoved = true;
 		onMove(evt);
 	}
@@ -95,6 +94,12 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 	}
 
 	return reset;
+}
+
+/** @param {Point} point, @param {number} scale, @param {PointerEventFixMovement} evt */
+export function movementApplay(point, scale, evt) {
+	point.x += evt[MovementXSmbl] / scale;
+	point.y += evt[MovementYSmbl] / scale;
 }
 
 /** @param {Element} elem */

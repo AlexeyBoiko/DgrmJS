@@ -282,11 +282,11 @@ export function placeToCell(shapePosition, cell) {
 /** @typedef { {type: number, position: Point} } ShapeData */
 /**
 @typedef {{
-pathAdd(connectorKey:string, pathEl:PathElement): PathEnd
-pathDel(pathEl:PathElement): void
-drawPosition: ()=>void
-data: ShapeData
-del?: ()=>void
+	pathAdd(connectorKey:string, pathEl:PathElement): PathEnd
+	pathDel(pathEl:PathElement): void
+	drawPosition: ()=>void
+	data: ShapeData
+	del?: ()=>void
 }} Shape
  */
 

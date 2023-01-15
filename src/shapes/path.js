@@ -1,5 +1,5 @@
 import { child, classAdd, classDel, classHas, listen, listenDel, svgEl } from '../infrastructure/util.js';
-import { moveEvtProc, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
+import { moveEvtProc, movementApplay, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
 import { settingsPnlCreate } from './shape-settings.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { ShapeSmbl } from './shape-smbl.js';
@@ -23,35 +23,29 @@ export function path(svg, canvasData, pathData) {
 			<path class="path" d="M-7 7 l 7 -7 l -7 -7" stroke="#495057" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
 		</g>`);
 
-	const path = child(svgGrp, 'path');
-	const outer = child(svgGrp, 'outer');
-	const selected = child(svgGrp, 'selected');
+	const paths = childs(svgGrp, 'path', 'outer', 'selected');
 
 	/** @type {SVGElement} */const start = child(svgGrp, 'start');
 	/** @type {SVGElement} */const end = child(svgGrp, 'end');
 
 	function draw() {
-		// path
-		const dAttr = pathCalc(pathData);
-		path.setAttribute('d', dAttr);
-		outer.setAttribute('d', dAttr);
-		selected.setAttribute('d', dAttr);
-
-		// ends
-
 		if (!pathData.startShape || !pathData.endShape) {
 			const endDir = dirByAngle(pathData.start.position, pathData.end.position);
 			if (!pathData.endShape) { pathData.end.dir = endDir; }
 			if (!pathData.startShape) { pathData.start.dir = dirReverse(endDir); }
 		}
 
+		// path
+		const dAttr = pathCalc(pathData);
+		paths.forEach(pp => pp.setAttribute('d', dAttr));
+
+		// ends
 		endDraw(start, pathData.start);
 		endDraw(end, pathData.end);
 	}
 
 	/** @type { {position:(bottomX:number, bottomY:number)=>void, del:()=>void} } */
 	let settingsPnl;
-
 	function del() {
 		settingsPnl?.del(); settingsPnl = null;
 		reset();
@@ -124,15 +118,16 @@ export function path(svg, canvasData, pathData) {
 		/** @param {PointerEvent & { target: Element} } evt */ evt => {
 			unSelect();
 
-			movedEnd = end.contains(evt.target)
-				? movedEndCreate(pathData, 'e')
-				: start.contains(evt.target) ? movedEndCreate(pathData, 's') : null;
+			movedEnd = movedEndCreate(pathData, end.contains(evt.target) ? 1 : start.contains(evt.target) ? 0 : null);
 
-			// move not arrow
-			if (!movedEnd) {
-				reset();
+			//
+			// move whole path
+			if (movedEnd.type == null) {
 				return;
 			}
+
+			//
+			// move path end
 
 			// disconnect from shape
 			if (movedEnd.shape) {
@@ -151,20 +146,31 @@ export function path(svg, canvasData, pathData) {
 			hoverEmulateDispose = hoverEmulate(svgGrp.parentElement);
 		},
 		// onMove
-		draw,
+		/** @param {PointerEventFixMovement} evt */
+		evt => {
+			if (movedEnd.type == null) {
+				moveWholePath(canvasData, pathData, draw, evt);
+			} else {
+				draw();
+			}
+		},
 		// onMoveEnd
 		evt => {
-			// connect to shape
-			const elemFromPoint = priorityElemFromPoint(evt);
-			const connectorKey = elemFromPoint?.getAttribute('data-connect');
-			if (connectorKey) {
-				// @ts-ignore
-				movedEnd.shape = { shapeEl: elemFromPoint.parentElement, connectorKey };
-				movedEnd.data = movedEnd.shape.shapeEl[ShapeSmbl].pathAdd(connectorKey, svgGrp);
+			if (movedEnd.type == null) {
+				moveWholePathFinish(canvasData, pathData, draw);
 			} else {
-				placeToCell(movedEnd.data.position, canvasData.cell);
+				// connect to shape
+				const elemFromPoint = priorityElemFromPoint(evt);
+				const connectorKey = elemFromPoint?.getAttribute('data-connect');
+				if (connectorKey) {
+					// @ts-ignore
+					movedEnd.shape = { shapeEl: elemFromPoint.parentElement, connectorKey };
+					movedEnd.data = movedEnd.shape.shapeEl[ShapeSmbl].pathAdd(connectorKey, svgGrp);
+				} else {
+					placeToCell(movedEnd.data.position, canvasData.cell);
+				}
+				draw();
 			}
-			draw();
 
 			// hover emulation - end
 			unSelect();
@@ -191,21 +197,60 @@ export function path(svg, canvasData, pathData) {
 	return svgGrp;
 }
 
-/** @param {PathData} pathData, @param {'s'|'e'} endType, @returns {MovedEnd} */
-function movedEndCreate(pathData, endType) {
-	if (endType === 'e') {
-		return {
-			get shape() { return pathData.endShape; },
-			set shape(val) { pathData.endShape = val; },
-
-			get data() { return pathData.end; },
-			set data(val) { pathData.end = val; },
-
-			get oppositeShape() { return pathData.startShape; }
-		};
+/**
+ * @param {{scale:number}} canvasData
+ * @param {PathData} pathData
+ * @param {{():void}} draw
+ * @param {PointerEventFixMovement} evt
+ */
+function moveWholePath(canvasData, pathData, draw, evt) {
+	/** @param {PathConnectedShape} shape, @param {PathEnd} pathEnd */
+	function move(shape, pathEnd) {
+		if (shape) {
+			movementApplay(shape.shapeEl[ShapeSmbl].data.position, canvasData.scale, evt);
+			shape.shapeEl[ShapeSmbl].drawPosition();
+		} else {
+			movementApplay(pathEnd.position, canvasData.scale, evt);
+		}
 	}
 
-	return {
+	move(pathData.startShape, pathData.start);
+	move(pathData.endShape, pathData.end);
+
+	// if any shape connected - shape will draw connected path
+	if (!pathData.startShape && !pathData.endShape) { draw(); }
+}
+
+/**
+ * @param {{cell:number}} canvasData
+ * @param {PathData} pathData
+ * @param {{():void}} draw
+ */
+function moveWholePathFinish(canvasData, pathData, draw) {
+	/** @param {PathConnectedShape} shape, @param {PathEnd} pathEnd */
+	function toCell(shape, pathEnd) {
+		if (shape) {
+			placeToCell(shape.shapeEl[ShapeSmbl].data.position, canvasData.cell);
+			shape.shapeEl[ShapeSmbl].drawPosition();
+		} else {
+			placeToCell(pathEnd.position, canvasData.cell);
+		}
+	}
+
+	toCell(pathData.startShape, pathData.start);
+	toCell(pathData.endShape, pathData.end);
+
+	if (!pathData.startShape || !pathData.endShape) { draw(); }
+}
+
+/** @param {PathConnectedShape} pathConnectedShape */
+// const shapeObj = pathConnectedShape => pathConnectedShape.shapeEl[ShapeSmbl];
+
+/** @param {PathData} pathData, @param {0|1} endType, @returns {MovedEnd} */
+const movedEndCreate = (pathData, endType) => endType === 0
+	// start
+	? {
+		type: 0,
 		get shape() { return pathData.startShape; },
 		set shape(val) { pathData.startShape = val; },
 
@@ -213,8 +258,24 @@ function movedEndCreate(pathData, endType) {
 		set data(val) { pathData.start = val; },
 
 		get oppositeShape() { return pathData.endShape; }
-	};
-}
+	}
+	: endType === 1
+		// end
+		? {
+			type: 1,
+			get shape() { return pathData.endShape; },
+			set shape(val) { pathData.endShape = val; },
+
+			get data() { return pathData.end; },
+			set data(val) { pathData.end = val; },
+
+			get oppositeShape() { return pathData.startShape; }
+		}
+		// fake
+		// @ts-ignore
+		: /** @type {MovedEnd} */ ({
+			get data() { return { position: { x: 0, y: 0 } }; }
+		});
 
 /** @param {SVGElement} endEl, @param {{position: Point, dir: Dir}} endData */
 function endDraw(endEl, endData) {
@@ -309,6 +370,9 @@ function hoverEmulate(element) {
 	};
 }
 
+/** @param {Element} el, @param  {...string} keys */
+const childs = (el, ...keys) => keys.map(kk => child(el, kk));
+
 /** @param {number} num, @param {number} a, @param {number} b */
 const numInRangeIncludeEnds = (num, a, b) => a <= num && num <= b;
 
@@ -316,7 +380,7 @@ const numInRangeIncludeEnds = (num, a, b) => a <= num && num <= b;
 /** @typedef { 'left' | 'right' | 'top' | 'bottom' } Dir */
 /** @typedef { {shapeEl: ShapeElement, connectorKey: string} } PathConnectedShape */
 /** @typedef { {position: Point, dir: Dir}} PathEnd */
-/** @typedef { {shape?:PathConnectedShape, data?:PathEnd, oppositeShape?:PathConnectedShape} } MovedEnd */
+/** @typedef { {shape?:PathConnectedShape, data?:PathEnd, oppositeShape?:PathConnectedShape, type:number} } MovedEnd */
 
 /**
 @typedef {{
@@ -340,3 +404,4 @@ export const PathSmbl = Symbol('path');
 
 /** @typedef { import('./shape-evt-proc.js').ShapeElement } ShapeElement */
 /** @typedef { import('./shape-evt-proc.js').Shape } Shape */
+/** @typedef { import('../infrastructure/move-evt-mobile-fix.js').PointerEventFixMovement } PointerEventFixMovement */
