@@ -49,8 +49,8 @@ export function path(svg, canvasData, pathData) {
 	function del() {
 		settingsPnl?.del(); settingsPnl = null;
 		reset();
-		pathData.startShape?.shapeEl[ShapeSmbl].pathDel(svgGrp);
-		pathData.endShape?.shapeEl[ShapeSmbl].pathDel(svgGrp);
+		shapeObj(pathData.startShape)?.pathDel(svgGrp);
+		shapeObj(pathData.endShape)?.pathDel(svgGrp);
 		svgGrp.remove();
 	}
 
@@ -132,7 +132,7 @@ export function path(svg, canvasData, pathData) {
 			// disconnect from shape
 			if (movedEnd.shape) {
 				if (movedEnd.shape.shapeEl !== movedEnd.oppositeShape?.shapeEl) {
-					movedEnd.shape.shapeEl[ShapeSmbl].pathDel(svgGrp);
+					shapeObj(movedEnd.shape).pathDel(svgGrp);
 				}
 				movedEnd.shape = null;
 				movedEnd.data = {
@@ -165,7 +165,7 @@ export function path(svg, canvasData, pathData) {
 				if (connectorKey) {
 					// @ts-ignore
 					movedEnd.shape = { shapeEl: elemFromPoint.parentElement, connectorKey };
-					movedEnd.data = movedEnd.shape.shapeEl[ShapeSmbl].pathAdd(connectorKey, svgGrp);
+					movedEnd.data = shapeObj(movedEnd.shape).pathAdd(connectorKey, svgGrp);
 				} else {
 					placeToCell(movedEnd.data.position, canvasData.cell);
 				}
@@ -190,8 +190,8 @@ export function path(svg, canvasData, pathData) {
 	};
 
 	if (pathData.style) { classAdd(svgGrp, pathData.style); }
-	if (pathData.startShape) { pathData.start = pathData.startShape.shapeEl[ShapeSmbl].pathAdd(pathData.startShape.connectorKey, svgGrp); }
-	if (pathData.endShape) { pathData.end = pathData.endShape.shapeEl[ShapeSmbl].pathAdd(pathData.endShape.connectorKey, svgGrp); }
+	if (pathData.startShape) { pathData.start = shapeObj(pathData.startShape).pathAdd(pathData.startShape.connectorKey, svgGrp); }
+	if (pathData.endShape) { pathData.end = shapeObj(pathData.endShape).pathAdd(pathData.endShape.connectorKey, svgGrp); }
 	draw();
 
 	return svgGrp;
@@ -207,8 +207,8 @@ function moveWholePath(canvasData, pathData, draw, evt) {
 	/** @param {PathConnectedShape} shape, @param {PathEnd} pathEnd */
 	function move(shape, pathEnd) {
 		if (shape) {
-			movementApplay(shape.shapeEl[ShapeSmbl].data.position, canvasData.scale, evt);
-			shape.shapeEl[ShapeSmbl].drawPosition();
+			movementApplay(shapeObj(shape).data.position, canvasData.scale, evt);
+			shapeObj(shape).drawPosition();
 		} else {
 			movementApplay(pathEnd.position, canvasData.scale, evt);
 		}
@@ -230,8 +230,8 @@ function moveWholePathFinish(canvasData, pathData, draw) {
 	/** @param {PathConnectedShape} shape, @param {PathEnd} pathEnd */
 	function toCell(shape, pathEnd) {
 		if (shape) {
-			placeToCell(shape.shapeEl[ShapeSmbl].data.position, canvasData.cell);
-			shape.shapeEl[ShapeSmbl].drawPosition();
+			placeToCell(shapeObj(shape).data.position, canvasData.cell);
+			shapeObj(shape).drawPosition();
 		} else {
 			placeToCell(pathEnd.position, canvasData.cell);
 		}
@@ -244,7 +244,7 @@ function moveWholePathFinish(canvasData, pathData, draw) {
 }
 
 /** @param {PathConnectedShape} pathConnectedShape */
-// const shapeObj = pathConnectedShape => pathConnectedShape.shapeEl[ShapeSmbl];
+const shapeObj = pathConnectedShape => pathConnectedShape?.shapeEl[ShapeSmbl];
 
 /** @param {PathData} pathData, @param {0|1} endType, @returns {MovedEnd} */
 const movedEndCreate = (pathData, endType) => endType === 0
