@@ -5,7 +5,7 @@ import { dgrmClear } from './dgrm-clear.js';
 /** @param {Element} canvas */
 export function serialize(canvas) {
 	/** @type {DiagramSerialized} */
-	const diagramSerialized = { v: '1', s: [] };
+	const diagramSerialized = { v: '1.1', s: [] };
 
 	const shapes = /** @type {Array<ShapeElement & PathElement>} */([...canvas.children]);
 	for (const shape of shapes) {
@@ -15,25 +15,13 @@ export function serialize(canvas) {
 		} else {
 			// path
 
+			/** @param {PathEnd} pathEnd */
+			const pathSerialize = pathEnd => pathEnd.shape
+				? { s: shapes.indexOf(pathEnd.shape.shapeEl), k: pathEnd.shape.connectorKey }
+				: { p: pathEnd.data };
+
 			const pathData = shape[PathSmbl].data;
-			const pathJson = { type: 0	};
-
-			// start
-			if (pathData.startShape) {
-				pathJson.s = shapes.indexOf(pathData.startShape.shapeEl);
-				pathJson.sk = pathData.startShape.connectorKey;
-			} else {
-				pathJson.sp = pathData.start;
-			}
-
-			// end
-			if (pathData.endShape) {
-				pathJson.e = shapes.indexOf(pathData.endShape.shapeEl);
-				pathJson.ek = pathData.endShape.connectorKey;
-			} else {
-				pathJson.ep = pathData.end;
-			}
-
+			const pathJson = { type: 0, s: pathSerialize(pathData.s), e: pathSerialize(pathData.e) };
 			if (pathData.style) { pathJson.c = pathData.style; }
 
 			diagramSerialized.s.push(pathJson);
@@ -73,25 +61,16 @@ export function deserialize(canvas, shapeTypeMap, data) {
 		switch (shape.type) {
 			// path
 			case 0: {
-				const pathSerialized = /** @type {PathSerialized} */(shape);
-				/** @type {PathData} */
-				const pathData = { style: pathSerialized.c };
+				/** @param {PathEndSerialized} pathEnd */
+				const pathDeserialize = pathEnd => pathEnd.p
+					? { data: pathEnd.p }
+					: { shape: { shapeEl: shapeByIndex(pathEnd.s), connectorKey: pathEnd.k } };
 
-				// start
-				if (!pathSerialized.sp) {
-					pathData.startShape = { shapeEl: shapeByIndex(pathSerialized.s), connectorKey: pathSerialized.sk };
-				} else {
-					pathData.start = pathSerialized.sp;
-				}
-
-				// end
-				if (!pathSerialized.ep) {
-					pathData.endShape = { shapeEl: shapeByIndex(pathSerialized.e), connectorKey: pathSerialized.ek };
-				} else {
-					pathData.end = pathSerialized.ep;
-				}
-
-				canvas.append(shapeTypeMap[0].create(pathData));
+				canvas.append(shapeTypeMap[0].create({
+					style: /** @type {PathSerialized} */(shape).c,
+					s: pathDeserialize(/** @type {PathSerialized} */(shape).s),
+					e: pathDeserialize(/** @type {PathSerialized} */(shape).e)
+				}));
 				break;
 			}
 			default: shapeEnsure(/** @type {ShapeData} */(shape)); break;
@@ -107,8 +86,11 @@ export function deserialize(canvas, shapeTypeMap, data) {
 /** @typedef { import('../shapes/shape-evt-proc.js').ShapeData } ShapeData */
 
 /** @typedef { import("../shapes/path").PathElement } PathElement */
+/** @typedef { import('../shapes/path.js').PathEndData } PathEndData */
+/** @typedef { import('../shapes/path.js').PathEnd } PathEnd */
 /** @typedef { import('../shapes/path.js').PathData } PathData */
-/** @typedef { import("../shapes/path").PathEnd } PathEnd */
-/** @typedef { {type:number, s?:number, sk?:string, sp?:PathEnd, e?:number, ek?:string, ep?:PathEnd, c?:string} } PathSerialized */
+
+/** @typedef { {s?:number, k?:string, p?:PathEndData} } PathEndSerialized */
+/** @typedef { {type:number, c?:string, s:PathEndSerialized, e:PathEndSerialized} } PathSerialized */
 
 /** @typedef { import('../shapes/shape-evt-proc.js').CanvasData } CanvasData */

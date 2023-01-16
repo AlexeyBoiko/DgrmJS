@@ -188,10 +188,12 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
 				moveProcReset();
 
 				const pathEl = path(svg, canvasData, {
-					startShape: { shapeEl: svgGrp, connectorKey },
-					end: {
-						dir: dirReverse(connectorsData[connectorKey].dir),
-						position: pointInCanvas(canvasData, evt.clientX, evt.clientY)
+					s: { shape: { shapeEl: svgGrp, connectorKey } },
+					e: {
+						data: {
+							dir: dirReverse(connectorsData[connectorKey].dir),
+							position: pointInCanvas(canvasData, evt.clientX, evt.clientY)
+						}
 					}
 				});
 				svgGrp.parentNode.append(pathEl);
