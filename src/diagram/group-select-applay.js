@@ -1,10 +1,10 @@
-import { MovementXSmbl, MovementYSmbl } from '../infrastructure/move-evt-mobile-fix.js';
-import { ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
+import { movementApplay, ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
-import { arrPop, classAdd, classDel, listen, listenDel, svgEl } from '../infrastructure/util.js';
+import { arrPop, classAdd, classDel, listen, listenDel, positionSet, svgEl } from '../infrastructure/util.js';
 import { placeToCell } from '../shapes/shape-evt-proc.js';
 import { delPnlCreate } from '../shapes/shape-settings.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
+import { PathSmbl } from '../shapes/path.js';
 
 /**
  * @param {SVGGElement} canvas
@@ -39,23 +39,47 @@ export function groupSelectApplay(canvas, canvasData) {
 	/** @param {PointerEvent} evt */
 	function onUp(evt) {
 		if (selectRect) {
-			const selectRectCanvasPoint = pointInCanvas(canvasData, selectRectPos.x, selectRectPos.y);
-			const selectRectCanvasWidth = selectRect.width.baseVal.value / canvasData.scale;
-			const selectRectCanvasHeight = selectRect.height.baseVal.value / canvasData.scale;
+			/** @param {Point} point */
+			const inRect = point => pointInRect(
+				pointInCanvas(canvasData, selectRectPos.x, selectRectPos.y),
+				selectRect.width.baseVal.value / canvasData.scale,
+				selectRect.height.baseVal.value / canvasData.scale,
+				point.x, point.y);
 
 			/** @type {ShapeElement[]} */
 			const selectedShapes = [];
-			for (const shapeEl of /** @type {Iterable<ShapeElement>} */(canvas.children)) {
-				const shape = shapeEl[ShapeSmbl];
-				if (shape &&
-					pointInRect(selectRectCanvasPoint,
-						selectRectCanvasWidth, selectRectCanvasHeight,
-						shape.data.position.x, shape.data.position.y)) {
-					classAdd(shapeEl, 'highlight');
-					selectedShapes.push(shapeEl);
+
+			/** @type {PathElement[]} */
+			const selectedPaths = [];
+
+			/** @type {PathEnd[]} */
+			const selectedPathEnds = [];
+
+			/** @param {ShapeOrPathElement} pathEl,  @param {PathEnd} pathEnd, @param {string} highlightClass */
+			function pathEndInRect(pathEl, pathEnd, highlightClass) {
+				if (!pathEnd.shape && inRect(pathEnd.data.position)) {
+					selectedPathEnds.push(pathEnd);
+					classAdd(pathEl, highlightClass);
+					return true;
+				}
+				return false;
+			}
+
+			for (const shapeEl of /** @type {Iterable<ShapeOrPathElement>} */(canvas.children)) {
+				if (shapeEl[ShapeSmbl]) {
+					if (inRect(shapeEl[ShapeSmbl].data.position)) {
+						classAdd(shapeEl, 'highlight');
+						selectedShapes.push(shapeEl);
+					}
+				} else if (shapeEl[PathSmbl]) {
+					const isStartIn = pathEndInRect(shapeEl, shapeEl[PathSmbl].data.s, 'highlight-s');
+					const isEndIn = pathEndInRect(shapeEl, shapeEl[PathSmbl].data.e, 'highlight-e');
+					if (isStartIn || isEndIn) {
+						selectedPaths.push(shapeEl);
+					}
 				}
 			}
-			groupEvtProcDispose = groupEvtProc(svg, selectedShapes, canvasData);
+			groupEvtProcDispose = groupEvtProc(svg, selectedPaths, selectedPathEnds, selectedShapes, canvasData);
 		}
 
 		reset();
@@ -84,14 +108,14 @@ export function groupSelectApplay(canvas, canvasData) {
 			startCircle = svgEl('circle');
 			classAdd(startCircle, 'ative-elem');
 			startCircle.style.cssText = 'r:10px; fill: rgb(108 187 247 / 51%)';
-			startCircle.style.transform = `translate(${evt.clientX}px, ${evt.clientY}px)`;
+			positionSet(startCircle, { x: evt.clientX, y: evt.clientY });
 			svg.append(startCircle);
 
 			selectStart = { x: evt.clientX, y: evt.clientY };
 			selectRectPos = { x: evt.clientX, y: evt.clientY };
 			selectRect = svgEl('rect');
 			selectRect.style.cssText = 'rx:10px; fill: rgb(108 187 247 / 51%)';
-			selectRect.style.transform = `translate(${selectRectPos.x}px, ${selectRectPos.y}px)`;
+			positionSet(selectRect, selectRectPos);
 			svg.append(selectRect);
 		}, 500);
 	});
@@ -99,10 +123,12 @@ export function groupSelectApplay(canvas, canvasData) {
 
 /**
  * @param {SVGSVGElement} svg
+ * @param {PathElement[]} selectedPaths
+ * @param {PathEnd[]} selectedPathEnds
  * @param {ShapeElement[]} selectedShapeElems
  * @param {{scale:number, cell:number}} canvasData
  */
-function groupEvtProc(svg, selectedShapeElems, canvasData) {
+function groupEvtProc(svg, selectedPaths, selectedPathEnds, selectedShapeElems, canvasData) {
 	let isMove = false;
 	let isDownOnSelectedShape = false;
 
@@ -113,7 +139,9 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 	/** @param {PointerEvent & {target:Node}} evt */
 	function down(evt) {
 		pnlDel();
-		isDownOnSelectedShape = selectedShapeElems.some(shapeEl => shapeEl.contains(evt.target));
+		isDownOnSelectedShape =
+			selectedShapeElems?.some(shapeEl => shapeEl.contains(evt.target)) ||
+			selectedPathEnds?.some(pathEnd => pathEnd.el.contains(evt.target));
 
 		// down on not selected shape
 		if (!isDownOnSelectedShape && evt.target !== svg) {
@@ -130,6 +158,16 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 		listen(svg, 'pointermove', move);
 	}
 
+	/** @param { {(point:Point):void} } pointMoveFn */
+	function drawSelection(pointMoveFn) {
+		selectedShapeElems?.forEach(shapeEl => {
+			pointMoveFn(shapeEl[ShapeSmbl].data.position);
+			shapeEl[ShapeSmbl].drawPosition();
+		});
+		selectedPathEnds?.forEach(pathEnd => pointMoveFn(pathEnd.data.position));
+		selectedPaths?.forEach(path => path[PathSmbl].draw());
+	}
+
 	/** @param {PointerEvent} evt */
 	function up(evt) {
 		if (!isMove) {
@@ -141,15 +179,12 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 				// click on del btn
 				() => {
 					arrPop(selectedShapeElems, shapeEl => shapeEl[ShapeSmbl].del());
+					arrPop(selectedPaths, pathEl => pathEl[PathSmbl].del());
 					dispose();
 				});
 		} else {
 			// move end
-
-			for (const shapeEl of selectedShapeElems) {
-				placeToCell(shapeEl[ShapeSmbl].data.position, canvasData.cell);
-				shapeEl[ShapeSmbl].drawPosition();
-			}
+			drawSelection(point => placeToCell(point, canvasData.cell));
 		}
 
 		dispose(true);
@@ -162,11 +197,7 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 
 		// move selected shapes
 		isMove = true;
-		for (const shapeEl of selectedShapeElems) {
-			shapeEl[ShapeSmbl].data.position.x += evt[MovementXSmbl] / canvasData.scale;
-			shapeEl[ShapeSmbl].data.position.y += evt[MovementYSmbl] / canvasData.scale;
-			shapeEl[ShapeSmbl].drawPosition();
-		}
+		drawSelection(point => movementApplay(point, canvasData.scale, evt));
 	}
 
 	/** @param {boolean=} saveOnDown */
@@ -180,6 +211,8 @@ function groupEvtProc(svg, selectedShapeElems, canvasData) {
 			listenDel(svg, 'pointerdown', down, true);
 			pnlDel();
 			arrPop(selectedShapeElems, shapeEl => classDel(shapeEl, 'highlight'));
+			arrPop(selectedPaths, pathEl => { classDel(pathEl, 'highlight-s'); classDel(pathEl, 'highlight-e'); });
+			selectedPathEnds = null;
 		}
 	}
 
@@ -199,4 +232,9 @@ const pointInRect = (rectPosition, rectWidth, rectHeight, x, y) =>
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { import('../shapes/shape-evt-proc.js').ShapeElement } ShapeElement */
+/** @typedef { import('../shapes/shape-evt-proc.js').Shape } Shape */
+/** @typedef { import('../shapes/path.js').Path } Path */
+/** @typedef { import('../shapes/path.js').PathEnd } PathEnd */
+/** @typedef { import('../shapes/path.js').PathElement } PathElement */
+/** @typedef { SVGGraphicsElement & { [ShapeSmbl]?: Shape, [PathSmbl]?:Path }} ShapeOrPathElement */
 /** @typedef { import('../infrastructure/move-evt-mobile-fix.js').PointerEventFixMovement} PointerEventFixMovement */

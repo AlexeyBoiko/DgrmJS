@@ -23,10 +23,9 @@ export function path(svg, canvasData, pathData) {
 			<path class="path" d="M-7 7 l 7 -7 l -7 -7" stroke="#495057" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
 		</g>`);
 
+	pathData.s.el = child(svgGrp, 'start');
+	pathData.e.el = child(svgGrp, 'end');
 	const paths = childs(svgGrp, 'path', 'outer', 'selected');
-
-	/** @type {SVGElement} */const start = child(svgGrp, 'start');
-	/** @type {SVGElement} */const end = child(svgGrp, 'end');
 
 	function draw() {
 		if (!pathData.s.shape || !pathData.e.shape) {
@@ -40,8 +39,8 @@ export function path(svg, canvasData, pathData) {
 		paths.forEach(pp => pp.setAttribute('d', dAttr));
 
 		// ends
-		endDraw(start, pathData.s.data);
-		endDraw(end, pathData.e.data);
+		endDraw(pathData.s);
+		endDraw(pathData.e);
 	}
 
 	/** @param {PathEnd} pathEnd */
@@ -88,16 +87,16 @@ export function path(svg, canvasData, pathData) {
 
 		// to select mode
 		classAdd(svgGrp, 'select');
-		start.firstElementChild.setAttribute('data-evt-index', '2');
-		end.firstElementChild.setAttribute('data-evt-index', '2');
+		endSetEvtIndex(pathData.s, 2);
+		endSetEvtIndex(pathData.e, 2);
 	};
 
 	/** @type { {():void} } */
 	let hoverEmulateDispose;
 	function unSelect() {
 		classDel(svgGrp, 'select');
-		start.firstElementChild.setAttribute('data-evt-index', '1');
-		end.firstElementChild.setAttribute('data-evt-index', '1');
+		endSetEvtIndex(pathData.s, 1);
+		endSetEvtIndex(pathData.e, 1);
 
 		settingsPnl?.del();
 		settingsPnl = null;
@@ -128,7 +127,7 @@ export function path(svg, canvasData, pathData) {
 		/** @param {PointerEvent & { target: Element} } evt */ evt => {
 			unSelect();
 
-			movedEnd = end.contains(evt.target) ? 'e' : start.contains(evt.target) ? 's' : null;
+			movedEnd = pathData.e.el.contains(evt.target) ? 'e' : pathData.s.el.contains(evt.target) ? 's' : null;
 
 			//
 			// move whole path
@@ -194,7 +193,7 @@ export function path(svg, canvasData, pathData) {
 	svgGrp[PathSmbl] = {
 		draw,
 		/** @param {PointerEventInit} evt */
-		pointerCapture: evt => end.dispatchEvent(new PointerEvent('pointerdown', evt)),
+		pointerCapture: evt => pathData.e.el.dispatchEvent(new PointerEvent('pointerdown', evt)),
 		del,
 		data: pathData
 	};
@@ -252,10 +251,13 @@ function moveShapeOrEnd(pathEnd, moveFn) {
 /** @param {PathConnectedShape} pathConnectedShape */
 const shapeObj = pathConnectedShape => pathConnectedShape?.shapeEl[ShapeSmbl];
 
-/** @param {SVGElement} endEl, @param {{position: Point, dir: Dir}} endData */
-function endDraw(endEl, endData) {
-	endEl.style.transform = `translate(${endData.position.x}px, ${endData.position.y}px) rotate(${arrowAngle(endData.dir)}deg)`;
+/** @param {PathEnd} pathEnd */
+function endDraw(pathEnd) {
+	pathEnd.el.style.transform = `translate(${pathEnd.data.position.x}px, ${pathEnd.data.position.y}px) rotate(${arrowAngle(pathEnd.data.dir)}deg)`;
 }
+
+/** @param {PathEnd} pathEnd, @param {number} index */
+function endSetEvtIndex(pathEnd, index) { pathEnd.el.firstElementChild.setAttribute('data-evt-index', index.toString()); }
 
 /** @param {Dir} dir */
 const arrowAngle = dir => dir === 'right'
@@ -357,7 +359,7 @@ const numInRangeIncludeEnds = (num, a, b) => a <= num && num <= b;
 /** @typedef { 'left' | 'right' | 'top' | 'bottom' } Dir */
 /** @typedef { {shapeEl: ShapeElement, connectorKey: string} } PathConnectedShape */
 /** @typedef { {position: Point, dir: Dir}} PathEndData */
-/** @typedef { {shape?:PathConnectedShape, data?:PathEndData} } PathEnd */
+/** @typedef { {shape?:PathConnectedShape, data?:PathEndData, el?:SVGElement} } PathEnd */
 /**
 @typedef {{
 	s: PathEnd,
