@@ -1,9 +1,10 @@
 import { child, classAdd, classDel, classHas, listen, listenDel, svgEl } from '../infrastructure/util.js';
 import { moveEvtProc, movementApplay, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
-import { settingsPnlCreate } from './shape-settings.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { ShapeSmbl } from './shape-smbl.js';
 import { placeToCell } from './shape-evt-proc.js';
+import { PathSettings } from './path-settings.js';
+import { pnlCreate } from './shape-settings.js';
 
 /**
  * @param {Element} svg
@@ -17,14 +18,17 @@ export function path(svg, canvasData, pathData) {
 		<path data-key="selected" d="M0 0" stroke="transparent" stroke-width="10" fill="none" style="pointer-events: none;" />
 		<g data-key="start">
 			<circle data-evt-index="1" class="path-end" r="10" stroke-width="0" fill="transparent" />
+			<path class="path" d="M-7 7 l 7 -7 l -7 -7" stroke="#495057" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
 		</g>
 		<g data-key="end">
 			<circle data-evt-index="1" class="path-end" r="10" stroke-width="0" fill="transparent" />
 			<path class="path" d="M-7 7 l 7 -7 l -7 -7" stroke="#495057" stroke-width="1.8" fill="none" style="pointer-events: none;"></path>
 		</g>`);
+	classAdd(svgGrp, 'shpath');
 
 	pathData.s.el = child(svgGrp, 'start');
 	pathData.e.el = child(svgGrp, 'end');
+	pathData.styles = pathData.styles ?? ['arw-e'];
 	const paths = childs(svgGrp, 'path', 'outer', 'selected');
 
 	function draw() {
@@ -70,18 +74,7 @@ export function path(svg, canvasData, pathData) {
 
 		// to edit mode
 		if (classHas(svgGrp, 'select') && !settingsPnl) {
-			settingsPnl = settingsPnlCreate(evt.clientX - 10, evt.clientY - 10, evt => {
-				switch (evt.detail.cmd) {
-					case 'style':
-						classDel(svgGrp, pathData.style);
-						classAdd(svgGrp, evt.detail.arg);
-						pathData.style = evt.detail.arg;
-						break;
-					case 'del':
-						del();
-						break;
-				}
-			});
+			settingsPnl = pnlCreate(evt.clientX - 10, evt.clientY - 10, new PathSettings(svgGrp));
 			return;
 		}
 
@@ -198,7 +191,7 @@ export function path(svg, canvasData, pathData) {
 		data: pathData
 	};
 
-	if (pathData.style) { classAdd(svgGrp, pathData.style); }
+	if (pathData.styles) { classAdd(svgGrp, ...pathData.styles); }
 	pathAddToShape(pathData.s);
 	pathAddToShape(pathData.e);
 	draw();
@@ -358,13 +351,13 @@ const numInRangeIncludeEnds = (num, a, b) => a <= num && num <= b;
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { 'left' | 'right' | 'top' | 'bottom' } Dir */
 /** @typedef { {shapeEl: ShapeElement, connectorKey: string} } PathConnectedShape */
-/** @typedef { {position: Point, dir: Dir}} PathEndData */
+/** @typedef { {position: Point, dir: Dir }} PathEndData */
 /** @typedef { {shape?:PathConnectedShape, data?:PathEndData, el?:SVGElement} } PathEnd */
 /**
 @typedef {{
 	s: PathEnd,
 	e: PathEnd,
-	style?: string,
+	styles?: string[],
 }} PathData
 */
 /** @typedef { {shape?:PathConnectedShape, data?:PathEndData, oppositeShape?:PathConnectedShape, type:number} } MovedEnd */

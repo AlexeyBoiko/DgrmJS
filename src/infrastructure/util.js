@@ -12,8 +12,8 @@ export const child = (parent, key) => /** @type {T} */(parent.querySelector(`[da
 /** @param {HTMLElement|SVGElement} crcl, @param {Point} pos */
 export function positionSet(crcl, pos) { crcl.style.transform = `translate(${pos.x}px, ${pos.y}px)`; }
 
-/** @param {Element} el, @param {string} cl */
-export const classAdd = (el, cl) => el?.classList.add(cl);
+/** @param {Element} el, @param {string[]} cl */
+export const classAdd = (el, ...cl) => el?.classList.add(...cl);
 
 /** @param {Element} el, @param {string} cl */
 export const classDel = (el, cl) => el?.classList.remove(cl);

@@ -22,7 +22,7 @@ export function serialize(canvas) {
 
 			const pathData = shape[PathSmbl].data;
 			const pathJson = { type: 0, s: pathSerialize(pathData.s), e: pathSerialize(pathData.e) };
-			if (pathData.style) { pathJson.c = pathData.style; }
+			if (pathData.styles) { pathJson.c = pathData.styles; }
 
 			diagramSerialized.s.push(pathJson);
 		}
