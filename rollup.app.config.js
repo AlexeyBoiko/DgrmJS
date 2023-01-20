@@ -28,7 +28,8 @@ export default {
 								part.text.includes('<style') ||
 								part.text.includes('<div') ||
 								part.text.includes('<circle') ||
-								part.text.includes('<path')
+								part.text.includes('<path') ||
+								part.text.includes('<svg')
 							);
 						})
 					);
