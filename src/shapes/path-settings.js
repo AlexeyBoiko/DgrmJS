@@ -1,5 +1,6 @@
 import { classAdd, classDel, listen } from '../infrastructure/util.js';
 import { PathSmbl } from './path.js';
+import { colorStyleAdd } from './shape-evt-proc.js';
 import { clickForAll, evtTargetAttr } from './shape-settings.js';
 
 export class PathSettings extends HTMLElement {
@@ -41,19 +42,8 @@ export class PathSettings extends HTMLElement {
 		// colors
 		listen(shadow.getElementById('edit'), 'cmd', /** @param {CustomEvent<{cmd:string, arg:string}>} evt */ evt => {
 			switch (evt.detail.cmd) {
-				case 'style': {
-					const currentColor = pathStyles.findIndex(ss => ss.startsWith('cl-'));
-					if (currentColor > -1) {
-						classDel(this._pathElement, pathStyles[currentColor]);
-						pathStyles.splice(currentColor, 1);
-					}
-					pathStyles.push(evt.detail.arg);
-					classAdd(this._pathElement, evt.detail.arg);
-					break;
-				}
-				case 'del':
-					this._pathElement[PathSmbl].del();
-					break;
+				case 'style': colorStyleAdd(this._pathElement, this._pathElement[PathSmbl].data, evt.detail.arg); break;
+				case 'del': this._pathElement[PathSmbl].del(); break;
 			}
 		});
 

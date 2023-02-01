@@ -80,7 +80,7 @@ function rectSet(svgGrp, key, w, h, x, y) {
 /** @typedef { import('./shape-evt-proc.js').ConnectorsData } ConnectorsData */
 /**
 @typedef {{
-	type:number, position: Point, title?: string, style?: string,
+	type:number, position: Point, title?: string, styles?: string[],
 	w?:number, h?:number
 	t?:boolean
 }} RectData */

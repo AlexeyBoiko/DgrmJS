@@ -94,7 +94,7 @@ function textElRhombWidth(textEl) {
 /** @typedef { import('./shape-evt-proc.js').ConnectorsData } ConnectorsData */
 /**
 @typedef {{
-type:number, position: Point, title?: string, style?: string,
+type:number, position: Point, title?: string, styles?: string[],
 w?:number
 }} RhombData
 */

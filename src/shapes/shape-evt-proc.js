@@ -18,7 +18,7 @@ import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
  * @param {Element} svg
  * @param {CanvasData} canvasData
  * @param {string} shapeHtml must have '<text data-key="text">'
- * @param {ShapeData & { title?: string, style?: string}} shapeData
+ * @param {ShapeData & { title?: string, styles?: string[]}} shapeData
  * @param {ConnectorsData} cons
  * @param {{(txtEl:SVGTextElement):void}} onTextChange
  */
@@ -59,7 +59,7 @@ export function shapeCreate(svg, canvasData, shapeData, shapeHtml, cons, onTextC
  * @param {Element} svg
  * @param {CanvasData} canvasData
  * @param {ShapeElement} svgGrp
- * @param {ShapeData & { title?: string, style?: string}} shapeData
+ * @param {ShapeData & { title?: string, styles?: string[]}} shapeData
  * @param {ConnectorsData} connectorsInnerPosition
  * @param { {el:SVGTextElement, vMid: number} } textSettings vMid in em
  * @param {{():void}} onTextChange
@@ -103,16 +103,12 @@ function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPos
 	/** @param {CustomEvent<{cmd:string, arg:string}>} evt */
 	function onCmd(evt) {
 		switch (evt.detail.cmd) {
-			case 'style':
-				classDel(svgGrp, shapeData.style);
-				classAdd(svgGrp, evt.detail.arg);
-				shapeData.style = evt.detail.arg;
-				break;
+			case 'style': colorStyleAdd(svgGrp, shapeData, evt.detail.arg); break;
 			case 'del': del(); break;
 		}
 	}
 
-	if (shapeData.style) { classAdd(svgGrp, shapeData.style); }
+	if (shapeData.styles) { classAdd(svgGrp, ...shapeData.styles); }
 
 	svgGrp[ShapeSmbl].del = del;
 
@@ -125,6 +121,19 @@ function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPos
 			shapeProc.drawPosition();
 		}
 	};
+}
+
+/** @param {Element} shapeEl, @param {{styles?:string[]}} shapeData, @param {string} colorClass */
+export function colorStyleAdd(shapeEl, shapeData, colorClass) {
+	if (!shapeData.styles) { shapeData.styles = []; }
+
+	const currentColor = shapeData.styles.findIndex(ss => ss.startsWith('cl-'));
+	if (currentColor > -1) {
+		classDel(shapeEl, shapeData.styles[currentColor]);
+		shapeData.styles.splice(currentColor, 1);
+	}
+	shapeData.styles.push(colorClass);
+	classAdd(shapeEl, colorClass);
 }
 
 /**
