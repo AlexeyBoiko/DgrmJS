@@ -116,8 +116,15 @@
 				[data-connect].hover { stroke-width: 70px; }
 			}
 
-			/* text shape */
-			.shtxt textarea { text-align: left; caret-color: rgb(73, 80, 87); }
+
+			/* rect, text shape */
+			.shrect.ta-1 text, .shtxt.ta-1 text { text-anchor: start; }
+			.shrect.ta-2 text, .shtxt.ta-2 text { text-anchor: middle; }
+			.shrect.ta-3 text, .shtxt.ta-3 text { text-anchor: end; }
+			.shrect.ta-1 textarea, .shtxt.ta-1 textarea { text-align: left; }
+			.shrect.ta-2 textarea, .shtxt.ta-2 textarea { text-align: center; }
+			.shrect.ta-3 textarea, .shtxt.ta-3 textarea { text-align: right; }
+			.shtxt textarea { caret-color: rgb(73, 80, 87); }
 			.shtxt text { fill:rgb(73, 80, 87); }
 			.shtxt [data-key="main"] { fill: transparent; stroke: transparent; }
 			.shtxt.select [data-key="main"], .shtxt.highlight [data-key="main"] { stroke: rgb(108 187 247 / 51%); stroke-width: 2px; }

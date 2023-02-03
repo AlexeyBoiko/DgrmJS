@@ -2,10 +2,12 @@ import { PathSmbl } from '../shapes/path.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
 import { dgrmClear } from './dgrm-clear.js';
 
+const v = '1.1';
+
 /** @param {Element} canvas */
 export function serialize(canvas) {
 	/** @type {DiagramSerialized} */
-	const diagramSerialized = { v: '1.1', s: [] };
+	const diagramSerialized = { v, s: [] };
 
 	const shapes = /** @type {Array<ShapeElement & PathElement>} */([...canvas.children]);
 	for (const shape of shapes) {
@@ -37,7 +39,7 @@ export function serialize(canvas) {
  * @param {DiagramSerialized} data
  */
 export function deserialize(canvas, shapeTypeMap, data) {
-	if (data.v !== '1') { alert('Wrong format'); return false; }
+	if (data.v !== v) { alert('Wrong format'); return false; }
 	dgrmClear(canvas);
 
 	/** @type {Map<ShapeData, SVGGraphicsElement>} */
@@ -67,7 +69,7 @@ export function deserialize(canvas, shapeTypeMap, data) {
 					: { shape: { shapeEl: shapeByIndex(pathEnd.s), connectorKey: pathEnd.k } };
 
 				canvas.append(shapeTypeMap[0].create({
-					style: /** @type {PathSerialized} */(shape).c,
+					styles: /** @type {PathSerialized} */(shape).c,
 					s: pathDeserialize(/** @type {PathSerialized} */(shape).s),
 					e: pathDeserialize(/** @type {PathSerialized} */(shape).e)
 				}));

@@ -20,9 +20,10 @@ import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
  * @param {string} shapeHtml must have '<text data-key="text">'
  * @param {ShapeData & { title?: string, styles?: string[]}} shapeData
  * @param {ConnectorsData} cons
+ * @param {SettingsPnlCreateFn=} settingsPnlCreateFn
  * @param {{(txtEl:SVGTextElement):void}} onTextChange
  */
-export function shapeCreate(svg, canvasData, shapeData, shapeHtml, cons, onTextChange) {
+export function shapeCreate(svg, canvasData, shapeData, shapeHtml, cons, onTextChange, settingsPnlCreateFn) {
 	const el = svgEl('g', `${shapeHtml}
 		${Object.entries(cons)
 		.map(cc => `<circle data-key="${cc[0]}" data-connect="${cc[1].dir}"	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(${cc[1].position.x}px, ${cc[1].position.y}px);" />`)
@@ -39,7 +40,8 @@ export function shapeCreate(svg, canvasData, shapeData, shapeHtml, cons, onTextC
 
 	const shapeProc = shapeEditEvtProc(svg, canvasData, el, shapeData, cons, textSettings,
 		// onTextChange
-		() => onTextChange(textSettings.el));
+		() => onTextChange(textSettings.el),
+		settingsPnlCreateFn);
 
 	return {
 		el,
@@ -62,17 +64,18 @@ export function shapeCreate(svg, canvasData, shapeData, shapeHtml, cons, onTextC
  * @param {ShapeData & { title?: string, styles?: string[]}} shapeData
  * @param {ConnectorsData} connectorsInnerPosition
  * @param { {el:SVGTextElement, vMid: number} } textSettings vMid in em
+ * @param {SettingsPnlCreateFn=} settingsPnlCreateFn
  * @param {{():void}} onTextChange
  */
-function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textSettings, onTextChange) {
-	/** @type {{():void}} */
-	let textEditorDel;
+function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textSettings, onTextChange, settingsPnlCreateFn) {
+	/** @type {{dispose():void, draw():void}} */
+	let textEditor;
 
 	/** @type { {position:(bottomX:number, bottomY:number)=>void, del:()=>void} } */
 	let settingsPnl;
 
 	function delEditor() {
-		if (textEditorDel) { textEditorDel(); textEditorDel = null; }
+		if (textEditor) { textEditor.dispose(); textEditor = null; }
 		settingsPnl?.del(); settingsPnl = null;
 	}
 
@@ -82,13 +85,14 @@ function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPos
 		onTextChange();
 	}
 
+	const settingPnlCreate = settingsPnlCreateFn ?? settingsPnlCreate;
 	const shapeProc = shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition,
 		// onEdit
 		() => {
-			textEditorDel = textareaCreate(textSettings.el, textSettings.vMid, shapeData.title, onTxtChange, onTxtChange);
+			textEditor = textareaCreate(textSettings.el, textSettings.vMid, shapeData.title, onTxtChange, onTxtChange);
 
 			const position = svgGrp.getBoundingClientRect();
-			settingsPnl = settingsPnlCreate(position.left + 10, position.top + 10, onCmd);
+			settingsPnl = settingPnlCreate(position.left + 10, position.top + 10, svgGrp);
 		},
 		// onEditStop
 		delEditor
@@ -100,40 +104,22 @@ function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPos
 		svgGrp.remove();
 	}
 
-	/** @param {CustomEvent<{cmd:string, arg:string}>} evt */
-	function onCmd(evt) {
-		switch (evt.detail.cmd) {
-			case 'style': colorStyleAdd(svgGrp, shapeData, evt.detail.arg); break;
-			case 'del': del(); break;
-		}
-	}
-
 	if (shapeData.styles) { classAdd(svgGrp, ...shapeData.styles); }
 
 	svgGrp[ShapeSmbl].del = del;
 
 	return {
 		draw: () => {
+			shapeProc.drawPosition();
+
 			if (settingsPnl) {
 				const position = svgGrp.getBoundingClientRect();
 				settingsPnl.position(position.left + 10, position.top + 10);
 			}
-			shapeProc.drawPosition();
+
+			if (textEditor) { textEditor.draw(); }
 		}
 	};
-}
-
-/** @param {Element} shapeEl, @param {{styles?:string[]}} shapeData, @param {string} colorClass */
-export function colorStyleAdd(shapeEl, shapeData, colorClass) {
-	if (!shapeData.styles) { shapeData.styles = []; }
-
-	const currentColor = shapeData.styles.findIndex(ss => ss.startsWith('cl-'));
-	if (currentColor > -1) {
-		classDel(shapeEl, shapeData.styles[currentColor]);
-		shapeData.styles.splice(currentColor, 1);
-	}
-	shapeData.styles.push(colorClass);
-	classAdd(shapeEl, colorClass);
 }
 
 /**
@@ -290,7 +276,7 @@ export function placeToCell(shapePosition, cell) {
 /** @typedef { {position: Point, dir: PathDir} } PathEnd */
 /** @typedef { Object.<string, PathEnd> } ConnectorsData */
 
-/** @typedef { {type: number, position: Point} } ShapeData */
+/** @typedef { {type: number, position: Point, styles?:string[]} } ShapeData */
 /**
 @typedef {{
 	pathAdd(connectorKey:string, pathEl:PathElement): PathEnd
@@ -298,8 +284,11 @@ export function placeToCell(shapePosition, cell) {
 	drawPosition: ()=>void
 	data: ShapeData
 	del?: ()=>void
+	draw?: ()=>void
 }} Shape
  */
+
+/** @typedef { {(bottomX:number, bottomY:number, shapeElement:ShapeElement):{position(btmX:number, btmY:number):void, del():void} } } SettingsPnlCreateFn */
 
 /** @typedef {SVGGraphicsElement & { [ShapeSmbl]?: Shape }} ShapeElement */
 /** @typedef {import('./path.js').Path} Path */

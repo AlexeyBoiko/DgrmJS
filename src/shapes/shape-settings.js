@@ -1,4 +1,5 @@
-import { listen } from '../infrastructure/util.js';
+import { classAdd, classDel, listen } from '../infrastructure/util.js';
+import { ShapeSmbl } from './shape-smbl.js';
 
 /**
  * @param {number} bottomX positon of the bottom left corner of the panel
@@ -16,11 +17,16 @@ export function delPnlCreate(bottomX, bottomY, onDel) {
 /**
  * @param {number} bottomX positon of the bottom left corner of the panel
  * @param {number} bottomY positon of the bottom left corner of the panel
- * @param { {(evt: CustomEvent<{cmd:string, arg:string}>):void} } onCmd
+ * @param {import('./shape-evt-proc.js').ShapeElement} shapeElement
  */
-export function settingsPnlCreate(bottomX, bottomY, onCmd) {
+export function settingsPnlCreate(bottomX, bottomY, shapeElement) {
 	const shapeSettings = new ShapeEdit();
-	listen(shapeSettings, 'cmd', onCmd);
+	listen(shapeSettings, 'cmd', /** @param {CustomEvent<{cmd:string, arg:string}>} evt */ evt => {
+		switch (evt.detail.cmd) {
+			case 'style': singleClassAdd(shapeElement, shapeElement[ShapeSmbl].data, 'cl-', evt.detail.arg); break;
+			case 'del': shapeElement[ShapeSmbl].del(); break;
+		}
+	});
 	return pnlCreate(bottomX, bottomY, shapeSettings);
 }
 
@@ -153,3 +159,16 @@ export const evtTargetAttr = (evt, attr) => evt.currentTarget.getAttribute(attr)
 
 /** @param {ParentNode} el, @param {string} selector, @param {(this: GlobalEventHandlers, ev: PointerEvent & { currentTarget: Element }) => any} handler */
 export function clickForAll(el, selector, handler) { el.querySelectorAll(selector).forEach(/** @param {HTMLElement} el */ el => { el.onclick = handler; }); }
+
+/** @param {Element} shapeEl, @param {{styles?:string[]}} shapeData, @param {string} classPrefix, @param {string} classToAdd */
+export function singleClassAdd(shapeEl, shapeData, classPrefix, classToAdd) {
+	if (!shapeData.styles) { shapeData.styles = []; }
+
+	const currentColor = shapeData.styles.findIndex(ss => ss.startsWith(classPrefix));
+	if (currentColor > -1) {
+		classDel(shapeEl, shapeData.styles[currentColor]);
+		shapeData.styles.splice(currentColor, 1);
+	}
+	shapeData.styles.push(classToAdd);
+	classAdd(shapeEl, classToAdd);
+}

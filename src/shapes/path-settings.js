@@ -1,7 +1,6 @@
 import { classAdd, classDel, listen } from '../infrastructure/util.js';
 import { PathSmbl } from './path.js';
-import { colorStyleAdd } from './shape-evt-proc.js';
-import { clickForAll, evtTargetAttr } from './shape-settings.js';
+import { clickForAll, singleClassAdd, evtTargetAttr } from './shape-settings.js';
 
 export class PathSettings extends HTMLElement {
 	/** @param {PathElement} pathElement */
@@ -13,7 +12,7 @@ export class PathSettings extends HTMLElement {
 
 	connectedCallback() {
 		const pathStyles = this._pathElement[PathSmbl].data.styles;
-		const actStyle = style => pathStyles?.includes(style) ? 'class="actv"' : '';
+		const actStyle = style => this._pathElement[PathSmbl].data.styles?.includes(style) ? 'class="actv"' : '';
 
 		const shadow = this.attachShadow({ mode: 'closed' });
 		shadow.innerHTML = `
@@ -39,10 +38,10 @@ export class PathSettings extends HTMLElement {
 			</div>
 		</ap-shape-edit>`;
 
-		// colors
+		// colors, del
 		listen(shadow.getElementById('edit'), 'cmd', /** @param {CustomEvent<{cmd:string, arg:string}>} evt */ evt => {
 			switch (evt.detail.cmd) {
-				case 'style': colorStyleAdd(this._pathElement, this._pathElement[PathSmbl].data, evt.detail.arg); break;
+				case 'style': singleClassAdd(this._pathElement, this._pathElement[PathSmbl].data, 'cl-', evt.detail.arg); break;
 				case 'del': this._pathElement[PathSmbl].del(); break;
 			}
 		});
