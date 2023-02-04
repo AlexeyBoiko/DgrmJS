@@ -231,7 +231,7 @@ const pointInRect = (rectPosition, rectWidth, rectHeight, x, y) =>
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { import('../shapes/shape-smbl').ShapeElement } ShapeElement */
-/** @typedef { import('../shapes/shape-smbl').Shape } Shape */
+/** @typedef { import('../shapes/shape-evt-proc').Shape } Shape */
 /** @typedef { import('../shapes/path').Path } Path */
 /** @typedef { import('../shapes/path').PathEnd } PathEnd */
 /** @typedef { import('../shapes/path-smbl').PathElement } PathElement */

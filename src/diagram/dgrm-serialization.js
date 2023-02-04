@@ -1,4 +1,4 @@
-import { PathSmbl } from '../shapes/path-smbl';
+import { PathSmbl } from '../shapes/path-smbl.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
 import { dgrmClear } from './dgrm-clear.js';
 
@@ -85,7 +85,7 @@ export function deserialize(canvas, shapeTypeMap, data) {
 /** @typedef {{v:string, s: Array<ShapeData | PathSerialized>}} DiagramSerialized */
 
 /** @typedef { import("../shapes/shape-smbl").ShapeElement } ShapeElement */
-/** @typedef { import('../shapes/shape-smbl').ShapeData } ShapeData */
+/** @typedef { import('../shapes/shape-evt-proc').ShapeData } ShapeData */
 
 /** @typedef { import("../shapes/path-smbl").PathElement } PathElement */
 /** @typedef { import('../shapes/path').PathEndData } PathEndData */

@@ -65,5 +65,5 @@ function textElRadius(textEl, minR, step) {
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { import('./shape-evt-proc').CanvasData } CanvasData */
-/** @typedef { import('./shape-smbl').ConnectorsData } ConnectorsData */
+/** @typedef { import('./shape-evt-proc').ConnectorsData } ConnectorsData */
 /** @typedef { {type:number, position: Point, title?: string, styles?: string[], r?:number} } CircleData */

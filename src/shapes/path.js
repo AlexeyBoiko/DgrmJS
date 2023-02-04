@@ -369,9 +369,7 @@ const numInRangeIncludeEnds = (num, a, b) => a <= num && num <= b;
 	data: PathData
 }} Path
  */
-// export const PathSmbl = Symbol('path');
-// /** @typedef {SVGGraphicsElement & { [PathSmbl]?: Path }} PathElement */
 
 /** @typedef { import('./shape-smbl').ShapeElement } ShapeElement */
-/** @typedef { import('./shape-smbl').Shape } Shape */
+/** @typedef { import('./shape-evt-proc').Shape } Shape */
 /** @typedef { import('../infrastructure/move-evt-mobile-fix.js').PointerEventFixMovement } PointerEventFixMovement */

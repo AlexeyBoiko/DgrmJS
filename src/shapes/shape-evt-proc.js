@@ -258,28 +258,24 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { {position:Point, scale:number, cell:number} } CanvasData */
 
-// /** @typedef { 'left' | 'right' | 'top' | 'bottom' } PathDir */
-// /** @typedef { {position: Point, dir: PathDir} } PathEnd */
-// /** @typedef { Object.<string, PathEnd> } ConnectorsData */
+/** @typedef { 'left' | 'right' | 'top' | 'bottom' } PathDir */
+/** @typedef { {position: Point, dir: PathDir} } PathEnd */
+/** @typedef { Object.<string, PathEnd> } ConnectorsData */
 
-// /** @typedef { {type: number, position: Point, styles?:string[]} } ShapeData */
-// /**
-// @typedef {{
-// 	pathAdd(connectorKey:string, pathEl:PathElement): PathEnd
-// 	pathDel(pathEl:PathElement): void
-// 	drawPosition: ()=>void
-// 	data: ShapeData
-// 	del?: ()=>void
-// 	draw?: ()=>void
-// }} Shape
-//  */
+/** @typedef { {type: number, position: Point, styles?:string[]} } ShapeData */
+/**
+@typedef {{
+	pathAdd(connectorKey:string, pathEl:PathElement): PathEnd
+	pathDel(pathEl:PathElement): void
+	drawPosition: ()=>void
+	data: ShapeData
+	del?: ()=>void
+	draw?: ()=>void
+}} Shape
+ */
 
 /** @typedef { {(bottomX:number, bottomY:number, shapeElement:ShapeElement):{position(btmX:number, btmY:number):void, del():void} } } SettingsPnlCreateFn */
 
-// /** @typedef {SVGGraphicsElement & { [ShapeSmbl]?: Shape }} ShapeElement */
-
 /** @typedef {import('./shape-smbl').ShapeElement} ShapeElement */
-/** @typedef {import('./shape-smbl').ConnectorsData} ConnectorsData */
-/** @typedef {import('./shape-smbl').ShapeData} ShapeData */
 /** @typedef {import('./path').Path} Path */
 /** @typedef {import('./path-smbl').PathElement} PathElement */
