@@ -17,7 +17,7 @@ export function delPnlCreate(bottomX, bottomY, onDel) {
 /**
  * @param {number} bottomX positon of the bottom left corner of the panel
  * @param {number} bottomY positon of the bottom left corner of the panel
- * @param {import('./shape-evt-proc.js').ShapeElement} shapeElement
+ * @param {import('./shape-smbl').ShapeElement} shapeElement
  */
 export function settingsPnlCreate(bottomX, bottomY, shapeElement) {
 	const shapeSettings = new ShapeEdit();

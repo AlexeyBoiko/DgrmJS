@@ -1,4 +1,4 @@
-import { PathSmbl } from '../shapes/path.js';
+import { PathSmbl } from '../shapes/path-smbl';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
 import { dgrmClear } from './dgrm-clear.js';
 
@@ -84,15 +84,15 @@ export function deserialize(canvas, shapeTypeMap, data) {
 
 /** @typedef {{v:string, s: Array<ShapeData | PathSerialized>}} DiagramSerialized */
 
-/** @typedef { import("../shapes/shape-evt-proc").ShapeElement } ShapeElement */
-/** @typedef { import('../shapes/shape-evt-proc.js').ShapeData } ShapeData */
+/** @typedef { import("../shapes/shape-smbl").ShapeElement } ShapeElement */
+/** @typedef { import('../shapes/shape-smbl').ShapeData } ShapeData */
 
-/** @typedef { import("../shapes/path").PathElement } PathElement */
-/** @typedef { import('../shapes/path.js').PathEndData } PathEndData */
-/** @typedef { import('../shapes/path.js').PathEnd } PathEnd */
-/** @typedef { import('../shapes/path.js').PathData } PathData */
+/** @typedef { import("../shapes/path-smbl").PathElement } PathElement */
+/** @typedef { import('../shapes/path').PathEndData } PathEndData */
+/** @typedef { import('../shapes/path').PathEnd } PathEnd */
+/** @typedef { import('../shapes/path').PathData } PathData */
 
 /** @typedef { {s?:number, k?:string, p?:PathEndData} } PathEndSerialized */
 /** @typedef { {type:number, c?:string, s:PathEndSerialized, e:PathEndSerialized} } PathSerialized */
 
-/** @typedef { import('../shapes/shape-evt-proc.js').CanvasData } CanvasData */
+/** @typedef { import('../shapes/shape-evt-proc').CanvasData } CanvasData */

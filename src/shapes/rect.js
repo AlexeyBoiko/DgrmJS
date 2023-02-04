@@ -45,7 +45,7 @@ export function rect(svg, canvasData, rectData) {
 
 	let currentW = rectData.w;
 	let currentTxtAlign = rectData.a;
-	/** @param {boolean} fixTxtAlign */
+	/** @param {boolean?=} fixTxtAlign */
 	function resize(fixTxtAlign) {
 		const mainX = rectData.w / -2;
 		const mainY = rectData.h / -2;
@@ -131,8 +131,8 @@ const rectTxtXByAlign = rectData => rectData.a === 1
 		: 40; // text align right
 
 /** @typedef { {x:number, y:number} } Point */
-/** @typedef { import('./shape-evt-proc.js').CanvasData } CanvasData */
-/** @typedef { import('./shape-evt-proc.js').ConnectorsData } ConnectorsData */
+/** @typedef { import('./shape-evt-proc').CanvasData } CanvasData */
+/** @typedef { import('./shape-smbl').ConnectorsData } ConnectorsData */
 /**
 @typedef {{
 	type:number, position: Point, title?: string, styles?: string[],

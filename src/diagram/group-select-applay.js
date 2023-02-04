@@ -1,10 +1,9 @@
 import { movementApplay, ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
-import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
+import { placeToCell, pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { arrPop, classAdd, classDel, listen, listenDel, positionSet, svgEl } from '../infrastructure/util.js';
-import { placeToCell } from '../shapes/shape-evt-proc.js';
+import { PathSmbl } from '../shapes/path-smbl.js';
 import { delPnlCreate } from '../shapes/shape-settings.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
-import { PathSmbl } from '../shapes/path.js';
 
 /**
  * @param {SVGGElement} canvas
@@ -231,10 +230,10 @@ const pointInRect = (rectPosition, rectWidth, rectHeight, x, y) =>
 	rectPosition.y <= y && y <= rectPosition.y + rectHeight;
 
 /** @typedef { {x:number, y:number} } Point */
-/** @typedef { import('../shapes/shape-evt-proc.js').ShapeElement } ShapeElement */
-/** @typedef { import('../shapes/shape-evt-proc.js').Shape } Shape */
-/** @typedef { import('../shapes/path.js').Path } Path */
-/** @typedef { import('../shapes/path.js').PathEnd } PathEnd */
-/** @typedef { import('../shapes/path.js').PathElement } PathElement */
+/** @typedef { import('../shapes/shape-smbl').ShapeElement } ShapeElement */
+/** @typedef { import('../shapes/shape-smbl').Shape } Shape */
+/** @typedef { import('../shapes/path').Path } Path */
+/** @typedef { import('../shapes/path').PathEnd } PathEnd */
+/** @typedef { import('../shapes/path-smbl').PathElement } PathElement */
 /** @typedef { SVGGraphicsElement & { [ShapeSmbl]?: Shape, [PathSmbl]?:Path }} ShapeOrPathElement */
 /** @typedef { import('../infrastructure/move-evt-mobile-fix.js').PointerEventFixMovement} PointerEventFixMovement */

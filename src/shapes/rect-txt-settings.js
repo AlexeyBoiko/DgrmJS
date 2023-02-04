@@ -5,13 +5,13 @@ import { ShapeSmbl } from './shape-smbl.js';
 /**
  * @param {number} bottomX positon of the bottom left corner of the panel
  * @param {number} bottomY positon of the bottom left corner of the panel
- * @param {import('./shape-evt-proc.js').ShapeElement} shapeElement
+ * @param {import('./shape-smbl').ShapeElement} shapeElement
  */
 export const rectTxtSettingsPnlCreate = (bottomX, bottomY, shapeElement) =>
 	pnlCreate(bottomX, bottomY, new RectTxtSettings(shapeElement));
 
 class RectTxtSettings extends HTMLElement {
-	/** @param {import('./shape-evt-proc.js').ShapeElement} rectElement */
+	/** @param {import('./shape-smbl').ShapeElement} rectElement */
 	constructor(rectElement) {
 		super();
 		/** @private */

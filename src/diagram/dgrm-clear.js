@@ -1,5 +1,5 @@
 import { CanvasSmbl } from '../infrastructure/move-scale-applay.js';
-import { PathSmbl } from '../shapes/path.js';
+import { PathSmbl } from '../shapes/path-smbl.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
 
 /** @param {CanvasElement} canvas */

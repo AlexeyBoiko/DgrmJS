@@ -12,6 +12,21 @@ export const pointInCanvas = (canvasData, x, y) => ({
 });
 
 /**
+ * @param {Point} point
+ * @param {number} cell
+ */
+export function placeToCell(point, cell) {
+	const cellSizeHalf = cell / 2;
+	function placeToCell(coordinate) {
+		const coor = (Math.round(coordinate / cell) * cell);
+		return (coordinate - coor > 0) ? coor + cellSizeHalf : coor - cellSizeHalf;
+	}
+
+	point.x = placeToCell(point.x);
+	point.y = placeToCell(point.y);
+}
+
+/**
  * @param { CanvasElement } canvas
  * @param { {position:Point, scale:number, cell: number} } canvasData
  */

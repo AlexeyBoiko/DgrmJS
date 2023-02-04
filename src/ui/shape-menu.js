@@ -11,9 +11,9 @@ export class ShapeMenu extends HTMLElement {
 				overflow-x: auto;
 				padding: 0;
 				position: fixed;
-				bottom: 15px;
-				left: 50%;
-				transform: translateX(-50%);
+				top: 50%;
+				left: 15px;
+				transform: translateY(-50%);
 				box-shadow: 0px 0px 58px 2px rgba(34, 60, 80, 0.2);
 				border-radius: 16px;
 				background-color: rgba(255,255,255, .9);
@@ -22,21 +22,18 @@ export class ShapeMenu extends HTMLElement {
 			.content {
 				white-space: nowrap;
 				display: flex;
+				flex-direction: column;
 			}
 			
 			[data-cmd] {
 				cursor: pointer;
 			}
 
-			.menu svg {
-				height: 42px;
-				display: inline-block;
-				padding: 15px 10px;
+			.menu svg { padding: 10px; }
+			.stroke {
 				stroke: #344767;
 				stroke-width: 2px;
-				fill: #fff;
-				width: 42px;
-				min-width: 42px;
+				fill: transparent;
 			}
 		
 			.menu .big {
@@ -51,29 +48,24 @@ export class ShapeMenu extends HTMLElement {
 					bottom: 0;
 					display: flex;
   					flex-direction: column;
+					top: unset;
+					left: unset;
+					transform: unset;
 				}
 
 				.content {
 					align-self: center;
+					flex-direction: row;
 				}
 			}
 			</style>
 			<div id="menu" class="menu" style="touch-action: none;">
 				<div class="content">
-					<svg data-cmd="shapeAdd" data-cmd-arg="1" style="padding-left: 20px;">
-						<circle r="20" cx="21" cy="21"></circle>
-					</svg>
-					<svg data-cmd="shapeAdd" data-cmd-arg="2" class="big">
-						<rect x="1" y="1" width="60" height="40" rx="15" ry="15"></rect>
-					</svg>
-					<svg data-cmd="shapeAdd" data-cmd-arg="4" class="big">
-						<g transform="translate(1,1)">
-							<path d="M0 20 L30 0 L60 20 L30 40 Z" stroke-width="2" stroke-linejoin="round"></path>
-						</g>
-					</svg>
-					<svg data-cmd="shapeAdd" data-cmd-arg="3">
-						<text x="5" y="40" font-size="52px" fill="#344767" stroke-width="0">T</text>
-					</svg>
+					<svg class="stroke" data-cmd="shapeAdd" data-cmd-arg="1" viewBox="0 0 24 24" width="24" height="24"><circle r="9" cx="12" cy="12"></circle></svg>
+					<svg class="stroke" data-cmd="shapeAdd" data-cmd-arg="4" viewBox="0 0 24 24" width="24" height="24"><path d="M2 12 L12 2 L22 12 L12 22 Z" stroke-linejoin="round"></path></svg>
+					<svg class="stroke" data-cmd="shapeAdd" data-cmd-arg="2" viewBox="0 0 24 24" width="24" height="24"><rect x="2" y="4" width="20" height="16" rx="3" ry="3"></rect></svg>
+					<svg data-cmd="shapeAdd" data-cmd-arg="0" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M13 8v8a3 3 0 0 1-3 3H7.83a3.001 3.001 0 1 1 0-2H10a1 1 0 0 0 1-1V8a3 3 0 0 1 3-3h3V2l5 4-5 4V7h-3a1 1 0 0 0-1 1z" fill="rgba(52,71,103,1)"/></svg>
+					<svg data-cmd="shapeAdd" data-cmd-arg="3" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M13 6v15h-2V6H5V4h14v2z" fill="rgba(52,71,103,1)"/></svg>
 				</div>
 			</div>`;
 
@@ -123,8 +115,7 @@ export class ShapeMenu extends HTMLElement {
 				break;
 			case 'pointerleave':
 				this._isNativePointerleaveTriggered = true;
-
-				if (this._pressedShapeTemplKey) {
+				if (this._pressedShapeTemplKey != null) {
 					// when shape drag out from menu panel
 					this._shapeCreate(evt);
 				}
@@ -152,14 +143,23 @@ export class ShapeMenu extends HTMLElement {
 		tipShow(false);
 
 		const evtPoint = pointInCanvas(this._canvasData, evt.clientX, evt.clientY);
-		const shapeEl = this._shapeTypeMap[this._pressedShapeTemplKey].create({
-			type: this._pressedShapeTemplKey,
-			position: {
-				x: evtPoint.x,
-				y: evtPoint.y
-			},
-			title: 'Title'
-		});
+
+		//  TODO: create facktory map with increasing
+		const shapeData = this._pressedShapeTemplKey === 0
+			? /** @type {import('../shapes/path.js').PathData} */({
+				s: { data: { dir: 'right', position: { x: evtPoint.x - 24, y: evtPoint.y } } },
+				e: { data: { dir: 'right', position: { x: evtPoint.x + 24, y: evtPoint.y } } }
+			})
+			: {
+				type: this._pressedShapeTemplKey,
+				position: {
+					x: evtPoint.x,
+					y: evtPoint.y
+				},
+				title: 'Title'
+			};
+
+		const shapeEl = this._shapeTypeMap[this._pressedShapeTemplKey].create(shapeData);
 		this._canvas.append(shapeEl);
 		shapeEl.dispatchEvent(new PointerEvent('pointerdown', evt));
 	}

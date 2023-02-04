@@ -1,5 +1,5 @@
 import { classAdd, classDel, listen } from '../infrastructure/util.js';
-import { PathSmbl } from './path.js';
+import { PathSmbl } from './path-smbl.js';
 import { clickForAll, singleClassAdd, evtTargetAttr } from './shape-settings.js';
 
 export class PathSettings extends HTMLElement {
@@ -64,4 +64,4 @@ export class PathSettings extends HTMLElement {
 }
 customElements.define('ap-path-settings', PathSettings);
 
-/** @typedef { import('./path.js').PathElement } PathElement */
+/** @typedef { import('./path-smbl').PathElement } PathElement */

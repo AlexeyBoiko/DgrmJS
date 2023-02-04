@@ -1,10 +1,10 @@
 import { child, classAdd, classDel, classHas, listen, listenDel, svgEl } from '../infrastructure/util.js';
 import { moveEvtProc, movementApplay, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
-import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
+import { placeToCell, pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { ShapeSmbl } from './shape-smbl.js';
-import { placeToCell } from './shape-evt-proc.js';
 import { PathSettings } from './path-settings.js';
 import { pnlCreate } from './shape-settings.js';
+import { PathSmbl } from './path-smbl.js';
 
 /**
  * @param {Element} svg
@@ -369,9 +369,9 @@ const numInRangeIncludeEnds = (num, a, b) => a <= num && num <= b;
 	data: PathData
 }} Path
  */
-export const PathSmbl = Symbol('path');
-/** @typedef {SVGGraphicsElement & { [PathSmbl]?: Path }} PathElement */
+// export const PathSmbl = Symbol('path');
+// /** @typedef {SVGGraphicsElement & { [PathSmbl]?: Path }} PathElement */
 
-/** @typedef { import('./shape-evt-proc.js').ShapeElement } ShapeElement */
-/** @typedef { import('./shape-evt-proc.js').Shape } Shape */
+/** @typedef { import('./shape-smbl').ShapeElement } ShapeElement */
+/** @typedef { import('./shape-smbl').Shape } Shape */
 /** @typedef { import('../infrastructure/move-evt-mobile-fix.js').PointerEventFixMovement } PointerEventFixMovement */
