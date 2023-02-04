@@ -1,12 +1,29 @@
 # [Dgrm.net](https://app.dgrm.net "Flowchart editor") - flowchart editor
 
+**Flowcharts**    
+
+<img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/flowchart.png" alt="Flowchart editor" width="600"/>
+
+[Try it yourself](https://app.dgrm.net/?k=20230222452afb)
+
+<br />
+
+**Sequence Diagrams**
+
+<img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/sequence-diagrams.gif" alt="sequence diagrams editor" width="600"/>
+
+[Try it yourself](https://app.dgrm.net/?k=202302ba45529b)
+
+<br />
+
+**Highlights**
 - Works on desktop and mobile
 - Has no dependency
 - Pure JavaScript
 
-<br />
 
-<img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/dgrmjs-sample.png" alt="Flowchart editor" width="600"/>
+
+
 
 ## Articles
 [Announcement / I halved the source code](https://itnext.io/flowchart-editor-dgrm-net-announcement-i-halved-the-source-code-e9d94822cd8a)  
