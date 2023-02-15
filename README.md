@@ -26,6 +26,7 @@
 
 
 ## Articles
+[Announcement / Sequence diagrams support](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-announcement-sequence-diagrams-support-dc62b9a3e095)  
 [Announcement / I halved the source code](https://itnext.io/flowchart-editor-dgrm-net-announcement-i-halved-the-source-code-e9d94822cd8a)  
 [JavaScript SVG diagram editor 6.5 times smaller than Bootstrap](https://alexey-boyko.medium.com/javascript-svg-diagram-editor-which-weighs-6-5-less-than-bootstrap-open-source-library-b753feaaf835 "JavaScript SVG diagram editor 6.5 times smaller than Bootstrap")  
 [JavaScript diagram editor that renders diagrams from PNG images (open source)](https://medium.com/codex/javascript-diagram-editor-that-renders-diagrams-from-png-images-open-source-d1de0f053088 "JavaScript diagram editor that renders diagrams from PNG images (open source)")  
