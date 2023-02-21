@@ -10,9 +10,17 @@
 
 **Sequence Diagrams**
 
-<img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/sequence-diagrams.gif" alt="sequence diagrams editor" width="600"/>
+<img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/sequence-diagrams.gif" alt="sequence diagram editor" width="600"/>
 
 [Try it yourself](https://app.dgrm.net/?k=202302ba45529b)
+
+<br />
+
+**Activity Diagrams**
+
+<img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/activity-diagram.png" alt="activity diagram editor" width="600"/>
+
+[Try it yourself](https://app.dgrm.net/?k=202302bd958e50)
 
 <br />
 
