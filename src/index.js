@@ -20,7 +20,7 @@ const shapesTypeMap = shapeTypeMap(canvas.ownerSVGElement, canvasData);
 
 moveEvtMobileFix(canvas.ownerSVGElement);
 evtRouteApplay(canvas.ownerSVGElement);
-groupSelectApplay(canvas, canvasData);
+groupSelectApplay(canvas, canvasData); // groupSelectApplay must go before moveScaleApplay
 moveScaleApplay(canvas, canvasData);
 
 /** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas, canvasData, shapesTypeMap);
