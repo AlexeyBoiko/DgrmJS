@@ -99,15 +99,13 @@ function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPos
 		delEditor
 	);
 
-	function del() {
+	if (shapeData.styles) { classAdd(svgGrp, ...shapeData.styles); }
+
+	svgGrp[ShapeSmbl].del = function() {
 		delEditor();
 		shapeProc.del();
 		svgGrp.remove();
-	}
-
-	if (shapeData.styles) { classAdd(svgGrp, ...shapeData.styles); }
-
-	svgGrp[ShapeSmbl].del = del;
+	};
 
 	return {
 		draw: () => {
