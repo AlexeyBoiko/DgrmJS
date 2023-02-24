@@ -7,6 +7,7 @@ import { placeToCell, pointInCanvas } from '../infrastructure/move-scale-applay.
 import { ShapeSmbl } from './shape-smbl.js';
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
 import { PathSmbl } from './path-smbl.js';
+import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
 
 /**
  * provides:
@@ -16,15 +17,14 @@ import { PathSmbl } from './path-smbl.js';
  *  - text editor
  *  - standard edit panel
  *  - onTextChange callback
- * @param {Element} svg
- * @param {CanvasData} canvasData
+ * @param {CanvasElement} canvas
  * @param {string} shapeHtml must have '<text data-key="text">'
  * @param {ShapeData & { title?: string, styles?: string[]}} shapeData
  * @param {ConnectorsData} cons
  * @param {SettingsPnlCreateFn=} settingsPnlCreateFn
  * @param {{(txtEl:SVGTextElement):void}} onTextChange
  */
-export function shapeCreate(svg, canvasData, shapeData, shapeHtml, cons, onTextChange, settingsPnlCreateFn) {
+export function shapeCreate(canvas, shapeData, shapeHtml, cons, onTextChange, settingsPnlCreateFn) {
 	const el = svgEl('g', `${shapeHtml}
 		${Object.entries(cons)
 		.map(cc => `<circle data-key="${cc[0]}" data-connect="${cc[1].dir}"	class="hovertrack" data-evt-index="2" r="10" cx="0" cy="0" style="transform: translate(${cc[1].position.x}px, ${cc[1].position.y}px);" />`)
@@ -39,7 +39,7 @@ export function shapeCreate(svg, canvasData, shapeData, shapeHtml, cons, onTextC
 
 	svgTextDraw(textSettings.el, textSettings.vMid, shapeData.title);
 
-	const shapeProc = shapeEditEvtProc(svg, canvasData, el, shapeData, cons, textSettings,
+	const shapeProc = shapeEditEvtProc(canvas, el, shapeData, cons, textSettings,
 		// onTextChange
 		() => onTextChange(textSettings.el),
 		settingsPnlCreateFn);
@@ -59,8 +59,7 @@ export function shapeCreate(svg, canvasData, shapeData, shapeHtml, cons, onTextC
  *  - text editor
  *  - standard edit panel
  *  - onTextChange callback
- * @param {Element} svg
- * @param {CanvasData} canvasData
+ * @param {CanvasElement} canvas
  * @param {ShapeElement} svgGrp
  * @param {ShapeData & { title?: string, styles?: string[]}} shapeData
  * @param {ConnectorsData} connectorsInnerPosition
@@ -68,7 +67,7 @@ export function shapeCreate(svg, canvasData, shapeData, shapeHtml, cons, onTextC
  * @param {SettingsPnlCreateFn=} settingsPnlCreateFn
  * @param {{():void}} onTextChange
  */
-function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, textSettings, onTextChange, settingsPnlCreateFn) {
+function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, textSettings, onTextChange, settingsPnlCreateFn) {
 	/** @type {{dispose():void, draw():void}} */
 	let textEditor;
 
@@ -87,7 +86,7 @@ function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPos
 	}
 
 	const settingPnlCreate = settingsPnlCreateFn ?? settingsPnlCreate;
-	const shapeProc = shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition,
+	const shapeProc = shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition,
 		// onEdit
 		() => {
 			textEditor = textareaCreate(textSettings.el, textSettings.vMid, shapeData.title, onTxtChange, onTxtChange);
@@ -126,15 +125,14 @@ function shapeEditEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPos
  *  - shape move
  *  - connectors
  *  - onEdit, onEditStop callbacks
- * @param {Element} svg
- * @param {CanvasData} canvasData
+ * @param {CanvasElement} canvas
  * @param {ShapeElement} svgGrp
  * @param {ShapeData} shapeData
  * @param {ConnectorsData} connectorsInnerPosition
  * @param {{():void}} onEdit
  * @param {{():void}} onEditStop
  */
-function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPosition, onEdit, onEditStop) {
+function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onEdit, onEditStop) {
 	classAdd(svgGrp, 'hovertrack');
 
 	/** @type {ConnectorsData} */
@@ -168,9 +166,9 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
 	}
 
 	const moveProcReset = moveEvtProc(
-		svg,
+		canvas.ownerSVGElement,
 		svgGrp,
-		canvasData,
+		canvas[CanvasSmbl].data,
 		shapeData.position,
 		// onMoveStart
 		/** @param {PointerEvent & { target: Element} } evt */
@@ -181,12 +179,12 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
 			if (connectorKey) {
 				moveProcReset();
 
-				const pathEl = path(svg, canvasData, {
+				const pathEl = path(canvas, {
 					s: { shape: { shapeEl: svgGrp, connectorKey } },
 					e: {
 						data: {
 							dir: dirReverse(connectorsData[connectorKey].dir),
-							position: pointInCanvas(canvasData, evt.clientX, evt.clientY)
+							position: pointInCanvas(canvas[CanvasSmbl].data, evt.clientX, evt.clientY)
 						}
 					}
 				});
@@ -199,7 +197,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
 		drawPosition,
 		// onMoveEnd
 		_ => {
-			placeToCell(shapeData.position, canvasData.cell);
+			placeToCell(shapeData.position, canvas[CanvasSmbl].data.cell);
 			drawPosition();
 		},
 		// onClick
@@ -274,6 +272,7 @@ function shapeEvtProc(svg, canvasData, svgGrp, shapeData, connectorsInnerPositio
 
 /** @typedef { {(bottomX:number, bottomY:number, shapeElement:ShapeElement):{position(btmX:number, btmY:number):void, del():void} } } SettingsPnlCreateFn */
 
+/** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */
 /** @typedef {import('./shape-smbl').ShapeElement} ShapeElement */
 /** @typedef {import('./path').Path} Path */
 /** @typedef {import('./path-smbl').PathElement} PathElement */

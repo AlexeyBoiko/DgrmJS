@@ -1,3 +1,4 @@
+import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
 import { movementApplay, ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
 import { placeToCell, pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { arrPop, classAdd, classDel, listen, listenDel, positionSet, svgEl } from '../infrastructure/util.js';
@@ -5,11 +6,8 @@ import { PathSmbl } from '../shapes/path-smbl.js';
 import { delPnlCreate } from '../shapes/shape-settings.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
 
-/**
- * @param {SVGGElement} canvas
- * @param {{position:{x:number, y:number}, scale:number, cell:number}} canvasData
- */
-export function groupSelectApplay(canvas, canvasData) {
+/** @param {CanvasElement} canvas */
+export function groupSelectApplay(canvas) {
 	const svg = canvas.ownerSVGElement;
 	let timer;
 	/** @type {Point} */ let selectStart;
@@ -40,9 +38,9 @@ export function groupSelectApplay(canvas, canvasData) {
 		if (selectRect) {
 			/** @param {Point} point */
 			const inRect = point => pointInRect(
-				pointInCanvas(canvasData, selectRectPos.x, selectRectPos.y),
-				selectRect.width.baseVal.value / canvasData.scale,
-				selectRect.height.baseVal.value / canvasData.scale,
+				pointInCanvas(canvas[CanvasSmbl].data, selectRectPos.x, selectRectPos.y),
+				selectRect.width.baseVal.value / canvas[CanvasSmbl].data.scale,
+				selectRect.height.baseVal.value / canvas[CanvasSmbl].data.scale,
 				point.x, point.y);
 
 			/** @type {ShapeElement[]} */
@@ -78,7 +76,7 @@ export function groupSelectApplay(canvas, canvasData) {
 					}
 				}
 			}
-			groupEvtProcDispose = groupEvtProc(svg, selectedPaths, selectedPathEnds, selectedShapes, canvasData);
+			groupEvtProcDispose = groupEvtProc(svg, selectedPaths, selectedPathEnds, selectedShapes, canvas[CanvasSmbl].data);
 		}
 
 		reset();
@@ -230,6 +228,7 @@ const pointInRect = (rectPosition, rectWidth, rectHeight, x, y) =>
 	rectPosition.y <= y && y <= rectPosition.y + rectHeight;
 
 /** @typedef { {x:number, y:number} } Point */
+/** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */
 /** @typedef { import('../shapes/shape-smbl').ShapeElement } ShapeElement */
 /** @typedef { import('../shapes/shape-evt-proc').Shape } Shape */
 /** @typedef { import('../shapes/path').Path } Path */

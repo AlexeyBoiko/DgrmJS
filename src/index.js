@@ -1,4 +1,5 @@
 import { moveEvtMobileFix } from './infrastructure/move-evt-mobile-fix.js';
+import { CanvasSmbl } from './infrastructure/canvas-smbl.js';
 import { moveScaleApplay } from './infrastructure/move-scale-applay.js';
 import { evtRouteApplay } from './infrastructure/move-evt-proc.js';
 import { tipShow, uiDisable } from './ui/ui.js';
@@ -10,21 +11,23 @@ import './ui/menu.js';
 import './ui/shape-menu.js';
 
 // @ts-ignore
-/** @type {SVGGElement} */ const canvas = document.getElementById('canvas');
-const canvasData = {
-	position: { x: 0, y: 0 },
-	scale: 1,
-	cell: 24
+/** @type {import('./infrastructure/canvas-smbl.js').CanvasElement} */ const canvas = document.getElementById('canvas');
+canvas[CanvasSmbl] = {
+	data: {
+		position: { x: 0, y: 0 },
+		scale: 1,
+		cell: 24
+	}
 };
-const shapesTypeMap = shapeTypeMap(canvas.ownerSVGElement, canvasData);
+const shapesTypeMap = shapeTypeMap(canvas);
 
 moveEvtMobileFix(canvas.ownerSVGElement);
 evtRouteApplay(canvas.ownerSVGElement);
-groupSelectApplay(canvas, canvasData); // groupSelectApplay must go before moveScaleApplay
-moveScaleApplay(canvas, canvasData);
+groupSelectApplay(canvas); // groupSelectApplay must go before moveScaleApplay
+moveScaleApplay(canvas);
 
-/** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas, canvasData, shapesTypeMap);
-/** @type { import('./ui/shape-menu').ShapeMenu } */(document.getElementById('menu-shape')).init(canvas, canvasData, shapesTypeMap);
+/** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas, shapesTypeMap);
+/** @type { import('./ui/shape-menu').ShapeMenu } */(document.getElementById('menu-shape')).init(canvas, shapesTypeMap);
 
 // load diagram by link
 let url = new URL(window.location.href);

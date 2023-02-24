@@ -75,7 +75,6 @@ export class Menu extends HTMLElement {
 
 			dgrmPngCreate(
 				this._canvas,
-				this._canvasData,
 				JSON.stringify(serialized),
 				png => fileSave(png, 'dgrm.png')); // TODO: check await
 		});
@@ -100,13 +99,11 @@ export class Menu extends HTMLElement {
 	}
 
 	/**
-	 * @param {SVGGElement} canvas
-	 * @param {{position:Point, scale:number, cell:number}} canvasData
+	 * @param {CanvasElement} canvas
 	 * @param {Record<number, {create :(shapeData)=>SVGGraphicsElement}>} shapeTypeMap
 	 */
-	init(canvas, canvasData, shapeTypeMap) {
+	init(canvas, shapeTypeMap) {
 		/** @private */ this._canvas = canvas;
-		/** @private */ this._canvasData = canvasData;
 		/** @private */ this._shapeTypeMap = shapeTypeMap;
 
 		// file drag to window
@@ -143,3 +140,4 @@ const alertCantOpen = () => alert('File cannot be read. Use the exact image file
 const alertEmpty = () => alert('Diagram is empty');
 
 /** @typedef { {x:number, y:number} } Point */
+/** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */

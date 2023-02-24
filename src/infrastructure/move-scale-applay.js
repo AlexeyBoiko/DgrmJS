@@ -1,3 +1,4 @@
+import { CanvasSmbl } from './canvas-smbl.js';
 import { ProcessedSmbl } from './move-evt-proc.js';
 import { listen, listenDel } from './util.js';
 
@@ -26,11 +27,10 @@ export function placeToCell(point, cell) {
 	point.y = placeToCell(point.y);
 }
 
-/**
- * @param { CanvasElement } canvas
- * @param { {position:Point, scale:number, cell: number} } canvasData
- */
-export function moveScaleApplay(canvas, canvasData) {
+/** @param { CanvasElement } canvas */
+export function moveScaleApplay(canvas) {
+	const canvasData = canvas[CanvasSmbl].data;
+
 	const gripUpdate = applayGrid(canvas.ownerSVGElement, canvasData);
 
 	function transform() {
@@ -70,14 +70,11 @@ export function moveScaleApplay(canvas, canvasData) {
 			evtPoint(evt));
 	});
 
-	canvas[CanvasSmbl] = {
-		/** @param {number} x, @param {number} y, @param {number} scale */
-		move: (x, y, scale) => {
-			canvasData.position.x = x;
-			canvasData.position.y = y;
-			canvasData.scale = scale;
-			transform();
-		}
+	canvas[CanvasSmbl].move = function (x, y, scale) {
+		canvasData.position.x = x;
+		canvasData.position.y = y;
+		canvasData.scale = scale;
+		transform();
 	};
 }
 
@@ -171,7 +168,7 @@ function applayFingers(svg, canvasData, scaleFn, transformFn) {
 
 /**
  * @param { SVGSVGElement } svg
- * @param { {position:Point, scale:number, cell: number} } canvasData
+ * @param { import('./canvas-smbl.js').CanvasData } canvasData
  */
 function applayGrid(svg, canvasData) {
 	let curOpacity;
@@ -221,8 +218,6 @@ function evtPointer(evt, canvasData) {
 
 /** @typedef { {x:number, y:number} } Point */
 /** @typedef { {id:number, pos:Point, shift:Point} } Pointer */
-
-/** @typedef {import("./move-evt-proc").ProcEvent} DgrmEvent */
-
-export const CanvasSmbl = Symbol('Canvas');
-/** @typedef {SVGGElement & { [CanvasSmbl]?: {move(x:number, y:number, scale:number):void} }} CanvasElement */
+/** @typedef { import("./move-evt-proc").ProcEvent } DgrmEvent */
+/** @typedef { import('./canvas-smbl.js').CanvasData } CanvasData */
+/** @typedef { import('./canvas-smbl.js').CanvasElement } CanvasElement */

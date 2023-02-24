@@ -2,17 +2,16 @@ import { ceil, child, positionSet, svgTxtFarthestPoint } from '../infrastructure
 import { shapeCreate } from './shape-evt-proc.js';
 
 /**
- * @param {Element} svg
- * @param {CanvasData} canvasData
+ * @param {CanvasElement} canvas
  * @param {CircleData} circleData
  */
-export function circle(svg, canvasData, circleData) {
+export function circle(canvas, circleData) {
 	const templ = `
 		<circle data-key="outer" data-evt-no data-evt-index="2" r="72" fill="transparent" stroke-width="0" />
 		<circle data-key="main" r="48" fill="#ff6600" stroke="#fff" stroke-width="1" />
 		<text data-key="text" x="0" y="0" text-anchor="middle" style="pointer-events: none;" fill="#fff">&nbsp;</text>`;
 
-	const shape = shapeCreate(svg, canvasData, circleData, templ,
+	const shape = shapeCreate(canvas, circleData, templ,
 		{
 			right: { dir: 'right', position: { x: 48, y: 0 } },
 			left: { dir: 'left', position: { x: -48, y: 0 } },
@@ -64,6 +63,7 @@ function textElRadius(textEl, minR, step) {
 }
 
 /** @typedef { {x:number, y:number} } Point */
+/** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */
 /** @typedef { import('./shape-evt-proc').CanvasData } CanvasData */
 /** @typedef { import('./shape-evt-proc').ConnectorsData } ConnectorsData */
 /** @typedef { {type:number, position: Point, title?: string, styles?: string[], r?:number} } CircleData */

@@ -1,13 +1,13 @@
+import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
 import { pngChunkGet, pngChunkSet } from '../infrastructure/png-chunk.js';
 import { svgToPng } from '../infrastructure/svg-to-png.js';
 
 /**
- * @param {SVGGElement} canvas
- * @param {{position:Point, scale:number}} canvasData
+ * @param {CanvasElement} canvas
  * @param {string} dgrmChunkVal
  * @param {BlobCallback} callBack
  */
-export function dgrmPngCreate(canvas, canvasData, dgrmChunkVal, callBack) {
+export function dgrmPngCreate(canvas, dgrmChunkVal, callBack) {
 	const rectToShow = canvas.getBoundingClientRect();
 	const svgVirtual = /** @type {SVGSVGElement} */(canvas.ownerSVGElement.cloneNode(true));
 	svgVirtual.style.backgroundImage = null;
@@ -15,6 +15,8 @@ export function dgrmPngCreate(canvas, canvasData, dgrmChunkVal, callBack) {
 
 	const nonSvgElems = svgVirtual.getElementsByTagName('foreignObject');
 	while (nonSvgElems[0]) { nonSvgElems[0].parentNode.removeChild(nonSvgElems[0]); }
+
+	const canvasData = canvas[CanvasSmbl].data;
 
 	// diagram to left corner
 	const canvasElVirtual = /** @type{SVGGraphicsElement} */(svgVirtual.children[1]);
@@ -40,3 +42,4 @@ export async function dgrmPngChunkGet(png) {
 }
 
 /** @typedef { {x:number, y:number} } Point */
+/** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */

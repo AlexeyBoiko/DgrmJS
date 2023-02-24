@@ -1,3 +1,4 @@
+import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
 import { pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { listen } from '../infrastructure/util.js';
 import { tipShow } from './ui.js';
@@ -77,13 +78,11 @@ export class ShapeMenu extends HTMLElement {
 	};
 
 	/**
-	 * @param {SVGGElement} canvas
-	 * @param {{position:{x:number, y:number}, scale:number, cell:number}} canvasData
+	 * @param {CanvasElement} canvas
 	 * @param {Record<number, ShapeType>} shapeTypeMap
 	 */
-	init(canvas, canvasData, shapeTypeMap) {
+	init(canvas, shapeTypeMap) {
 		/** @private */ this._canvas = canvas;
-		/** @private */ this._canvasData = canvasData;
 		/** @private */ this._shapeTypeMap = shapeTypeMap;
 	}
 
@@ -142,7 +141,7 @@ export class ShapeMenu extends HTMLElement {
 	_shapeCreate(evt) {
 		tipShow(false);
 
-		const evtPoint = pointInCanvas(this._canvasData, evt.clientX, evt.clientY);
+		const evtPoint = pointInCanvas(this._canvas[CanvasSmbl].data, evt.clientX, evt.clientY);
 
 		//  TODO: create facktory map with increasing
 		const shapeData = this._pressedShapeTemplKey === 0
@@ -174,3 +173,4 @@ export class ShapeMenu extends HTMLElement {
 customElements.define('ap-menu-shape', ShapeMenu);
 
 /** @typedef { import('../shapes/shape-type-map.js').ShapeType } ShapeType */
+/** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */

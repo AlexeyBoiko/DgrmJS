@@ -5,11 +5,10 @@ import { settingsPnlCreate } from './shape-settings.js';
 import { ShapeSmbl } from './shape-smbl.js';
 
 /**
- * @param {Element} svg
- * @param {CanvasData} canvasData
+ * @param {CanvasElement} canvas
  * @param {RectData} rectData
  */
-export function rect(svg, canvasData, rectData) {
+export function rect(canvas, rectData) {
 	rectData.w = rectData.w ?? 96;
 	rectData.h = rectData.h ?? 48;
 	rectData.a = rectData.a ?? (rectData.t ? 1 : 2);
@@ -19,7 +18,7 @@ export function rect(svg, canvasData, rectData) {
 		<rect data-key="main" width="96" height="48" x="-48" y="-24" rx="15" ry="15" fill="#1aaee5" stroke="#fff" stroke-width="1" />
 		<text data-key="text" y="0" x="${rectTxtXByAlign(rectData)}" style="pointer-events: none;" fill="#fff">&nbsp;</text>`;
 
-	const shape = shapeCreate(svg, canvasData, rectData, templ,
+	const shape = shapeCreate(canvas, rectData, templ,
 		{
 			right: { dir: 'right', position: { x: 48, y: 0 } },
 			left: { dir: 'left', position: { x: -48, y: 0 } },
@@ -131,6 +130,7 @@ const rectTxtXByAlign = rectData => rectData.a === 1
 		: 40; // text align right
 
 /** @typedef { {x:number, y:number} } Point */
+/** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */
 /** @typedef { import('./shape-evt-proc').CanvasData } CanvasData */
 /** @typedef { import('./shape-evt-proc').ConnectorsData } ConnectorsData */
 /**

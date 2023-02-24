@@ -5,13 +5,13 @@ import { ShapeSmbl } from './shape-smbl.js';
 import { PathSettings } from './path-settings.js';
 import { pnlCreate } from './shape-settings.js';
 import { PathSmbl } from './path-smbl.js';
+import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
 
 /**
- * @param {Element} svg
- * @param {{position:Point, scale:number, cell: number}} canvasData
+ * @param {CanvasElement} canvas
  * @param {PathData} pathData
  */
-export function path(svg, canvasData, pathData) {
+export function path(canvas, pathData) {
 	const svgGrp = svgEl('g', `
 		<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
 		<path data-key="path" class="path" d="M0 0" stroke="#495057" stroke-width="1.8" fill="none" style="pointer-events: none;" />
@@ -105,9 +105,9 @@ export function path(svg, canvasData, pathData) {
 	let movedEnd;
 
 	const reset = moveEvtProc(
-		svg,
+		canvas.ownerSVGElement,
 		svgGrp,
-		canvasData,
+		canvas[CanvasSmbl].data,
 		// data.end.position,
 		{
 			get x() { return pathData[movedEnd]?.data.position.x; },
@@ -139,7 +139,7 @@ export function path(svg, canvasData, pathData) {
 				pathData[movedEnd].shape = null;
 				pathData[movedEnd].data = {
 					dir: pathData[movedEnd].data.dir,
-					position: pointInCanvas(canvasData, evt.clientX, evt.clientY)
+					position: pointInCanvas(canvas[CanvasSmbl].data, evt.clientX, evt.clientY)
 				};
 			}
 
@@ -151,7 +151,7 @@ export function path(svg, canvasData, pathData) {
 		/** @param {PointerEventFixMovement} evt */
 		evt => {
 			if (!movedEnd) {
-				moveWholePath(canvasData, pathData, draw, evt);
+				moveWholePath(canvas[CanvasSmbl].data, pathData, draw, evt);
 			} else {
 				draw();
 			}
@@ -159,7 +159,7 @@ export function path(svg, canvasData, pathData) {
 		// onMoveEnd
 		evt => {
 			if (!movedEnd) {
-				moveWholePathFinish(canvasData, pathData, draw);
+				moveWholePathFinish(canvas[CanvasSmbl].data, pathData, draw);
 			} else {
 				// connect to shape
 				const elemFromPoint = priorityElemFromPoint(evt);
@@ -169,7 +169,7 @@ export function path(svg, canvasData, pathData) {
 					pathData[movedEnd].shape = { shapeEl: elemFromPoint.parentElement, connectorKey };
 					pathAddToShape(pathData[movedEnd]);
 				} else {
-					placeToCell(pathData[movedEnd].data.position, canvasData.cell);
+					placeToCell(pathData[movedEnd].data.position, canvas[CanvasSmbl].data.cell);
 				}
 				draw();
 			}
@@ -368,8 +368,9 @@ const numInRangeIncludeEnds = (num, a, b) => a <= num && num <= b;
 	del():void
 	data: PathData
 }} Path
- */
+*/
 
+/** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */
 /** @typedef { import('./shape-smbl').ShapeElement } ShapeElement */
 /** @typedef { import('./shape-evt-proc').Shape } Shape */
 /** @typedef { import('../infrastructure/move-evt-mobile-fix.js').PointerEventFixMovement } PointerEventFixMovement */

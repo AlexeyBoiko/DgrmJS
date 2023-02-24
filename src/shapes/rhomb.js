@@ -2,18 +2,17 @@ import { ceil, child, classAdd, positionSet, svgTxtFarthestPoint } from '../infr
 import { shapeCreate } from './shape-evt-proc.js';
 
 /**
- * @param {Element} svg
- * @param {CanvasData} canvasData
+ * @param {CanvasElement} canvas
  * @param {RhombData} rhombData
  */
-export function rhomb(svg, canvasData, rhombData) {
+export function rhomb(canvas, rhombData) {
 	const templ = `
 		<path data-key="outer" data-evt-no data-evt-index="2" d="M-72 0 L0 -72 L72 0 L0 72 Z" stroke-width="0" fill="transparent" />
 		<path data-key="border" d="M-39 0 L0 -39 L39 0 L0 39 Z" stroke-width="20" stroke="#fff"	fill="transparent" stroke-linejoin="round" />
 		<path data-key="main" d="M-39 0 L0 -39 L39 0 L0 39 Z" stroke-width="18" stroke-linejoin="round"	stroke="#1D809F" fill="#1D809F" />
 		<text data-key="text" x="0" y="0" text-anchor="middle" style="pointer-events: none;" fill="#fff">&nbsp;</text>`;
 
-	const shape = shapeCreate(svg, canvasData, rhombData, templ,
+	const shape = shapeCreate(canvas, rhombData, templ,
 		{
 			right: { dir: 'right', position: { x: 48, y: 0 } },
 			left: { dir: 'left', position: { x: -48, y: 0 } },
@@ -90,12 +89,13 @@ function textElRhombWidth(textEl) {
 }
 
 /** @typedef { {x:number, y:number} } Point */
+/** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */
 /** @typedef { import('./shape-evt-proc').CanvasData } CanvasData */
 /** @typedef { import('./shape-evt-proc').ConnectorsData } ConnectorsData */
 /**
 @typedef {{
-type:number, position: Point, title?: string, styles?: string[],
-w?:number
+	type:number, position: Point, title?: string, styles?: string[]
+	w?:number
 }} RhombData
 */
 /** @typedef { { l:Point, t:Point, r:Point, b:Point } } RhombPoints */
