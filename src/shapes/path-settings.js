@@ -1,6 +1,6 @@
-import { classAdd, classDel, listen } from '../infrastructure/util.js';
+import { classAdd, classDel, clickForAll, listen } from '../infrastructure/util.js';
 import { PathSmbl } from './path-smbl.js';
-import { clickForAll, singleClassAdd, evtTargetAttr } from './shape-settings.js';
+import { singleClassAdd, evtTargetAttr } from './shape-settings.js';
 
 export class PathSettings extends HTMLElement {
 	/** @param {PathElement} pathElement */

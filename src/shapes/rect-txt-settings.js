@@ -1,5 +1,5 @@
-import { classAdd, classDel, listen } from '../infrastructure/util.js';
-import { singleClassAdd, pnlCreate, clickForAll, evtTargetAttr } from './shape-settings.js';
+import { classAdd, classDel, clickForAll, listen } from '../infrastructure/util.js';
+import { singleClassAdd, pnlCreate, evtTargetAttr } from './shape-settings.js';
 import { ShapeSmbl } from './shape-smbl.js';
 
 /**

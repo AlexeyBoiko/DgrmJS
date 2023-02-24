@@ -27,6 +27,9 @@ export const listen = (el, type, listener, once) => el.addEventListener(type, li
 /** @param {Element} el, @param {string} type, @param {EventListenerOrEventListenerObject} listener, @param {boolean?=} capture */
 export const listenDel = (el, type, listener, capture) => el?.removeEventListener(type, listener, { capture });
 
+/** @param {ParentNode} el, @param {string} selector, @param {(this: GlobalEventHandlers, ev: PointerEvent & { currentTarget: Element }) => any} handler */
+export function clickForAll(el, selector, handler) { el.querySelectorAll(selector).forEach(/** @param {HTMLElement} el */ el => { el.onclick = handler; }); }
+
 /**
  * @template {keyof SVGElementTagNameMap} T
  * @param {T} qualifiedName
