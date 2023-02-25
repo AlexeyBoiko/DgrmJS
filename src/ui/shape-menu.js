@@ -13,7 +13,7 @@ export class ShapeMenu extends HTMLElement {
 				padding: 0;
 				position: fixed;
 				top: 50%;
-				left: 15px;
+				left: 5px;
 				transform: translateY(-50%);
 				box-shadow: 0px 0px 58px 2px rgba(34, 60, 80, 0.2);
 				border-radius: 16px;
