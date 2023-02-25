@@ -43,6 +43,7 @@ export class PathSettings extends HTMLElement {
 			switch (evt.detail.cmd) {
 				case 'style': singleClassAdd(this._pathElement, this._pathElement[PathSmbl].data, 'cl-', evt.detail.arg); break;
 				case 'del': this._pathElement[PathSmbl].del(); break;
+				case 'copy': this._pathElement[PathSmbl].copy(); break;
 			}
 		});
 

@@ -95,4 +95,20 @@ export function arrPop(arr, action) {
 	while (itm) { action(itm); itm = arr.pop(); };
 }
 
+/** @param {Point} point, @param {number} shift */
+export function pointShift(point, shift) {
+	point.x += shift;
+	point.y += shift;
+}
+
+//
+// object utils
+
+/**
+ * @template T
+ * @param {T} obj
+ * @returns {T}
+ */
+export const deepCopy = obj => JSON.parse(JSON.stringify(obj));
+
 /** @typedef { {x:number, y:number} } Point */

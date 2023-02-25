@@ -1,4 +1,4 @@
-import { child, classAdd, classDel, classHas, listen, listenDel, svgEl } from '../infrastructure/util.js';
+import { child, classAdd, classDel, classHas, deepCopy, listen, listenDel, pointShift, svgEl } from '../infrastructure/util.js';
 import { moveEvtProc, movementApplay, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
 import { placeToCell, pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { ShapeSmbl } from './shape-smbl.js';
@@ -188,7 +188,11 @@ export function path(canvas, pathData) {
 		/** @param {PointerEventInit} evt */
 		pointerCapture: evt => pathData.e.el.dispatchEvent(new PointerEvent('pointerdown', evt)),
 		del,
-		data: pathData
+		data: pathData,
+		copy: function() {
+			unSelect();
+			canvas.append(path(canvas, pathDataClone(pathData, canvas[CanvasSmbl].data.cell)));
+		}
 	};
 
 	if (pathData.styles) { classAdd(svgGrp, ...pathData.styles); }
@@ -342,6 +346,22 @@ function hoverEmulate(element) {
 	};
 }
 
+/** @param {PathData} data, @param {number} shift */
+function pathDataClone(data, shift) {
+	const copyData = deepCopy(data);
+
+	/** @param {PathEnd} pathEnd */
+	function prepareEnd(pathEnd) {
+		pointShift(pathEnd.data.position, shift);
+		delete pathEnd.shape;
+		delete pathEnd.el;
+	}
+	prepareEnd(copyData.s);
+	prepareEnd(copyData.e);
+
+	return copyData;
+}
+
 /** @param {Element} el, @param  {...string} keys */
 const childs = (el, ...keys) => keys.map(kk => child(el, kk));
 
@@ -366,6 +386,7 @@ const numInRangeIncludeEnds = (num, a, b) => a <= num && num <= b;
 	draw():void
 	pointerCapture:(evt:PointerEventInit)=>void
 	del():void
+	copy():void
 	data: PathData
 }} Path
 */

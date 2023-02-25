@@ -54,6 +54,7 @@ class RectTxtSettings extends HTMLElement {
 			switch (evt.detail.cmd) {
 				case 'style': singleClassAdd(this._rectElement, rectData, 'cl-', evt.detail.arg); break;
 				case 'del': this._rectElement[ShapeSmbl].del(); break;
+				case 'copy': this._rectElement[ShapeSmbl].copy(); break;
 			}
 		});
 

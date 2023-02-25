@@ -11,7 +11,7 @@ export function circle(canvas, circleData) {
 		<circle data-key="main" r="48" fill="#ff6600" stroke="#fff" stroke-width="1" />
 		<text data-key="text" x="0" y="0" text-anchor="middle" style="pointer-events: none;" fill="#fff">&nbsp;</text>`;
 
-	const shape = shapeCreate(canvas, circleData, templ,
+	const shape = shapeCreate(canvas, circleData, templ, circle,
 		{
 			right: { dir: 'right', position: { x: 48, y: 0 } },
 			left: { dir: 'left', position: { x: -48, y: 0 } },
