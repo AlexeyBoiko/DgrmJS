@@ -1,18 +1,19 @@
-import { classAdd, classDel, clickForAll, listen } from '../infrastructure/util.js';
+import { copySvg, delSvg } from '../infrastructure/assets.js';
+import { clickForAll, listen, classSingleAdd, evtTargetAttr } from '../infrastructure/util.js';
 import { ShapeSmbl } from './shape-smbl.js';
 
-/**
- * @param {number} bottomX positon of the bottom left corner of the panel
- * @param {number} bottomY positon of the bottom left corner of the panel
- * @param { {(evt: PointerEvent):void} } onDel
- */
-export function delPnlCreate(bottomX, bottomY, onDel) {
-	const div = document.createElement('div');
-	div.style.cssText = 'height: 24px; padding:10px;';
-	div.onclick = onDel;
-	div.innerHTML = delSvg;
-	return pnlCreate(bottomX, bottomY, div);
-}
+// /**
+//  * @param {number} bottomX positon of the bottom left corner of the panel
+//  * @param {number} bottomY positon of the bottom left corner of the panel
+//  * @param { {(evt: PointerEvent):void} } onDel
+//  */
+// export function delPnlCreate(bottomX, bottomY, onDel) {
+// 	const div = document.createElement('div');
+// 	div.style.cssText = 'height: 24px; padding:10px;';
+// 	div.onclick = onDel;
+// 	div.innerHTML = delSvg;
+// 	return pnlCreate(bottomX, bottomY, div);
+// }
 
 /**
  * @param {number} bottomX positon of the bottom left corner of the panel
@@ -23,7 +24,7 @@ export function settingsPnlCreate(bottomX, bottomY, shapeElement) {
 	const shapeSettings = new ShapeEdit();
 	listen(shapeSettings, 'cmd', /** @param {CustomEvent<{cmd:string, arg:string}>} evt */ evt => {
 		switch (evt.detail.cmd) {
-			case 'style': singleClassAdd(shapeElement, shapeElement[ShapeSmbl].data, 'cl-', evt.detail.arg); break;
+			case 'style': classSingleAdd(shapeElement, shapeElement[ShapeSmbl].data, 'cl-', evt.detail.arg); break;
 			case 'del': shapeElement[ShapeSmbl].del(); break;
 			case 'copy': shapeElement[ShapeSmbl].copy(); break;
 		}
@@ -101,7 +102,7 @@ class ShapeEdit extends HTMLElement {
 		<div class="ln">
 			<svg data-toggle="clr" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M19.228 18.732l1.768-1.768 1.767 1.768a2.5 2.5 0 1 1-3.535 0zM8.878 1.08l11.314 11.313a1 1 0 0 1 0 1.415l-8.485 8.485a1 1 0 0 1-1.414 0l-8.485-8.485a1 1 0 0 1 0-1.415l7.778-7.778-2.122-2.121L8.88 1.08zM11 6.03L3.929 13.1 11 20.173l7.071-7.071L11 6.029z" fill="rgb(52,71,103)"/></svg>
 			<svg data-toggle="prop"  ${this.getAttribute('edit-btn') ? '' : 'style="display: none;"'} viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12.9 6.858l4.242 4.243L7.242 21H3v-4.243l9.9-9.9zm1.414-1.414l2.121-2.122a1 1 0 0 1 1.414 0l2.829 2.829a1 1 0 0 1 0 1.414l-2.122 2.121-4.242-4.242z" fill="rgb(52,71,103)"/></svg>
-			<svg data-cmd="copy" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1.001 1.001 0 0 1 3 21l.003-14c0-.552.45-1 1.007-1H7zM5.003 8L5 20h10V8H5.003zM9 6h8v10h2V4H9v2z" fill="rgba(52,71,103,1)"/></svg>
+			${copySvg}
 			${delSvg}
 		</div>`;
 
@@ -151,23 +152,5 @@ class ShapeEdit extends HTMLElement {
 }
 customElements.define('ap-shape-edit', ShapeEdit);
 
-const delSvg = '<svg data-cmd="del" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17 6h5v2h-2v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8H2V6h5V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3zm1 2H6v12h12V8zm-9 3h2v6H9v-6zm4 0h2v6h-2v-6zM9 4v2h6V4H9z" fill="rgb(52,71,103)"/></svg>';
-
 /** @param {ElementCSSInlineStyle} el, @param {boolean} isDisp */
 function display(el, isDisp) { el.style.display = isDisp ? 'unset' : 'none'; }
-
-/** @param {PointerEvent & { currentTarget: Element }} evt, @param {string} attr */
-export const evtTargetAttr = (evt, attr) => evt.currentTarget.getAttribute(attr);
-
-/** @param {Element} shapeEl, @param {{styles?:string[]}} shapeData, @param {string} classPrefix, @param {string} classToAdd */
-export function singleClassAdd(shapeEl, shapeData, classPrefix, classToAdd) {
-	if (!shapeData.styles) { shapeData.styles = []; }
-
-	const currentClass = shapeData.styles.findIndex(ss => ss.startsWith(classPrefix));
-	if (currentClass > -1) {
-		classDel(shapeEl, shapeData.styles[currentClass]);
-		shapeData.styles.splice(currentClass, 1);
-	}
-	shapeData.styles.push(classToAdd);
-	classAdd(shapeEl, classToAdd);
-}

@@ -1,5 +1,5 @@
-import { classAdd, classDel, clickForAll, listen } from '../infrastructure/util.js';
-import { singleClassAdd, pnlCreate, evtTargetAttr } from './shape-settings.js';
+import { classAdd, classDel, clickForAll, listen, classSingleAdd, evtTargetAttr } from '../infrastructure/util.js';
+import { pnlCreate } from './shape-settings.js';
 import { ShapeSmbl } from './shape-smbl.js';
 
 /**
@@ -52,7 +52,7 @@ class RectTxtSettings extends HTMLElement {
 		// colors, del
 		listen(editEl, 'cmd', /** @param {CustomEvent<{cmd:string, arg:string}>} evt */ evt => {
 			switch (evt.detail.cmd) {
-				case 'style': singleClassAdd(this._rectElement, rectData, 'cl-', evt.detail.arg); break;
+				case 'style': classSingleAdd(this._rectElement, rectData, 'cl-', evt.detail.arg); break;
 				case 'del': this._rectElement[ShapeSmbl].del(); break;
 				case 'copy': this._rectElement[ShapeSmbl].copy(); break;
 			}

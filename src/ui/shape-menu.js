@@ -102,7 +102,6 @@ export class ShapeMenu extends HTMLElement {
 					if (this._parentElem === this._pointElem) {
 						// TODO: check mobile
 						this._canvas.ownerSVGElement.setPointerCapture(evt.pointerId);
-						// this._shapeCreate(evt);
 					}
 
 					/**

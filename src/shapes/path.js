@@ -12,6 +12,7 @@ import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
  * @param {PathData} pathData
  */
 export function path(canvas, pathData) {
+	/** @type {PathElement} */
 	const svgGrp = svgEl('g', `
 		<path data-key="outer" d="M0 0" stroke="transparent" stroke-width="20" fill="none" />
 		<path data-key="path" class="path" d="M0 0" stroke="#495057" stroke-width="1.8" fill="none" style="pointer-events: none;" />
@@ -191,7 +192,9 @@ export function path(canvas, pathData) {
 		data: pathData,
 		copy: function() {
 			unSelect();
-			canvas.append(path(canvas, pathDataClone(pathData, canvas[CanvasSmbl].data.cell)));
+			const copyPath = path(canvas, pathDataClone(pathData, canvas[CanvasSmbl].data.cell));
+			canvas.append(copyPath);
+			return copyPath;
 		}
 	};
 
@@ -347,7 +350,7 @@ function hoverEmulate(element) {
 }
 
 /** @param {PathData} data, @param {number} shift */
-function pathDataClone(data, shift) {
+export function pathDataClone(data, shift) {
 	const copyData = deepCopy(data);
 
 	/** @param {PathEnd} pathEnd */
@@ -383,14 +386,15 @@ const numInRangeIncludeEnds = (num, a, b) => a <= num && num <= b;
 /** @typedef { {shape?:PathConnectedShape, data?:PathEndData, oppositeShape?:PathConnectedShape, type:number} } MovedEnd */
 /**
 @typedef {{
-	draw():void
-	pointerCapture:(evt:PointerEventInit)=>void
-	del():void
-	copy():void
+	draw(): void
+	pointerCapture: (evt:PointerEventInit)=>void
+	del(): void
+	copy(): PathElement
 	data: PathData
 }} Path
 */
 
+/** @typedef { import('./path-smbl.js').PathElement } PathElement */
 /** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */
 /** @typedef { import('./shape-smbl').ShapeElement } ShapeElement */
 /** @typedef { import('./shape-evt-proc').Shape } Shape */

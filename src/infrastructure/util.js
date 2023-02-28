@@ -21,6 +21,19 @@ export const classDel = (el, cl) => el?.classList.remove(cl);
 /** @param {Element} el, @param {string} cl */
 export const classHas = (el, cl) => el?.classList.contains(cl);
 
+/** @param {Element} shapeEl, @param {{styles?:string[]}} shapeData, @param {string} classPrefix, @param {string} classToAdd */
+export function classSingleAdd(shapeEl, shapeData, classPrefix, classToAdd) {
+	if (!shapeData.styles) { shapeData.styles = []; }
+
+	const currentClass = shapeData.styles.findIndex(ss => ss.startsWith(classPrefix));
+	if (currentClass > -1) {
+		classDel(shapeEl, shapeData.styles[currentClass]);
+		shapeData.styles.splice(currentClass, 1);
+	}
+	shapeData.styles.push(classToAdd);
+	classAdd(shapeEl, classToAdd);
+}
+
 /** @param {Element} el, @param {string} type, @param {EventListenerOrEventListenerObject} listener, @param {boolean?=} once */
 export const listen = (el, type, listener, once) => el.addEventListener(type, listener, { passive: true, once });
 
@@ -29,6 +42,9 @@ export const listenDel = (el, type, listener, capture) => el?.removeEventListene
 
 /** @param {ParentNode} el, @param {string} selector, @param {(this: GlobalEventHandlers, ev: PointerEvent & { currentTarget: Element }) => any} handler */
 export function clickForAll(el, selector, handler) { el.querySelectorAll(selector).forEach(/** @param {HTMLElement} el */ el => { el.onclick = handler; }); }
+
+/** @param {PointerEvent & { currentTarget: Element }} evt, @param {string} attr */
+export const evtTargetAttr = (evt, attr) => evt.currentTarget.getAttribute(attr);
 
 /**
  * @template {keyof SVGElementTagNameMap} T
@@ -93,6 +109,18 @@ export function ceil(min, step, val) {
 export function arrPop(arr, action) {
 	let itm = arr.pop();
 	while (itm) { action(itm); itm = arr.pop(); };
+}
+
+/**
+ * @template T
+ * @param {Array<T>} arr
+ * @param {T} el
+ */
+export function arrDel(arr, el) {
+	const index = arr.indexOf(el);
+	if (index > -1) {
+		arr.splice(index, 1);
+	}
 }
 
 /** @param {Point} point, @param {number} shift */

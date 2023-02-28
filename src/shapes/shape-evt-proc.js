@@ -117,7 +117,9 @@ function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, te
 
 		const copyData = deepCopy(shapeData);
 		pointShift(copyData.position, canvas[CanvasSmbl].data.cell);
-		canvas.append(shapeCreateFn(canvas, copyData));
+		const copyShapeEl = shapeCreateFn(canvas, copyData);
+		canvas.append(copyShapeEl);
+		return copyShapeEl;
 	};
 
 	return {
@@ -283,7 +285,7 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onEdit
 	data: ShapeData
 	del?: ()=>void
 	draw?: ()=>void
-	copy?: ()=>void
+	copy?: ()=>ShapeElement
 }} Shape
  */
 
