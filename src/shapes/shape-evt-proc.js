@@ -8,6 +8,7 @@ import { ShapeSmbl } from './shape-smbl.js';
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
 import { PathSmbl } from './path-smbl.js';
 import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
+import { canvasSelectionClearSet } from '../diagram/copy-past-applay.js';
 
 /**
  * provides:
@@ -111,7 +112,6 @@ function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, te
 	if (shapeData.styles) { classAdd(svgGrp, ...shapeData.styles); }
 
 	svgGrp[ShapeSmbl].del = function() {
-		unSelect();
 		shapeProc.del();
 		svgGrp.remove();
 	};
@@ -168,13 +168,12 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSele
 		}
 	};
 
-	/** @param {boolean?=} fireEditStop */
-	function unSelect(fireEditStop) {
-		// in edit mode
-		if (fireEditStop /* && classHas(svgGrp, 'highlight') */) { onUnselect(); }
+	function unSelect() {
+		onUnselect();
 
 		classDel(svgGrp, 'select');
 		classDel(svgGrp, 'highlight');
+		canvasSelectionClearSet(canvas, null);
 	}
 
 	const moveProcReset = moveEvtProc(
@@ -185,7 +184,7 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSele
 		// onMoveStart
 		/** @param {PointerEvent & { target: Element} } evt */
 		evt => {
-			unSelect(true);
+			unSelect();
 
 			const connectorKey = evt.target.getAttribute('data-connect');
 			if (connectorKey) {
@@ -227,11 +226,12 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSele
 			}
 
 			// to select mode
+			canvasSelectionClearSet(canvas, unSelect);
 			onSelect();
 			classAdd(svgGrp, 'select');
 		},
 		// onOutdown
-		() => unSelect(true));
+		unSelect);
 
 	svgGrp[ShapeSmbl] = {
 		/**
@@ -256,12 +256,12 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSele
 	return {
 		drawPosition,
 		del: () => {
+			unSelect();
 			moveProcReset();
 			for (const path of paths) {
 				path[PathSmbl].del();
 			}
-		},
-		unSelect
+		}
 	};
 }
 

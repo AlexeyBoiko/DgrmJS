@@ -6,6 +6,7 @@ import { PathSettings } from './path-settings.js';
 import { PathSmbl } from './path-smbl.js';
 import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
 import { modalCreate } from './modal-create.js';
+import { canvasSelectionClearSet } from '../diagram/copy-past-applay.js';
 
 /**
  * @param {CanvasElement} canvas
@@ -61,7 +62,7 @@ export function path(canvas, pathData) {
 	/** @type { {position:(bottomX:number, bottomY:number)=>void, del:()=>void} } */
 	let settingsPnl;
 	function del() {
-		settingsPnl?.del(); settingsPnl = null;
+		unSelect();
 		reset();
 		pathDelFromShape(pathData.s);
 		pathDelFromShape(pathData.e);
@@ -83,17 +84,18 @@ export function path(canvas, pathData) {
 		classAdd(svgGrp, 'select');
 		endSetEvtIndex(pathData.s, 2);
 		endSetEvtIndex(pathData.e, 2);
+		canvasSelectionClearSet(canvas, unSelect);
 	};
 
 	/** @type { {():void} } */
 	let hoverEmulateDispose;
 	function unSelect() {
+		canvasSelectionClearSet(canvas, null);
 		classDel(svgGrp, 'select');
 		endSetEvtIndex(pathData.s, 1);
 		endSetEvtIndex(pathData.e, 1);
 
-		settingsPnl?.del();
-		settingsPnl = null;
+		settingsPnl?.del();	settingsPnl = null;
 
 		if (hoverEmulateDispose) {
 			hoverEmulateDispose();

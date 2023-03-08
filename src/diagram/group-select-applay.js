@@ -249,7 +249,7 @@ function groupEvtProc(canvas, selected) {
 			arrPop(selected.pathEndsPaths, pathEl => pathUnhighlight(pathEl));
 			selected.pathEnds = null;
 			selected.shapesPaths = null;
-			canvas[CanvasSmbl].selectClear = null;
+			canvasSelectionClearSet(canvas, null);
 		}
 	}
 
