@@ -1,4 +1,4 @@
-import { child, classAdd, classDel, classHas, deepCopy, pointShift, svgEl } from '../infrastructure/util.js';
+import { child, classAdd, classDel, classHas, deepCopy, listenDel, pointShift, svgEl } from '../infrastructure/util.js';
 import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
 import { path, dirReverse } from './path.js';
 import { textareaCreate } from '../infrastructure/svg-text-area.js';
@@ -42,10 +42,10 @@ export function shapeCreate(canvas, shapeData, shapeHtml, shapeCreateFn, cons, o
 	svgTextDraw(textSettings.el, textSettings.vMid, shapeData.title);
 
 	const shapeProc = shapeEditEvtProc(canvas, el, shapeData, cons, textSettings,
-		// onTextChange
-		() => onTextChange(textSettings.el),
 		shapeCreateFn,
-		settingsPnlCreateFn);
+		settingsPnlCreateFn,
+		// onTextChange
+		() => onTextChange(textSettings.el));
 
 	return {
 		el,
@@ -72,16 +72,20 @@ export function shapeCreate(canvas, shapeData, shapeHtml, shapeCreateFn, cons, o
  * @param {{(canvas:CanvasElement, shapeData:ShapeData):ShapeElement}} shapeCreateFn
  * @param {SettingsPnlCreateFn} settingsPnlCreateFn
  */
-function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, textSettings, onTextChange, shapeCreateFn, settingsPnlCreateFn) {
+function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, textSettings, shapeCreateFn, settingsPnlCreateFn, onTextChange) {
 	/** @type {{dispose():void, draw():void}} */
 	let textEditor;
 
 	/** @type { {position:(bottomX:number, bottomY:number)=>void, del:()=>void} } */
 	let settingsPnl;
 
-	function delEditor() {
+	/** @type {()=>void} */
+	let listenCopyDispose;
+
+	function unSelect() {
 		textEditor?.dispose(); textEditor = null;
 		settingsPnl?.del(); settingsPnl = null;
+		if (listenCopyDispose) { listenCopyDispose(); listenCopyDispose = null;	}
 	}
 
 	/** @param {string} txt */
@@ -92,6 +96,10 @@ function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, te
 
 	const settingPnlCreate = settingsPnlCreateFn ?? settingsPnlCreate;
 	const shapeProc = shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition,
+		// onSelect
+		() => {
+			listenCopyDispose = listenCopy(svgGrp);
+		},
 		// onEdit
 		() => {
 			textEditor = textareaCreate(textSettings.el, textSettings.vMid, shapeData.title, onTxtChange, onTxtChange);
@@ -99,21 +107,21 @@ function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, te
 			const position = svgGrp.getBoundingClientRect();
 			settingsPnl = settingPnlCreate(position.left + 10, position.top + 10, svgGrp);
 		},
-		// onEditStop
-		delEditor
+		// onUnselect
+		unSelect
 	);
 
 	if (shapeData.styles) { classAdd(svgGrp, ...shapeData.styles); }
 
 	svgGrp[ShapeSmbl].del = function() {
-		delEditor();
+		unSelect();
 		shapeProc.del();
 		svgGrp.remove();
 	};
 
 	svgGrp[ShapeSmbl].copy = function() {
 		shapeProc.unSelect();
-		delEditor();
+		unSelect();
 
 		const copyData = deepCopy(shapeData);
 		pointShift(copyData.position, canvas[CanvasSmbl].data.cell);
@@ -145,10 +153,11 @@ function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, te
  * @param {ShapeElement} svgGrp
  * @param {ShapeData} shapeData
  * @param {ConnectorsData} connectorsInnerPosition
+ * @param {{():void}} onSelect
  * @param {{():void}} onEdit
- * @param {{():void}} onEditStop
+ * @param {{():void}} onUnselect
  */
-function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onEdit, onEditStop) {
+function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSelect, onEdit, onUnselect) {
 	classAdd(svgGrp, 'hovertrack');
 
 	/** @type {ConnectorsData} */
@@ -176,7 +185,7 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onEdit
 	/** @param {boolean?=} fireEditStop */
 	function unSelect(fireEditStop) {
 		// in edit mode
-		if (fireEditStop && classHas(svgGrp, 'highlight')) { onEditStop(); }
+		if (fireEditStop /* && classHas(svgGrp, 'highlight') */) { onUnselect(); }
 
 		classDel(svgGrp, 'select');
 		classDel(svgGrp, 'highlight');
@@ -232,6 +241,7 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onEdit
 			}
 
 			// to select mode
+			onSelect();
 			classAdd(svgGrp, 'select');
 		},
 		// onOutdown
@@ -266,6 +276,23 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onEdit
 			}
 		},
 		unSelect
+	};
+}
+
+/** @param {ShapeElement} svgGrp */
+function listenCopy(svgGrp) {
+	/** @param {ClipboardEvent & {target:HTMLElement | SVGElement}} evt */
+	function onCopy(evt) {
+		if (document.activeElement === svgGrp.ownerSVGElement) {
+			evt.clipboardData.setData('dgrm', JSON.stringify(deepCopy(svgGrp[ShapeSmbl].data)));
+			evt.preventDefault();
+		}
+	}
+	document.addEventListener('copy', onCopy);
+
+	// dispose fn
+	return function() {
+		listenDel(document, 'copy', onCopy);
 	};
 }
 

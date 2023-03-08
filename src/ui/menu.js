@@ -76,7 +76,7 @@ export class Menu extends HTMLElement {
 			dgrmPngCreate(
 				this._canvas,
 				JSON.stringify(serialized),
-				png => fileSave(png, 'dgrm.png')); // TODO: check await
+				png => fileSave(png, 'dgrm.png'));
 		});
 
 		click('open', () =>

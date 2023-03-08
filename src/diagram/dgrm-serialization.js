@@ -35,7 +35,7 @@ export function serialize(canvas) {
 
 /**
  * @param {SVGGElement} canvas
- * @param {Record<number, {create :(shapeData)=>SVGGraphicsElement}>} shapeTypeMap
+ * @param {Record<number, ShapeType>} shapeTypeMap
  * @param {DiagramSerialized} data
  */
 export function deserialize(canvas, shapeTypeMap, data) {
@@ -96,3 +96,4 @@ export function deserialize(canvas, shapeTypeMap, data) {
 /** @typedef { {type:number, c?:string, s:PathEndSerialized, e:PathEndSerialized} } PathSerialized */
 
 /** @typedef { import('../shapes/shape-evt-proc').CanvasData } CanvasData */
+/** @typedef { import('../shapes/shape-type-map.js').ShapeType } ShapeType */

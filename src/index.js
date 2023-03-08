@@ -9,6 +9,7 @@ import { groupSelectApplay } from './diagram/group-select-applay.js';
 import { shapeTypeMap } from './shapes/shape-type-map.js';
 import './ui/menu.js';
 import './ui/shape-menu.js';
+import { copyPastApplay } from './diagram/copy-past-applay.js';
 
 // @ts-ignore
 /** @type {import('./infrastructure/canvas-smbl.js').CanvasElement} */ const canvas = document.getElementById('canvas');
@@ -23,6 +24,7 @@ const shapesTypeMap = shapeTypeMap(canvas);
 
 moveEvtMobileFix(canvas.ownerSVGElement);
 evtRouteApplay(canvas.ownerSVGElement);
+copyPastApplay(canvas, shapesTypeMap);
 groupSelectApplay(canvas); // groupSelectApplay must go before moveScaleApplay
 moveScaleApplay(canvas);
 
