@@ -1,21 +1,29 @@
+import { copyAndPast } from '../diagram/copy-past-applay.js';
 import { classAdd, classDel, clickForAll, listen, classSingleAdd, evtTargetAttr } from '../infrastructure/util.js';
-import { pnlCreate } from './shape-settings.js';
+import { modalCreate } from './modal-create.js';
 import { ShapeSmbl } from './shape-smbl.js';
 
 /**
+ * @param {import('../infrastructure/canvas-smbl.js').CanvasElement} canvas
+ * @param {import('./shape-smbl').ShapeElement} shapeElement
  * @param {number} bottomX positon of the bottom left corner of the panel
  * @param {number} bottomY positon of the bottom left corner of the panel
- * @param {import('./shape-smbl').ShapeElement} shapeElement
  */
-export const rectTxtSettingsPnlCreate = (bottomX, bottomY, shapeElement) =>
-	pnlCreate(bottomX, bottomY, new RectTxtSettings(shapeElement));
+export const rectTxtSettingsPnlCreate = (canvas, shapeElement, bottomX, bottomY) =>
+	modalCreate(bottomX, bottomY, new RectTxtSettings(canvas, shapeElement));
 
 class RectTxtSettings extends HTMLElement {
-	/** @param {import('./shape-smbl').ShapeElement} rectElement */
-	constructor(rectElement) {
+	/**
+ 	 * @param {import('../infrastructure/canvas-smbl.js').CanvasElement} canvas
+	 * @param {import('./shape-smbl').ShapeElement} rectElement
+	 */
+	constructor(canvas, rectElement) {
 		super();
 		/** @private */
 		this._rectElement = rectElement;
+
+		/** @private */
+		this._canvas = canvas;
 	}
 
 	connectedCallback() {
@@ -54,7 +62,7 @@ class RectTxtSettings extends HTMLElement {
 			switch (evt.detail.cmd) {
 				case 'style': classSingleAdd(this._rectElement, rectData, 'cl-', evt.detail.arg); break;
 				case 'del': this._rectElement[ShapeSmbl].del(); break;
-				case 'copy': this._rectElement[ShapeSmbl].copy(); break;
+				case 'copy': copyAndPast(this._canvas, [this._rectElement]); break;
 			}
 		});
 

@@ -18,18 +18,18 @@ canvas[CanvasSmbl] = {
 		position: { x: 0, y: 0 },
 		scale: 1,
 		cell: 24
-	}
+	},
+	shapeMap: shapeTypeMap(canvas)
 };
-const shapesTypeMap = shapeTypeMap(canvas);
 
 moveEvtMobileFix(canvas.ownerSVGElement);
 evtRouteApplay(canvas.ownerSVGElement);
-copyPastApplay(canvas, shapesTypeMap);
+copyPastApplay(canvas);
 groupSelectApplay(canvas); // groupSelectApplay must go before moveScaleApplay
 moveScaleApplay(canvas);
 
-/** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas, shapesTypeMap);
-/** @type { import('./ui/shape-menu').ShapeMenu } */(document.getElementById('menu-shape')).init(canvas, shapesTypeMap);
+/** @type { import('./ui/menu').Menu } */(document.getElementById('menu')).init(canvas);
+/** @type { import('./ui/shape-menu').ShapeMenu } */(document.getElementById('menu-shape')).init(canvas);
 
 // load diagram by link
 let url = new URL(window.location.href);
@@ -37,7 +37,7 @@ if (url.searchParams.get('k')) {
 	uiDisable(true);
 	srvGet(url.searchParams.get('k')).then(appData => {
 		url.searchParams.delete('k');
-		if (deserialize(canvas, shapesTypeMap, appData)) { tipShow(false); }
+		if (deserialize(canvas, appData)) { tipShow(false); }
 		history.replaceState(null, null, url);
 		uiDisable(false);
 		url = null;

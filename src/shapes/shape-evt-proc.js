@@ -1,4 +1,4 @@
-import { child, classAdd, classDel, classHas, deepCopy, listenDel, pointShift, svgEl } from '../infrastructure/util.js';
+import { child, classAdd, classDel, classHas, deepCopy, listenDel, svgEl } from '../infrastructure/util.js';
 import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
 import { path, dirReverse } from './path.js';
 import { textareaCreate } from '../infrastructure/svg-text-area.js';
@@ -20,12 +20,11 @@ import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
  * @param {CanvasElement} canvas
  * @param {string} shapeHtml must have '<text data-key="text">'
  * @param {ShapeData & { title?: string, styles?: string[]}} shapeData
- * @param {{(canvas:CanvasElement, shapeData:ShapeData):ShapeElement}} shapeCreateFn
  * @param {ConnectorsData} cons
  * @param {SettingsPnlCreateFn=} settingsPnlCreateFn
  * @param {{(txtEl:SVGTextElement):void}} onTextChange
  */
-export function shapeCreate(canvas, shapeData, shapeHtml, shapeCreateFn, cons, onTextChange, settingsPnlCreateFn) {
+export function shapeCreate(canvas, shapeData, shapeHtml, cons, onTextChange, settingsPnlCreateFn) {
 	/** @type {ShapeElement} */
 	const el = svgEl('g', `${shapeHtml}
 		${Object.entries(cons)
@@ -42,7 +41,6 @@ export function shapeCreate(canvas, shapeData, shapeHtml, shapeCreateFn, cons, o
 	svgTextDraw(textSettings.el, textSettings.vMid, shapeData.title);
 
 	const shapeProc = shapeEditEvtProc(canvas, el, shapeData, cons, textSettings,
-		shapeCreateFn,
 		settingsPnlCreateFn,
 		// onTextChange
 		() => onTextChange(textSettings.el));
@@ -69,10 +67,9 @@ export function shapeCreate(canvas, shapeData, shapeHtml, shapeCreateFn, cons, o
  * @param {ConnectorsData} connectorsInnerPosition
  * @param { {el:SVGTextElement, vMid: number} } textSettings vMid in em
  * @param {{():void}} onTextChange
- * @param {{(canvas:CanvasElement, shapeData:ShapeData):ShapeElement}} shapeCreateFn
  * @param {SettingsPnlCreateFn} settingsPnlCreateFn
  */
-function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, textSettings, shapeCreateFn, settingsPnlCreateFn, onTextChange) {
+function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, textSettings, settingsPnlCreateFn, onTextChange) {
 	/** @type {{dispose():void, draw():void}} */
 	let textEditor;
 
@@ -105,7 +102,7 @@ function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, te
 			textEditor = textareaCreate(textSettings.el, textSettings.vMid, shapeData.title, onTxtChange, onTxtChange);
 
 			const position = svgGrp.getBoundingClientRect();
-			settingsPnl = settingPnlCreate(position.left + 10, position.top + 10, svgGrp);
+			settingsPnl = settingPnlCreate(canvas, svgGrp, position.left + 10, position.top + 10);
 		},
 		// onUnselect
 		unSelect
@@ -117,17 +114,6 @@ function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, te
 		unSelect();
 		shapeProc.del();
 		svgGrp.remove();
-	};
-
-	svgGrp[ShapeSmbl].copy = function() {
-		shapeProc.unSelect();
-		unSelect();
-
-		const copyData = deepCopy(shapeData);
-		pointShift(copyData.position, canvas[CanvasSmbl].data.cell);
-		const copyShapeEl = shapeCreateFn(canvas, copyData);
-		canvas.append(copyShapeEl);
-		return copyShapeEl;
 	};
 
 	return {
@@ -312,11 +298,10 @@ function listenCopy(svgGrp) {
 	data: ShapeData
 	del?: ()=>void
 	draw?: ()=>void
-	copy?: ()=>ShapeElement
 }} Shape
  */
 
-/** @typedef { {(bottomX:number, bottomY:number, shapeElement:ShapeElement):{position(btmX:number, btmY:number):void, del():void} } } SettingsPnlCreateFn */
+/** @typedef { {(canvas:CanvasElement, shapeElement:ShapeElement, bottomX:number, bottomY:number):{position(btmX:number, btmY:number):void, del():void} } } SettingsPnlCreateFn */
 
 /** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */
 /** @typedef {import('./shape-smbl').ShapeElement} ShapeElement */

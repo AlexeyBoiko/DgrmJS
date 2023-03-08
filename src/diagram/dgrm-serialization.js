@@ -1,3 +1,4 @@
+import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
 import { PathSmbl } from '../shapes/path-smbl.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
 import { dgrmClear } from './dgrm-clear.js';
@@ -5,11 +6,12 @@ import { dgrmClear } from './dgrm-clear.js';
 const v = '1.1';
 
 /** @param {Element} canvas */
-export function serialize(canvas) {
+export const serialize = (canvas) => serializeShapes(/** @type {Array<ShapeElement & PathElement>} */([...canvas.children]));
+
+/** @param {Array<ShapeElement & PathElement>} shapes */
+export function serializeShapes(shapes) {
 	/** @type {DiagramSerialized} */
 	const diagramSerialized = { v, s: [] };
-
-	const shapes = /** @type {Array<ShapeElement & PathElement>} */([...canvas.children]);
 	for (const shape of shapes) {
 		if (shape[ShapeSmbl]) {
 			// shape
@@ -34,22 +36,22 @@ export function serialize(canvas) {
 }
 
 /**
- * @param {SVGGElement} canvas
- * @param {Record<number, ShapeType>} shapeTypeMap
+ * @param {CanvasElement} canvas
  * @param {DiagramSerialized} data
+ * @param {Boolean=} dontClear
  */
-export function deserialize(canvas, shapeTypeMap, data) {
-	if (data.v !== v) { alert('Wrong format'); return false; }
-	dgrmClear(canvas);
+export function deserialize(canvas, data, dontClear) {
+	if (data.v !== v) { alert('Wrong format'); return null; }
+	if (!dontClear) { dgrmClear(canvas); }
 
-	/** @type {Map<ShapeData, SVGGraphicsElement>} */
+	/** @type {Map<ShapeData, ShapeElement>} */
 	const shapeDataToElem = new Map();
 
 	/** @param {ShapeData} shapeData */
 	function shapeEnsure(shapeData) {
 		let shapeEl = shapeDataToElem.get(shapeData);
 		if (!shapeEl) {
-			shapeEl = shapeTypeMap[shapeData.type].create(shapeData);
+			shapeEl = canvas[CanvasSmbl].shapeMap[shapeData.type].create(shapeData);
 			canvas.append(shapeEl);
 			shapeDataToElem.set(shapeData, shapeEl);
 		}
@@ -57,8 +59,10 @@ export function deserialize(canvas, shapeTypeMap, data) {
 	}
 
 	/** @param {number?} index */
-	const shapeByIndex = (index) => shapeEnsure(/** @type {ShapeData} */(data.s[index]));
+	const shapeByIndex = index => shapeEnsure(/** @type {ShapeData} */(data.s[index]));
 
+	/** @type {PathElement[]} */
+	const paths = [];
 	for (const shape of data.s) {
 		switch (shape.type) {
 			// path
@@ -68,18 +72,20 @@ export function deserialize(canvas, shapeTypeMap, data) {
 					? { data: pathEnd.p }
 					: { shape: { shapeEl: shapeByIndex(pathEnd.s), connectorKey: pathEnd.k } };
 
-				canvas.append(shapeTypeMap[0].create({
+				const path = canvas[CanvasSmbl].shapeMap[0].create({
 					styles: /** @type {PathSerialized} */(shape).c,
 					s: pathDeserialize(/** @type {PathSerialized} */(shape).s),
 					e: pathDeserialize(/** @type {PathSerialized} */(shape).e)
-				}));
+				});
+				paths.push(path);
+				canvas.append(path);
 				break;
 			}
 			default: shapeEnsure(/** @type {ShapeData} */(shape)); break;
 		}
 	}
 
-	return true;
+	return [...shapeDataToElem.values(), ...paths];
 }
 
 /** @typedef {{v:string, s: Array<ShapeData | PathSerialized>}} DiagramSerialized */
@@ -96,4 +102,4 @@ export function deserialize(canvas, shapeTypeMap, data) {
 /** @typedef { {type:number, c?:string, s:PathEndSerialized, e:PathEndSerialized} } PathSerialized */
 
 /** @typedef { import('../shapes/shape-evt-proc').CanvasData } CanvasData */
-/** @typedef { import('../shapes/shape-type-map.js').ShapeType } ShapeType */
+/** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */

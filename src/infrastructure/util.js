@@ -123,10 +123,12 @@ export function arrDel(arr, el) {
 	}
 }
 
-/** @param {Point} point, @param {number} shift */
-export function pointShift(point, shift) {
-	point.x += shift;
-	point.y += shift;
+/** @param {Point} point, @param {Point} shift, @param {number=} coef */
+export function pointShift(point, shift, coef) {
+	const _coef = coef ?? 1;
+	point.x += _coef * shift.x;
+	point.y += _coef * shift.y;
+	return point;
 }
 
 //
