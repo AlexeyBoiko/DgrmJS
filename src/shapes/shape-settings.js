@@ -1,4 +1,4 @@
-import { copyAndPast } from '../diagram/copy-past-applay.js';
+import { copyAndPast } from '../diagram/group-select-applay.js';
 import { copySvg, delSvg } from '../infrastructure/assets.js';
 import { clickForAll, listen, classSingleAdd, evtTargetAttr } from '../infrastructure/util.js';
 import { modalChangeTop, modalCreate } from './modal-create.js';

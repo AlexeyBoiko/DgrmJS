@@ -1,12 +1,33 @@
 import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
 import { movementApplay, ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
 import { placeToCell, pointInCanvas } from '../infrastructure/move-scale-applay.js';
-import { arrPop, classAdd, classDel, listen, listenDel, positionSet, svgEl } from '../infrastructure/util.js';
+import { arrPop, classAdd, classDel, deepCopy, listen, listenDel, positionSet, svgEl } from '../infrastructure/util.js';
 import { PathSmbl } from '../shapes/path-smbl.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
 import { GroupSettings } from './group-settings.js';
-import { canvasSelectionClear, canvasSelectionClearSet, copyAndPast } from './copy-past-applay.js';
+import { canvasSelectionClear, canvasSelectionClearSet } from './copy-past-applay.js';
 import { modalCreate } from '../shapes/modal-create.js';
+import { deserialize, serializeShapes } from './dgrm-serialization.js';
+import { groupMoveToCenter } from './group-move.js';
+
+//
+// copy past
+
+/** @param {CanvasElement} canvas, @param {Array<ShapeElement & PathElement>} shapes */
+export const copyAndPast = (canvas, shapes) => past(canvas, copyDataCreate(shapes));
+
+/** @param {Array<ShapeElement & PathElement>} shapes */
+const copyDataCreate = shapes => deepCopy(serializeShapes(shapes));
+
+/** @param {CanvasElement} canvas, @param {DiagramSerialized} data */
+function past(canvas, data) {
+	canvasSelectionClear(canvas);
+	groupMoveToCenter(canvas, data);
+	groupSelect(canvas, deserialize(canvas, data, true));
+}
+
+//
+// group select
 
 const highlightSClass = 'highlight-s';
 const highlightEClass = 'highlight-e';
@@ -315,3 +336,4 @@ const pointInRect = (rectPosition, rectWidth, rectHeight, x, y) =>
 /** @typedef { import('../shapes/path-smbl').PathElement } PathElement */
 /** @typedef { SVGGraphicsElement & { [ShapeSmbl]?: Shape, [PathSmbl]?:Path }} ShapeOrPathElement */
 /** @typedef { import('../infrastructure/move-evt-mobile-fix.js').PointerEventFixMovement} PointerEventFixMovement */
+/** @typedef { import('./dgrm-serialization.js').DiagramSerialized } DiagramSerialized */
