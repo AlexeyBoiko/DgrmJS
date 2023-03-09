@@ -20,9 +20,12 @@ export function serializeShapes(shapes) {
 			// path
 
 			/** @param {PathEnd} pathEnd */
-			const pathSerialize = pathEnd => pathEnd.shape
-				? { s: shapes.indexOf(pathEnd.shape.shapeEl), k: pathEnd.shape.connectorKey }
-				: { p: pathEnd.data };
+			function pathSerialize(pathEnd) {
+				const shapeIndex = shapes.indexOf(pathEnd.shape?.shapeEl);
+				return (shapeIndex !== -1)
+					? { s: shapeIndex, k: pathEnd.shape.connectorKey }
+					: { p: pathEnd.data };
+			}
 
 			const pathData = shape[PathSmbl].data;
 			const pathJson = { type: 0, s: pathSerialize(pathData.s), e: pathSerialize(pathData.e) };

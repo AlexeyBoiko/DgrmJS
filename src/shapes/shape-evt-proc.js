@@ -1,4 +1,4 @@
-import { child, classAdd, classDel, classHas, deepCopy, listenDel, svgEl } from '../infrastructure/util.js';
+import { child, classAdd, classDel, deepCopy, listenDel, svgEl } from '../infrastructure/util.js';
 import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
 import { path, dirReverse } from './path.js';
 import { textareaCreate } from '../infrastructure/svg-text-area.js';
@@ -168,9 +168,16 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSele
 		}
 	};
 
+	/**
+	 * @type {0|1|2}
+	 * 0 - init, 1 - selected, 2 - edit
+	*/
+	let state = 0;
+
 	function unSelect() {
 		onUnselect();
 
+		state = 0;
 		classDel(svgGrp, 'select');
 		classDel(svgGrp, 'highlight');
 		canvasSelectionClearSet(canvas, null);
@@ -214,10 +221,11 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSele
 		// onClick
 		_ => {
 			// in edit mode
-			if (classHas(svgGrp, 'highlight')) { return; }
+			if (state === 2) { return; }
 
 			// to edit mode
-			if (classHas(svgGrp, 'select') && !classHas(svgGrp, 'highlight')) {
+			if (state === 1) {
+				state = 2;
 				classDel(svgGrp, 'select');
 				classAdd(svgGrp, 'highlight');
 				// edit mode
@@ -226,6 +234,7 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSele
 			}
 
 			// to select mode
+			state = 1;
 			canvasSelectionClearSet(canvas, unSelect);
 			onSelect();
 			classAdd(svgGrp, 'select');

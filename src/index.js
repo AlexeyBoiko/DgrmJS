@@ -1,7 +1,7 @@
 import { moveEvtMobileFix } from './infrastructure/move-evt-mobile-fix.js';
 import { CanvasSmbl } from './infrastructure/canvas-smbl.js';
 import { moveScaleApplay } from './infrastructure/move-scale-applay.js';
-import { evtRouteApplay } from './infrastructure/move-evt-proc.js';
+import { evtRouteApplay } from './infrastructure/evt-route-applay.js';
 import { tipShow, uiDisable } from './ui/ui.js';
 import { srvGet } from './diagram/dgrm-srv.js';
 import { deserialize } from './diagram/dgrm-serialization.js';

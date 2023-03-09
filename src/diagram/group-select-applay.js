@@ -1,5 +1,5 @@
 import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
-import { movementApplay, ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
+import { movementApplay, ProcessedSmbl, shapeSelect } from '../infrastructure/move-evt-proc.js';
 import { placeToCell, pointInCanvas } from '../infrastructure/move-scale-applay.js';
 import { arrPop, classAdd, classDel, deepCopy, listen, listenDel, positionSet, svgEl } from '../infrastructure/util.js';
 import { PathSmbl } from '../shapes/path-smbl.js';
@@ -33,7 +33,9 @@ const highlightSClass = 'highlight-s';
 const highlightEClass = 'highlight-e';
 const highlightClass = 'highlight';
 
-/** @param {CanvasElement} canvas */
+/** wait long press and draw selected rectangle
+ * @param {CanvasElement} canvas
+ */
 export function groupSelectApplay(canvas) {
 	const svg = canvas.ownerSVGElement;
 	let timer;
@@ -96,7 +98,6 @@ export function groupSelectApplay(canvas) {
 		listen(svg, 'pointerup', onUp, true);
 
 		timer = setTimeout(_ => {
-			// if (groupEvtProcDispose) { groupEvtProcDispose(); groupEvtProcDispose = null; }
 			canvasSelectionClear(canvas);
 
 			startCircle = svgEl('circle');
@@ -116,7 +117,7 @@ export function groupSelectApplay(canvas) {
 }
 
 /**
- * Highlight and procces gropu operations (like move, del, copy)
+ * Highlight selected shapes and procces group operations (move, del, copy)
  * @param {CanvasElement} canvas
  * @param {Iterable<ShapeOrPathElement>} elems
  * @param {{(position:Point):boolean}=} inRect
@@ -151,7 +152,7 @@ export function groupSelect(canvas, elems, inRect) {
 	for (const shapeEl of elems) {
 		if (shapeEl[ShapeSmbl]) {
 			if (shapeInRect(shapeEl[ShapeSmbl].data)) {
-				shapeHighlight(shapeEl);
+				classAdd(shapeEl, highlightClass);
 				selected.shapes.push(shapeEl);
 			}
 		} else if (shapeEl[PathSmbl]) {
@@ -176,6 +177,26 @@ export function groupSelect(canvas, elems, inRect) {
  * @param {Selected} selected
  */
 function groupEvtProc(canvas, selected) {
+	// only one shape selected
+	if (selected.shapes?.length === 1 && !selected.pathEnds?.length) {
+		classDel(selected.shapes[0], 'highlight');
+		shapeSelect(selected.shapes[0]);
+		return;
+	}
+
+	// only one pathEnd selected
+	if (!selected.shapes?.length && selected.pathEnds?.length === 1) {
+		pathUnhighlight(selected.pathEndsPaths[0]);
+		return;
+	}
+
+	// only one path selected
+	if (!selected.shapes?.length && selected.pathEnds?.length === 2 && selected.pathEndsPaths?.length === 1) {
+		pathUnhighlight(selected.pathEndsPaths[0]);
+		shapeSelect(selected.pathEndsPaths[0]);
+		return;
+	}
+
 	const svg = canvas.ownerSVGElement;
 	let isMove = false;
 	let isDownOnSelectedShape = false;
@@ -306,9 +327,6 @@ function pathUnhighlight(pathEl) {
 	classDel(pathEl, highlightSClass);
 	classDel(pathEl, highlightEClass);
 }
-
-/** @param {ShapeElement} shapeEl */
-const shapeHighlight = shapeEl => classAdd(shapeEl, highlightClass);
 
 /**
  * @param {Point} rectPosition

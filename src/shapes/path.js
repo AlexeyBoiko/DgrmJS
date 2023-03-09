@@ -1,6 +1,7 @@
 import { child, classAdd, classDel, classHas, listen, listenDel, svgEl } from '../infrastructure/util.js';
-import { moveEvtProc, movementApplay, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
+import { moveEvtProc, movementApplay } from '../infrastructure/move-evt-proc.js';
 import { placeToCell, pointInCanvas } from '../infrastructure/move-scale-applay.js';
+import { priorityElemFromPoint } from '../infrastructure/evt-route-applay.js';
 import { ShapeSmbl } from './shape-smbl.js';
 import { PathSettings } from './path-settings.js';
 import { PathSmbl } from './path-smbl.js';
@@ -69,18 +70,26 @@ export function path(canvas, pathData) {
 		svgGrp.remove();
 	}
 
+	/**
+	 * @type {0|1|2}
+	 * 0 - init, 1 - selected, 2 - edit
+	*/
+	let state = 0;
+
 	/** @param {PointerEvent} evt */
 	function select(evt) {
 		// in edit mode
-		if (classHas(svgGrp, 'select') && settingsPnl) { return; }
+		if (state === 2) { return; }
 
 		// to edit mode
-		if (classHas(svgGrp, 'select') && !settingsPnl) {
+		if (state === 1) {
+			state = 2;
 			settingsPnl = modalCreate(evt.clientX - 10, evt.clientY - 10, new PathSettings(canvas, svgGrp));
 			return;
 		}
 
 		// to select mode
+		state = 1;
 		classAdd(svgGrp, 'select');
 		endSetEvtIndex(pathData.s, 2);
 		endSetEvtIndex(pathData.e, 2);
@@ -90,6 +99,7 @@ export function path(canvas, pathData) {
 	/** @type { {():void} } */
 	let hoverEmulateDispose;
 	function unSelect() {
+		state = 0;
 		canvasSelectionClearSet(canvas, null);
 		classDel(svgGrp, 'select');
 		endSetEvtIndex(pathData.s, 1);
