@@ -66,7 +66,7 @@ export function moveEvtProc(elemTrackOutdown, elem, canvasScale, shapePosition, 
 
 		evt[ProcessedSmbl] = true;
 		target = /** @type {Element} */(evt.target);
-		if (evt.pointerId) { target.setPointerCapture(evt.pointerId); }
+		if (evt.pointerId !== fakePointerId) { target.setPointerCapture(evt.pointerId); }
 		listen(target, 'pointercancel', cancel, true);
 		listen(target, 'pointerup', cancel, true);
 		listen(target, 'pointermove', move);
@@ -102,10 +102,11 @@ export function movementApplay(point, scale, evt) {
 	point.y += evt[MovementYSmbl] / scale;
 }
 
+const fakePointerId = 42; // random number
 /** @param {SVGGraphicsElement} shapeOrPathEl */
 export function shapeSelect(shapeOrPathEl) {
 	shapeOrPathEl.ownerSVGElement.focus();
-	shapeOrPathEl.dispatchEvent(new PointerEvent('pointerdown', { isPrimary: true }));
+	shapeOrPathEl.dispatchEvent(new PointerEvent('pointerdown', { isPrimary: true, pointerId: fakePointerId }));
 	shapeOrPathEl.dispatchEvent(new PointerEvent('pointerup', { isPrimary: true }));
 }
 
