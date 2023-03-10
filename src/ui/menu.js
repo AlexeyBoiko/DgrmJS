@@ -1,4 +1,4 @@
-import { dgrmClear } from '../diagram/dgrm-clear.js';
+import { canvasClear } from '../diagram/canvas-clear.js';
 import { dgrmPngChunkGet, dgrmPngCreate } from '../diagram/dgrm-png.js';
 import { deserialize, serialize } from '../diagram/dgrm-serialization.js';
 import { generateKey, srvSave } from '../diagram/dgrm-srv.js';
@@ -67,7 +67,7 @@ export class Menu extends HTMLElement {
 		shadow.getElementById('menu').onclick = toggle;
 		shadow.getElementById('menu2').onclick = toggle;
 
-		click('new', () => { dgrmClear(this._canvas); tipShow(true); });
+		click('new', () => { canvasClear(this._canvas); tipShow(true); });
 
 		click('save', () => {
 			const serialized = serialize(this._canvas);

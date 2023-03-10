@@ -1,4 +1,4 @@
-import { child, classAdd, classDel, deepCopy, listenDel, svgEl } from '../infrastructure/util.js';
+import { child, classAdd, classDel, deepCopy, svgEl } from '../infrastructure/util.js';
 import { moveEvtProc } from '../infrastructure/move-evt-proc.js';
 import { path, dirReverse } from './path.js';
 import { textareaCreate } from '../infrastructure/svg-text-area.js';
@@ -8,7 +8,8 @@ import { ShapeSmbl } from './shape-smbl.js';
 import { svgTextDraw } from '../infrastructure/svg-text-draw.js';
 import { PathSmbl } from './path-smbl.js';
 import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
-import { canvasSelectionClearSet } from '../diagram/copy-past-applay.js';
+import { canvasSelectionClearSet } from '../diagram/canvas-clear.js';
+import { listenCopy } from '../diagram/group-select-applay.js';
 
 /**
  * provides:
@@ -57,10 +58,10 @@ export function shapeCreate(canvas, shapeData, shapeHtml, cons, onTextChange, se
  * provides:
  *  - shape move
  *  - connectors
+ *  - copy fn
  *
  *  - text editor
  *  - standard edit panel
- *  - standard copy fn
  *  - onTextChange callback
  * @param {CanvasElement} canvas
  * @param {ShapeElement} svgGrp
@@ -77,13 +78,9 @@ function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, te
 	/** @type { {position:(bottomX:number, bottomY:number)=>void, del:()=>void} } */
 	let settingsPnl;
 
-	/** @type {()=>void} */
-	let listenCopyDispose;
-
 	function unSelect() {
 		textEditor?.dispose(); textEditor = null;
 		settingsPnl?.del(); settingsPnl = null;
-		if (listenCopyDispose) { listenCopyDispose(); listenCopyDispose = null;	}
 	}
 
 	/** @param {string} txt */
@@ -94,10 +91,6 @@ function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, te
 
 	const settingPnlCreate = settingsPnlCreateFn ?? settingsPnlCreate;
 	const shapeProc = shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition,
-		// onSelect
-		() => {
-			listenCopyDispose = listenCopy(svgGrp);
-		},
 		// onEdit
 		() => {
 			textEditor = textareaCreate(textSettings.el, textSettings.vMid, shapeData.title, onTxtChange, onTxtChange);
@@ -134,16 +127,16 @@ function shapeEditEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, te
  * provides:
  *  - shape move
  *  - connectors
+ *  - copy fn
  *  - onEdit, onEditStop callbacks
  * @param {CanvasElement} canvas
  * @param {ShapeElement} svgGrp
  * @param {ShapeData} shapeData
  * @param {ConnectorsData} connectorsInnerPosition
- * @param {{():void}} onSelect
  * @param {{():void}} onEdit
  * @param {{():void}} onUnselect
  */
-function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSelect, onEdit, onUnselect) {
+function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onEdit, onUnselect) {
 	classAdd(svgGrp, 'hovertrack');
 
 	/** @type {ConnectorsData} */
@@ -174,13 +167,18 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSele
 	*/
 	let state = 0;
 
+	/** @type {()=>void} */
+	let listenCopyDispose;
+
 	function unSelect() {
 		onUnselect();
 
 		state = 0;
 		classDel(svgGrp, 'select');
 		classDel(svgGrp, 'highlight');
+
 		canvasSelectionClearSet(canvas, null);
+		if (listenCopyDispose) { listenCopyDispose(); listenCopyDispose = null;	}
 	}
 
 	const moveProcReset = moveEvtProc(
@@ -235,9 +233,10 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSele
 
 			// to select mode
 			state = 1;
-			canvasSelectionClearSet(canvas, unSelect);
-			onSelect();
 			classAdd(svgGrp, 'select');
+
+			canvasSelectionClearSet(canvas, unSelect);
+			listenCopyDispose = listenCopy(() => [svgGrp]);
 		},
 		// onOutdown
 		unSelect);
@@ -271,23 +270,6 @@ function shapeEvtProc(canvas, svgGrp, shapeData, connectorsInnerPosition, onSele
 				path[PathSmbl].del();
 			}
 		}
-	};
-}
-
-/** @param {ShapeElement} svgGrp */
-function listenCopy(svgGrp) {
-	/** @param {ClipboardEvent & {target:HTMLElement | SVGElement}} evt */
-	function onCopy(evt) {
-		if (document.activeElement === svgGrp.ownerSVGElement) {
-			evt.clipboardData.setData('dgrm', JSON.stringify(deepCopy(svgGrp[ShapeSmbl].data)));
-			evt.preventDefault();
-		}
-	}
-	document.addEventListener('copy', onCopy);
-
-	// dispose fn
-	return function() {
-		listenDel(document, 'copy', onCopy);
 	};
 }
 

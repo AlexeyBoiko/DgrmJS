@@ -1,7 +1,7 @@
 import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
 import { PathSmbl } from '../shapes/path-smbl.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
-import { dgrmClear } from './dgrm-clear.js';
+import { canvasClear } from './canvas-clear.js';
 
 const v = '1.1';
 
@@ -45,7 +45,7 @@ export function serializeShapes(shapes) {
  */
 export function deserialize(canvas, data, dontClear) {
 	if (data.v !== v) { alert('Wrong format'); return null; }
-	if (!dontClear) { dgrmClear(canvas); }
+	if (!dontClear) { canvasClear(canvas); }
 
 	/** @type {Map<ShapeData, ShapeElement>} */
 	const shapeDataToElem = new Map();

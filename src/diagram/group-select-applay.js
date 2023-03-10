@@ -5,13 +5,51 @@ import { arrPop, classAdd, classDel, deepCopy, listen, listenDel, positionSet, s
 import { PathSmbl } from '../shapes/path-smbl.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
 import { GroupSettings } from './group-settings.js';
-import { canvasSelectionClear, canvasSelectionClearSet } from './copy-past-applay.js';
 import { modalCreate } from '../shapes/modal-create.js';
-import { deserialize, serializeShapes } from './dgrm-serialization.js';
 import { groupMoveToCenter } from './group-move.js';
+import { deserialize, serializeShapes } from './dgrm-serialization.js';
+import { canvasSelectionClear, canvasSelectionClearSet } from './canvas-clear.js';
+import { tipShow } from '../ui/ui.js';
 
 //
 // copy past
+
+const clipboardDataKey = 'dgrm';
+
+/** @param {() => Array<ShapeElement & PathElement>} shapesToClipboardGetter */
+export function listenCopy(shapesToClipboardGetter) {
+	/** @param {ClipboardEvent & {target:HTMLElement | SVGElement}} evt */
+	function onCopy(evt) {
+		const shapes = shapesToClipboardGetter();
+		if (document.activeElement === shapes[0].ownerSVGElement) {
+			evt.preventDefault();
+			evt.clipboardData.setData(
+				clipboardDataKey,
+				JSON.stringify(copyDataCreate(shapes)));
+		}
+	}
+	document.addEventListener('copy', onCopy);
+
+	// dispose fn
+	return function() {
+		listenDel(document, 'copy', onCopy);
+	};
+}
+
+/** @param {CanvasElement} canvas */
+export function copyPastApplay(canvas) {
+	listen(document, 'paste', /** @param {ClipboardEvent & {target:HTMLElement | SVGElement}} evt */ evt => {
+		if (evt.target.tagName.toUpperCase() === 'TEXTAREA') { return; }
+		// if (document.activeElement !== canvas.ownerSVGElement) { return; }
+
+		const dataStr = evt.clipboardData.getData(clipboardDataKey);
+		if (!dataStr) { return; }
+
+		tipShow(false);
+		canvasSelectionClear(canvas);
+		past(canvas, JSON.parse(dataStr));
+	});
+}
 
 /** @param {CanvasElement} canvas, @param {Array<ShapeElement & PathElement>} shapes */
 export const copyAndPast = (canvas, shapes) => past(canvas, copyDataCreate(shapes));
@@ -252,9 +290,7 @@ function groupEvtProc(canvas, selected) {
 						dispose();
 						break;
 					case 'copy': {
-						pnlDel();
-						copyPast(canvas, selected);
-						dispose();
+						copyAndPast(canvas, elemsToCopyGet(selected)); // will call dispose
 						break;
 					}
 				}
@@ -285,23 +321,26 @@ function groupEvtProc(canvas, selected) {
 		isDownOnSelectedShape = false;
 
 		if (!saveOnDown) {
+			canvasSelectionClearSet(canvas, null);
+			if (listenCopyDispose) { listenCopyDispose(); listenCopyDispose = null; }
+
 			listenDel(svg, 'pointerdown', down, true);
 			pnlDel();
 			arrPop(selected.shapes, shapeEl => classDel(shapeEl, highlightClass));
 			arrPop(selected.pathEndsPaths, pathEl => pathUnhighlight(pathEl));
 			selected.pathEnds = null;
 			selected.shapesPaths = null;
-			canvasSelectionClearSet(canvas, null);
 		}
 	}
 
 	svg.addEventListener('pointerdown', down, { passive: true, capture: true });
 
 	canvasSelectionClearSet(canvas, dispose);
+	let listenCopyDispose = listenCopy(() => elemsToCopyGet(selected));
 }
 
-/** @param {CanvasElement} canvas, @param {Selected} selected */
-function copyPast(canvas, selected) {
+/** @param {Selected} selected */
+function elemsToCopyGet(selected) {
 	/** @type {Set<PathElement>} */
 	const fullSelectedPaths = new Set();
 
@@ -319,7 +358,7 @@ function copyPast(canvas, selected) {
 	selected.shapesPaths?.forEach(fullSelectedPathAdd);
 	selected.pathEndsPaths?.forEach(fullSelectedPathAdd);
 
-	copyAndPast(canvas, [...selected.shapes, ...fullSelectedPaths]);
+	return [...selected.shapes, ...fullSelectedPaths];
 }
 
 /** @param {PathElement} pathEl`` */

@@ -7,7 +7,8 @@ import { PathSettings } from './path-settings.js';
 import { PathSmbl } from './path-smbl.js';
 import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
 import { modalCreate } from './modal-create.js';
-import { canvasSelectionClearSet } from '../diagram/copy-past-applay.js';
+import { canvasSelectionClearSet } from '../diagram/canvas-clear.js';
+import { listenCopy } from '../diagram/group-select-applay.js';
 
 /**
  * @param {CanvasElement} canvas
@@ -76,6 +77,9 @@ export function path(canvas, pathData) {
 	*/
 	let state = 0;
 
+	/** @type {()=>void} */
+	let listenCopyDispose;
+
 	/** @param {PointerEvent} evt */
 	function select(evt) {
 		// in edit mode
@@ -93,14 +97,15 @@ export function path(canvas, pathData) {
 		classAdd(svgGrp, 'select');
 		endSetEvtIndex(pathData.s, 2);
 		endSetEvtIndex(pathData.e, 2);
+
 		canvasSelectionClearSet(canvas, unSelect);
+		listenCopyDispose = listenCopy(() => [svgGrp]);
 	};
 
 	/** @type { {():void} } */
 	let hoverEmulateDispose;
 	function unSelect() {
 		state = 0;
-		canvasSelectionClearSet(canvas, null);
 		classDel(svgGrp, 'select');
 		endSetEvtIndex(pathData.s, 1);
 		endSetEvtIndex(pathData.e, 1);
@@ -112,6 +117,9 @@ export function path(canvas, pathData) {
 			hoverEmulateDispose = null;
 			svgGrp.style.pointerEvents = 'unset';
 		}
+
+		canvasSelectionClearSet(canvas, null);
+		if (listenCopyDispose) { listenCopyDispose(); listenCopyDispose = null;	}
 	};
 
 	/** @type {'s'|'e'} */
