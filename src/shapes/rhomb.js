@@ -12,7 +12,7 @@ export function rhomb(canvas, rhombData) {
 		<path data-key="main" d="M-39 0 L0 -39 L39 0 L0 39 Z" stroke-width="18" stroke-linejoin="round"	stroke="#1D809F" fill="#1D809F" />
 		<text data-key="text" x="0" y="0" text-anchor="middle" style="pointer-events: none;" fill="#fff">&nbsp;</text>`;
 
-	const shape = shapeCreate(canvas, rhombData, templ, rhomb,
+	const shape = shapeCreate(canvas, rhombData, templ,
 		{
 			right: { dir: 'right', position: { x: 48, y: 0 } },
 			left: { dir: 'left', position: { x: -48, y: 0 } },

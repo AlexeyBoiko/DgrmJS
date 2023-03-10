@@ -1,18 +1,79 @@
 import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
-import { movementApplay, ProcessedSmbl } from '../infrastructure/move-evt-proc.js';
+import { movementApplay, ProcessedSmbl, shapeSelect } from '../infrastructure/move-evt-proc.js';
 import { placeToCell, pointInCanvas } from '../infrastructure/move-scale-applay.js';
-import { arrDel, arrPop, classAdd, classDel, listen, listenDel, positionSet, svgEl } from '../infrastructure/util.js';
-import { path, pathDataClone } from '../shapes/path.js';
+import { arrPop, classAdd, classDel, deepCopy, listen, listenDel, positionSet, svgEl } from '../infrastructure/util.js';
 import { PathSmbl } from '../shapes/path-smbl.js';
-import { pnlCreate } from '../shapes/shape-settings.js';
 import { ShapeSmbl } from '../shapes/shape-smbl.js';
 import { GroupSettings } from './group-settings.js';
+import { modalCreate } from '../shapes/modal-create.js';
+import { groupMoveToCenter } from './group-move.js';
+import { deserialize, serializeShapes } from './dgrm-serialization.js';
+import { canvasSelectionClear, canvasSelectionClearSet } from './canvas-clear.js';
+import { tipShow } from '../ui/ui.js';
+
+//
+// copy past
+
+const clipboardDataKey = 'dgrm';
+
+/** @param {() => Array<ShapeElement & PathElement>} shapesToClipboardGetter */
+export function listenCopy(shapesToClipboardGetter) {
+	/** @param {ClipboardEvent & {target:HTMLElement | SVGElement}} evt */
+	function onCopy(evt) {
+		const shapes = shapesToClipboardGetter();
+		if (document.activeElement === shapes[0].ownerSVGElement) {
+			evt.preventDefault();
+			evt.clipboardData.setData(
+				clipboardDataKey,
+				JSON.stringify(copyDataCreate(shapes)));
+		}
+	}
+	document.addEventListener('copy', onCopy);
+
+	// dispose fn
+	return function() {
+		listenDel(document, 'copy', onCopy);
+	};
+}
+
+/** @param {CanvasElement} canvas */
+export function copyPastApplay(canvas) {
+	listen(document, 'paste', /** @param {ClipboardEvent & {target:HTMLElement | SVGElement}} evt */ evt => {
+		if (evt.target.tagName.toUpperCase() === 'TEXTAREA') { return; }
+		// if (document.activeElement !== canvas.ownerSVGElement) { return; }
+
+		const dataStr = evt.clipboardData.getData(clipboardDataKey);
+		if (!dataStr) { return; }
+
+		tipShow(false);
+		canvasSelectionClear(canvas);
+		past(canvas, JSON.parse(dataStr));
+	});
+}
+
+/** @param {CanvasElement} canvas, @param {Array<ShapeElement & PathElement>} shapes */
+export const copyAndPast = (canvas, shapes) => past(canvas, copyDataCreate(shapes));
+
+/** @param {Array<ShapeElement & PathElement>} shapes */
+const copyDataCreate = shapes => deepCopy(serializeShapes(shapes));
+
+/** @param {CanvasElement} canvas, @param {DiagramSerialized} data */
+function past(canvas, data) {
+	canvasSelectionClear(canvas);
+	groupMoveToCenter(canvas, data);
+	groupSelect(canvas, deserialize(canvas, data, true));
+}
+
+//
+// group select
 
 const highlightSClass = 'highlight-s';
 const highlightEClass = 'highlight-e';
 const highlightClass = 'highlight';
 
-/** @param {CanvasElement} canvas */
+/** wait long press and draw selected rectangle
+ * @param {CanvasElement} canvas
+ */
 export function groupSelectApplay(canvas) {
 	const svg = canvas.ownerSVGElement;
 	let timer;
@@ -20,7 +81,6 @@ export function groupSelectApplay(canvas) {
 	/** @type {SVGCircleElement} */ let startCircle;
 	/** @type {SVGRectElement} */ let selectRect;
 	/** @type {Point} */ let selectRectPos;
-	/** @type {()=>void} */let groupEvtProcDispose;
 
 	/** @param {PointerEvent} evt */
 	function onMove(evt) {
@@ -39,8 +99,7 @@ export function groupSelectApplay(canvas) {
 		selectRect.style.transform = `translate(${selectRectPos.x}px, ${selectRectPos.y}px)`;
 	}
 
-	/** @param {PointerEvent} evt */
-	function onUp(evt) {
+	function onUp() {
 		if (selectRect) {
 			/** @param {Point} point */
 			const inRect = point => pointInRect(
@@ -49,52 +108,11 @@ export function groupSelectApplay(canvas) {
 				selectRect.height.baseVal.value / canvas[CanvasSmbl].data.scale,
 				point.x, point.y);
 
-			/** @type {Selected} */
-			const selected = {
-				shapes: [],
-				shapesPaths: [],
-				pathEnds: [],
-				pathEndsPaths: []
-			};
-
-			/** @param {ShapeElement} shapeEl */
-			const shapeInRect = shapeEl => inRect(shapeEl[ShapeSmbl].data.position);
-
-			/**
-			 * @param {ShapeOrPathElement} pathEl,  @param {PathEnd} pathEnd, @param {string} highlightClass
-			 * @returns {1|2|0}
-			 */
-			function pathEndInRect(pathEl, pathEnd, highlightClass) {
-				if (!pathEnd.shape && inRect(pathEnd.data.position)) {
-					selected.pathEnds.push(pathEnd);
-					classAdd(pathEl, highlightClass);
-					return 1; // connect to end in rect
-				} else if (pathEnd.shape && shapeInRect(pathEnd.shape.shapeEl)) {
-					return 2; // connect to shape in rect
-				}
-				return 0; // not in rect
-			}
-
-			for (const shapeEl of /** @type {Iterable<ShapeOrPathElement>} */(canvas.children)) {
-				if (shapeEl[ShapeSmbl]) {
-					if (shapeInRect(shapeEl)) {
-						shapeHighlight(shapeEl);
-						selected.shapes.push(shapeEl);
-					}
-				} else if (shapeEl[PathSmbl]) {
-					const isStartIn = pathEndInRect(shapeEl, shapeEl[PathSmbl].data.s, highlightSClass);
-					const isEndIn = pathEndInRect(shapeEl, shapeEl[PathSmbl].data.e, highlightEClass);
-
-					if (isStartIn === 1 || isEndIn === 1) {
-						selected.pathEndsPaths.push(shapeEl);
-					}
-
-					if (isStartIn === 2 || isEndIn === 2) {
-						selected.shapesPaths.push(shapeEl);
-					}
-				}
-			}
-			groupEvtProcDispose = groupEvtProc(canvas, selected);
+			// select shapes in rect
+			groupSelect(
+				canvas,
+				/** @type {Iterable<ShapeOrPathElement>} */(canvas.children),
+				inRect);
 		}
 
 		reset();
@@ -118,7 +136,7 @@ export function groupSelectApplay(canvas) {
 		listen(svg, 'pointerup', onUp, true);
 
 		timer = setTimeout(_ => {
-			if (groupEvtProcDispose) { groupEvtProcDispose(); groupEvtProcDispose = null; }
+			canvasSelectionClear(canvas);
 
 			startCircle = svgEl('circle');
 			classAdd(startCircle, 'ative-elem');
@@ -137,10 +155,86 @@ export function groupSelectApplay(canvas) {
 }
 
 /**
+ * Highlight selected shapes and procces group operations (move, del, copy)
+ * @param {CanvasElement} canvas
+ * @param {Iterable<ShapeOrPathElement>} elems
+ * @param {{(position:Point):boolean}=} inRect
+ */
+export function groupSelect(canvas, elems, inRect) {
+	/** @param {{position:Point}} data */
+	const shapeInRect = data => inRect ? inRect(data.position) : true;
+
+	/** @type {Selected} */
+	const selected = {
+		shapes: [],
+		shapesPaths: [],
+		pathEnds: [],
+		pathEndsPaths: []
+	};
+
+	/**
+	 * @param {ShapeOrPathElement} pathEl,  @param {PathEnd} pathEnd, @param {string} highlightClass
+	 * @returns {1|2|0}
+	 */
+	function pathEndInRect(pathEl, pathEnd, highlightClass) {
+		if (!pathEnd.shape && shapeInRect(pathEnd.data)) {
+			selected.pathEnds.push(pathEnd);
+			classAdd(pathEl, highlightClass);
+			return 1; // connect to end in rect
+		} else if (pathEnd.shape && shapeInRect(pathEnd.shape.shapeEl[ShapeSmbl].data)) {
+			return 2; // connect to shape in rect
+		}
+		return 0; // not in rect
+	}
+
+	for (const shapeEl of elems) {
+		if (shapeEl[ShapeSmbl]) {
+			if (shapeInRect(shapeEl[ShapeSmbl].data)) {
+				classAdd(shapeEl, highlightClass);
+				selected.shapes.push(shapeEl);
+			}
+		} else if (shapeEl[PathSmbl]) {
+			const isStartIn = pathEndInRect(shapeEl, shapeEl[PathSmbl].data.s, highlightSClass);
+			const isEndIn = pathEndInRect(shapeEl, shapeEl[PathSmbl].data.e, highlightEClass);
+
+			if (isStartIn === 1 || isEndIn === 1) {
+				selected.pathEndsPaths.push(shapeEl);
+			}
+
+			if (isStartIn === 2 || isEndIn === 2) {
+				selected.shapesPaths.push(shapeEl);
+			}
+		}
+	}
+
+	groupEvtProc(canvas, selected);
+}
+
+/**
  * @param {CanvasElement} canvas
  * @param {Selected} selected
  */
 function groupEvtProc(canvas, selected) {
+	// only one shape selected
+	if (selected.shapes?.length === 1 && !selected.pathEnds?.length) {
+		classDel(selected.shapes[0], 'highlight');
+		shapeSelect(selected.shapes[0]);
+		return;
+	}
+
+	// only one pathEnd selected
+	if (!selected.shapes?.length && selected.pathEnds?.length === 1) {
+		pathUnhighlight(selected.pathEndsPaths[0]);
+		return;
+	}
+
+	// only one path selected
+	if (!selected.shapes?.length && selected.pathEnds?.length === 2 && selected.pathEndsPaths?.length === 1) {
+		pathUnhighlight(selected.pathEndsPaths[0]);
+		shapeSelect(selected.pathEndsPaths[0]);
+		return;
+	}
+
 	const svg = canvas.ownerSVGElement;
 	let isMove = false;
 	let isDownOnSelectedShape = false;
@@ -188,7 +282,7 @@ function groupEvtProc(canvas, selected) {
 			if (!isDownOnSelectedShape) { dispose(); return; }
 
 			// click on selected shape - show settings panel
-			settingsPnl = pnlCreate(evt.clientX - 10, evt.clientY - 10, new GroupSettings(cmd => {
+			settingsPnl = modalCreate(evt.clientX - 10, evt.clientY - 10, new GroupSettings(cmd => {
 				switch (cmd) {
 					case 'del':
 						arrPop(selected.shapes, shapeEl => shapeEl[ShapeSmbl].del());
@@ -196,8 +290,7 @@ function groupEvtProc(canvas, selected) {
 						dispose();
 						break;
 					case 'copy': {
-						pnlDel();
-						selected = copy(canvas, selected);
+						copyAndPast(canvas, elemsToCopyGet(selected)); // will call dispose
 						break;
 					}
 				}
@@ -228,6 +321,9 @@ function groupEvtProc(canvas, selected) {
 		isDownOnSelectedShape = false;
 
 		if (!saveOnDown) {
+			canvasSelectionClearSet(canvas, null);
+			if (listenCopyDispose) { listenCopyDispose(); listenCopyDispose = null; }
+
 			listenDel(svg, 'pointerdown', down, true);
 			pnlDel();
 			arrPop(selected.shapes, shapeEl => classDel(shapeEl, highlightClass));
@@ -239,98 +335,30 @@ function groupEvtProc(canvas, selected) {
 
 	svg.addEventListener('pointerdown', down, { passive: true, capture: true });
 
-	return dispose;
+	canvasSelectionClearSet(canvas, dispose);
+	let listenCopyDispose = listenCopy(() => elemsToCopyGet(selected));
 }
 
-/**
- * @param {CanvasElement} canvas
- * @param {Selected} selected
- * @returns {Selected}
- */
-function copy(canvas, selected) {
-	/** @type {Selected} */
-	const copied = {
-		shapes: [],
-		shapesPaths: [],
-		pathEnds: [],
-		pathEndsPaths: []
-	};
+/** @param {Selected} selected */
+function elemsToCopyGet(selected) {
+	/** @type {Set<PathElement>} */
+	const fullSelectedPaths = new Set();
 
-	/** @param {ShapeElement} shapeEl */
-	function shapeCopy(shapeEl) {
-		const copyShape = shapeEl[ShapeSmbl].copy();
-		shapeHighlight(copyShape);
-		copied.shapes.push(copyShape);
-		return copyShape;
-	}
+	/** @param {PathEnd} pathEnd */
+	const pathEndSelected = pathEnd =>
+		selected.shapes.includes(pathEnd.shape?.shapeEl) || selected.pathEnds.includes(pathEnd);
 
-	/** @param {PathEnd} pathEndFrom, @param {PathEnd} pathEndTo */
-	function pathShapeCopy(pathEndFrom, pathEndTo) {
-		const shapeIndex = selected.shapes.indexOf(pathEndFrom.shape?.shapeEl);
-		if (shapeIndex > -1) {
-			pathEndTo.shape = {
-				shapeEl: shapeCopy(pathEndFrom.shape.shapeEl),
-				connectorKey: pathEndFrom.shape.connectorKey
-			};
-			selected.shapes.splice(shapeIndex, 1);
-			return true;
+	/** @param {PathElement} pathEl */
+	function fullSelectedPathAdd(pathEl) {
+		if (pathEndSelected(pathEl[PathSmbl].data.s) && pathEndSelected(pathEl[PathSmbl].data.e)) {
+			fullSelectedPaths.add(pathEl);
 		}
-
-		return selected.pathEnds?.some(ee => ee.el === pathEndFrom.el);
 	}
 
-	/** @param {PathElement} pathEl`` */
-	function pathHighlight(pathEl) {
-		classAdd(pathEl, highlightSClass);
-		classAdd(pathEl, highlightEClass);
-	}
+	selected.shapesPaths?.forEach(fullSelectedPathAdd);
+	selected.pathEndsPaths?.forEach(fullSelectedPathAdd);
 
-	/**
-	 * @param {PathElement} path, @param {PathEnd} pathEnd, @param {string} highlightClass,
-	 * @returns {1|2}
-	 */
-	function copyPathEndAdd(path, pathEnd, highlightClass) {
-		if (!pathEnd.shape) {
-			copied.pathEnds.push(pathEnd);
-			classAdd(path, highlightClass);
-			return 1; // end
-		}
-		return 2; // shape
-	}
-
-	selected.shapesPaths?.forEach(pathEl => {
-		const copyPathData = pathDataClone(pathEl[PathSmbl].data, canvas[CanvasSmbl].data.cell);
-		if (pathShapeCopy(pathEl[PathSmbl].data.s, copyPathData.s) &&
-			pathShapeCopy(pathEl[PathSmbl].data.e, copyPathData.e)) {
-			const copyPath = path(canvas, copyPathData);
-
-			const startEndType = copyPathEndAdd(copyPath, copyPath[PathSmbl].data.s, highlightSClass);
-			const endEndType = copyPathEndAdd(copyPath, copyPath[PathSmbl].data.e, highlightEClass);
-			if (startEndType === 1 || endEndType === 1) {
-				copied.pathEndsPaths.push(copyPath);
-			}
-			if (startEndType === 2 || endEndType === 2) {
-				copied.shapesPaths.push(copyPath);
-			}
-
-			canvas.append(copyPath);
-		}
-
-		arrDel(selected.pathEndsPaths, pathEl);
-		pathUnhighlight(pathEl);
-	});
-
-	selected.shapes?.forEach(shape => shapeCopy(shape));
-
-	selected.pathEndsPaths?.forEach(path => {
-		pathUnhighlight(path);
-		const copyPath = path[PathSmbl].copy();
-		pathHighlight(copyPath);
-		copied.pathEndsPaths.push(copyPath);
-		copied.pathEnds.push(copyPath[PathSmbl].data.s, copyPath[PathSmbl].data.e);
-	});
-
-	return copied;
+	return [...selected.shapes, ...fullSelectedPaths];
 }
 
 /** @param {PathElement} pathEl`` */
@@ -338,9 +366,6 @@ function pathUnhighlight(pathEl) {
 	classDel(pathEl, highlightSClass);
 	classDel(pathEl, highlightEClass);
 }
-
-/** @param {ShapeElement} shapeEl */
-const shapeHighlight = shapeEl => classAdd(shapeEl, highlightClass);
 
 /**
  * @param {Point} rectPosition
@@ -368,3 +393,4 @@ const pointInRect = (rectPosition, rectWidth, rectHeight, x, y) =>
 /** @typedef { import('../shapes/path-smbl').PathElement } PathElement */
 /** @typedef { SVGGraphicsElement & { [ShapeSmbl]?: Shape, [PathSmbl]?:Path }} ShapeOrPathElement */
 /** @typedef { import('../infrastructure/move-evt-mobile-fix.js').PointerEventFixMovement} PointerEventFixMovement */
+/** @typedef { import('./dgrm-serialization.js').DiagramSerialized } DiagramSerialized */

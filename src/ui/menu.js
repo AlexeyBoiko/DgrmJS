@@ -1,4 +1,4 @@
-import { dgrmClear } from '../diagram/dgrm-clear.js';
+import { canvasClear } from '../diagram/canvas-clear.js';
 import { dgrmPngChunkGet, dgrmPngCreate } from '../diagram/dgrm-png.js';
 import { deserialize, serialize } from '../diagram/dgrm-serialization.js';
 import { generateKey, srvSave } from '../diagram/dgrm-srv.js';
@@ -67,7 +67,7 @@ export class Menu extends HTMLElement {
 		shadow.getElementById('menu').onclick = toggle;
 		shadow.getElementById('menu2').onclick = toggle;
 
-		click('new', () => { dgrmClear(this._canvas); tipShow(true); });
+		click('new', () => { canvasClear(this._canvas); tipShow(true); });
 
 		click('save', () => {
 			const serialized = serialize(this._canvas);
@@ -76,11 +76,11 @@ export class Menu extends HTMLElement {
 			dgrmPngCreate(
 				this._canvas,
 				JSON.stringify(serialized),
-				png => fileSave(png, 'dgrm.png')); // TODO: check await
+				png => fileSave(png, 'dgrm.png'));
 		});
 
 		click('open', () =>
-			fileOpen('.png', async png => await loadData(this._canvas, this._shapeTypeMap, png))
+			fileOpen('.png', async png => await loadData(this._canvas, png))
 		);
 
 		click('link', async () => {
@@ -98,13 +98,9 @@ export class Menu extends HTMLElement {
 		});
 	}
 
-	/**
-	 * @param {CanvasElement} canvas
-	 * @param {Record<number, {create :(shapeData)=>SVGGraphicsElement}>} shapeTypeMap
-	 */
-	init(canvas, shapeTypeMap) {
+	/** @param {CanvasElement} canvas */
+	init(canvas) {
 		/** @private */ this._canvas = canvas;
-		/** @private */ this._shapeTypeMap = shapeTypeMap;
 
 		// file drag to window
 		document.body.addEventListener('dragover', evt => { evt.preventDefault(); });
@@ -117,21 +113,17 @@ export class Menu extends HTMLElement {
 				alertCantOpen(); return;
 			}
 
-			await loadData(this._canvas, this._shapeTypeMap, evt.dataTransfer.items[0].getAsFile());
+			await loadData(this._canvas, evt.dataTransfer.items[0].getAsFile());
 		});
 	}
 };
 customElements.define('ap-menu', Menu);
 
-/**
- * @param {SVGGElement} canvas
- * @param {Record<number, {create :(shapeData)=>SVGGraphicsElement}>} shapeTypeMap
- * @param {Blob} png
- */
-async function loadData(canvas, shapeTypeMap, png) {
+/** @param {CanvasElement} canvas,  @param {Blob} png  */
+async function loadData(canvas, png) {
 	const dgrmChunk = await dgrmPngChunkGet(png);
 	if (!dgrmChunk) { alertCantOpen(); return; }
-	if (deserialize(canvas, shapeTypeMap, JSON.parse(dgrmChunk))) {
+	if (deserialize(canvas, JSON.parse(dgrmChunk))) {
 		tipShow(false);
 	}
 }

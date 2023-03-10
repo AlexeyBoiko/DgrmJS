@@ -1,60 +1,25 @@
+import { copyAndPast } from '../diagram/group-select-applay.js';
 import { copySvg, delSvg } from '../infrastructure/assets.js';
 import { clickForAll, listen, classSingleAdd, evtTargetAttr } from '../infrastructure/util.js';
+import { modalChangeTop, modalCreate } from './modal-create.js';
 import { ShapeSmbl } from './shape-smbl.js';
 
-// /**
-//  * @param {number} bottomX positon of the bottom left corner of the panel
-//  * @param {number} bottomY positon of the bottom left corner of the panel
-//  * @param { {(evt: PointerEvent):void} } onDel
-//  */
-// export function delPnlCreate(bottomX, bottomY, onDel) {
-// 	const div = document.createElement('div');
-// 	div.style.cssText = 'height: 24px; padding:10px;';
-// 	div.onclick = onDel;
-// 	div.innerHTML = delSvg;
-// 	return pnlCreate(bottomX, bottomY, div);
-// }
-
 /**
+ * @param {import('../infrastructure/canvas-smbl').CanvasElement} canvas
+ * @param {import('./shape-smbl').ShapeElement} shapeElement
  * @param {number} bottomX positon of the bottom left corner of the panel
  * @param {number} bottomY positon of the bottom left corner of the panel
- * @param {import('./shape-smbl').ShapeElement} shapeElement
  */
-export function settingsPnlCreate(bottomX, bottomY, shapeElement) {
+export function settingsPnlCreate(canvas, shapeElement, bottomX, bottomY) {
 	const shapeSettings = new ShapeEdit();
 	listen(shapeSettings, 'cmd', /** @param {CustomEvent<{cmd:string, arg:string}>} evt */ evt => {
 		switch (evt.detail.cmd) {
 			case 'style': classSingleAdd(shapeElement, shapeElement[ShapeSmbl].data, 'cl-', evt.detail.arg); break;
 			case 'del': shapeElement[ShapeSmbl].del(); break;
-			case 'copy': shapeElement[ShapeSmbl].copy(); break;
+			case 'copy': copyAndPast(canvas, [shapeElement]); break;
 		}
 	});
-	return pnlCreate(bottomX, bottomY, shapeSettings);
-}
-
-/** @type {HTMLDivElement} */
-let editModalDiv;
-/** @param {number} bottomX, @param {number} bottomY, @param {HTMLElement} elem */
-export function pnlCreate(bottomX, bottomY, elem) {
-	editModalDiv = document.createElement('div');
-	editModalDiv.style.cssText = 'position: fixed; box-shadow: 0px 0px 58px 2px rgb(34 60 80 / 20%); border-radius: 16px; background-color: rgba(255,255,255, .9);';
-	editModalDiv.append(elem);
-	document.body.append(editModalDiv);
-
-	function position(btmX, btmY) {
-		editModalDiv.style.left = `${btmX}px`;
-		editModalDiv.style.top = `${window.scrollY + btmY - editModalDiv.getBoundingClientRect().height}px`; // window.scrollY fix IPhone keyboard
-	}
-	position(bottomX, bottomY);
-
-	return {
-		/**
-		 * @param {number} bottomX positon of the bottom left corner of the panel
-		 * @param {number} bottomY positon of the bottom left corner of the panel
-		 */
-		position,
-		del: () => { editModalDiv.remove(); editModalDiv = null; }
-	};
+	return modalCreate(bottomX, bottomY, shapeSettings);
 }
 
 class ShapeEdit extends HTMLElement {
@@ -114,7 +79,7 @@ class ShapeEdit extends HTMLElement {
 
 			/** @param {1|-1} coef */
 			function modalSetTop(coef) {
-				editModalDiv.style.top = `${editModalDiv.getBoundingClientRect().top + window.scrollY + coef * pnl.getBoundingClientRect().height}px`; // window.scrollY fix IPhone keyboard
+				modalChangeTop(window.scrollY + coef * pnl.getBoundingClientRect().height); // window.scrollY fix IPhone keyboard
 			}
 
 			/** @type {HTMLElement} */

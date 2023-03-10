@@ -1,12 +1,19 @@
+import { copyAndPast } from '../diagram/group-select-applay.js';
 import { classAdd, classDel, clickForAll, listen, classSingleAdd, evtTargetAttr } from '../infrastructure/util.js';
 import { PathSmbl } from './path-smbl.js';
 
 export class PathSettings extends HTMLElement {
-	/** @param {PathElement} pathElement */
-	constructor(pathElement) {
+	/**
+ 	 * @param {CanvasElement} canvas
+	 * @param {PathElement} pathElement
+	 */
+	constructor(canvas, pathElement) {
 		super();
 		/** @private */
 		this._pathElement = pathElement;
+
+		/** @private */
+		this._canvas = canvas;
 	}
 
 	connectedCallback() {
@@ -42,7 +49,7 @@ export class PathSettings extends HTMLElement {
 			switch (evt.detail.cmd) {
 				case 'style': classSingleAdd(this._pathElement, this._pathElement[PathSmbl].data, 'cl-', evt.detail.arg); break;
 				case 'del': this._pathElement[PathSmbl].del(); break;
-				case 'copy': this._pathElement[PathSmbl].copy(); break;
+				case 'copy': copyAndPast(this._canvas, [this._pathElement]); break;
 			}
 		});
 
@@ -65,3 +72,4 @@ export class PathSettings extends HTMLElement {
 customElements.define('ap-path-settings', PathSettings);
 
 /** @typedef { import('./path-smbl').PathElement } PathElement */
+/** @typedef { import('../infrastructure/canvas-smbl.js').CanvasElement } CanvasElement */

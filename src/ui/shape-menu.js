@@ -77,13 +77,9 @@ export class ShapeMenu extends HTMLElement {
 		listen(menu, 'pointermove', this);
 	};
 
-	/**
-	 * @param {CanvasElement} canvas
-	 * @param {Record<number, ShapeType>} shapeTypeMap
-	 */
-	init(canvas, shapeTypeMap) {
+	/** @param {CanvasElement} canvas */
+	init(canvas) {
 		/** @private */ this._canvas = canvas;
-		/** @private */ this._shapeTypeMap = shapeTypeMap;
 	}
 
 	/** @param {PointerEvent & { currentTarget: Element }} evt */
@@ -157,7 +153,7 @@ export class ShapeMenu extends HTMLElement {
 				title: 'Title'
 			};
 
-		const shapeEl = this._shapeTypeMap[this._pressedShapeTemplKey].create(shapeData);
+		const shapeEl = this._canvas[CanvasSmbl].shapeMap[this._pressedShapeTemplKey].create(shapeData);
 		this._canvas.append(shapeEl);
 		shapeEl.dispatchEvent(new PointerEvent('pointerdown', evt));
 	}

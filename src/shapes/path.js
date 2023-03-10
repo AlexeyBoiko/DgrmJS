@@ -1,11 +1,14 @@
-import { child, classAdd, classDel, classHas, deepCopy, listen, listenDel, pointShift, svgEl } from '../infrastructure/util.js';
-import { moveEvtProc, movementApplay, priorityElemFromPoint } from '../infrastructure/move-evt-proc.js';
+import { child, classAdd, classDel, classHas, listen, listenDel, svgEl } from '../infrastructure/util.js';
+import { moveEvtProc, movementApplay } from '../infrastructure/move-evt-proc.js';
 import { placeToCell, pointInCanvas } from '../infrastructure/move-scale-applay.js';
+import { priorityElemFromPoint } from '../infrastructure/evt-route-applay.js';
 import { ShapeSmbl } from './shape-smbl.js';
 import { PathSettings } from './path-settings.js';
-import { pnlCreate } from './shape-settings.js';
 import { PathSmbl } from './path-smbl.js';
 import { CanvasSmbl } from '../infrastructure/canvas-smbl.js';
+import { modalCreate } from './modal-create.js';
+import { canvasSelectionClearSet } from '../diagram/canvas-clear.js';
+import { listenCopy } from '../diagram/group-select-applay.js';
 
 /**
  * @param {CanvasElement} canvas
@@ -61,45 +64,62 @@ export function path(canvas, pathData) {
 	/** @type { {position:(bottomX:number, bottomY:number)=>void, del:()=>void} } */
 	let settingsPnl;
 	function del() {
-		settingsPnl?.del(); settingsPnl = null;
+		unSelect();
 		reset();
 		pathDelFromShape(pathData.s);
 		pathDelFromShape(pathData.e);
 		svgGrp.remove();
 	}
 
+	/**
+	 * @type {0|1|2}
+	 * 0 - init, 1 - selected, 2 - edit
+	*/
+	let state = 0;
+
+	/** @type {()=>void} */
+	let listenCopyDispose;
+
 	/** @param {PointerEvent} evt */
 	function select(evt) {
 		// in edit mode
-		if (classHas(svgGrp, 'select') && settingsPnl) { return; }
+		if (state === 2) { return; }
 
 		// to edit mode
-		if (classHas(svgGrp, 'select') && !settingsPnl) {
-			settingsPnl = pnlCreate(evt.clientX - 10, evt.clientY - 10, new PathSettings(svgGrp));
+		if (state === 1) {
+			state = 2;
+			settingsPnl = modalCreate(evt.clientX - 10, evt.clientY - 10, new PathSettings(canvas, svgGrp));
 			return;
 		}
 
 		// to select mode
+		state = 1;
 		classAdd(svgGrp, 'select');
 		endSetEvtIndex(pathData.s, 2);
 		endSetEvtIndex(pathData.e, 2);
+
+		canvasSelectionClearSet(canvas, unSelect);
+		listenCopyDispose = listenCopy(() => [svgGrp]);
 	};
 
 	/** @type { {():void} } */
 	let hoverEmulateDispose;
 	function unSelect() {
+		state = 0;
 		classDel(svgGrp, 'select');
 		endSetEvtIndex(pathData.s, 1);
 		endSetEvtIndex(pathData.e, 1);
 
-		settingsPnl?.del();
-		settingsPnl = null;
+		settingsPnl?.del();	settingsPnl = null;
 
 		if (hoverEmulateDispose) {
 			hoverEmulateDispose();
 			hoverEmulateDispose = null;
 			svgGrp.style.pointerEvents = 'unset';
 		}
+
+		canvasSelectionClearSet(canvas, null);
+		if (listenCopyDispose) { listenCopyDispose(); listenCopyDispose = null;	}
 	};
 
 	/** @type {'s'|'e'} */
@@ -189,13 +209,7 @@ export function path(canvas, pathData) {
 		/** @param {PointerEventInit} evt */
 		pointerCapture: evt => pathData.e.el.dispatchEvent(new PointerEvent('pointerdown', evt)),
 		del,
-		data: pathData,
-		copy: function() {
-			unSelect();
-			const copyPath = path(canvas, pathDataClone(pathData, canvas[CanvasSmbl].data.cell));
-			canvas.append(copyPath);
-			return copyPath;
-		}
+		data: pathData
 	};
 
 	if (pathData.styles) { classAdd(svgGrp, ...pathData.styles); }
@@ -349,22 +363,6 @@ function hoverEmulate(element) {
 	};
 }
 
-/** @param {PathData} data, @param {number} shift */
-export function pathDataClone(data, shift) {
-	const copyData = deepCopy(data);
-
-	/** @param {PathEnd} pathEnd */
-	function prepareEnd(pathEnd) {
-		pointShift(pathEnd.data.position, shift);
-		delete pathEnd.shape;
-		delete pathEnd.el;
-	}
-	prepareEnd(copyData.s);
-	prepareEnd(copyData.e);
-
-	return copyData;
-}
-
 /** @param {Element} el, @param  {...string} keys */
 const childs = (el, ...keys) => keys.map(kk => child(el, kk));
 
@@ -389,7 +387,6 @@ const numInRangeIncludeEnds = (num, a, b) => a <= num && num <= b;
 	draw(): void
 	pointerCapture: (evt:PointerEventInit)=>void
 	del(): void
-	copy(): PathElement
 	data: PathData
 }} Path
 */
