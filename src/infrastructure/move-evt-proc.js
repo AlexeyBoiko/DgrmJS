@@ -104,6 +104,7 @@ export function movementApplay(point, scale, evt) {
 
 /** @param {SVGGraphicsElement} shapeOrPathEl */
 export function shapeSelect(shapeOrPathEl) {
+	shapeOrPathEl.ownerSVGElement.focus();
 	shapeOrPathEl.dispatchEvent(new PointerEvent('pointerdown', { isPrimary: true }));
 	shapeOrPathEl.dispatchEvent(new PointerEvent('pointerup', { isPrimary: true }));
 }
