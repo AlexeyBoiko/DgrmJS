@@ -34,6 +34,7 @@
 
 
 ## Articles
+[Announcement / Hotkeys](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-announcement-hotkeys-e312d0e613e3)  
 [Announcement / Copy function](https://itnext.io/flowchart-editor-dgrm-net-announcement-copy-function-819f883053bd)  
 [Announcement / Sequence diagrams support](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-announcement-sequence-diagrams-support-dc62b9a3e095)  
 [Announcement / I halved the source code](https://itnext.io/flowchart-editor-dgrm-net-announcement-i-halved-the-source-code-e9d94822cd8a)  
