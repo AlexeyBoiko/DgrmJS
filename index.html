@@ -79,7 +79,7 @@
 
 			[data-connect] { display: none; }
 
-			.select path[data-key="selected"],
+			.select path[data-key="selected"], .highlight path[data-key="selected"],
 			.select .path-end,
 			.select [data-connect],
 			.highlight-e [data-key="end"] .path-end,
@@ -92,7 +92,7 @@
 			}
 			[data-connect].hover { stroke-width: 25px; }
 
-			.select path[data-key="selected"] { fill:none; }
+			.shpath path[data-key="selected"] { fill:none; }
 
 			.highlight [data-key="main"]{
 				paint-order: stroke;
@@ -158,6 +158,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?20230312-1" type="module"></script>
+	<script src="index.js?v=20230317" type="module"></script>
 </body>
 </html>
