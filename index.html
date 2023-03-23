@@ -35,7 +35,7 @@
 <body>
 	<ap-menu id="menu"></ap-menu>
 	<ap-menu-shape id="menu-shape"></ap-menu-shape>
-	<div id="tip" style="position: fixed; left: 50%; top: 30%; transform: translate(-50%, -30%); min-width: 290px;">
+	<div id="tip" style="position: fixed; left: 50%; top: 30%; transform: translate(-50%, -30%); min-width: 290px; pointer-events: none;">
 		<svg viewBox="0 0 24 24" width="24" height="24">
 			<path fill="none" d="M0 0h24v24H0z" />
 			<path
@@ -46,13 +46,13 @@
 			<li>drag diagram image here to open</li>
 			<li>to select multiple shapes use long press</li>
 		</ul>
-		<a href="/tip/" style="margin-left: 24px; line-height: 25px;">View tips and tricks</a>
+		<a href="/tip/" style="margin-left: 24px; line-height: 25px; display: inline-block; pointer-events: all;">View tips and tricks</a>
 	</div>
 	<div class="links" style="position: fixed; bottom: 0; right: 0; padding: 15px;">
 		<a href="https://github.com/AlexeyBoiko/DgrmJS" target="_blank">GitHub</a> | <a
 			href="https://linkedin.com/in/alexey-boyko-tech" target="_blank">LinkedIn</a>
 	</div>
-	<svg id="diagram" tabindex="0" style="touch-action: none; background-color: #fff; display:block; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; pointer-events: none;">
+	<svg id="diagram" tabindex="0" style="touch-action: none; background-color: #fff; display:block; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;">
 		<style type="text/css">
 			text {
 				white-space: pre-wrap;
@@ -158,6 +158,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20230317" type="module"></script>
+	<script src="index.js?v=20230323" type="module"></script>
 </body>
 </html>
