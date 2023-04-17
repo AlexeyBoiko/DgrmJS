@@ -77,6 +77,13 @@
 				caret-color: #fff;
 			}	
 
+			.resizer {
+				r: 10px;
+				opacity: 0.51;
+				stroke: rgb(25, 188, 155);
+				fill: rgb(25, 188, 155);
+			}
+
 			[data-connect] { display: none; }
 
 			.select path[data-key="selected"], .highlight path[data-key="selected"],
@@ -107,14 +114,11 @@
 			.shpath.dash [data-key="path"] { stroke-dasharray:5; }
 
 			@media (pointer: coarse) {
-				circle.path-end { r: 20px; }
 				.ative-elem {
 					stroke: rgb(108 187 247 / 51%);
-					stroke-width: 70px;
+					stroke-width: 35px;
 				}
-	
-				[data-connect] { stroke-width: 15px; }
-				[data-connect].hover { stroke-width: 70px; }
+				[data-connect].hover { stroke-width: 35px; }
 			}
 
 
@@ -158,6 +162,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20230323" type="module"></script>
+	<script src="index.js?v=20230417" type="module"></script>
 </body>
 </html>
