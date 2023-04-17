@@ -33,7 +33,11 @@
 
 
 
-## Articles
+## Announcements / Articles
+[twitter](https://twitter.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
+  
+  
+[Announcement / Resize](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-announcement-resize-ee6b0bd33382)  
 [Announcement / Hotkeys](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-announcement-hotkeys-e312d0e613e3)  
 [Announcement / Copy function](https://itnext.io/flowchart-editor-dgrm-net-announcement-copy-function-819f883053bd)  
 [Announcement / Sequence diagrams support](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-announcement-sequence-diagrams-support-dc62b9a3e095)  
