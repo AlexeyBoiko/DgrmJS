@@ -24,6 +24,22 @@
 
 <br />
 
+**Mind map**
+
+<img src="https://user-images.githubusercontent.com/29090032/235704955-8b791599-d6f4-4310-a304-ec0b486dc963.png" alt="mind map" width="600"/>
+
+[Try it yourself](https://app.dgrm.net/?k=2023040e8fdca8)
+
+<br />
+
+**Dependency Diagrams**
+
+<img src="https://user-images.githubusercontent.com/29090032/235703118-b2a5de89-8254-4eed-974b-61f4d9ac652c.png" alt="dependency diagram editor" width="600"/>
+
+[Try it yourself](https://app.dgrm.net/?k=202305e2c36abd)
+
+<br />
+
 **Highlights**
 - Works on desktop and mobile
 - Has no dependency
