@@ -53,6 +53,7 @@
 [twitter](https://twitter.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
   
   
+[Announcement / Stroke](https://alexey-boyko.medium.com/diagramm-editor-dgrm-net-announcement-stroke-1a9d8e0d93c2)  
 [Announcement / Resize](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-announcement-resize-ee6b0bd33382)  
 [Announcement / Hotkeys](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-announcement-hotkeys-e312d0e613e3)  
 [Announcement / Copy function](https://itnext.io/flowchart-editor-dgrm-net-announcement-copy-function-819f883053bd)  
