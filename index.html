@@ -134,34 +134,45 @@
 			.shtxt [data-key="main"] { fill: transparent; stroke: transparent; }
 			.shtxt.select [data-key="main"], .shtxt.highlight [data-key="main"] { stroke: rgb(108 187 247 / 51%); stroke-width: 2px; }
 
+			/* box */
+			.shbox [data-key="main"] { stroke-width: 1.8px; }
+			.shbox.highlight [data-key="selected"] { stroke: rgb(108 187 247 / 51%); }
+
 			/* rhomb shape */
 			.shrhomb.highlight [data-key="border"] { stroke-width: 28px; stroke: rgb(108 187 247 / 51%); }
-			.shrhomb.highlight [data-key="main"] { stroke-width:18px; stroke:#1D809F; }
+			.shrhomb.highlight [data-key="main"] { stroke-width:18px; stroke:rgb(29, 128, 159); }
 
 			/* shape settings styles */
-			.cl-red [data-key="main"] { fill: #E74C3C; } .cl-red .path { stroke: #E74C3C;}
-			.cl-orange [data-key="main"] { fill: #ff6600;} .cl-orange .path { stroke: #ff6600;}
-			.cl-green [data-key="main"] { fill: #19bc9b;} .cl-green .path { stroke: #19bc9b;}
-			.cl-blue [data-key="main"] { fill: #1aaee5;} .cl-blue .path { stroke: #1aaee5;}
-			.cl-dblue [data-key="main"] { fill: #1D809F;} .cl-dblue .path { stroke: #1D809F;}
-			.cl-dgray [data-key="main"] { fill: #495057;} .cl-dgray .path { stroke: #495057;}
+			.cl-red [data-key="main"] { fill: rgb(231, 76, 60); } .cl-red .path { stroke: rgb(231, 76, 60);}
+			.cl-orange [data-key="main"] { fill: rgb(255, 102, 0);} .cl-orange .path { stroke: rgb(255, 102, 0);}
+			.cl-green [data-key="main"] { fill: rgb(25, 188, 155);} .cl-green .path { stroke: rgb(25, 188, 155);}
+			.cl-blue [data-key="main"] { fill: rgb(26, 174, 229);} .cl-blue .path { stroke: rgb(26, 174, 229);}
+			.cl-dblue [data-key="main"] { fill: rgb(29, 128, 159);} .cl-dblue .path { stroke: rgb(29, 128, 159);}
+			.cl-dgray [data-key="main"] { fill: rgb(73, 80, 87);} .cl-dgray .path { stroke: rgb(73, 80, 87);}
 
-			.shtxt.cl-red [data-key="main"] { fill: transparent; } .shtxt.cl-red text { fill: #E74C3C; }
-			.shtxt.cl-orange [data-key="main"] { fill: transparent; } .shtxt.cl-orange text { fill: #ff6600; }
-			.shtxt.cl-green [data-key="main"] { fill: transparent; } .shtxt.cl-green text { fill: #19bc9b; }
-			.shtxt.cl-blue [data-key="main"] { fill: transparent; } .shtxt.cl-blue text { fill: #1aaee5; }
-			.shtxt.cl-dblue [data-key="main"] { fill: transparent; } .shtxt.cl-dblue text { fill: #1D809F; }
-			.shtxt.cl-dgray [data-key="main"] { fill: transparent; } .shtxt.cl-dgray text { fill: #495057; }
+			.shtxt.cl-red [data-key="main"] { fill: transparent; } .shtxt.cl-red text { fill: rgb(231, 76, 60); }
+			.shtxt.cl-orange [data-key="main"] { fill: transparent; } .shtxt.cl-orange text { fill: rgb(255, 102, 0); }
+			.shtxt.cl-green [data-key="main"] { fill: transparent; } .shtxt.cl-green text { fill: rgb(25, 188, 155); }
+			.shtxt.cl-blue [data-key="main"] { fill: transparent; } .shtxt.cl-blue text { fill: rgb(26, 174, 229); }
+			.shtxt.cl-dblue [data-key="main"] { fill: transparent; } .shtxt.cl-dblue text { fill: rgb(29, 128, 159); }
+			.shtxt.cl-dgray [data-key="main"] { fill: transparent; } .shtxt.cl-dgray text { fill: rgb(73, 80, 87); }
 
-			.shrhomb.cl-red [data-key="main"] { stroke-width:18px; stroke:#E74C3C; }
-			.shrhomb.cl-orange [data-key="main"] { stroke-width:18px; stroke:#ff6600; }
-			.shrhomb.cl-green [data-key="main"] { stroke-width:18px; stroke:#19bc9b; }
-			.shrhomb.cl-blue [data-key="main"] { stroke-width:18px; stroke:#1aaee5; }
-			.shrhomb.cl-dblue [data-key="main"] { stroke-width:18px; stroke:#1D809F; }
-			.shrhomb.cl-dgray [data-key="main"] { stroke-width:18px; stroke:#495057; }
+			.shrhomb.cl-red [data-key="main"] { stroke-width:18px; stroke:rgb(231, 76, 60); }
+			.shrhomb.cl-orange [data-key="main"] { stroke-width:18px; stroke:rgb(255, 102, 0); }
+			.shrhomb.cl-green [data-key="main"] { stroke-width:18px; stroke:rgb(25, 188, 155); }
+			.shrhomb.cl-blue [data-key="main"] { stroke-width:18px; stroke:rgb(26, 174, 229); }
+			.shrhomb.cl-dblue [data-key="main"] { stroke-width:18px; stroke:rgb(29, 128, 159); }
+			.shrhomb.cl-dgray [data-key="main"] { stroke-width:18px; stroke:rgb(73, 80, 87); }
+
+			.shbox.cl-red [data-key="main"] { stroke:rgb(231, 76, 60); fill: rgba(231, 76, 60, .03); }
+			.shbox.cl-orange [data-key="main"] { stroke:rgb(255, 102, 0); fill:rgba(255, 102, 0, .03);}
+			.shbox.cl-green [data-key="main"] { stroke:rgb(25, 188, 155); fill:rgba(25, 188, 155, .03);}
+			.shbox.cl-blue [data-key="main"], .shbox [data-key="main"] { stroke:rgb(26, 174, 229); fill:rgba(26, 174, 229, .03);}
+			.shbox.cl-dblue [data-key="main"] { stroke:rgb(29, 128, 159); fill:rgba(29, 128, 159, .03);}
+			.shbox.cl-dgray [data-key="main"] { stroke:rgb(73, 80, 87); fill:rgba(73, 80, 87, .03);}
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20230423" type="module"></script>
+	<script src="index.js?v=20230502" type="module"></script>
 </body>
 </html>
