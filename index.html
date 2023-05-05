@@ -123,6 +123,10 @@
 
 
 			/* rect, text shape */
+			.shrect text {pointer-events: none; }
+			.shtxt [data-key="main"] {pointer-events: none; }
+			.shtxt text {pointer-events:bounding-box; }
+			.shtxt.select [data-key="main"], .shtxt.highlight [data-key="main"] {pointer-events: unset; }
 			.shrect.ta-2 text, .shtxt.ta-2 text { text-anchor: middle; }
 			.shtxt.ta-1 text { text-anchor: start; }
 			.shtxt.ta-3 text { text-anchor: end; }
@@ -136,7 +140,7 @@
 
 			/* box */
 			.shbox [data-key="main"] { stroke-width: 1.8px; }
-			.shbox.highlight [data-key="selected"] { stroke: rgb(108 187 247 / 51%); }
+			.shbox.highlight [data-key="selected"] { stroke: rgb(108 187 247 / 51%); stroke-width: 10px; }
 
 			/* rhomb shape */
 			.shrhomb.highlight [data-key="border"] { stroke-width: 28px; stroke: rgb(108 187 247 / 51%); }
@@ -173,6 +177,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20230502" type="module"></script>
+	<script src="index.js?v=20230505" type="module"></script>
 </body>
 </html>
