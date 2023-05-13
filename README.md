@@ -32,10 +32,18 @@
 
 <br />
 
+**Format scheme**
+
+<img src="https://github.com/AlexeyBoiko/DgrmJS/assets/29090032/05a39938-45b4-4037-8587-52ecc2ad31ac.png" alt="format scheme" width="600"/>
+
+[Try it yourself](https://app.dgrm.net/?k=202305699d3043)
+
+<br />
+
 **Dependency Diagrams**
 
 <img src="https://user-images.githubusercontent.com/29090032/235703118-b2a5de89-8254-4eed-974b-61f4d9ac652c.png" alt="dependency diagram editor" width="600"/>
-
+ 
 [Try it yourself](https://app.dgrm.net/?k=202305e2c36abd)
 
 <br />
