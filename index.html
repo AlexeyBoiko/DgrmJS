@@ -121,14 +121,11 @@
 				[data-connect].hover { stroke-width: 35px; }
 			}
 
-
-			/* rect, text shape */
-			.shrect text {pointer-events: none; }
+			/* text shape */
 			.shtxt [data-key="main"] {pointer-events: none; }
-			.shtxt text {pointer-events:bounding-box; }
 			.shtxt.select [data-key="main"], .shtxt.highlight [data-key="main"] {pointer-events: unset; }
-			.shrect.ta-2 text, .shtxt.ta-2 text { text-anchor: middle; }
 			.shtxt.ta-1 text { text-anchor: start; }
+			.shtxt.ta-2 text { text-anchor: middle; }
 			.shtxt.ta-3 text { text-anchor: end; }
 			.shtxt.ta-1 textarea { text-align: left; }
 			.shtxt.ta-2 textarea { text-align: center; }
@@ -137,6 +134,12 @@
 			.shtxt text { fill:rgb(73, 80, 87); }
 			.shtxt [data-key="main"] { fill: transparent; stroke: transparent; }
 			.shtxt.select [data-key="main"], .shtxt.highlight [data-key="main"] { stroke: rgb(108 187 247 / 51%); stroke-width: 2px; }
+			/* header, bold */
+			.shtxt.b textarea, .shtxt.b text {font-weight:bolder;}
+			.shtxt.h textarea, .shtxt.h text {font-size: 24px;}
+			.shtxt.h textarea { padding-top: .6em; } /** magic number */
+			.shtxt.h text { fill: rgb(146, 150, 154); }
+			
 
 			/* box */
 			.shbox [data-key="main"] { stroke-width: 1.8px; }
@@ -147,12 +150,12 @@
 			.shrhomb.highlight [data-key="main"] { stroke-width:18px; stroke:rgb(29, 128, 159); }
 
 			/* shape settings styles */
-			.cl-red [data-key="main"] { fill: rgb(231, 76, 60); } .cl-red .path { stroke: rgb(231, 76, 60);}
-			.cl-orange [data-key="main"] { fill: rgb(255, 102, 0);} .cl-orange .path { stroke: rgb(255, 102, 0);}
-			.cl-green [data-key="main"] { fill: rgb(25, 188, 155);} .cl-green .path { stroke: rgb(25, 188, 155);}
-			.cl-blue [data-key="main"] { fill: rgb(26, 174, 229);} .cl-blue .path { stroke: rgb(26, 174, 229);}
-			.cl-dblue [data-key="main"] { fill: rgb(29, 128, 159);} .cl-dblue .path { stroke: rgb(29, 128, 159);}
-			.cl-dgray [data-key="main"] { fill: rgb(73, 80, 87);} .cl-dgray .path { stroke: rgb(73, 80, 87);}
+			.cl-red [data-key="main"], .cl-red .arr { fill: rgb(231, 76, 60); } .cl-red .path { stroke: rgb(231, 76, 60);}
+			.cl-orange [data-key="main"], .cl-orange .arr { fill: rgb(255, 102, 0);} .cl-orange .path { stroke: rgb(255, 102, 0);}
+			.cl-green [data-key="main"], .cl-green .arr { fill: rgb(25, 188, 155);} .cl-green .path { stroke: rgb(25, 188, 155);}
+			.cl-blue [data-key="main"], .cl-blue .arr { fill: rgb(26, 174, 229);} .cl-blue .path { stroke: rgb(26, 174, 229);}
+			.cl-dblue [data-key="main"], .cl-dblue .arr { fill: rgb(29, 128, 159);} .cl-dblue .path { stroke: rgb(29, 128, 159);}
+			.cl-dgray [data-key="main"], .cl-dgray .arr { fill: rgb(73, 80, 87);} .cl-dgray .path { stroke: rgb(73, 80, 87);}
 
 			.shtxt.cl-red [data-key="main"] { fill: transparent; } .shtxt.cl-red text { fill: rgb(231, 76, 60); }
 			.shtxt.cl-orange [data-key="main"] { fill: transparent; } .shtxt.cl-orange text { fill: rgb(255, 102, 0); }
@@ -174,9 +177,17 @@
 			.shbox.cl-blue [data-key="main"], .shbox [data-key="main"] { stroke:rgb(26, 174, 229); fill:rgba(26, 174, 229, .03);}
 			.shbox.cl-dblue [data-key="main"] { stroke:rgb(29, 128, 159); fill:rgba(29, 128, 159, .03);}
 			.shbox.cl-dgray [data-key="main"] { stroke:rgb(73, 80, 87); fill:rgba(73, 80, 87, .03);}
+
+			/* header */
+			.shtxt.cl-red.h text { fill: rgb(241, 148, 138); }
+			.shtxt.cl-orange.h text { fill: rgb(255, 163, 102); }
+			.shtxt.cl-green.h text { fill: rgb(117, 215, 195); }
+			.shtxt.cl-blue.h text { fill: rgb(118, 206, 239); }
+			.shtxt.cl-dblue.h text { fill: rgb(119, 179, 197); }
+			.shtxt.cl-dgray.h text { fill: rgb(146, 150, 154); }
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20230505" type="module"></script>
+	<script src="index.js?v=20230513" type="module"></script>
 </body>
 </html>
