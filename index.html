@@ -35,12 +35,14 @@
 <body>
 	<ap-menu id="menu"></ap-menu>
 	<ap-menu-shape id="menu-shape"></ap-menu-shape>
-	<div id="tip" style="position: fixed; left: 50%; top: 30%; transform: translate(-50%, -30%); width:90%; max-width: 400px; ">
+	<div id="tip" style="position: fixed; left: 50%; top: 30%; transform: translate(-50%, -30%); width:90%; max-width: 400px; display: none;">
 		<div style="text-align: right;">
 			<svg id="tipclose" viewBox="0 0 24 24" width="24" height="24" style="cursor: pointer;"><path d="M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z" fill="rgba(52,71,103)"></path></svg>
 		</div>
 		<a href="/tip/" target="_blank">
-			<video src="/assets/dgrm-intro.mp4" style="width: 100%; padding-top: 5px; display: block; border-style: solid; border-color: rgb(26, 174, 229); border-radius: 20px; background-color: #fff;" type="video/mp4" muted autoplay playsinline loop></video>
+			<video src="/assets/intro.mp4" poster="/assets/intro.png"
+				style="width: 100%; padding-top: 5px; display: block; border-style: solid; border-color: rgb(26, 174, 229); border-radius: 20px; background-color: #fff;"
+				type="video/mp4" muted autoplay playsinline loop></video>
 		</a>
 		<a href="/tip/" target="_blank" style="margin-left: 10px; display: inline-block;">View instruction</a>
 	</div>
@@ -184,6 +186,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20230602" type="module"></script>
+	<script src="index.js?v=20230603" type="module"></script>
 </body>
 </html>
