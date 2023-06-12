@@ -4,7 +4,7 @@
 
 <img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/flowchart.png" alt="Flowchart editor" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=20230222452afb)
+[Try it yourself](https://app.dgrm.net/?k=202306e4a8fb4a)
 
 <br />
 
@@ -12,7 +12,7 @@
 
 <img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/sequence-diagrams.gif" alt="sequence diagram editor" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=202302ba45529b)
+[Try it yourself](https://app.dgrm.net/?k=2023063178f013)
 
 <br />
 
@@ -20,7 +20,7 @@
 
 <img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/activity-diagram.png" alt="activity diagram editor" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=202302bd958e50)
+[Try it yourself](https://app.dgrm.net/?k=2023063ee7236b)
 
 <br />
 
@@ -28,7 +28,7 @@
 
 <img src="https://user-images.githubusercontent.com/29090032/235704955-8b791599-d6f4-4310-a304-ec0b486dc963.png" alt="mind map" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=2023040e8fdca8)
+[Try it yourself](https://app.dgrm.net/?k=2023067c63a9e3)
 
 <br />
 
@@ -36,7 +36,7 @@
 
 <img src="https://github.com/AlexeyBoiko/DgrmJS/assets/29090032/05a39938-45b4-4037-8587-52ecc2ad31ac.png" alt="format scheme" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=202305699d3043)
+[Try it yourself](https://app.dgrm.net/?k=2023061fae8882)
 
 <br />
 
@@ -44,7 +44,7 @@
 
 <img src="https://user-images.githubusercontent.com/29090032/235703118-b2a5de89-8254-4eed-974b-61f4d9ac652c.png" alt="dependency diagram editor" width="600"/>
  
-[Try it yourself](https://app.dgrm.net/?k=202305e2c36abd)
+[Try it yourself](https://app.dgrm.net/?k=20230615afbf55)
 
 <br />
 
