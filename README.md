@@ -60,6 +60,7 @@
 ## Announcements / Articles
 [twitter](https://twitter.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
   
+[Announcement / Action history](https://alexey-boyko.medium.com/diagram-editor-dgrm-net-announcement-action-history-4aa103c468c4)  
 [Announcement / Header, bold, forward / backward](https://alexey-boyko.medium.com/diagram-editor-dgrm-net-announcement-header-bold-forward-backward-5c5627a46b15)  
 [Announcement / Stroke](https://alexey-boyko.medium.com/diagramm-editor-dgrm-net-announcement-stroke-1a9d8e0d93c2)  
 [Announcement / Resize](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-announcement-resize-ee6b0bd33382)  
