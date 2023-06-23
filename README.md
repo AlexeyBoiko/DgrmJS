@@ -1,4 +1,4 @@
-# [Dgrm.net](https://app.dgrm.net "Flowchart editor") - flowchart editor
+# [Dgrm.net](https://dgrm.net "Flowchart editor") - flowchart editor
 
 **Flowcharts**    
 
