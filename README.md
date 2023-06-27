@@ -53,7 +53,9 @@
 - Has no dependency
 - Pure JavaScript
 
-
+**Please note**  
+Source code in this repo is different from https://dgrm.net/.  
+https://dgrm.net/ has pro features like "undo/redo".
 
 
 
