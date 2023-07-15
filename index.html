@@ -78,13 +78,11 @@
 				opacity: 0.51;
 				stroke: rgb(25, 188, 155);
 				fill: rgb(25, 188, 155);
-				display: none;
 			}
-			.select .resizer { display: unset; }
 
 			[data-connect] { display: none; }
 
-			.select path[data-key="selected"], .highlight path[data-key="selected"],
+			.select path[data-key="selected"], .highlight path[data-key="selected"], .highlight .path-end,
 			.select .path-end,
 			.select [data-connect],
 			.highlight-e [data-key="end"] .path-end,
@@ -186,6 +184,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20230704" type="module"></script>
+	<script src="index.js?v=20230715" type="module"></script>
 </body>
 </html>
