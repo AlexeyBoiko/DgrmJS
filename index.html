@@ -6,6 +6,7 @@
 	<title>DGRM - Flowchart editor</title>
 	<link rel="icon" type="image/png"
 		  href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAN5JREFUSEvNlc0RgyAQRtk2xEsqyaQEtYCYyoIFxFpSQg6BczrYDEZn+BdXnAk3D7zHt6wLsIMXHMxn/y+oRiUYwzMANrKpn25FdiWY4dcZ+gHAiyshC/jj3SPA3TmxJyELNNhJsLhequWn5WOzYIIiour4LSyBQbVVTxJYJ0YmfIkN15LsBMFyGBJ9J7KrBamLIrX+sQxJ6KddTZCET0S/LKYoKdgLT95BCXhUUAoeFJSEe4LS8IBAYvx9SHdLbJ/VRdUYE9DgmQno8AzBPvimWUR9u1dHBRVMGtcU2RcViIEZF5cYswAAAABJRU5ErkJggg==">
+	<link href="assets/font/font.css" rel="stylesheet">
 	<style>
 		html,
 		body,
@@ -14,15 +15,16 @@
 			width: 100%;
 			margin: 0;
 			user-select: none;
-			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			font-family: 'Roboto', sans-serif;
 			font-size: 16px;
-			color: rgb(73, 80, 87);
+			color: rgb(52,71,103);
 			outline: none; 
 		}
 
 		a {
-			color: #0d6efd;
-			text-decoration: none ;
+			color: rgb(13, 110, 253);
+			text-decoration: none;
+			cursor: pointer;
 		}
 
 		@media only screen and (max-width: 700px) {
@@ -37,12 +39,10 @@
 	<ap-menu id="menu"></ap-menu>
 	<ap-menu-shape id="menu-shape"></ap-menu-shape>
 	<div id="tip" style="position: fixed; left: 50%; top: 30%; transform: translate(-50%, -30%); width:90%; max-width: 400px; display: none;">
-		<div style="text-align: right;">
-			<svg id="tipclose" viewBox="0 0 24 24" width="24" height="24" style="cursor: pointer;"><path d="M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z" fill="rgba(52,71,103)"></path></svg>
-		</div>
+		<a id="tipclose" style="display: inline-block; padding: 10px;">Close</a>
 		<a href="https://dgrm.net/en/hints.html" target="_blank">
 		<video src="/assets/intro.mp4" poster="/assets/intro.png"
-			style="width: 100%; padding-top: 5px; display: block; border-style: solid; border-color: rgb(26, 174, 229); border-radius: 20px; background-color: #fff;"
+			style="width: 100%; padding-top: 5px; display: block; border:1px solid #b3b3b3; border-radius: 1.25rem; background-color: #fff;"
 			type="video/mp4" muted autoplay playsinline loop></video>
 		</a>
 		<a href="https://dgrm.net/en/hints.html" target="_blank" style="margin-left: 10px; display: inline-block;">View hints and hotkeys</a>
@@ -54,7 +54,7 @@
 		<style type="text/css">
 			text {
 				white-space: pre-wrap;
-				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				font-family: 'Roboto', sans-serif;
 				font-size: 16px;
 				color: rgb(73, 80, 87);
 			}
@@ -64,7 +64,7 @@
 				border: none;
 				padding: 10px;
 				padding-top: 0.8em;
-				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				font-family: 'Roboto', sans-serif;
 				font-size: 16px;
 				background-color: transparent;
 				color: transparent;
@@ -133,7 +133,7 @@
 			.shtxt [data-key="main"] { fill: transparent; stroke: transparent; }
 			.shtxt.select [data-key="main"], .shtxt.highlight [data-key="main"] { stroke: rgb(108 187 247 / 51%); stroke-width: 2px; }
 			/* header, bold */
-			.shtxt.d-b textarea, .shtxt.d-b text {font-weight:bolder;}
+			.shtxt.d-b textarea, .shtxt.d-b text {font-weight:700;}
 			.shtxt.d-h textarea, .shtxt.d-h text {font-size: 24px;}
 			.shtxt.d-h textarea { padding-top: .6em; } /** magic number */
 			.shtxt.d-h text { fill: rgb(146, 150, 154); }
@@ -186,6 +186,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20230911" type="module"></script>
+	<script src="index.js?v=20230916" type="module"></script>
 </body>
 </html>
