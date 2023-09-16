@@ -36,7 +36,7 @@
 
 <img src="https://github.com/AlexeyBoiko/DgrmJS/assets/29090032/05a39938-45b4-4037-8587-52ecc2ad31ac.png" alt="format scheme" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=2023061fae8882)
+[Try it yourself](https://app.dgrm.net/?k=202309005e39f2)
 
 <br />
 
