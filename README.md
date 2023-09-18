@@ -2,7 +2,7 @@
 
 **Flowcharts**    
 
-<img src="https://raw.githubusercontent.com/AlexeyBoiko/DgrmJS/doc/img/flowchart.png" alt="Flowchart editor" width="600"/>
+<img src="https://github.com/AlexeyBoiko/DgrmJS/assets/29090032/4cb40f6c-2200-4031-a7e6-50c8f83da2c0" alt="Flowchart editor live collaboration" width="600"/>
 
 [Try it yourself](https://app.dgrm.net/?k=202306e4a8fb4a)
 
@@ -62,6 +62,7 @@ https://dgrm.net/ has pro features like "undo/redo".
 ## Announcements / Articles
 [twitter](https://twitter.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
+[Announcement / Live collaboration](https://dev.to/alexboyko/flowchart-editor-dgrmnet-announcement-live-collaboration-eem)  
 [Announcement / Select with Shift key](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-announcement-select-with-shift-key-439f559fa406)  
 [UI. The interface should not be distracting](https://alexey-boyko.medium.com/ui-the-interface-should-not-be-distracting-75457848bceb)  
 [Announcement / Improved mobile support](https://alexey-boyko.medium.com/diagram-editor-dgrm-net-announcement-improved-mobile-support-180a276c461f)  
