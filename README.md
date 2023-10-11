@@ -62,6 +62,7 @@ https://dgrm.net/ has pro features like "undo/redo".
 ## Announcements / Articles
 [twitter](https://twitter.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
+[Announcement / Quick save](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-quick-save-4ee80cd9c4ba)  
 [Announcement / Live collaboration](https://dev.to/alexboyko/flowchart-editor-dgrmnet-announcement-live-collaboration-eem)  
 [Announcement / Select with Shift key](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-announcement-select-with-shift-key-439f559fa406)  
 [UI. The interface should not be distracting](https://alexey-boyko.medium.com/ui-the-interface-should-not-be-distracting-75457848bceb)  
