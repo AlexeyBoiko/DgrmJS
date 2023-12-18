@@ -54,6 +54,7 @@ https://dgrm.net/ has pro features like "undo/redo".
 ## Announcements / Articles
 [twitter](https://twitter.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
+[Announcement / Rights for schemes](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-rights-for-schemes-64a8e5e1659f)  
 [Announcement / DGRM cloud](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-dgrm-cloud-2188f820a948)  
 [Announcement / Quick save](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-quick-save-4ee80cd9c4ba)  
 [JavaScript. WebRTC. Connecting browsers directly without a server, peer-to-peer](https://itnext.io/javascript-webrtc-connecting-browsers-directly-without-a-server-peer-to-peer-2e2de847849a)  
