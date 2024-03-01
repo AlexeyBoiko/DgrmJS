@@ -20,7 +20,7 @@
 
 <img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/activity-diagram.png" alt="activity diagram editor" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=202310a1898462)
+[Try it yourself](https://app.dgrm.net/?k=202403ea77e90b)
 
 <br />
 
@@ -28,7 +28,7 @@
 
 <img src="https://user-images.githubusercontent.com/29090032/235704955-8b791599-d6f4-4310-a304-ec0b486dc963.png" alt="mind map" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=202310a91f4050)
+[Try it yourself](https://app.dgrm.net/?k=20240326021cdd)
 
 <br />
 
@@ -36,7 +36,7 @@
 
 <img src="https://github.com/AlexeyBoiko/DgrmJS/assets/29090032/05a39938-45b4-4037-8587-52ecc2ad31ac.png" alt="format scheme" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=2023109e4bce68)
+[Try it yourself](https://app.dgrm.net/?k=202403808ba09f)
 
 <br />
 
