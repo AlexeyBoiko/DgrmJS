@@ -4,7 +4,7 @@
 
 <img src="https://github.com/AlexeyBoiko/DgrmJS/assets/29090032/4cb40f6c-2200-4031-a7e6-50c8f83da2c0" alt="Flowchart editor live collaboration" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=202310f9d68005)
+[Try it yourself](https://app.dgrm.net/?k=20240339e781c7)
 
 <br />
 
@@ -20,7 +20,7 @@
 
 <img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/activity-diagram.png" alt="activity diagram editor" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=202403ea77e90b)
+[Try it yourself](https://app.dgrm.net/?k=2024034ad11f71)
 
 <br />
 
