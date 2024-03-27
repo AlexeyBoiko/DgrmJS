@@ -54,6 +54,7 @@ https://dgrm.net/ has pro features like "undo/redo".
 ## Announcements / Articles
 [twitter](https://twitter.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
+[Announcement / Marker](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-marker-f20e76443bed)  
 [WebRTC. How to establish a p2p connection between browsers](https://alexey-boyko.medium.com/webrtc-how-to-establish-a-p2p-connection-between-browsers-3315052bf95d)  
 [Intro video 50 sec ru](https://youtube.com/shorts/ktODLSnNWrY)  
 [Announcement / Images](https://alexey-boyko.medium.com/flowchart-editor-http-dgrm-net-images-1da8b0d9666a)  
