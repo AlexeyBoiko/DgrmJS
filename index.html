@@ -137,6 +137,10 @@
 			.shrhomb.highlight [data-key="border"] { stroke-width: 28px; stroke: rgb(108 187 247 / 51%); }
 			.shrhomb.highlight [data-key="main"] { stroke-width:18px; stroke:rgb(29, 128, 159); }
 
+			/* marker */
+			.mrkp, .shmrk [data-key="main"] { fill: none; stroke: rgb(213 178 255); mix-blend-mode: multiply; stroke-width: 10px; stroke-linecap: round; stroke-linejoin: round; }
+			.shmrk.select [data-key="selected"], .shmrk.highlight [data-key="selected"] { stroke: rgba(108 187 247 / 51%); stroke-linecap: round; stroke-linejoin: round; fill: none; }
+
 			/* shape settings styles */
 			.d-cl-red [data-key="main"], .d-cl-red .arr { fill: rgb(231, 76, 60); } .d-cl-red .path { stroke: rgb(231, 76, 60);}
 			.d-cl-orange [data-key="main"], .d-cl-orange .arr { fill: rgb(255, 102, 0);} .d-cl-orange .path { stroke: rgb(255, 102, 0);}
@@ -176,6 +180,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20240319" type="module"></script>
+	<script src="index.js?v=20240327" type="module"></script>
 </body>
 </html>
