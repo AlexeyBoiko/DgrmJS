@@ -47,6 +47,10 @@
 				color: rgb(73, 80, 87);
 			}
 
+			svg a { fill:#fff; text-decoration: underline; pointer-events: all; }
+			svg .select a { pointer-events: none; }
+			svg .shtxt a { fill: rgb(13, 110, 253); }
+			
 			textarea {
 				text-align: center;
 				border: none;
@@ -139,7 +143,7 @@
 
 			/* marker */
 			.mrkp, .shmrk [data-key="main"] { fill: none; stroke: rgb(213 178 255); mix-blend-mode: multiply; stroke-width: 10px; stroke-linecap: round; stroke-linejoin: round; }
-			.shmrk.select [data-key="selected"], .shmrk.highlight [data-key="selected"] { stroke: rgba(108 187 247 / 51%); stroke-linecap: round; stroke-linejoin: round; fill: none; }
+			.shmrk.select [data-key="selected"], .shmrk.highlight [data-key="selected"] { stroke: rgb(108 187 247); stroke-linecap: round; stroke-linejoin: round; fill: none; }
 
 			/* shape settings styles */
 			.d-cl-red [data-key="main"], .d-cl-red .arr { fill: rgb(231, 76, 60); } .d-cl-red .path { stroke: rgb(231, 76, 60);}
@@ -180,6 +184,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20240405" type="module"></script>
+	<script src="index.js?v=20240412" type="module"></script>
 </body>
 </html>
