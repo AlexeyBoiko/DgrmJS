@@ -54,6 +54,7 @@ https://dgrm.net/ has pro features like "undo/redo".
 ## Announcements / Articles
 [twitter](https://twitter.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
+[Announcement / ChatGPT plagin](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-chatgpt-plagin-6190033d6b0b)  
 [Announcement / Folders](https://alexey-boyko.medium.com/flowchart-editor-http-dgrm-net-folders-3642d4cbccdf)  
 [UI. Nuances of marker implementation in the DGRM.net flowchart editor](https://alexey-boyko.medium.com/ui-nuances-of-marker-implementation-in-the-dgrm-net-flowchart-editor-20da122bbfe0)  
 [Announcement / Marker](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-marker-f20e76443bed)  
