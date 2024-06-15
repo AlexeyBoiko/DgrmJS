@@ -1,65 +1,189 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>DGRM - Flowchart editor</title>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <meta name="description"
-          content="Flowchart editor. Fast, no unnecessary buttons. Supports workflow charts, activity diagrams, sequence diagrams, mind maps." />
-    <style>
-        body {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-            font-size: 16px;
-            color: rgb(52,71,103);
-            background-color: rgb(251, 251, 251);
-        }
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<title>DGRM - Flowchart editor</title>
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+	<link href="assets/font/font.css" rel="stylesheet">
+	<style>
+		html,
+		body,
+		#diagram {
+			height: 100%;
+			width: 100%;
+			margin: 0;
+			user-select: none;
+			font-family: 'Roboto', sans-serif;
+			font-size: 16px;
+			color: rgb(52,71,103);
+			outline: none; 
+		}
 
-        a {
-            color: #0D6EFD;
-            text-decoration: none;
-        }
+		a {
+			color: rgb(13, 110, 253);
+			text-decoration: none;
+			cursor: pointer;
+		}
 
-        .modal {
-            position: fixed;
-            left: 50%;
-            top: 30%;
-            box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 24px;
-            border-radius: 8px;
-            background-color: rgb(255, 255, 255);
-            transform: translate(-50%, -30%);
-            display: flex;
-            flex-flow: column;
-            padding: 15px;
-            width: 85vw;
-            max-width: 220px;
-        }
-
-        .mb20 {
-            margin-bottom: 20px
-        }
-
-        .tc {
-            text-align: center;
-        }
-
-        .sp {
-            border-bottom: solid rgba(52,71,103,.4) 1px;
-            margin-bottom: 10px;
-            padding-bottom: 20px;
-        }
-    </style>
+		@media only screen and (max-width: 700px) {
+			.links { display: none; }
+		}
+	</style>
+	<meta name="description"
+		  content="Flowchart editor. Fast, no unnecessary buttons. Supports workflow charts, activity diagrams, sequence diagrams, mind maps." />
 </head>
-
 <body>
-    <div class="modal">
-        <div class="mb20 tc" style="font-weight: bold;">Update in progress</div>
-        <div>
-            Service is temporarily unavailable.
-        </div>
-    </div>
-</body>
+	<img src="https://mc.yandex.ru/watch/94193297" style="position:absolute; left:-9999px;" alt="metric" />
+	<div class="links" style="position: fixed; bottom: 0; right: 0; padding: 15px;">
+		<a href="https://dgrm.net/en/hints.html" target="_blank">Help</a>
+	</div>
+	<svg id="diagram" tabindex="0" style="touch-action: none; background-color: #fff; display:block; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;">
+		<style type="text/css">
+			text {
+				white-space: pre-wrap;
+				font-family: 'Roboto', sans-serif;
+				font-size: 16px;
+				color: rgb(73, 80, 87);
+			}
 
+			svg a { fill:#fff; text-decoration: underline; pointer-events: all; }
+			svg .select a { pointer-events: none; }
+			svg .shtxt a { fill: rgb(13, 110, 253); }
+			
+			textarea {
+				text-align: center;
+				border: none;
+				padding: 10px;
+				padding-top: 0.8em;
+				font-family: 'Roboto', sans-serif;
+				font-size: 16px;
+				background-color: transparent;
+				color: transparent;
+				outline: none;
+				overflow: hidden;
+				resize: none;
+				line-height: 1em;
+				caret-color: #fff;
+			}	
+
+			.resizer {
+				r: 10px;
+				opacity: 0.51;
+				stroke: rgb(25, 188, 155);
+				fill: rgb(25, 188, 155);
+			}
+
+			[data-connect] { display: none; }
+
+			.select path[data-key="selected"], .highlight path[data-key="selected"], .highlight .path-end,
+			.select .path-end,
+			.select [data-connect],
+			.highlight-e [data-key="end"] .path-end,
+			.highlight-s [data-key="start"] .path-end,
+			.hover [data-connect] {
+				display: unset;
+				opacity: 0.51;
+				stroke: rgb(108 187 247);
+				fill: rgb(108 187 247);
+			}
+			[data-connect].hover { stroke-width: 25px; }
+
+			.shpath path[data-key="selected"] { fill:none; }
+
+			.highlight [data-key="main"]{
+				paint-order: stroke;
+				stroke-width: 10px;
+				stroke: rgb(108 187 247 / 51%);
+			}
+			
+			.shpath [data-key="end"] .path,
+			.shpath [data-key="start"] .path { display: none;}
+			.shpath.d-arw-e [data-key="end"] .path,
+			.shpath.d-arw-s [data-key="start"] .path { display: unset;}
+			.shpath.d-dash [data-key="path"] { stroke-dasharray:5; }
+
+			@media (pointer: coarse) {
+				.ative-elem {
+					stroke: rgb(108 187 247 / 51%);
+					stroke-width: 35px;
+				}
+				[data-connect].hover { stroke-width: 35px; }
+			}
+
+			/* text shape */
+			.shtxt [data-key="main"] {pointer-events: none; }
+			.shtxt.select [data-key="main"], .shtxt.highlight [data-key="main"] {pointer-events: unset; }
+			.shtxt.ta-1 text { text-anchor: start; }
+			.shtxt.ta-2 text { text-anchor: middle; }
+			.shtxt.ta-3 text { text-anchor: end; }
+			.shtxt.ta-1 textarea { text-align: left; }
+			.shtxt.ta-2 textarea { text-align: center; }
+			.shtxt.ta-3 textarea { text-align: right; }
+			.shtxt textarea { caret-color: rgb(73, 80, 87); }
+			.shtxt text { fill:rgb(73, 80, 87); }
+			.shtxt [data-key="main"] { fill: transparent; stroke: transparent; }
+			.shtxt.select [data-key="main"], .shtxt.highlight [data-key="main"] { stroke: rgb(108 187 247 / 51%); stroke-width: 2px; }
+			/* header, bold */
+			.shtxt.d-b textarea, .shtxt.d-b text {font-weight:700;}
+			.shtxt.d-h textarea, .shtxt.d-h text {font-size: 24px;}
+			.shtxt.d-h textarea { padding-top: .6em; } /** magic number */
+			.shtxt.d-h text { fill: rgb(146, 150, 154); }
+			
+			/* img */
+			.shimg.highlight [data-key="selected"] { stroke: rgb(108 187 247 / 51%); stroke-width: 10px; }
+
+			/* box */
+			.shbox [data-key="main"] { stroke-width: 1.8px; }
+			.shbox.highlight [data-key="selected"] { stroke: rgb(108 187 247 / 51%); stroke-width: 10px; }
+
+			/* rhomb shape */
+			.shrhomb.highlight [data-key="border"] { stroke-width: 28px; stroke: rgb(108 187 247 / 51%); }
+			.shrhomb.highlight [data-key="main"] { stroke-width:18px; stroke:rgb(29, 128, 159); }
+
+			/* marker */
+			.mrkp, .shmrk [data-key="main"] { fill: none; stroke: rgb(213 178 255); mix-blend-mode: multiply; stroke-width: 10px; stroke-linecap: round; stroke-linejoin: round; }
+			.shmrk.select [data-key="selected"], .shmrk.highlight [data-key="selected"] { stroke: rgb(108 187 247); stroke-linecap: round; stroke-linejoin: round; fill: none; }
+
+			/* shape settings styles */
+			.d-cl-red [data-key="main"], .d-cl-red .arr { fill: rgb(231, 76, 60); } .d-cl-red .path { stroke: rgb(231, 76, 60);}
+			.d-cl-orange [data-key="main"], .d-cl-orange .arr { fill: rgb(255, 102, 0);} .d-cl-orange .path { stroke: rgb(255, 102, 0);}
+			.d-cl-green [data-key="main"], .d-cl-green .arr { fill: rgb(25, 188, 155);} .d-cl-green .path { stroke: rgb(25, 188, 155);}
+			.d-cl-blue [data-key="main"], .d-cl-blue .arr { fill: rgb(26, 174, 229);} .d-cl-blue .path { stroke: rgb(26, 174, 229);}
+			.d-cl-dblue [data-key="main"], .d-cl-dblue .arr { fill: rgb(29, 128, 159);} .d-cl-dblue .path { stroke: rgb(29, 128, 159);}
+			.d-cl-dgray [data-key="main"], .d-cl-dgray .arr { fill: rgb(73, 80, 87);} .d-cl-dgray .path { stroke: rgb(73, 80, 87);}
+
+			.shtxt.d-cl-red [data-key="main"] { fill: transparent; } .shtxt.d-cl-red text { fill: rgb(231, 76, 60); }
+			.shtxt.d-cl-orange [data-key="main"] { fill: transparent; } .shtxt.d-cl-orange text { fill: rgb(255, 102, 0); }
+			.shtxt.d-cl-green [data-key="main"] { fill: transparent; } .shtxt.d-cl-green text { fill: rgb(25, 188, 155); }
+			.shtxt.d-cl-blue [data-key="main"] { fill: transparent; } .shtxt.d-cl-blue text { fill: rgb(26, 174, 229); }
+			.shtxt.d-cl-dblue [data-key="main"] { fill: transparent; } .shtxt.d-cl-dblue text { fill: rgb(29, 128, 159); }
+			.shtxt.d-cl-dgray [data-key="main"] { fill: transparent; } .shtxt.d-cl-dgray text { fill: rgb(73, 80, 87); }
+
+			.shrhomb.d-cl-red [data-key="main"] { stroke-width:18px; stroke:rgb(231, 76, 60); }
+			.shrhomb.d-cl-orange [data-key="main"] { stroke-width:18px; stroke:rgb(255, 102, 0); }
+			.shrhomb.d-cl-green [data-key="main"] { stroke-width:18px; stroke:rgb(25, 188, 155); }
+			.shrhomb.d-cl-blue [data-key="main"] { stroke-width:18px; stroke:rgb(26, 174, 229); }
+			.shrhomb.d-cl-dblue [data-key="main"] { stroke-width:18px; stroke:rgb(29, 128, 159); }
+			.shrhomb.d-cl-dgray [data-key="main"] { stroke-width:18px; stroke:rgb(73, 80, 87); }
+
+			.shbox.d-cl-red [data-key="main"] { stroke:rgb(231, 76, 60); fill: rgba(231, 76, 60, .03); }
+			.shbox.d-cl-orange [data-key="main"] { stroke:rgb(255, 102, 0); fill:rgba(255, 102, 0, .03);}
+			.shbox.d-cl-green [data-key="main"] { stroke:rgb(25, 188, 155); fill:rgba(25, 188, 155, .03);}
+			.shbox.d-cl-blue [data-key="main"], .shbox [data-key="main"] { stroke:rgb(26, 174, 229); fill:rgba(26, 174, 229, .03);}
+			.shbox.d-cl-dblue [data-key="main"] { stroke:rgb(29, 128, 159); fill:rgba(29, 128, 159, .03);}
+			.shbox.d-cl-dgray [data-key="main"] { stroke:rgb(73, 80, 87); fill:rgba(73, 80, 87, .03);}
+
+			/* header */
+			.shtxt.d-cl-red.d-h text { fill: rgb(241, 148, 138); }
+			.shtxt.d-cl-orange.d-h text { fill: rgb(255, 163, 102); }
+			.shtxt.d-cl-green.d-h text { fill: rgb(117, 215, 195); }
+			.shtxt.d-cl-blue.d-h text { fill: rgb(118, 206, 239); }
+			.shtxt.d-cl-dblue.d-h text { fill: rgb(119, 179, 197); }
+			.shtxt.d-cl-dgray.d-h text { fill: rgb(146, 150, 154); }
+		</style>
+		<g id="canvas"></g>
+	</svg>
+	<script src="index.js?v=20240615" type="module"></script>
+</body>
 </html>
