@@ -67,14 +67,11 @@
 				caret-color: #fff;
 			}	
 
-			.resizer {
-				r: 10px;
-				opacity: 0.51;
-				stroke: rgb(25, 188, 155);
-				fill: rgb(25, 188, 155);
-			}
+			.resizer { r: 10px; opacity: 0.51; stroke: rgb(25, 188, 155); fill: rgb(25, 188, 155); cursor: nwse-resize; }
 
-			[data-connect] { display: none; }
+			[data-key="main"], [data-key="selected"], [data-key="text"], .shpath [data-key="outer"] { cursor: pointer; }
+			.shpath [data-key="start"], .shpath [data-key="end"] { cursor: move; }
+			[data-connect] { display: none; cursor:move; }
 
 			.select path[data-key="selected"], .highlight path[data-key="selected"], .highlight .path-end,
 			.select .path-end,
@@ -184,6 +181,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20240620" type="module"></script>
+	<script src="index.js?v=20240621" type="module"></script>
 </body>
 </html>
