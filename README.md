@@ -54,6 +54,7 @@ https://dgrm.net/ has pro features like "undo/redo".
 ## Announcements / Articles
 [twitter](https://twitter.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
+[Announcement / Team Subsriptions](https://alexey-boyko.medium.com/diagramming-tool-dgrm-net-team-subsriptions-8e6436c05135)  
 [Announcement / Teamwork](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-teamwork-72db958dd495)  
 [Announcement / Recent](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-recent-38b2053f82be)  
 [Announcement / ChatGPT plagin](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-chatgpt-plagin-6190033d6b0b) ([RU article](https://vc.ru/tribuna/1164003-mindmap-za-10-sekund-nayden-samyy-bystryy-sposob-sdat-rabotu-zakazchiku))  
