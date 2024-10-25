@@ -52,7 +52,7 @@ https://dgrm.net/ has pro features like "undo/redo".
 
 
 ## Announcements / Articles
-[twitter](https://twitter.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
+[x.com](https://x.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
 [Announcement / Team Subsriptions](https://alexey-boyko.medium.com/diagramming-tool-dgrm-net-team-subsriptions-8e6436c05135)  
 [Announcement / Teamwork](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-teamwork-72db958dd495)  
