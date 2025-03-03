@@ -54,6 +54,7 @@ https://dgrm.net/ has pro features like "undo/redo".
 ## Announcements / Articles
 [x.com](https://x.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
+[Announcement / Now there are tables](https://dgrm.net/en/database-design.html)  
 [Announcement / DGRM Flowchart editor are now in Microsoft AppSource store](https://appsource.microsoft.com/en-us/product/web-apps/boykotech.flowchart-editor-dgrm)  
 [Announcement / Team Subsriptions](https://alexey-boyko.medium.com/diagramming-tool-dgrm-net-team-subsriptions-8e6436c05135)  
 [Announcement / Teamwork](https://alexey-boyko.medium.com/flowchart-editor-dgrm-net-teamwork-72db958dd495)  
