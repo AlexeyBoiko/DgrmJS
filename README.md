@@ -20,7 +20,6 @@
 
 <img src="https://github.com/AlexeyBoiko/DgrmJS/blob/doc/img/activity-diagram.png" alt="activity diagram editor" width="600"/>
 
-[Try it yourself](https://app.dgrm.net/?k=2024034ad11f71)
 
 <br />
 
