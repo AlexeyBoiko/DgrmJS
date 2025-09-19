@@ -53,6 +53,7 @@ https://dgrm.net/ has pro features like "undo/redo".
 ## Announcements / Articles
 [x.com](https://x.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
+[Announcement / Now you can recolor several figures at once](https://x.com/Boyko_tech/status/1969064514357252345)  
 [Announcement / Now text fits into shapes automatically](https://alexey-boyko.medium.com/dgrm-net-flowchart-editor-now-text-fits-into-shapes-automatically-1fb263d7eb62)  
 [Announcement / Now the exported images files size is 3 times less](https://x.com/Boyko_tech/status/1904559602047316086)  
 [Announcement / Now there are tables](https://dgrm.net/en/database-design.html)  
