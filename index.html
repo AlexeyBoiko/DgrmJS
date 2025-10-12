@@ -20,21 +20,21 @@
 			outline: none; 
 		}
 
-		a {
+		.dg-a {
 			color: rgb(13, 110, 253);
 			text-decoration: none;
 			cursor: pointer;
 		}
 
-		.txtareaedt { position: fixed; background-color: #fff; color: rgb(52,71,103); white-space: nowrap; overflow: auto; border: rgba(26, 174, 229, .51) 5px solid; border-radius: 8px; text-align: left; padding: 10px; height: 200px; width: 250px; caret-color: auto; }
-		.txtareaedt.d-cl-red {border-color:rgba(231, 76, 60, .51);}
-		.txtareaedt.d-cl-orange {border-color:rgba(255, 102, 0, .51);}
-		.txtareaedt.d-cl-green {border-color:rgba(25, 188, 155, .51);}
-		.txtareaedt.d-cl-dblue {border-color:rgba(29, 128, 159, .51);}
-		.txtareaedt.d-cl-dgray {border-color:rgba(73, 80, 87, .51);}
+		.dg-txtarea { position: fixed; background-color: #fff; color: rgb(52,71,103); white-space: nowrap; overflow: auto; border: rgba(26, 174, 229, .51) 5px solid; border-radius: 8px; text-align: left; padding: 10px; height: 200px; width: 250px; caret-color: auto; font-family: 'Roboto', sans-serif; font-size: 16px; outline: none; resize: none; line-height: 1em; tab-size: 1; }
+		.dg-txtarea.d-cl-red {border-color:rgba(231, 76, 60, .51);}
+		.dg-txtarea.d-cl-orange {border-color:rgba(255, 102, 0, .51);}
+		.dg-txtarea.d-cl-green {border-color:rgba(25, 188, 155, .51);}
+		.dg-txtarea.d-cl-dblue {border-color:rgba(29, 128, 159, .51);}
+		.dg-txtarea.d-cl-dgray {border-color:rgba(73, 80, 87, .51);}
 
 		@media only screen and (max-width: 700px) {
-			.links { display: none; }
+			.dg-hlp { display: none; }
 		}
 	</style>
 	<meta name="description"
@@ -42,79 +42,56 @@
 </head>
 <body>
 	<img src="https://mc.yandex.ru/watch/94193297" style="position:absolute; left:-9999px;" alt="metric" />
-	<div class="links" style="position: fixed; bottom: 0; right: 0; padding: 15px;">
-		<a href="https://dgrm.net/en/hints.html" target="_blank">Help</a>
+	<div class="dg-hlp" style="position: fixed; bottom: 0; right: 0; padding: 15px;">
+		<a class="dg-a" href="https://dgrm.net/en/hints.html" target="_blank">Help</a>
 	</div>
 	<svg xmlns="http://www.w3.org/2000/svg" id="diagram" tabindex="0" style="touch-action: none; background-color: #fff; display:block; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;">
 		<style type="text/css">
-			svg a { fill:#fff; text-decoration: underline; pointer-events: all; }
-			svg .select a { pointer-events: none; }
-			svg .shtxt a { fill: rgb(13, 110, 253); }
+			.dg-lnk { color: #fff; text-decoration: underline; pointer-events: all; }
+			.select .dg-lnk { pointer-events: none; }
 			
 			.txt-edit {display:block; line-height: 1.1em; outline: none; pointer-events: none; color:#fff; font-family: 'Roboto', sans-serif; font-size: 16px; caret-color: #fff; white-space: pre-wrap; overflow-wrap: normal; }
-			.txt-edit a {color: #fff;}
-
-			textarea {
-				text-align: center;
-				border: none;
-				padding: 10px;
-				padding-top: 0.8em;
-				font-family: 'Roboto', sans-serif;
-				font-size: 16px;
-				background-color: transparent;
-				color: transparent;
-				outline: none;
-				overflow: hidden;
-				resize: none;
-				line-height: 1em;
-				caret-color: #fff;
-				tab-size: 1;
-			}	
 
 			.resizer { r: 10px; opacity: 0.51; stroke: rgb(25, 188, 155); fill: rgb(25, 188, 155); cursor: nwse-resize; }
 
-			[data-key="main"], [data-key="selected"], .shpath [data-key="outer"] { cursor: pointer; }
-			.shpath [data-key="start"], .shpath [data-key="end"] { cursor: move; }
-			[data-connect] { display: none; cursor:move; }
+			.dg-main, .dg-selected { cursor: pointer; }
+			.dg-connect { display: none; cursor:move; }
 
-			.select path[data-key="selected"], .highlight path[data-key="selected"], .highlight .path-end,
+			.select .dg-selected-path, .highlight .dg-selected-path, .highlight .path-end,
 			.select .path-end,
-			.select [data-connect],
-			.highlight-e [data-key="end"] .path-end,
-			.highlight-s [data-key="start"] .path-end,
-			.hover [data-connect] {
+			.select .dg-connect,
+			.highlight-e .dg-end .path-end,
+			.highlight-s .dg-start .path-end,
+			.hover .dg-connect {
 				display: unset;
 				opacity: 0.51;
 				stroke: rgb(108 187 247);
 				fill: rgb(108 187 247);
 			}
-			[data-connect].hover { stroke-width: 25px; }
+			.dg-connect.hover { stroke-width: 25px; }
 
-			.shpath path[data-key="selected"] { fill:none; }
-
-			.highlight [data-key="main"]{
+			.highlight .dg-main{
 				paint-order: stroke;
 				stroke-width: 10px;
 				stroke: rgb(108 187 247 / 51%);;
 			}
-			
-			.shpath [data-key="end"] .path,
-			.shpath [data-key="start"] .path { display: none;}
-			.shpath.d-arw-e [data-key="end"] .path,
-			.shpath.d-arw-s [data-key="start"] .path { display: unset;}
-			.shpath.d-dash [data-key="path"] { stroke-dasharray:5; }
+
+			.arr-e, .arr-s { display: none;}
+			.d-arw-e .arr-e, .d-arw-s .arr-s {display: unset;}
+
+			.d-dash .path { stroke-dasharray:5; }
 
 			@media (pointer: coarse) {
 				.ative-elem {
 					stroke: rgb(108 187 247 / 51%);
 					stroke-width: 35px;
 				}
-				[data-connect].hover { stroke-width: 35px; }
+				.dg-connect.hover { stroke-width: 35px; }
 			}
 
 			/* text shape */
 
-			.shtxt .txt-edit, .shtxt a { color: rgb(73, 80, 87); caret-color: rgb(73, 80, 87); display: inline; background-color: #fff; }
+			.shtxt .txt-edit, .shtxt .dg-lnk { color: rgb(73, 80, 87); caret-color: rgb(73, 80, 87); display: inline; background-color: #fff; }
 			.shtxt.ta-1 .frg { text-align: left; }
 			.shtxt.ta-2 .frg { text-align: center; }
 			.shtxt.ta-3 .frg { text-align: right; }
@@ -129,74 +106,80 @@
 			.shtxt.d-cl-dblue.d-h .txt-edit { color: rgb(119, 179, 197); }
 			.shtxt.d-cl-dgray.d-h .txt-edit { color: rgb(146, 150, 154); }
 
-			.shtxt.d-cl-red [data-key="main"] { fill: transparent; } .shtxt.d-cl-red .txt-edit, .shtxt.d-cl-red a { color: rgb(231, 76, 60); }
-			.shtxt.d-cl-orange [data-key="main"] { fill: transparent; } .shtxt.d-cl-orange .txt-edit, .shtxt.d-cl-orange a { color: rgb(255, 102, 0); }
-			.shtxt.d-cl-green [data-key="main"] { fill: transparent; } .shtxt.d-cl-green .txt-edit, .shtxt.d-cl-green a { color: rgb(25, 188, 155); }
-			.shtxt.d-cl-blue [data-key="main"] { fill: transparent; } .shtxt.d-cl-blue .txt-edit, .shtxt.d-cl-blue a { color: rgb(26, 174, 229); }
-			.shtxt.d-cl-dblue [data-key="main"] { fill: transparent; } .shtxt.d-cl-dblue .txt-edit, .shtxt.d-cl-dblue a { color: rgb(29, 128, 159); }
-			.shtxt.d-cl-dgray [data-key="main"] { fill: transparent; } .shtxt.d-cl-dgray .txt-edit, .shtxt.d-cl-dgray a { color: rgb(73, 80, 87); }
+			.shtxt.d-cl-red .dg-main { fill: transparent; } .shtxt.d-cl-red .txt-edit, .shtxt.d-cl-red .dg-lnk { color: rgb(231, 76, 60); }
+			.shtxt.d-cl-orange .dg-main { fill: transparent; } .shtxt.d-cl-orange .txt-edit, .shtxt.d-cl-orange .dg-lnk { color: rgb(255, 102, 0); }
+			.shtxt.d-cl-green .dg-main { fill: transparent; } .shtxt.d-cl-green .txt-edit, .shtxt.d-cl-green .dg-lnk { color: rgb(25, 188, 155); }
+			.shtxt.d-cl-blue .dg-main { fill: transparent; } .shtxt.d-cl-blue .txt-edit, .shtxt.d-cl-blue .dg-lnk { color: rgb(26, 174, 229); }
+			.shtxt.d-cl-dblue .dg-main { fill: transparent; } .shtxt.d-cl-dblue .txt-edit, .shtxt.d-cl-dblue .dg-lnk { color: rgb(29, 128, 159); }
+			.shtxt.d-cl-dgray .dg-main { fill: transparent; } .shtxt.d-cl-dgray .txt-edit, .shtxt.d-cl-dgray .dg-lnk { color: rgb(73, 80, 87); }
 
-			.shtxt [data-key="main"] {pointer-events: none; }
-			.shtxt.select [data-key="main"], .shtxt.highlight [data-key="main"] {pointer-events: unset; }
-			.shtxt [data-key="main"] { fill: transparent; stroke: transparent; }
-			.shtxt.select [data-key="main"], .shtxt.highlight [data-key="main"], .shtxt.resize [data-key="main"] { stroke: rgb(108 187 247 / 51%); stroke-width: 2px; }
+			.shtxt .dg-main {pointer-events: none; }
+			.shtxt.select .dg-main, .shtxt.highlight .dg-main {pointer-events: unset; }
+			.shtxt .dg-main { fill: transparent; stroke: transparent; }
+			.shtxt.select .dg-main, .shtxt.highlight .dg-main, .shtxt.resize .dg-main { stroke: rgb(108 187 247 / 51%); stroke-width: 2px; }
 			
 			/* img */
-			.shimg.highlight [data-key="selected"] { stroke: rgb(108 187 247 / 51%); stroke-width: 10px; }
+			.shimg.highlight .dg-selected { stroke: rgb(108 187 247 / 51%); stroke-width: 10px; }
 
 			/* box */
-			.shbox [data-key="main"] { stroke-width: 1.8px; }
-			.shbox.highlight [data-key="selected"] { stroke: rgb(108 187 247 / 51%); stroke-width: 10px; }
+			.shbox.highlight .dg-selected { stroke: rgb(108 187 247 / 51%); stroke-width: 10px; }
 
 			/* rhomb shape */
-			.shrhomb.highlight [data-key="border"] { stroke-width: 28px; stroke: rgb(108 187 247 / 51%); }
-			.shrhomb.highlight [data-key="main"] { stroke-width:18px; stroke:rgb(29, 128, 159); }
+			.shrhomb.highlight .dg-border { stroke-width: 28px; stroke: rgb(108 187 247 / 51%); }
+			.shrhomb.highlight .dg-main { stroke-width:18px; stroke:rgb(29, 128, 159); }
 
 			/* table shape */
 			.shtbl-hdr { color: #fff; height: 48px; }
-			.shtbl-hdr a { color: #fff; }
 			.shtbl-row { border-bottom: 1px solid #DBDCDD; padding-top: 10px; padding-bottom: 10px; padding-left: 0; }
 			.shtbl-row-last { padding-top: 10px; padding-bottom: 10px; }
 			.shtbl-cl { padding-left: 4px; padding-right: 4px; }
 			.shtbl-cl-first { padding-right: 4px; }
 			.shtbl-cl-last { padding-left: 4px; }
-			.shtbl.highlight [data-key="selected"] { stroke: rgb(108 187 247 / 51%); stroke-width: 10px; }
+			.shtbl.highlight .dg-selected { stroke: rgb(108 187 247 / 51%); stroke-width: 10px; }
 
 			/* marker */
-			.mrkp, .shmrk [data-key="main"] { fill: none; stroke: rgb(213 178 255); mix-blend-mode: multiply; stroke-width: 10px; stroke-linecap: round; stroke-linejoin: round; }
-			.shmrk.select [data-key="selected"], .shmrk.highlight [data-key="selected"] { stroke: rgb(108 187 247); stroke-linecap: round; stroke-linejoin: round; fill: none; }
+			.mrkp { fill: none; stroke: rgb(213 178 255); mix-blend-mode: multiply; stroke-width: 10px; stroke-linecap: round; stroke-linejoin: round; }
+			.shmrk.select .dg-selected, .shmrk.highlight .dg-selected { stroke: rgb(108 187 247); stroke-linecap: round; stroke-linejoin: round; fill: none; }
 
 			/* shape settings styles */
-			.d-cl-red [data-key="main"], .d-cl-red .arr { fill: rgb(231, 76, 60); } .d-cl-red .path { stroke: rgb(231, 76, 60);}
-			.d-cl-orange [data-key="main"], .d-cl-orange .arr { fill: rgb(255, 102, 0);} .d-cl-orange .path { stroke: rgb(255, 102, 0);}
-			.d-cl-green [data-key="main"], .d-cl-green .arr { fill: rgb(25, 188, 155);} .d-cl-green .path { stroke: rgb(25, 188, 155);}
-			.d-cl-blue [data-key="main"], .d-cl-blue .arr { fill: rgb(26, 174, 229);} .d-cl-blue .path { stroke: rgb(26, 174, 229);}
-			.d-cl-dblue [data-key="main"], .d-cl-dblue .arr { fill: rgb(29, 128, 159);} .d-cl-dblue .path { stroke: rgb(29, 128, 159);}
-			.d-cl-dgray [data-key="main"], .d-cl-dgray .arr { fill: rgb(73, 80, 87);} .d-cl-dgray .path { stroke: rgb(73, 80, 87);}
+			.d-cl-red .dg-main { fill: rgb(231, 76, 60); }
+			.d-cl-orange .dg-main { fill: rgb(255, 102, 0);}
+			.d-cl-green .dg-main { fill: rgb(25, 188, 155);}
+			.d-cl-blue .dg-main { fill: rgb(26, 174, 229);}
+			.d-cl-dblue .dg-main { fill: rgb(29, 128, 159);}
+			.d-cl-dgray .dg-main { fill: rgb(73, 80, 87);}
 
-			.shrhomb.d-cl-red [data-key="main"] { stroke-width:18px; stroke:rgb(231, 76, 60); }
-			.shrhomb.d-cl-orange [data-key="main"] { stroke-width:18px; stroke:rgb(255, 102, 0); }
-			.shrhomb.d-cl-green [data-key="main"] { stroke-width:18px; stroke:rgb(25, 188, 155); }
-			.shrhomb.d-cl-blue [data-key="main"] { stroke-width:18px; stroke:rgb(26, 174, 229); }
-			.shrhomb.d-cl-dblue [data-key="main"] { stroke-width:18px; stroke:rgb(29, 128, 159); }
-			.shrhomb.d-cl-dgray [data-key="main"] { stroke-width:18px; stroke:rgb(73, 80, 87); }
+			/* path */
+			.d-cl-red .arr { fill: rgb(231, 76, 60); stroke: rgb(231, 76, 60); } .d-cl-red .path { stroke: rgb(231, 76, 60); }
+			.d-cl-orange .arr { fill: rgb(255, 102, 0); stroke: rgb(255, 102, 0); } .d-cl-orange .path { stroke: rgb(255, 102, 0); }
+			.d-cl-green .arr { fill: rgb(25, 188, 155); stroke: rgb(25, 188, 155); } .d-cl-green .path { stroke: rgb(25, 188, 155); }
+			.d-cl-blue .arr { fill: rgb(26, 174, 229); stroke: rgb(26, 174, 229); } .d-cl-blue .path { stroke: rgb(26, 174, 229); }
+			.d-cl-dblue .arr { fill: rgb(29, 128, 159); stroke: rgb(29, 128, 159); } .d-cl-dblue .path { stroke: rgb(29, 128, 159); }
+			.d-cl-dgray .arr { fill: rgb(73, 80, 87); stroke: rgb(73, 80, 87); } .d-cl-dgray .path { stroke: rgb(73, 80, 87); }
 
-			.shbox.d-cl-red [data-key="main"] { stroke:rgb(231, 76, 60); fill: rgba(231, 76, 60, .03); }
-			.shbox.d-cl-orange [data-key="main"] { stroke:rgb(255, 102, 0); fill:rgba(255, 102, 0, .03);}
-			.shbox.d-cl-green [data-key="main"] { stroke:rgb(25, 188, 155); fill:rgba(25, 188, 155, .03);}
-			.shbox.d-cl-blue [data-key="main"], .shbox [data-key="main"] { stroke:rgb(26, 174, 229); fill:rgba(26, 174, 229, .03);}
-			.shbox.d-cl-dblue [data-key="main"] { stroke:rgb(29, 128, 159); fill:rgba(29, 128, 159, .03);}
-			.shbox.d-cl-dgray [data-key="main"] { stroke:rgb(73, 80, 87); fill:rgba(73, 80, 87, .03);}
+			.shrhomb.d-cl-red .dg-main { stroke-width:18px; stroke:rgb(231, 76, 60); }
+			.shrhomb.d-cl-orange .dg-main { stroke-width:18px; stroke:rgb(255, 102, 0); }
+			.shrhomb.d-cl-green .dg-main { stroke-width:18px; stroke:rgb(25, 188, 155); }
+			.shrhomb.d-cl-blue .dg-main { stroke-width:18px; stroke:rgb(26, 174, 229); }
+			.shrhomb.d-cl-dblue .dg-main { stroke-width:18px; stroke:rgb(29, 128, 159); }
+			.shrhomb.d-cl-dgray .dg-main { stroke-width:18px; stroke:rgb(73, 80, 87); }
+
+			.shbox.d-cl-red .dg-main { stroke:rgb(231, 76, 60); fill: rgba(231, 76, 60, .03); }
+			.shbox.d-cl-orange .dg-main { stroke:rgb(255, 102, 0); fill:rgba(255, 102, 0, .03);}
+			.shbox.d-cl-green .dg-main { stroke:rgb(25, 188, 155); fill:rgba(25, 188, 155, .03);}
+			.shbox.d-cl-blue .dg-main, .shbox .dg-main { stroke:rgb(26, 174, 229); fill:rgba(26, 174, 229, .03);}
+			.shbox.d-cl-dblue .dg-main { stroke:rgb(29, 128, 159); fill:rgba(29, 128, 159, .03);}
+			.shbox.d-cl-dgray .dg-main { stroke:rgb(73, 80, 87); fill:rgba(73, 80, 87, .03);}
 
 			.d-cl-red .shtbl-h { fill:rgb(231, 76, 60); } .d-cl-red .shtbl-mn {stroke:rgb(231, 76, 60);}
 			.d-cl-orange .shtbl-h { fill:rgb(255, 102, 0); } .d-cl-orange .shtbl-mn {stroke:rgb(255, 102, 0);}
 			.d-cl-green .shtbl-h { fill:rgb(25, 188, 155); } .d-cl-green .shtbl-mn {stroke:rgb(25, 188, 155);}
 			.d-cl-dblue .shtbl-h { fill:rgb(29, 128, 159); } .d-cl-dblue .shtbl-mn {stroke:rgb(29, 128, 159);}
 			.d-cl-dgray .shtbl-h { fill:rgb(73, 80, 87); } .d-cl-dgray .shtbl-mn {stroke:rgb(73, 80, 87);}
-			.shtbl [data-key="main"] { fill: #fff; stroke-width: 1.8px; }
+			.shtbl .dg-main { fill: #fff; stroke-width: 1.8px; }
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20251002" type="module"></script>
+	<script src="index.js?v=20251012" type="module"></script>
 </body>
 </html>
