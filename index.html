@@ -55,25 +55,23 @@
 			.resizer { r: 10px; opacity: 0.51; stroke: rgb(25, 188, 155); fill: rgb(25, 188, 155); cursor: nwse-resize; }
 
 			.dg-main, .dg-selected { cursor: pointer; }
-			.dg-connect { display: none; cursor:move; }
 
 			.select .dg-selected-path, .highlight .dg-selected-path, .highlight .path-end,
 			.select .path-end,
-			.select .dg-connect,
 			.highlight-e .dg-end .path-end,
-			.highlight-s .dg-start .path-end,
-			.hover .dg-connect {
+			.highlight-s .dg-start .path-end {
 				display: unset;
 				opacity: 0.51;
 				stroke: rgb(108 187 247);
 				fill: rgb(108 187 247);
 			}
+
 			.dg-connect.hover { stroke-width: 25px; }
 
 			.highlight .dg-main{
 				paint-order: stroke;
 				stroke-width: 10px;
-				stroke: rgb(108 187 247 / 51%);;
+				stroke: rgb(108 187 247 / 51%);
 			}
 
 			.arr-e, .arr-s { display: none;}
@@ -181,6 +179,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=202510142" type="module"></script>
+	<script src="index.js?v=20251017" type="module"></script>
 </body>
 </html>
