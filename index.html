@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<title>DGRM - Flowchart editor</title>
 	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-	<link href="assets/font/font.css" rel="stylesheet">
+	<!-- <link href="assets/font/font.css" rel="stylesheet"> -->
 	<style>
 		html,
 		body,
@@ -14,7 +14,7 @@
 			width: 100%;
 			margin: 0;
 			user-select: none;
-			font-family: 'Roboto', sans-serif;
+			font-family: 'Arial', sans-serif;
 			font-size: 16px;
 			color: rgb(52,71,103);
 			outline: none; 
@@ -26,7 +26,7 @@
 			cursor: pointer;
 		}
 
-		.dg-txtarea { position: fixed; background-color: #fff; color: rgb(52,71,103); white-space: nowrap; overflow: auto; border: rgba(26, 174, 229, .51) 5px solid; border-radius: 8px; text-align: left; padding: 10px; height: 200px; width: 250px; caret-color: auto; font-family: 'Roboto', sans-serif; font-size: 16px; outline: none; resize: none; line-height: 1em; tab-size: 1; }
+		.dg-txtarea { position: fixed; background-color: #fff; color: rgb(52,71,103); white-space: nowrap; overflow: auto; border: rgba(26, 174, 229, .51) 5px solid; border-radius: 8px; text-align: left; padding: 10px; height: 200px; width: 250px; caret-color: auto; font-family: 'Arial', sans-serif; font-size: 16px; outline: none; resize: none; line-height: 1em; tab-size: 1; }
 		.dg-txtarea.d-cl-red {border-color:rgba(231, 76, 60, .51);}
 		.dg-txtarea.d-cl-orange {border-color:rgba(255, 102, 0, .51);}
 		.dg-txtarea.d-cl-green {border-color:rgba(25, 188, 155, .51);}
@@ -50,7 +50,7 @@
 			.dg-lnk { color: #fff; text-decoration: underline; pointer-events: all; }
 			.select .dg-lnk { pointer-events: none; }
 			
-			.txt-edit {display:block; line-height: 1.1em; outline: none; pointer-events: none; color:#fff; font-family: 'Roboto', sans-serif; font-size: 16px; caret-color: #fff; white-space: pre-wrap; overflow-wrap: normal; }
+			.txt-edit {display:block; line-height: 1.1em; outline: none; pointer-events: none; color:#fff; font-family: 'Arial', sans-serif; font-size: 16px; caret-color: #fff; white-space: pre-wrap; overflow-wrap: normal; }
 
 			.dg-main, .dg-selected { cursor: pointer; }
 
@@ -177,6 +177,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20251024" type="module"></script>
+	<script src="index.js?v=20251026" type="module"></script>
 </body>
 </html>
