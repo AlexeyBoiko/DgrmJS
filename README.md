@@ -53,6 +53,10 @@ https://dgrm.net/ has pro features like "undo/redo".
 ## Announcements / Articles
 [x.com](https://x.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
+- Speed up  
+  - Fixed errors when working with large (20,000 px x 20,000 px) diagrams.
+  - Saving and opening diagrams with a large number of images has been significantly accelerated.
+
 [Announcement / Now you can recolor several figures at once](https://x.com/Boyko_tech/status/1969064514357252345)  
 [Announcement / Now text fits into shapes automatically](https://alexey-boyko.medium.com/dgrm-net-flowchart-editor-now-text-fits-into-shapes-automatically-1fb263d7eb62)  
 [Announcement / Now the exported images files size is 3 times less](https://x.com/Boyko_tech/status/1904559602047316086)  
