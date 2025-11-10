@@ -42,3 +42,11 @@ if (url.searchParams.get('k')) {
 		url = null;
 	});
 } else { url = null; }
+
+
+// dark theme
+const theme = localStorage.getItem('--theme');
+
+if (theme === 'dark') {
+	document.body.className = 'dark-theme';
+}
