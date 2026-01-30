@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<title>DGRM - Flowchart editor</title>
 	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-	<link rel="modulepreload" href="index.js?v=20260123" />
+	<link rel="modulepreload" href="index.js?v=20260130" />
 	<style>
 		html,
 		body,
@@ -87,13 +87,18 @@
 				.dg-connect.hover { stroke-width: 35px; }
 			}
 
+			/* rect, text shape - align */
+			.shrect.ta-1 .frg, .shtxt.ta-1 .frg { text-align: left; }
+			.shrect.ta-2 .frg, .shtxt.ta-2 .frg { text-align: center; }
+			.shrect.ta-3 .frg, .shtxt.ta-3 .frg { text-align: right; }
+			.shrect.ta-4 .frg, .shtxt.ta-4 .frg { text-align: justify; }
+			.shrect.tv-1 .frg { align-content: start; }
+			.shrect.tv-2 .frg { align-content: center; }
+			.shrect.tv-1 .txt-edit, .shrect.ta-1 .txt-edit, .shrect.ta-3 .txt-edit, .shrect.ta-4 .txt-edit { padding: 12px; }
+
 			/* text shape */
 
 			.shtxt .txt-edit, .shtxt .dg-lnk { color: rgb(73, 80, 87); caret-color: rgb(73, 80, 87); display: inline; background-color: #fff; }
-			.shtxt.ta-1 .frg { text-align: left; }
-			.shtxt.ta-2 .frg { text-align: center; }
-			.shtxt.ta-3 .frg { text-align: right; }
-
 			.shtxt.d-h .txt-edit { color: rgb(146, 150, 154); font-size: 24px; }
 			.shtxt.d-b .txt-edit {font-weight:700;}
 
@@ -179,6 +184,6 @@
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20260123" type="module"></script>
+	<script src="index.js?v=20260130" type="module"></script>
 </body>
 </html>
