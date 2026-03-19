@@ -53,12 +53,10 @@ https://dgrm.net/ has pro features like "undo/redo".
 ## Announcements / Articles
 [x.com](https://x.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
+- 2026-03-19 Blocks have become more compact. Previously, blocks were expanded by 2 cells, now by 1.
 - 2026-01-31 [You can now set text alignment](https://medium.com/@alexey-boyko/dgrm-net-whiteboard-you-can-now-set-text-alignment-bb6396894d8d). Useful for large blocks.
-
 - 2026-01-07 [Automatic position detection](https://alexey-boyko.medium.com/dgrm-net-whiteboard-now-the-small-figures-are-always-on-top-6f50a031f0d6). Now the position of the figures is determined automatically. The small figures are always on top. No extra buttons.
-
 - 2025-12-10 Flowchart editor DGRM.net has become even more productive. For diagrams with images, memory savings reach 10x.
-
 - Speed up  
   - Fixed errors when working with large (20,000 px x 20,000 px) diagrams.
   - Saving and opening diagrams with a large number of images has been significantly accelerated.
