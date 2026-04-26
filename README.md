@@ -53,6 +53,7 @@ https://dgrm.net/ has pro features like "undo/redo".
 ## Announcements / Articles
 [x.com](https://x.com/boyko_tech) | [telegram](https://t.me/dgrm_net)
 
+- 2026-04-26 [[Article] JavaScript: Handling Large Files in the Browser. Part 1/2: Reading Large Files](https://medium.com/@alexey-boyko/javascript-handling-large-files-in-the-browser-part-1-2-reading-large-files-4e820f59d97f)
 - 2026-04-23 [Now flowcharts from a computer open 15 times faster](https://medium.com/@alexey-boyko/dgrm-net-whiteboard-now-flowcharts-from-a-computer-open-15-times-faster-b8f7f2f3be63).
 - 2026-03-19 [Blocks have become more compact](https://medium.com/@alexey-boyko/dgrm-net-whiteboard-blocks-have-become-more-compact-714246169e03). Previously, blocks were expanded by 2 cells, now by 1.
 - 2026-01-31 [You can now set text alignment](https://medium.com/@alexey-boyko/dgrm-net-whiteboard-you-can-now-set-text-alignment-bb6396894d8d). Useful for large blocks.
