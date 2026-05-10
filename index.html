@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<title>DGRM - Flowchart editor</title>
 	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-	<link rel="modulepreload" href="index.js?v=20260507" />
+	<link rel="modulepreload" href="index.js?v=20260510" />
 	<style>
 		html,
 		body,
@@ -32,6 +32,8 @@
 		.dg-txtarea.d-cl-green {border-color:rgba(25, 188, 155, .51);}
 		.dg-txtarea.d-cl-dblue {border-color:rgba(29, 128, 159, .51);}
 		.dg-txtarea.d-cl-dgray {border-color:rgba(73, 80, 87, .51);}
+		
+		.dg-upload { opacity: 0.4; }
 
 		* { -webkit-tap-highlight-color: transparent; }
 
@@ -120,8 +122,8 @@
 			.shtxt .dg-main { fill: transparent; stroke: transparent; }
 			.shtxt.select .dg-main, .shtxt.highlight .dg-main, .shtxt.resize .dg-main { stroke: rgb(108 187 247 / 51%); stroke-width: 2px; }
 			
-			/* img */
-			.shimg.highlight .dg-selected { stroke: rgb(108 187 247 / 51%); }
+			/* img, video */
+			.shimg.highlight .dg-selected, .shvid.highlight .dg-selected { stroke: rgb(108 187 247 / 51%); }
 
 			/* box */
 			.shbox.highlight .dg-selected { stroke: rgb(108 187 247 / 51%); stroke-width: 10px; }
@@ -180,9 +182,14 @@
 			.d-cl-dblue .shtbl-h { fill:rgb(29, 128, 159); } .d-cl-dblue .shtbl-mn {stroke:rgb(29, 128, 159);}
 			.d-cl-dgray .shtbl-h { fill:rgb(73, 80, 87); } .d-cl-dgray .shtbl-mn {stroke:rgb(73, 80, 87);}
 			.shtbl .dg-main { fill: #fff; stroke-width: 1.8px; }
+
+			.dg-range::-webkit-slider-runnable-track { background: #fff; height: 6px; border-radius: 3px; }
+			.dg-range::-moz-range-track { background: #fff; height: 6px; border-radius: 3px; }
+			.dg-range::-webkit-slider-thumb { -webkit-appearance: none; margin-top: -5px; width: 16px; height: 16px; background: #fff; border-radius: 50%; cursor: ew-resize; }
+			.dg-range::-moz-range-thumb { margin-top: -5px; width: 16px; height: 16px; background: #fff; border-radius: 50%; border:none; cursor: ew-resize; }
 		</style>
 		<g id="canvas"></g>
 	</svg>
-	<script src="index.js?v=20260507" type="module"></script>
+	<script src="index.js?v=20260510" type="module"></script>
 </body>
 </html>
